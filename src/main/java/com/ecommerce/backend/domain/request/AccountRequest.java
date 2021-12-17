@@ -1,6 +1,5 @@
 package com.ecommerce.backend.domain.request;
 
-import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.enums.AccountType;
 import com.ecommerce.backend.domain.enums.GenderType;
 import lombok.*;
@@ -12,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 public class AccountRequest {
 
@@ -46,20 +46,20 @@ public class AccountRequest {
         @Enumerated(EnumType.STRING)
         private AccountType accountType;
 
-        private Address defaultAddress;
+//        private Address defaultAddress;
     }
 
-    /**
-     * 2021-02-15 penguin418
-     * 로그인 정용으로 사용
-     **/
-    @Data
+    @Getter @Setter @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class LoginRequest {
         private String email;
         private String password;
     }
 
-    @Data
+    @Getter @Setter @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class CreateAccountRequest {
         private String email;
         private String password;
@@ -69,8 +69,9 @@ public class AccountRequest {
         private AccountType accounttype;
     }
 
-    @Data
-    @Builder
+    @Getter @Setter @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UpdateAccountRequest {
         private Long accountId;
         private String email;

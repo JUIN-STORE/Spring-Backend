@@ -63,13 +63,13 @@ public class Account {
     @NotNull
     private LocalDateTime lastLogin;
 
-    @OneToOne
-    @JoinTable(schema = "shop",                                     // DB명
-            name = "default_address",                               // 조인 테이블명(릴레이션)
-            joinColumns = @JoinColumn(name = "account_id"),         // Account.account_id
-            inverseJoinColumns = @JoinColumn(name = "address_id")   // Address.address_id
-    )
-    private Address defaultAddress;
+//    @OneToOne
+//    @JoinTable(schema = "shop",                                     // DB명
+//            name = "default_address",                               // 조인 테이블명(릴레이션)
+//            joinColumns = @JoinColumn(name = "account_id"),          // Account.account_id
+//            inverseJoinColumns = @JoinColumn(name = "address_id")   // Address.address_id
+//    )
+//    private Address defaultAddress;
 
 //    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
 //    List<Address> addresses;
