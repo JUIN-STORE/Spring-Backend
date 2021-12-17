@@ -2,7 +2,7 @@ package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.response.AccountResponse.CreateResponse;
-import com.ecommerce.backend.service.AccountService;
+import com.ecommerce.backend.ifs.AccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
