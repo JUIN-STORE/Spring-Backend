@@ -1,6 +1,6 @@
 package com.ecommerce.backend.config;
 
-import com.ecommerce.backend.ifs.AccountService;
+import com.ecommerce.backend.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

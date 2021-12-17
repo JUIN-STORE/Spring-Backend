@@ -19,4 +19,6 @@ public abstract class AccountMapper {
     public abstract ReadResponse entityToReadResponse(Account account); // GET
 
     public abstract DeleteResponse entityToDeleteResponse(Account account); // DELETE
+
+    public abstract LoginResponse entityToLoginResponse(Account account); // POST LOGIN
 }

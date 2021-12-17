@@ -71,9 +71,9 @@ public class AccountResponse {
     @AllArgsConstructor
     @Getter @Setter @Builder
     public static class LoginResponse{
-        private String username;
+        private String email;
         // class GrantedAuthority를 상속하는 class만 가능
 
-        private String token;
+//        private String token;
     }
 }

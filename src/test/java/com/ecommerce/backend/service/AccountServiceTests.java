@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @DataJpaTest
 //@Import({AccountServiceTests.AccountServiceTestContextConfiguration.class})
-class AccountServiceImplTests {
+class AccountServiceTests {
 //    @Autowired
 //    private AccountService accountService;
 //
