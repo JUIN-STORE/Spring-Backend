@@ -1,8 +1,10 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.domain.request.AccountRequest.LoginRequest;
 import com.ecommerce.backend.domain.response.AccountResponse.CreateResponse;
-import com.ecommerce.backend.ifs.AccountService;
+import com.ecommerce.backend.domain.response.AccountResponse.LoginResponse;
+import com.ecommerce.backend.service.AccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -38,8 +40,20 @@ public class AccountApiController {
         try {
             log.info("__Call POST /api/accounts/register__");
             return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", accountService.save(request));
-        } catch (Exception e) {
-            log.warn("__Call POST /api/accounts/register Exception__");
+        } catch (EntityNotFoundException e) {
+            log.warn(e.getMessage());
+            return new MyResponse<>(HttpStatus.NOT_FOUND, ERROR_MESSAGE, null);
+        }
+    }
+
+    @ApiOperation(value = "로그인", notes = "로그인을 한다.")
+    @PostMapping("/login")
+    public MyResponse<LoginResponse> login(@RequestBody LoginRequest request) {
+        try {
+            log.info("__Call POST /api/accounts/login__");
+            return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", accountService.login(request));
+        } catch (EntityNotFoundException e) {
+            log.warn(e.getMessage());
             return new MyResponse<>(HttpStatus.NOT_FOUND, ERROR_MESSAGE, null);
         }
     }
@@ -51,6 +65,7 @@ public class AccountApiController {
             log.info("__Call GET /api/accounts/{id}__");
             return new MyResponse<>(HttpStatus.OK, "GET SUCCESS", accountService.findById(id));
         } catch (EntityNotFoundException e) {
+            log.info(e.toString());
             log.warn("__Call GET /api/accounts/{id} EntityNotFoundException__");
             return new MyResponse<>(HttpStatus.NOT_FOUND, ERROR_MESSAGE, null);
         }
@@ -67,4 +82,6 @@ public class AccountApiController {
             return new MyResponse<>(HttpStatus.NOT_FOUND, "DELETE" + ERROR_MESSAGE, null);
         }
     }
+
+
 }
