@@ -1,10 +1,13 @@
 package com.ecommerce.backend.config;
 
+import com.ecommerce.backend.jwt.JwtAuthenticationEntryPoint;
+import com.ecommerce.backend.jwt.JwtRequestFilter;
 import com.ecommerce.backend.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -13,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.session.web.http.HttpSessionStrategy;
 
@@ -24,10 +28,14 @@ import org.springframework.session.web.http.HttpSessionStrategy;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AccountService accountService;
-//    private final JwtTokenFilter jwtTokenFilter;
-    /**
-     *
-     */
+    private final JwtRequestFilter jwtRequestFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    private final void configGlobal(AuthenticationManagerBuilder auth) throws Exception{
+        // 일치하는 자격증명을 위해 사용자를 로드할 위치를 알수 있도록
+        auth.userDetailsService(accountService).passwordEncoder(passwordEncoder());
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -36,6 +44,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public HttpSessionStrategy httpSessionStrategy() {
         return new HeaderHttpSessionStrategy();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    // 인증 방법
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+          auth
+              .userDetailsService(accountService)
+              .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -55,28 +77,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
         // 개발 시에만 사용
-        http.csrf().disable();
+        httpSecurity.csrf().disable();
 
-        // seuciry 기본 /login 페이지 사용 안 함.
-        http.httpBasic().disable();
+        // security 기본 /login 페이지 사용 안 함.
+        httpSecurity.httpBasic().disable();
 
-        http.authorizeRequests()
-                .antMatchers("/api/accounts/*").permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/api/accounts/test").hasAuthority("ROLE_USER")
-                .antMatchers("/**").permitAll()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .logout()
-                //                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true)
-                .and()
-                .exceptionHandling().accessDeniedPage("/auth/denied");
-//        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity
+                .authorizeRequests()
+                .antMatchers("/api/accounts/login",
+                        "/api/accounts/register").permitAll()
+                .anyRequest().authenticated().and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .formLogin().disable()
+                .headers().frameOptions().disable();
+        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
 }
 

@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -22,7 +23,7 @@ public class AccountRequest {
         private Long accountId;
 
         private String email;
-        private String password;
+        private String passwordHash;
         private String firstName;
         private String lastName;
 
@@ -52,9 +53,9 @@ public class AccountRequest {
     @Getter @Setter @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class LoginRequest {
+    public static class LoginRequest implements Serializable {
         private String email;
-        private String password;
+        private String passwordHash;
     }
 
     @Getter @Setter @Builder
@@ -62,7 +63,7 @@ public class AccountRequest {
     @AllArgsConstructor
     public static class CreateAccountRequest {
         private String email;
-        private String password;
+        private String passwordHash;
         private String lastname;
         private String firstname;
         private GenderType gender;
@@ -75,8 +76,8 @@ public class AccountRequest {
     public static class UpdateAccountRequest {
         private Long accountId;
         private String email;
-        private String password;
-        private String new_password;
+        private String passwordHash;
+        private String new_passwordHash;
         private String lastname;
         private String firstname;
         @Column(columnDefinition = "ENUM('MALE','FEMALE')")
