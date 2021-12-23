@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class AccountResponse {
@@ -70,10 +71,7 @@ public class AccountResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter @Setter @Builder
-    public static class LoginResponse{
-        private String email;
-        // class GrantedAuthority를 상속하는 class만 가능
-
-//        private String token;
+    public static class LoginResponse implements Serializable {
+        private String token;
     }
 }

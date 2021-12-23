@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static com.ecommerce.backend.domain.request.AccountRequest.CreateRequest;
@@ -46,7 +47,7 @@ public class AccountService implements UserDetailsService {
 
         // 비밀번호 암호화
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        request.setPassword(encoder.encode(request.getPassword()));
+        request.setPasswordHash(encoder.encode(request.getPasswordHash()));
 
         Account account = accountMapper.createRequestToEntity(request);
         accountRepository.save(account);
@@ -62,7 +63,7 @@ public class AccountService implements UserDetailsService {
     public LoginResponse login(LoginRequest request) {
         Account account = accountRepository.findByEmail(request.getEmail()).orElseThrow(() -> new EntityNotFoundException("계정 정보가 다릅니다."));
         boolean checkEmail = account.getEmail().equals(request.getEmail());
-        boolean checkPassword = new BCryptPasswordEncoder().matches(request.getPassword(), account.getPasswordHash());
+        boolean checkPassword = new BCryptPasswordEncoder().matches(request.getPasswordHash(), account.getPasswordHash());
 
         // email, password 체크
         if (checkEmail && checkPassword) return accountMapper.entityToLoginResponse(account);
@@ -82,7 +83,7 @@ public class AccountService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return (UserDetails) accountRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("일치하는 사용자를 찾을 수 없습니다."));
+        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("user name not found!"));
+        return new org.springframework.security.core.userdetails.User(account.getEmail(), account.getPasswordHash(), new ArrayList<>());
     }
 }
