@@ -19,7 +19,7 @@ public class AccountResponse {
 
         private String email;
 
-        private String lastName; // 성
+        private String name;
 
         @CreationTimestamp
         private LocalDateTime registeredAt;
@@ -38,7 +38,7 @@ public class AccountResponse {
 
         private String email;
 
-        private String lastName; // 성
+        private String name;
 
         @CreationTimestamp
         private LocalDateTime registeredAt;
@@ -57,7 +57,7 @@ public class AccountResponse {
 
         private String email;
 
-        private String lastName; // 성
+        private String name;
 
         @CreationTimestamp
         private LocalDateTime registeredAt;

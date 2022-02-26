@@ -1,31 +1,42 @@
 CREATE SCHEMA `shop` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- `shop`.`account`
 DROP TABLE IF EXISTS `shop`.`account`;
-
 CREATE TABLE IF NOT EXISTS `shop`.`account`
 (
     `account_id`    BIGINT       NOT NULL AUTO_INCREMENT,
     `email`         VARCHAR(50)  NOT NULL UNIQUE,
     `password_hash` VARCHAR(120) NOT NULL,
-    `first_name`    VARCHAR(50)  NOT NULL,
-    `last_name`     VARCHAR(50)  NOT NULL,
-    `birthday`      DATE        DEFAULT NULL,
-    `gender`        ENUM ('MALE','FEMALE') DEFAULT NULL,
-    `phone_number`  VARCHAR(15) DEFAULT NULL,
-    `account_type`  ENUM ('USER', 'SELLER', 'ADMIN') NOT NULL,
+    `name`    VARCHAR(50)  NOT NULL,
+    `account_role`  ENUM ('USER', 'SELLER', 'ADMIN') NOT NULL,
     `registered_at` DATETIME     NOT NULL,
-    `last_login`    DATETIME    DEFAULT NULL,
+    `last_login`    DATETIME     DEFAULT NULL,
 
     PRIMARY KEY (`account_id`),
-    UNIQUE INDEX `uq_phone` (`phone_number` ASC),
     UNIQUE INDEX `uq_email` (`email` ASC)
 
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COLLATE = utf8mb4_unicode_ci;
+
+-- `shop`.`address`
+DROP TABLE IF EXISTS `shop`.`address`;
+CREATE TABLE IF NOT EXISTS `shop`.`address`
+(
+    `address_id`         BIGINT         NOT NULL AUTO_INCREMENT,
+    `account_id`         BIGINT         NULL REFERENCES `account` (`account_id`),
+    `city`               VARCHAR(50)    DEFAULT NULL,
+    `street`             VARCHAR(50)    DEFAULT NULL,
+    `zip_code`           VARCHAR(20)    NOT NULL,
+    `default_address`    BOOLEAN        NOT NULL DEFAULT FALSE,  -- DB에서는 0이면 FALSE, 1이면 TRUE
+
+    PRIMARY KEY (`address_id`)
+
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `shop`.`product`;
-
 CREATE TABLE `shop`.`product`
 (
     `product_id`     BIGINT      NOT NULL AUTO_INCREMENT,

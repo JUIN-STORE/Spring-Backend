@@ -31,14 +31,14 @@ public class AddressRes {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter @Setter @Builder
-    public static class CreateResponse {
+    public static class AddressCreateRes {
         private Long id;
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter @Setter @Builder
-    public static class UpdateRes {
+    public static class AddressUpdateRes {
         private Long id;
 
         private String email;
