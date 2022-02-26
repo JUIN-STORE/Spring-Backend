@@ -24,18 +24,16 @@ import org.springframework.session.web.http.HttpSessionStrategy;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AccountService accountService;
     private final JwtRequestFilter jwtRequestFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    private final void configGlobal(AuthenticationManagerBuilder auth) throws Exception{
-        // 일치하는 자격증명을 위해 사용자를 로드할 위치를 알수 있도록
-        auth.userDetailsService(accountService).passwordEncoder(passwordEncoder());
-    }
-
+    /** 비밀번호 해시
+     * @return
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -52,14 +50,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    // 인증 방법
+    /** 인증방법
+     * @param auth 
+     * @throws Exception
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-          auth
-              .userDetailsService(accountService)
-              .passwordEncoder(passwordEncoder());
+          auth.userDetailsService(accountService).passwordEncoder(passwordEncoder());
     }
 
+    /** 시큐리티가 무시
+     * @param webSecurity 
+     */
     @Override
     public void configure(WebSecurity webSecurity) {
         webSecurity.ignoring().antMatchers(
@@ -93,6 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .formLogin().disable()
                 .headers().frameOptions().disable();
+
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

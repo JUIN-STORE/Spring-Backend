@@ -1,33 +1,31 @@
 package com.ecommerce.backend.domain.response;
 
+import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class AccountResponse {
+public class AddressRes {
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter @Setter @Builder
-    public static class ReadResponse {
+    public static class AddressReadRes {
         private Long id;
 
-        private String email;
+        private Account account;
 
-        private String lastName; // 성
+        private String city;
 
-        @CreationTimestamp
-        private LocalDateTime registeredAt;
+        private String street;
 
-        private LocalDateTime lastLogin;
+        private String zipCode;
 
-        @Enumerated(EnumType.STRING)
-        private AccountRole accountRole;
+        private boolean defaultAddress;
     }
 
     @NoArgsConstructor
@@ -35,24 +33,12 @@ public class AccountResponse {
     @Getter @Setter @Builder
     public static class CreateResponse {
         private Long id;
-
-        private String email;
-
-        private String lastName; // 성
-
-        @CreationTimestamp
-        private LocalDateTime registeredAt;
-
-        private LocalDateTime lastLogin;
-
-        @Enumerated(EnumType.STRING)
-        private AccountRole accountRole;
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter @Setter @Builder
-    public static class DeleteResponse {
+    public static class UpdateRes {
         private Long id;
 
         private String email;
@@ -68,10 +54,5 @@ public class AccountResponse {
         private AccountRole accountRole;
     }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter @Setter @Builder
-    public static class LoginResponse implements Serializable {
-        private String token;
-    }
+
 }

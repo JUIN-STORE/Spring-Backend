@@ -1,6 +1,6 @@
 package com.ecommerce.backend.domain.enums;
 
-public enum AccountType {
+public enum AccountRole {
     USER,
     SELLER,
     ADMIN
