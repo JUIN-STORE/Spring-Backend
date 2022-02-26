@@ -1,24 +1,18 @@
 package com.ecommerce.backend.domain.entity;
 
-import com.ecommerce.backend.domain.enums.AccountType;
-import com.ecommerce.backend.domain.enums.GenderType;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.ecommerce.backend.domain.enums.AccountRole;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class) // 객체가 부모 자식 관계를 가질 때 사용
 @Getter @Builder
 @Entity
 public class Account {
@@ -27,54 +21,40 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false, unique = true)
     @NotNull
+    @Column(length = 100, nullable = false, unique = true)
     private String email;
 
     @NotNull
     private String passwordHash;
 
     @NotNull
-    private String firstName;
-
-    @NotNull
-    private String lastName;
+    private String name;
 
     @NotNull
     private String phoneNumber;
 
-    @Column(columnDefinition = "enum('MALE', 'FEMALE')")
-    @Enumerated(EnumType.STRING)
-    private GenderType gender;
-
-    @Column(columnDefinition = "VARCHAR")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate birthday;
+    // 1:N, Account가 Driving Table, Driving Table에 mappedBy 써야 됨.
+//    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+//    private List<Address> addressList = new ArrayList<>();
 
     @NotNull
     @Column(columnDefinition = "enum('USER', 'SELLER', 'ADMIN')")
     @Enumerated(EnumType.STRING)
-    private AccountType accountType;
+    private AccountRole accountRole;
 
     @NotNull
     @CreationTimestamp
     private LocalDateTime registeredAt;
 
     @NotNull
+    @CreationTimestamp
+    private LocalDateTime updatedAt;
+
+    @NotNull
     private LocalDateTime lastLogin;
 
-//    @OneToOne
-//    @JoinTable(schema = "shop",                                     // DB명
-//            name = "default_address",                               // 조인 테이블명(릴레이션)
-//            joinColumns = @JoinColumn(name = "account_id"),          // Account.account_id
-//            inverseJoinColumns = @JoinColumn(name = "address_id")   // Address.address_id
-//    )
-//    private Address defaultAddress;
+//    @OneToMany(mappedBy = "account")
+//    private List<Order> orderList = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
-//    List<Address> addresses;
-
-//    자신의 카트를 가져옴
-//    @OneToOne(mappedBy = "account")
-//    private Cart cart;
 }

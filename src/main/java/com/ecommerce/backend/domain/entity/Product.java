@@ -91,13 +91,12 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<Tag> tags;
 
     //** 비즈니스 로직 **//
     // 재고 증가
-    public void addQuantity(Integer quantity){
-        this.quantity += quantity;
-    }
+//    public void addQuantity(Integer quantity){
+//        this.quantity += quantity;
+//    }
     public void removeQuantity(Integer quantity){
         Integer restquantity = this.quantity = quantity;
         if(restquantity < 0 ){

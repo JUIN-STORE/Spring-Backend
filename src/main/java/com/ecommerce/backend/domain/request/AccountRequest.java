@@ -1,7 +1,6 @@
 package com.ecommerce.backend.domain.request;
 
-import com.ecommerce.backend.domain.enums.AccountType;
-import com.ecommerce.backend.domain.enums.GenderType;
+import com.ecommerce.backend.domain.enums.AccountRole;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,31 +12,18 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
 public class AccountRequest {
-
     @Getter @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CreateRequest {
-        private Long accountId;
-
+    public static class CreateRequest{
         private String email;
         private String passwordHash;
-        private String firstName;
-        private String lastName;
-
-        @Column(columnDefinition = "ENUM('MALE','FEMALE')")
-        @Enumerated(EnumType.STRING)
-        private GenderType gender;
-
-        @Column(columnDefinition = "VARCHAR")
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        private LocalDate birthday;
+        private String name;
 
         //            @PhoneNumber
-        private String phoneNumber;
 
+        private String phoneNumber;
         @CreationTimestamp
         private LocalDateTime registeredAt;
 
@@ -45,9 +31,9 @@ public class AccountRequest {
 
         @Column(columnDefinition = "ENUM('USER','SELLER','ADMIN')")
         @Enumerated(EnumType.STRING)
-        private AccountType accountType;
+        private AccountRole accountRole;
 
-//        private Address defaultAddress;
+//        private Address addresses;
     }
 
     @Getter @Setter @Builder
@@ -61,31 +47,20 @@ public class AccountRequest {
     @Getter @Setter @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CreateAccountRequest {
+    public static class UpdateRequest {
         private String email;
-        private String passwordHash;
-        private String lastname;
-        private String firstname;
-        private GenderType gender;
-        private AccountType accounttype;
-    }
 
-    @Getter @Setter @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateAccountRequest {
-        private Long accountId;
-        private String email;
         private String passwordHash;
+
         private String new_passwordHash;
-        private String lastname;
-        private String firstname;
-        @Column(columnDefinition = "ENUM('MALE','FEMALE')")
-        @Enumerated(EnumType.STRING)
-        private GenderType gender;
+
+        private String name;
+
+
         @Column(columnDefinition = "VARCHAR")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate birthday;
+
         private String phoneNumber;
     }
 }

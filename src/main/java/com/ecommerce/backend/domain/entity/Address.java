@@ -1,7 +1,5 @@
 package com.ecommerce.backend.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,28 +9,36 @@ import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
-@Getter @Builder
-@Entity
+@Entity @Getter @Builder
 public class Address {
     @Id
     @Column(name = "address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id")
+    @ManyToOne(optional = false)          // N:1, Address가 N개
+    @JoinColumn(name = "account_id")      // Account.account_id
     private Account account;
-
-    private String address;
-
-    private String roadAddress;
 
     private String city;
 
-    private String province;
+    private String street;
 
-    private String country;
+    private String zipCode;
 
-    private Integer zipCode;
+    private boolean defaultAddress; // 기본 주소로 쓸 건지
+
+    /** Account와의 연관관계 설정, @ManyToOne
+     * @param account
+     */
+//    public void setAccount(Account account) {
+//        // 기존 Account와의 연관관계 제거
+//        if (this.account != null) this.account.getAddressList().remove(this);
+//
+//        this.account = account;
+//
+//        // 무한루프 빠지지 않도록 처리
+//        if (!account.getAddressList().contains(this)) account.getAddressList().add(this);
+//    }
 }
+

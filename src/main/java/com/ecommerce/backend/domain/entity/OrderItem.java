@@ -73,9 +73,9 @@ public class OrderItem {
     }
 
     //** 비즈니스 로직 **   삭제 예정임 !!!!!//
-    public void cancel(){
-        getProduct().addQuantity(quantity);
-    }
+//    public void cancel(){
+//        getProduct().addQuantity(quantity);
+//    }
     public Integer getTotalPrice(){
         return getPrice()*getQuantity();
     }
