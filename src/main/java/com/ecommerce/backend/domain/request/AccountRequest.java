@@ -3,13 +3,11 @@ package com.ecommerce.backend.domain.request;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AccountRequest {
@@ -21,9 +19,6 @@ public class AccountRequest {
         private String passwordHash;
         private String name;
 
-        //            @PhoneNumber
-
-        private String phoneNumber;
         @CreationTimestamp
         private LocalDateTime registeredAt;
 
@@ -55,12 +50,5 @@ public class AccountRequest {
         private String new_passwordHash;
 
         private String name;
-
-
-        @Column(columnDefinition = "VARCHAR")
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        private LocalDate birthday;
-
-        private String phoneNumber;
     }
 }

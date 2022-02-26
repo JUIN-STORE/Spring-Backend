@@ -3,14 +3,14 @@ package com.ecommerce.backend.domain.request;
 import com.ecommerce.backend.domain.entity.Account;
 import lombok.*;
 
-public class AddressRequest {
+public class AddressReq {
     @Getter @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CreateRequest{
+    public static class AddressCreateReq {
         private Long id;
 
-        private Account account;
+        private Long accountId;
 
         private String city;
 
@@ -24,8 +24,8 @@ public class AddressRequest {
     @Getter @Setter @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UpdateRequest {
-        private Account account;
+    public static class AddressUpdateReq {
+        private Long accountId;
 
         private String city;
 

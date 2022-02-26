@@ -43,7 +43,6 @@ public class AccountService implements UserDetailsService {
     public CreateResponse save(CreateRequest request) {
         // 검사
         validateDuplicateAccountEmail(request);
-        validateDuplicatePhoneNumber(request);
 
         // 비밀번호 암호화
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -74,11 +73,6 @@ public class AccountService implements UserDetailsService {
     private void validateDuplicateAccountEmail(CreateRequest request){
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
         if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
-    }
-
-    private void validateDuplicatePhoneNumber(CreateRequest request) {
-        Optional<Account> validPhoneNumber = accountRepository.findByPhoneNumber(request.getPhoneNumber());
-        if(validPhoneNumber.isPresent()) throw new EntityExistsException("존재하는 휴대전화 번호입니다. 다른 휴대전화 번호를 입력해 주세요.");
     }
 
     @Override

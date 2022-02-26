@@ -10,6 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,13 +34,6 @@ public class Account {
     private String name;
 
     @NotNull
-    private String phoneNumber;
-
-    // 1:N, Account가 Driving Table, Driving Table에 mappedBy 써야 됨.
-//    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
-//    private List<Address> addressList = new ArrayList<>();
-
-    @NotNull
     @Column(columnDefinition = "enum('USER', 'SELLER', 'ADMIN')")
     @Enumerated(EnumType.STRING)
     private AccountRole accountRole;
@@ -48,13 +43,12 @@ public class Account {
     private LocalDateTime registeredAt;
 
     @NotNull
-    @CreationTimestamp
-    private LocalDateTime updatedAt;
-
-    @NotNull
     private LocalDateTime lastLogin;
+
+    // 1:N, Account가 Driving Table, Driving Table에 mappedBy 써야 됨.
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private List<Address> addressList = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "account")
 //    private List<Order> orderList = new ArrayList<>();
-
 }
