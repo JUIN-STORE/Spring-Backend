@@ -40,7 +40,7 @@ public class AddressService {
 
     @Transactional
     public AddressRes.AddressCreateRes save(AddressReq.AddressCreateReq request){
-        Optional<Account> account = accountRepository.findById(request.getAccountId());
+        Optional<Account> account = accountRepository.findById(request.getAccount().getId());
 
         if (account.isPresent()) {
             Address address = addressMapper.createRequestToEntity(request);

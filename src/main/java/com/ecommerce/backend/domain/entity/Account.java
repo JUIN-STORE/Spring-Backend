@@ -49,6 +49,8 @@ public class Account {
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<Address> addressList = new ArrayList<>();
 
+
 //    @OneToMany(mappedBy = "account")
 //    private List<Order> orderList = new ArrayList<>();
 }
+

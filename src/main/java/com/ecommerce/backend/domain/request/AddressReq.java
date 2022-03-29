@@ -10,7 +10,7 @@ public class AddressReq {
     public static class AddressCreateReq {
         private Long id;
 
-        private Long accountId;
+        private Account account;
 
         private String city;
 

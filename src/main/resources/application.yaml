@@ -8,7 +8,7 @@ spring:
         password: root
     jackson:
         property-naming-strategy: LOWER_CAMEL_CASE
-        show-sql=true: true
+        show-sql: true
         serialization:
             fail-on-empty-beans: false
     mvc:
@@ -16,21 +16,16 @@ spring:
             filter:
                 enabled: true
 
+    jpa:
+        properties:
+            hibernate:
+                show_sql: true   # 실행되는 쿼리 콘솔 출력
+                format_sql: true # 쿼리 가독성 좋게 포맷팅
+
+                hbm2ddl:
+                    auto: create
+
 jwt:
     header: Authorization
     secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
     token-validity-in-seconds: 86400
-
-#spring.datasource.url=jdbc:h2:tcp://localhost/~/jpashop
-#driver-class-name=org.h2.Driver
-#spring.datasource.username=sa
-#spring.datasource.password=
-#spring.datasource.password=mysql
-
-
-#spring.cache.type=redis
-#spring.redis.host =localhost
-#spring.redis.port=6379
-
-#spring.jackson.property-naming-strategy=SNAKE_CASE
-#spring.datasource.platform=mysql

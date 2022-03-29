@@ -31,14 +31,14 @@ public class Address {
     /** Account와의 연관관계 설정, @ManyToOne
      * @param account
      */
-//    public void setAccount(Account account) {
-//        // 기존 Account와의 연관관계 제거
-//        if (this.account != null) this.account.getAddressList().remove(this);
-//
-//        this.account = account;
-//
-//        // 무한루프 빠지지 않도록 처리
-//        if (!account.getAddressList().contains(this)) account.getAddressList().add(this);
-//    }
+    public void setAccount(Account account) {
+        // 기존 Account와의 연관관계 제거
+        if (this.account != null) this.account.getAddressList().remove(this);
+
+        this.account = account;
+
+        // 무한루프 빠지지 않도록 처리
+        if (!account.getAddressList().contains(this)) account.getAddressList().add(this);
+    }
 }
 
