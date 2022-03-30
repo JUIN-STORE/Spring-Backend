@@ -1,3 +1,9 @@
+buildscript {
+	dependencies {
+		classpath("gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:1.0.10")
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.4.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -8,6 +14,9 @@ group = 'com.ecommerce'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+//querydsl 추가
+apply plugin: "com.ewerk.gradle.plugins.querydsl"
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -17,11 +26,13 @@ configurations {
 repositories {
 	mavenCentral()
 }
+
 ext {
 	mapstructVersion = "1.4.2.Final"
 	lombokVersion = "1.18.16"
 	lombokMapstructBindingVersion = "0.2.0"
 }
+
 dependencies {
 	/* jpa */
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -77,10 +88,43 @@ dependencies {
 
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}", "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
+	//querydsl 추가
+	implementation 'com.querydsl:querydsl-jpa'
+	implementation 'com.querydsl:querydsl-apt'
 }
 
 test {
 	useJUnitPlatform()
+}
+//querydsl 추가
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	library = "com.querydsl:querydsl-apt"
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ['src/main/java', querydslDir]
+		}
+	}
+}
+
+compileQuerydsl{
+	options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+
+/* comileQuerydsl.doFirst 추가: 재컴파일 시 q파일을 모두 지우도록 */
+compileQuerydsl.doFirst {
+	if(file(querydslDir).exists())
+		delete(file(querydslDir))
 }
 
 //tasks.withType(JavaCompile) {

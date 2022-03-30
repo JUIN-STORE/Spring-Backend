@@ -28,9 +28,11 @@ public class Account {
     private String email;
 
     @NotNull
+    @Column(nullable = false)
     private String passwordHash;
 
     @NotNull
+    @Column(nullable = false)
     private String name;
 
     @NotNull

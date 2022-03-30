@@ -1,7 +1,6 @@
 package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.repository.AccountRepository;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -28,15 +27,4 @@ class AccountServiceTests {
 //            return new AccountService(accountRepository());
 //        }
 //    }
-
-
-    @Test
-    void test() {
-        // given
-
-        // when
-
-        // then
-    }
-
 }
