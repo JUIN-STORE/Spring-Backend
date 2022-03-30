@@ -13,10 +13,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter @Builder
+@Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Account {
     @Id
     @Column(name = "account_id")
@@ -50,7 +51,6 @@ public class Account {
     // 1:N, Account가 Driving Table, Driving Table에 mappedBy 써야 됨.
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<Address> addressList = new ArrayList<>();
-
 
 //    @OneToMany(mappedBy = "account")
 //    private List<Order> orderList = new ArrayList<>();

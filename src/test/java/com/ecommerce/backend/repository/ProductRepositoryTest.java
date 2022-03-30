@@ -2,12 +2,15 @@ package com.ecommerce.backend.repository;
 
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.entity.QProduct;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +24,27 @@ class ProductRepositoryTest {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Test
+    @DisplayName("Querydsl 조회 테스트2")
+    public void queryDsl2(){
+        this.createProductList2();
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QProduct qProduct = QProduct.product;
+
+        String description = "테스트";
+
+        booleanBuilder.and(qProduct.description.like("%" + description + "%"));
+        booleanBuilder.and(qProduct.quantity.eq(qProduct.soldCount));
+
+        PageRequest pageable =  PageRequest.of(0, 5);
+        Page<Product> productPage = productRepository.findAll(booleanBuilder, pageable);
+        List<Product> content = productPage.getContent();
+
+        for (Product product : content) {
+            System.out.println(product);
+        }
+    }
 
     @Test
     @DisplayName("Querydsl 조회 테스트1")
@@ -120,6 +144,38 @@ class ProductRepositoryTest {
                     .price(10000 + i)
                     .quantity(100)
                     .soldCount(1)
+                    .description("테스트 상품 설명" + i)
+                    .thumbnailPath("/url")
+                    .originImagePath("/origin-url")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            productRepository.save(product);
+        }
+    }
+
+    public void createProductList2(){
+        for (int i = 1; i <= 5; i++){
+            Product product = Product.builder()
+                    .productName("테스트 상품" + i)
+                    .price(10000 + i)
+                    .quantity(100)
+                    .soldCount(1)
+                    .description("테스트 상품 설명" + i)
+                    .thumbnailPath("/url")
+                    .originImagePath("/origin-url")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            productRepository.save(product);
+        }
+
+        for (int i = 6; i <= 10; i++){
+            Product product = Product.builder()
+                    .productName("테스트 상품" + i)
+                    .price(10000 + i)
+                    .quantity(100)
+                    .soldCount(100)
                     .description("테스트 상품 설명" + i)
                     .thumbnailPath("/url")
                     .originImagePath("/origin-url")

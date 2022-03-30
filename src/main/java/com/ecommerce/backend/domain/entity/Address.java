@@ -17,7 +17,7 @@ public class Address {
     private Long id;
 
     @ManyToOne(optional = false)          // N:1, Address가 N개
-    @JoinColumn(name = "account_id")      // Account.account_id
+    @JoinColumn(name = "account_id", insertable = false, updatable = false)      // Account.account_id
     private Account account;
 
     private String city;

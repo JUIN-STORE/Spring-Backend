@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static com.ecommerce.backend.domain.request.AccountRequest.CreateRequest;
+import static com.ecommerce.backend.domain.request.AccountRequest.CreateRequest.toAccount;
 import static com.ecommerce.backend.domain.request.AccountRequest.LoginRequest;
 import static com.ecommerce.backend.domain.response.AccountResponse.*;
 
@@ -35,22 +36,24 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 
+    private void validateDuplicateAccountEmail(CreateRequest request){
+        Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
+        if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
+    }
+
+    public CreateResponse saveAccount(CreateRequest request) {
+        // 검사
+        validateDuplicateAccountEmail(request);
+
+        Account account = toAccount(request);
+        accountRepository.save(account);
+        return CreateResponse.fromAccount(account);
+    }
+
     @Transactional(readOnly = true)
     public ReadResponse findById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return accountMapper.entityToReadResponse(account);
-    }
-    public CreateResponse save(CreateRequest request) {
-        // 검사
-        validateDuplicateAccountEmail(request);
-
-        // 비밀번호 암호화
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        request.setPasswordHash(encoder.encode(request.getPasswordHash()));
-
-        Account account = accountMapper.createRequestToEntity(request);
-        accountRepository.save(account);
-        return accountMapper.entityToCreateResponse(account);
     }
 
     public DeleteResponse delete(Long id) {
@@ -70,10 +73,6 @@ public class AccountService implements UserDetailsService {
         throw new EntityNotFoundException("계정 정보가 다릅니다.");
     }
 
-    private void validateDuplicateAccountEmail(CreateRequest request){
-        Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
-        if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
-    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
