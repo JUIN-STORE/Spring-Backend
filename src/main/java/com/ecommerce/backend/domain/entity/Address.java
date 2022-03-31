@@ -11,8 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity @Getter @Builder
 public class Address {
-    @Id
-    @Column(name = "address_id")
+    @Id @Column(name = "address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

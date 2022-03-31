@@ -1,88 +1,37 @@
 package com.ecommerce.backend.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.ecommerce.backend.domain.enums.OrderStatus;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "orders")
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Accessors(chain = true)
-//@Table (name = "ORDERS", schema = "SHOP")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
-public class Order {
-    @Id
+@Entity(name = "orders")
+public class Order extends BaseEntity{
+    @Id @Column(name = "order_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ordersId;
+    private Long id;
+
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus; // 주문 상태
+
+    @Setter
+    private LocalDateTime orderDate; // 주문일
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @OneToMany(mappedBy="order",cascade = CascadeType.ALL)    // 01-18 Megan
-    public List<OrderItem> orderItems ;
-
-    private String sessionId;
-
-    private String token;
-
-    @Column(columnDefinition = "enum('READY', 'ORDER', 'CANCEL')")
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-
-    private Integer itemPriceTotal;
-
-    private Integer itemDiscount;
-
-    private Integer tax;
-
-    private Integer shipping;
-
-    private Integer userDiscount;
-
-    private Integer grandTotal;
-
-    private String firstName;
-
-    private String lastName;
-
-    private String phoneNumber;
-
-    private String email;
-
-    private String roadAddress;;
-
-    private String address;
-
-    private String city;
-
-    private String province;
-
-    private String country;
-
-    private Integer zipCode;
-
-    @Column(columnDefinition = "TEXT")
-    private String content;
-
-    @CreationTimestamp
-    @Column(updatable=false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL
+            , orphanRemoval = true, fetch = FetchType.LAZY)
+    public List<OrderItem> orderItemList = new ArrayList<>();
 
     //** 연관 관계 메서드 **//
     public void setAccount(Account account){
@@ -90,10 +39,33 @@ public class Order {
         //account.getOrders().add(this);
     }
 
-//    public void addOrderItem(OrderItem orderItem){
-//        orderItems.add(orderItem);
-//        orderItem.setOrder(this);
-//    }
+    public void addOrderItem(OrderItem orderItem){
+        orderItemList.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public int getTotalPrice() {
+        int totalPrice = 0;
+
+        for (OrderItem orderItem : orderItemList){
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
+    }
+
+    public static Order createOrder(Account account, List<OrderItem> orderItemList){
+        Order order = Order.builder()
+                .account(account)
+                .build();
+
+        for (OrderItem orderItem : orderItemList){
+            order.addOrderItem(orderItem);
+        }
+
+        order.setOrderStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
 //
 //    //** 생성 메서드 **//
 //    public  Order (Account account) {

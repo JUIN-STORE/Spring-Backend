@@ -1,4 +1,4 @@
-package com.ecommerce.backend.domain.entity;
+package com.ecommerce.backend.domain.enums;
 
 public enum OrderStatus {
     READY, ORDER, CANCEL

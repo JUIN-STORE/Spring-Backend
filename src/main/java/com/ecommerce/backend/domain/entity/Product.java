@@ -16,8 +16,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Product {
     @Id
+    @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
+    private Long id;
 
     @Column(nullable = false, length = 50)
     private String productName;
@@ -70,9 +71,9 @@ public class Product {
     
     // 재고 삭제
     public void removeQuantity(Integer quantity){
-        int restQuantity = this.quantity = quantity;
+        int restQuantity = this.quantity - quantity;
         if(restQuantity < 0 ){
-            throw new NotEnoughStockException("Need More Stock");
+            throw new NotEnoughStockException("Need More Stock. Current Stock: " + restQuantity);
         }
         this.quantity = restQuantity;
     }

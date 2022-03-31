@@ -13,7 +13,7 @@ import javax.persistence.Enumerated;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class AccountRequest {
+public class ProductImageRequest {
 
     @NoArgsConstructor @ToString
     @Getter @Setter @Accessors(chain = true)

@@ -1,34 +1,30 @@
-//package com.ecommerce.backend.domain.entity;
-//
-//import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-//import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-//import lombok.*;
-//import lombok.experimental.Accessors;
-//import org.hibernate.annotations.CreationTimestamp;
-//import org.hibernate.annotations.UpdateTimestamp;
-//
-//import javax.persistence.*;
-//import java.time.LocalDateTime;
-//
-//@Entity
-//@Getter
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Builder
-//@Accessors(chain = true)
-//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
-//public class CartItem {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long cartItemId;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_id")
-//    private Product product;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "cart_id")
-//    private Cart cart;
-//
+package com.ecommerce.backend.domain.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Getter
+@Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class CartItem {
+    @Id @Column(name = "cart_item_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
 //    private String sku;
 //
 //    /**
@@ -85,4 +81,4 @@
 //        }
 //
 //    }
-//}
+}

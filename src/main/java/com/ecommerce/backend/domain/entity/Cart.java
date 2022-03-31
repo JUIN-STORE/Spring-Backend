@@ -1,37 +1,26 @@
-//package com.ecommerce.backend.domain.entity;
-//
-//import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-//import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-//import lombok.AllArgsConstructor;
-//import lombok.Builder;
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import lombok.experimental.Accessors;
-//import org.hibernate.annotations.CreationTimestamp;
-//import org.hibernate.annotations.DynamicInsert;
-//import org.hibernate.annotations.UpdateTimestamp;
-//
-//import javax.persistence.*;
-//import java.time.LocalDateTime;
-//import java.util.List;
-//@DynamicInsert
-//@Entity @Getter
-//@Builder
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Accessors(chain = true)
-//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
-//public class Cart {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long cartId;
-//
-//    // FIXME: 이거 왜 n to 1
-//    //  - 이거 ㅋㅋㅋ 왜 n:1인가요
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "account_id")
-//    private Account account;
-//
+package com.ecommerce.backend.domain.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Getter
+@Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Cart {
+    @Id @Column(name = "cart_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
+
 //    @OneToMany(fetch = FetchType.LAZY,mappedBy="cart",cascade = CascadeType.ALL, orphanRemoval = true)    // 02-15 Megan
 //    private List<CartItem> cartItems;
 //
@@ -110,4 +99,4 @@
 //        this.itemPriceTotal = this.itemPriceTotal + price * quantity;
 //        this.itemDiscount = this.itemDiscount + discountprice * quantity;
 //    }
-//}
+}

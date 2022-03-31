@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,9 +17,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account {
-    @Id
-    @Column(name = "account_id")
+public class Account extends BaseEntity{
+    @Id @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -40,10 +38,6 @@ public class Account {
     @Column(columnDefinition = "enum('USER', 'SELLER', 'ADMIN')")
     @Enumerated(EnumType.STRING)
     private AccountRole accountRole;
-
-    @NotNull
-    @CreationTimestamp
-    private LocalDateTime registeredAt;
 
     @NotNull
     private LocalDateTime lastLogin;
