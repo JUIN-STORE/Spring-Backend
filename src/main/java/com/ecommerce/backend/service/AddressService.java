@@ -3,7 +3,7 @@ package com.ecommerce.backend.service;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.mapper.AddressMapper;
-import com.ecommerce.backend.domain.request.AddressReq;
+import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.domain.response.AddressRes;
 import com.ecommerce.backend.domain.response.AddressRes.AddressReadRes;
 import com.ecommerce.backend.exception.AccountNotFoundException;
@@ -39,8 +39,8 @@ public class AddressService {
     }
 
     @Transactional
-    public AddressRes.AddressCreateRes save(AddressReq.AddressCreateReq request){
-        Optional<Account> account = accountRepository.findById(request.getAccount().getId());
+    public AddressRes.AddressCreateRes save(AddressRequest.CreateRequest request){
+        Optional<Account> account = accountRepository.findById(request.getId());
 
         if (account.isPresent()) {
             Address address = addressMapper.createRequestToEntity(request);

@@ -1,9 +1,10 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.request.AccountRequest.LoginRequest;
-import com.ecommerce.backend.domain.response.AccountResponse.CreateResponse;
 import com.ecommerce.backend.domain.response.AccountResponse.LoginResponse;
+import com.ecommerce.backend.domain.response.AccountResponse.RegisterResponse;
 import com.ecommerce.backend.jwt.JwtTokenUtil;
 import com.ecommerce.backend.service.AccountService;
 import io.swagger.annotations.Api;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 
-import static com.ecommerce.backend.domain.request.AccountRequest.CreateRequest;
 import static com.ecommerce.backend.domain.response.AccountResponse.DeleteResponse;
 import static com.ecommerce.backend.domain.response.AccountResponse.ReadResponse;
 
@@ -44,10 +44,9 @@ public class AccountApiController {
 
     private final String ERROR_MESSAGE = "ERROR";
 
-
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/register")
-    public MyResponse<CreateResponse> create(@RequestBody CreateRequest request) {
+    public MyResponse<RegisterResponse> register(@RequestBody AccountRequest.RegisterRequest request) {
         try {
             log.info("__Call POST /api/accounts/register__");
             return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", accountService.saveAccount(request));

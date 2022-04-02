@@ -15,7 +15,7 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)          // N:1, Address가 N개
+    @ManyToOne(fetch = FetchType.LAZY)          // N:1, Address가 N개
     @JoinColumn(name = "account_id", insertable = false, updatable = false)      // Account.account_id
     private Account account;
 

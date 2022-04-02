@@ -35,7 +35,7 @@ public class AccountResponse {
     @NoArgsConstructor
     @AllArgsConstructor @ToString
     @Getter @Setter @Accessors(chain = true)
-    public static class CreateResponse {
+    public static class RegisterResponse {
         private Long id;
 
         private String email;
@@ -50,8 +50,8 @@ public class AccountResponse {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        public static CreateResponse fromAccount(Account account) {
-            return new CreateResponse()
+        public static RegisterResponse fromAccount(Account account) {
+            return new RegisterResponse()
                     .setId(account.getId())
                     .setEmail(account.getEmail())
                     .setName(account.getName())

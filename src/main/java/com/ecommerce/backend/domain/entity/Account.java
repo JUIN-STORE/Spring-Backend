@@ -2,10 +2,7 @@ package com.ecommerce.backend.domain.entity;
 
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account extends BaseEntity{
-    @Id @Column(name = "account_id")
+    @Id @Column(name = "account_id") @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -35,18 +32,25 @@ public class Account extends BaseEntity{
     private String name;
 
     @NotNull
-    @Column(columnDefinition = "enum('USER', 'SELLER', 'ADMIN')")
     @Enumerated(EnumType.STRING)
     private AccountRole accountRole;
 
     @NotNull
     private LocalDateTime lastLogin;
 
-    // 1:N, Account가 Driving Table, Driving Table에 mappedBy 써야 됨.
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY) // 1:N, Account가 Driving Table, Driving Table에 mappedBy 써야 됨.
     private List<Address> addressList = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "account")
-//    private List<Order> orderList = new ArrayList<>();
-}
+//    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY) // mapppedBy가 없는 곳이 연관관계의 주인(FK 있는 곳)
+//    protected Cart cart;
 
+//    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+//    protected List<Order> orderList = new ArrayList<>();
+
+    public void addAddress(Address address){
+        this.addressList.add(address);
+        if (address.getAccount() != this){
+            address.setAccount(this);
+        }
+    }
+}

@@ -1,9 +1,8 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
-import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.mapper.AddressMapper;
-import com.ecommerce.backend.domain.request.AddressReq;
+import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.domain.response.AddressRes;
 import com.ecommerce.backend.service.AddressService;
 import io.swagger.annotations.Api;
@@ -33,7 +32,7 @@ public class AddressApiController {
 
     @ApiOperation(value = "주소 생성", notes="주소를 생성한다.")
     @PostMapping("/create")
-    public MyResponse<AddressRes.AddressCreateRes> create(@RequestBody AddressReq.AddressCreateReq request) {
+    public MyResponse<AddressRes.AddressCreateRes> create(@RequestBody AddressRequest.CreateRequest request) {
         try {
             return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", addressService.save(request));
         } catch (EntityNotFoundException e) {

@@ -22,12 +22,12 @@ class AccountServiceTests {
     @Autowired
     private AccountService accountService;
 
-    public Account createAccount(AccountRequest.CreateRequest request){
-        return AccountRequest.CreateRequest.toAccount(request);
+    public Account createAccount(AccountRequest.RegisterRequest request){
+        return AccountRequest.RegisterRequest.toAccount(request);
     }
 
-    public AccountRequest.CreateRequest createAccountRequest() {
-        return new AccountRequest.CreateRequest()
+    public AccountRequest.RegisterRequest createAccountRequest() {
+        return new AccountRequest.RegisterRequest()
                 .setEmail("test@test.com")
                 .setName("릴러말즈")
                 .setPasswordHash("test")
@@ -37,9 +37,9 @@ class AccountServiceTests {
     @Test
     @DisplayName("회원가입 테스트")
     public void saveAccount(){
-        AccountRequest.CreateRequest request = createAccountRequest();
+        AccountRequest.RegisterRequest request = createAccountRequest();
         Account account = createAccount(createAccountRequest());
-        AccountResponse.CreateResponse response = accountService.saveAccount(request);
+        AccountResponse.RegisterResponse response = accountService.saveAccount(request);
 
         assertEquals(request.getEmail(), account.getEmail());
         assertEquals(request.getEmail(), response.getEmail());
@@ -48,8 +48,8 @@ class AccountServiceTests {
     @Test
     @DisplayName("중복 회원 가입 테스트")
     public void saveDuplicateAccountTest(){
-        AccountRequest.CreateRequest request1 = createAccountRequest();
-        AccountRequest.CreateRequest request2 = createAccountRequest();
+        AccountRequest.RegisterRequest request1 = createAccountRequest();
+        AccountRequest.RegisterRequest request2 = createAccountRequest();
         accountService.saveAccount(request1);
 
         Throwable e = assertThrows(EntityExistsException.class, () -> {

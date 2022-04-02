@@ -28,8 +28,8 @@ class CartTest {
     @PersistenceContext
     private EntityManager em;
 
-    public Account createAccount(AccountRequest.CreateRequest request){
-        return AccountRequest.CreateRequest.toAccount(request);
+    public Account createAccount(AccountRequest.RegisterRequest request){
+        return AccountRequest.RegisterRequest.toAccount(request);
     }
 
     public Account createAccount() {

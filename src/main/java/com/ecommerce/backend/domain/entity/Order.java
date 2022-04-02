@@ -1,7 +1,10 @@
 package com.ecommerce.backend.domain.entity;
 
 import com.ecommerce.backend.domain.enums.OrderStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,16 +16,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "orders")
-public class Order extends BaseEntity{
-    @Id @Column(name = "order_id")
+public class Order extends BaseEntity {
+    @Id
+    @Column(name = "order_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus; // 주문 상태
 
-    @Setter
     private LocalDateTime orderDate; // 주문일
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,37 +35,49 @@ public class Order extends BaseEntity{
             , orphanRemoval = true, fetch = FetchType.LAZY)
     public List<OrderItem> orderItemList = new ArrayList<>();
 
-    //** 연관 관계 메서드 **//
-    public void setAccount(Account account){
-        this.account = account;
-        //account.getOrders().add(this);
-    }
+    @OneToOne
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery;
 
-    public void addOrderItem(OrderItem orderItem){
+    //** 연관 관계 메서드 **//
+//    public void setAccount(Account account) {
+//        if (this.account != null){
+//            this.account.getOrderList().remove(this);
+//        }
+//        this.account = account;
+//        account.getOrderList().add(this);
+//    }
+
+    public void addOrderItem(OrderItem orderItem) {
         orderItemList.add(orderItem);
         orderItem.setOrder(this);
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
     }
 
     public int getTotalPrice() {
         int totalPrice = 0;
 
-        for (OrderItem orderItem : orderItemList){
+        for (OrderItem orderItem : orderItemList) {
             totalPrice += orderItem.getTotalPrice();
         }
         return totalPrice;
     }
 
-    public static Order createOrder(Account account, List<OrderItem> orderItemList){
+    public static Order createOrder(Account account, List<OrderItem> orderItemList) {
         Order order = Order.builder()
                 .account(account)
+                .orderStatus(OrderStatus.ORDER)
+                .orderDate(LocalDateTime.now())
                 .build();
 
-        for (OrderItem orderItem : orderItemList){
-            order.addOrderItem(orderItem);
-        }
+        //  for (OrderItem orderItem : orderItemList) { order.addOrderItem(orderItem); }
 
-        order.setOrderStatus(OrderStatus.ORDER);
-        order.setOrderDate(LocalDateTime.now());
+        orderItemList.stream().forEach(orderItem -> order.addOrderItem(orderItem));
+
         return order;
     }
 //

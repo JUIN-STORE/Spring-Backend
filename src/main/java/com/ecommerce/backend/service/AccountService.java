@@ -1,8 +1,11 @@
 package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
+import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.mapper.AccountMapper;
+import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.repository.AccountRepository;
+import com.ecommerce.backend.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +20,10 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static com.ecommerce.backend.domain.request.AccountRequest.CreateRequest;
-import static com.ecommerce.backend.domain.request.AccountRequest.CreateRequest.toAccount;
 import static com.ecommerce.backend.domain.request.AccountRequest.LoginRequest;
+import static com.ecommerce.backend.domain.request.AccountRequest.RegisterRequest;
+import static com.ecommerce.backend.domain.request.AccountRequest.RegisterRequest.toAccount;
+import static com.ecommerce.backend.domain.request.AddressRequest.CreateRequest.toAddress;
 import static com.ecommerce.backend.domain.response.AccountResponse.*;
 
 /** Service Naming
@@ -34,20 +38,26 @@ import static com.ecommerce.backend.domain.response.AccountResponse.*;
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
+    private final AddressRepository addressRepository;
     private final AccountMapper accountMapper;
 
-    private void validateDuplicateAccountEmail(CreateRequest request){
+    private void validateDuplicateAccountEmail(AccountRequest.RegisterRequest request){
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
         if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
     }
 
-    public CreateResponse saveAccount(CreateRequest request) {
+    public RegisterResponse saveAccount(RegisterRequest request) {
         // 검사
         validateDuplicateAccountEmail(request);
 
         Account account = toAccount(request);
-        accountRepository.save(account);
-        return CreateResponse.fromAccount(account);
+
+        request.getAddress().setAccountId(account.getId());
+        Address address = toAddress(account, request.getAddress());
+
+        account.setId(3L);
+        addressRepository.save(address);
+        return RegisterResponse.fromAccount(account);
     }
 
     @Transactional(readOnly = true)
