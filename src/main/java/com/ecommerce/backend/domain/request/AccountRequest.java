@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AccountRequest {
 
@@ -23,14 +24,14 @@ public class AccountRequest {
         private String name;
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
-        private AddressRequest.CreateRequest address;
+        private List<AddressRequest.RegisterAddress> address = new ArrayList<>();
 
-        public static Account toAccount(RegisterRequest request){
+        public Account toAccount(){
             return Account.builder()
-                    .email(request.getEmail())
-                    .passwordHash(new BCryptPasswordEncoder().encode(request.getPasswordHash()))
-                    .name(request.getName())
-                    .accountRole(request.getAccountRole())
+                    .email(email)
+                    .passwordHash(new BCryptPasswordEncoder().encode(passwordHash))
+                    .name(name)
+                    .accountRole(accountRole)
                     .lastLogin(LocalDateTime.now())
                     .addressList(new ArrayList<>())
                     .build();

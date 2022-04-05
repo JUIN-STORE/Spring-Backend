@@ -23,7 +23,7 @@ class AccountServiceTests {
     private AccountService accountService;
 
     public Account createAccount(AccountRequest.RegisterRequest request){
-        return AccountRequest.RegisterRequest.toAccount(request);
+        return request.toAccount();
     }
 
     public AccountRequest.RegisterRequest createAccountRequest() {

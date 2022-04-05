@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public abstract class AddressMapper {
     // 여기서 source는 매개변수(CreateRequest), target은 리턴(Account)
     // @Mapping(source="password", target="passwordHash")
-    public abstract Address createRequestToEntity(AddressRequest.CreateRequest request); // POST REQUEST
+    public abstract Address createRequestToEntity(AddressRequest.RegisterAddress request); // POST REQUEST
 
     public abstract AccountResponse.RegisterResponse entityToCreateResponse(Address address); // POST RESPONSE
 

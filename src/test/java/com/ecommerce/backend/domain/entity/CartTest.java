@@ -29,7 +29,7 @@ class CartTest {
     private EntityManager em;
 
     public Account createAccount(AccountRequest.RegisterRequest request){
-        return AccountRequest.RegisterRequest.toAccount(request);
+        return request.toAccount();
     }
 
     public Account createAccount() {

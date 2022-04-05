@@ -10,10 +10,8 @@ import java.io.Serializable;
 public class AddressRequest {
     @NoArgsConstructor
     @Getter @Setter @Accessors(chain = true)
-    public static class CreateRequest implements Serializable{
-        private Long id;
-
-        private Long accountId;
+    public static class RegisterAddress implements Serializable{
+        private Account account;
 
         private String city;
 
@@ -23,7 +21,7 @@ public class AddressRequest {
 
         private boolean defaultAddress;
 
-        public static Address toAddress(Account account, AddressRequest.CreateRequest request){
+        public static Address toAddress(Account account, RegisterAddress request){
             return Address.builder()
                     .account(account)
                     .city(request.getCity())

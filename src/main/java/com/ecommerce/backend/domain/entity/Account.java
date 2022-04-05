@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account extends BaseEntity{
-    @Id @Column(name = "account_id") @Setter
+    @Id @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -38,15 +38,20 @@ public class Account extends BaseEntity{
     @NotNull
     private LocalDateTime lastLogin;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY) // 1:N, Account가 Driving Table, Driving Table에 mappedBy 써야 됨.
+    // 읽기 전용, 연관관계 주인 아님
+    @Setter
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<Address> addressList = new ArrayList<>();
 
-//    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY) // mapppedBy가 없는 곳이 연관관계의 주인(FK 있는 곳)
-//    protected Cart cart;
+    // 읽기 전용, 연관관계 주인 아님
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    protected Cart cart;
 
-//    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
-//    protected List<Order> orderList = new ArrayList<>();
+    // 읽기 전용, 연관관계 주인 아님
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    protected List<Order> orderList = new ArrayList<>();
 
+    // 읽기용 매핑
     public void addAddress(Address address){
         this.addressList.add(address);
         if (address.getAccount() != this){

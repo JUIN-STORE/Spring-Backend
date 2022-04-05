@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static com.ecommerce.backend.domain.request.AccountRequest.LoginRequest;
-import static com.ecommerce.backend.domain.request.AccountRequest.RegisterRequest;
-import static com.ecommerce.backend.domain.request.AccountRequest.RegisterRequest.toAccount;
-import static com.ecommerce.backend.domain.request.AddressRequest.CreateRequest.toAddress;
+import static com.ecommerce.backend.domain.request.AddressRequest.RegisterAddress.toAddress;
 import static com.ecommerce.backend.domain.response.AccountResponse.*;
 
 /** Service Naming
@@ -46,16 +44,14 @@ public class AccountService implements UserDetailsService {
         if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
     }
 
-    public RegisterResponse saveAccount(RegisterRequest request) {
+    public RegisterResponse saveAccount(AccountRequest.RegisterRequest request) {
         // 검사
         validateDuplicateAccountEmail(request);
 
-        Account account = toAccount(request);
+        Account account = request.toAccount();
+        Address address = toAddress(account, request.getAddress().get(0));
 
-        request.getAddress().setAccountId(account.getId());
-        Address address = toAddress(account, request.getAddress());
-
-        account.setId(3L);
+        accountRepository.save(account);
         addressRepository.save(address);
         return RegisterResponse.fromAccount(account);
     }

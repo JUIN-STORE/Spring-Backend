@@ -7,16 +7,17 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity @Getter @Builder
 public class Address {
     @Id @Column(name = "address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)          // N:1, Address가 N개
-    @JoinColumn(name = "account_id", insertable = false, updatable = false)      // Account.account_id
+    // 연관관계 주인
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
     private Account account;
 
     private String city;

@@ -32,7 +32,7 @@ public class AddressApiController {
 
     @ApiOperation(value = "주소 생성", notes="주소를 생성한다.")
     @PostMapping("/create")
-    public MyResponse<AddressRes.AddressCreateRes> create(@RequestBody AddressRequest.CreateRequest request) {
+    public MyResponse<AddressRes.AddressCreateRes> create(@RequestBody AddressRequest.RegisterAddress request) {
         try {
             return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", addressService.save(request));
         } catch (EntityNotFoundException e) {

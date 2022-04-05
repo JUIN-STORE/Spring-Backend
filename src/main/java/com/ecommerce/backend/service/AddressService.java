@@ -39,8 +39,8 @@ public class AddressService {
     }
 
     @Transactional
-    public AddressRes.AddressCreateRes save(AddressRequest.CreateRequest request){
-        Optional<Account> account = accountRepository.findById(request.getId());
+    public AddressRes.AddressCreateRes save(AddressRequest.RegisterAddress request){
+        Optional<Account> account = accountRepository.findById(request.getAccount().getId());
 
         if (account.isPresent()) {
             Address address = addressMapper.createRequestToEntity(request);
