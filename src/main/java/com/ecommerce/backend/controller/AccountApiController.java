@@ -82,11 +82,11 @@ public class AccountApiController {
     }
 
     @ApiOperation(value = "회원 정보 읽기", notes = "회원 정보를 읽어온다.")
-    @GetMapping("/{id}")
-    public MyResponse<ReadResponse> read (@PathVariable Long id){
+    @GetMapping("/{accountId}")
+    public MyResponse<ReadResponse> read (@PathVariable Long accountId){
         try {
             log.info("__Call GET /api/accounts/{id}__");
-            return new MyResponse<>(HttpStatus.OK, "GET SUCCESS", accountService.findById(id));
+            return new MyResponse<>(HttpStatus.OK, "GET SUCCESS", accountService.findById(accountId));
         } catch (EntityNotFoundException e) {
             log.info(e.toString());
             log.warn("__Call GET /api/accounts/{id} EntityNotFoundException__");

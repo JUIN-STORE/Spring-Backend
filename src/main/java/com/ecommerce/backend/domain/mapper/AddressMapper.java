@@ -3,7 +3,7 @@ package com.ecommerce.backend.domain.mapper;
 import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.domain.response.AccountResponse;
-import com.ecommerce.backend.domain.response.AddressRes;
+import com.ecommerce.backend.domain.response.AddressResponse;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +16,9 @@ public abstract class AddressMapper {
 
     public abstract AccountResponse.RegisterResponse entityToCreateResponse(Address address); // POST RESPONSE
 
-    public abstract AddressRes.AddressReadRes addressToReadRes(Address address);
+    public abstract AddressResponse.AddressRead addressToReadRes(Address address);
 
-    public abstract AddressRes.AddressCreateRes entityToCreateRes(Address address);
+    public abstract AddressResponse.AddressCreate entityToCreateRes(Address address);
 
 //    public abstract ReadResponse entityToReadResponse(Address address); // GET
 //

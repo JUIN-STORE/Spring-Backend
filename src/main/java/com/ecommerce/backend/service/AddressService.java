@@ -2,11 +2,9 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
-import com.ecommerce.backend.domain.mapper.AddressMapper;
 import com.ecommerce.backend.domain.request.AddressRequest;
-import com.ecommerce.backend.domain.response.AddressRes;
-import com.ecommerce.backend.domain.response.AddressRes.AddressReadRes;
-import com.ecommerce.backend.exception.AccountNotFoundException;
+import com.ecommerce.backend.domain.response.AddressResponse;
+import com.ecommerce.backend.domain.response.AddressResponse.AddressRead;
 import com.ecommerce.backend.repository.AccountRepository;
 import com.ecommerce.backend.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
 
 /** Service Naming
  * C -> save
@@ -30,25 +27,25 @@ import java.util.Optional;
 public class AddressService {
     private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
-    private final AddressMapper addressMapper;
 
     @Transactional(readOnly = true)
-    public AddressReadRes findById(long id){
-        Address address = addressRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return addressMapper.addressToReadRes(address);
+    public AddressRead findById(Long addressId){
+        Address address = addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
+        return AddressRead.fromAddress(address);
     }
 
-    @Transactional
-    public AddressRes.AddressCreateRes save(Long accountId, AddressRequest.RegisterAddress request){
-        Optional<Account> account = accountRepository.findById(accountId);
+    public AddressResponse.AddressCreate save(Long accountId, AddressRequest.RegisterAddress request){
+        Account account = accountRepository.findById(accountId).orElseThrow(EntityNotFoundException::new);
 
-        if (account.isPresent()) {
-            Address address = addressMapper.createRequestToEntity(request);
-            addressRepository.save(address);
-            return addressMapper.entityToCreateRes(address);
-        } else{
-            throw new AccountNotFoundException("해당하는 계정이 존재하지 않습니다.");
-        }
+        Address address = request.toAddress(account);
+        addressRepository.save(address);
+        return AddressResponse.AddressCreate.fromAddress(address);
+    }
+
+    public AddressResponse.AddressDelete delete(Long addressId) {
+        Address address = addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
+        addressRepository.delete(address);
+        return AddressResponse.AddressDelete.fromAddress(address);
     }
 }
 
