@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static com.ecommerce.backend.domain.request.AccountRequest.LoginRequest;
-import static com.ecommerce.backend.domain.request.AddressRequest.RegisterAddress.toAddress;
 import static com.ecommerce.backend.domain.response.AccountResponse.*;
 
 /** Service Naming
@@ -49,7 +48,7 @@ public class AccountService implements UserDetailsService {
         validateDuplicateAccountEmail(request);
 
         Account account = request.toAccount();
-        Address address = toAddress(account, request.getAddress().get(0));
+        Address address = request.getAddress().toAddress(account);
 
         accountRepository.save(account);
         addressRepository.save(address);

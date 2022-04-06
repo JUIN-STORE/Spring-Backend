@@ -51,8 +51,7 @@ public class AccountApiController {
             log.info("__Call POST /api/accounts/register__");
             return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", accountService.saveAccount(request));
         } catch (EntityNotFoundException e) {
-            log.warn(e.getMessage());
-            return new MyResponse<>(HttpStatus.NOT_FOUND, ERROR_MESSAGE, null);
+            return new MyResponse<>(HttpStatus.OK, e.getMessage(), null);
         }
     }
 

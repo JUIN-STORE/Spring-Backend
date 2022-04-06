@@ -15,11 +15,6 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 연관관계 주인
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    private Account account;
-
     private String city;
 
     private String street;
@@ -27,6 +22,11 @@ public class Address {
     private String zipCode;
 
     private boolean defaultAddress; // 기본 주소로 쓸 건지
+
+    // 연관관계 주인
+    @ManyToOne(fetch = FetchType.LAZY) // addressRepository.save(address)만 하고 싶으면 cascade = CascadeType.PERSIST 옵션 설정
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     /** Account와의 연관관계 설정, @ManyToOne
      * @param account

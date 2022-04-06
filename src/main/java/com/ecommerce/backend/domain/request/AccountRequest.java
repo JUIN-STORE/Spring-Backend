@@ -10,8 +10,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountRequest {
 
@@ -24,7 +22,7 @@ public class AccountRequest {
         private String name;
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
-        private List<AddressRequest.RegisterAddress> address = new ArrayList<>();
+        private AddressRequest.RegisterAddress address;
 
         public Account toAccount(){
             return Account.builder()
@@ -33,7 +31,6 @@ public class AccountRequest {
                     .name(name)
                     .accountRole(accountRole)
                     .lastLogin(LocalDateTime.now())
-                    .addressList(new ArrayList<>())
                     .build();
         }
     }

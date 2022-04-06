@@ -11,8 +11,6 @@ public class AddressRequest {
     @NoArgsConstructor
     @Getter @Setter @Accessors(chain = true)
     public static class RegisterAddress implements Serializable{
-        private Account account;
-
         private String city;
 
         private String street;
@@ -21,13 +19,13 @@ public class AddressRequest {
 
         private boolean defaultAddress;
 
-        public static Address toAddress(Account account, RegisterAddress request){
+        public Address toAddress(Account account){
             return Address.builder()
                     .account(account)
-                    .city(request.getCity())
-                    .street(request.getStreet())
-                    .zipCode(request.getZipCode())
-                    .defaultAddress(request.isDefaultAddress())
+                    .city(city)
+                    .street(street)
+                    .zipCode(zipCode)
+                    .defaultAddress(defaultAddress)
                     .build();
         }
     }
