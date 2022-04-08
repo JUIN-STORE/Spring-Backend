@@ -49,21 +49,6 @@ public class Product {
 //    @JoinColumn(name = "seller_id")
 //    private Account seller;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "product_category",
-//            joinColumns = @JoinColumn(name = "product_id"),
-//            inverseJoinColumns = @JoinColumn(name = "category_id")
-//    )
-//    private Set<Category> categories;
-
-//    @ManyToMany
-//    @JoinTable(
-//            name = "product_tag",
-//            joinColumns = @JoinColumn(name = "product_id"),
-//            inverseJoinColumns = @JoinColumn(name = "tag_id")
-//    )
-
     // 재고 증가
     public void addQuantity(Integer quantity){
         this.quantity += quantity;
@@ -72,7 +57,7 @@ public class Product {
     // 재고 삭제
     public void removeQuantity(Integer quantity){
         int restQuantity = this.quantity - quantity;
-        if(restQuantity < 0 ){
+        if(restQuantity < 0){
             throw new NotEnoughStockException("Need More Stock. Current Stock: " + restQuantity);
         }
         this.quantity = restQuantity;

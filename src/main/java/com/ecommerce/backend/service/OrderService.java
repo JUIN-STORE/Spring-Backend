@@ -27,12 +27,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService{
-
-    private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
+    private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
 
-    public Long order(OrderRequest.CreateRequest request, String email){
+    public Long order(OrderRequest.OrderCreate request, String email){
         Product product = productRepository.findById(request.getProductId()).orElseThrow(EntityNotFoundException::new);
         Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 

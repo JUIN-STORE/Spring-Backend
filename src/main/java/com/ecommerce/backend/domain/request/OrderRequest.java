@@ -1,18 +1,23 @@
 package com.ecommerce.backend.domain.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.ecommerce.backend.domain.entity.Account;
+import com.ecommerce.backend.domain.entity.Order;
+import lombok.*;
 import lombok.experimental.Accessors;
+import org.aspectj.weaver.ast.Or;
 
 public class OrderRequest {
-
-    @NoArgsConstructor @ToString
-    @Getter @Setter @Accessors(chain = true)
-    public static class CreateRequest{
+    @Data @Accessors(chain = true)
+    public static class OrderCreate {
         private Long productId;
 
         private int count;
+
+        private Account account;
+
+        public Order toOrder(){
+            return Order.builder()
+                    .build();
+        }
     }
 }

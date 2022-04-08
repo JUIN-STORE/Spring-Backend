@@ -27,26 +27,28 @@ public class Order extends BaseEntity {
 
     private LocalDateTime orderDate; // 주문일
 
+    // 연관관계 주인
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL
-            , orphanRemoval = true, fetch = FetchType.LAZY)
-    public List<OrderItem> orderItemList = new ArrayList<>();
-
-    @OneToOne
+    
+    // 연관관계 주인
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
-    //** 연관 관계 메서드 **//
-//    public void setAccount(Account account) {
-//        if (this.account != null){
-//            this.account.getOrderList().remove(this);
-//        }
-//        this.account = account;
-//        account.getOrderList().add(this);
-//    }
+    // 읽기 전용
+    @OneToMany(mappedBy = "order",  fetch = FetchType.LAZY)
+    public List<OrderItem> orderItemList = new ArrayList<>();
+
+    // 쓰기 전용
+    public void setAccount(Account account) {
+        if (this.account != null){
+            this.account.getOrderList().remove(this);
+        }
+        this.account = account;
+        account.getOrderList().add(this);
+    }
 
     public void addOrderItem(OrderItem orderItem) {
         orderItemList.add(orderItem);
@@ -75,19 +77,10 @@ public class Order extends BaseEntity {
                 .build();
 
         //  for (OrderItem orderItem : orderItemList) { order.addOrderItem(orderItem); }
-
         orderItemList.stream().forEach(orderItem -> order.addOrderItem(orderItem));
 
         return order;
     }
-//
-//    //** 생성 메서드 **//
-//    public  Order (Account account) {
-//      this.account = account;
-//    }
-//
-//    //** 비즈니스 로직 **//
-//    // 주문 취소
 //    public void cancel(){
 ////        this.setStatus((short)2);
 //        this.setStatus(OrderStatus.CANCEL);
@@ -105,7 +98,4 @@ public class Order extends BaseEntity {
 //        return totalPrice;
 //    }
 //
-//    public void setStatus(OrderStatus status){
-//        this.status = status;
-//    }
 }

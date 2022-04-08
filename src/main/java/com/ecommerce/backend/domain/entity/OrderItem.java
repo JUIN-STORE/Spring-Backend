@@ -14,10 +14,12 @@ public class OrderItem extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 연관관계 주인
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
+    // 연관관계 주인
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orders_id")
@@ -44,27 +46,7 @@ public class OrderItem extends BaseEntity{
         return this.orderPrice * this.orderCount;
     }
 
-//
-//    private void setQuantity(Integer quantity) {
-//        this.quantity = quantity;
-//    }
-//
-//    private void setPrice(Integer price) {
-//        this.price = price;
-//    }
-//
-//    //** 비즈니스 로직 **   삭제 예정임 !!!!!//
-////    public void cancel(){
-////        getProduct().addQuantity(quantity);
-////    }
-//
-//    public void setProduct(Product product) {
-//        this.product = product;
-//    }
-//
-//
-//
-//    public void setOrder(Order order){
-//        this.order = order;
-//    }
+    public void cancel(){
+        getProduct().addQuantity(orderCount);
+    }
 }

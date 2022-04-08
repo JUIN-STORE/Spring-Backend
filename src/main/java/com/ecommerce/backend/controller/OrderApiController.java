@@ -1,11 +1,17 @@
 package com.ecommerce.backend.controller;
 
+import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.service.OrderService;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 /** Controller Naming
  * C -> create
@@ -21,19 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class OrderApiController {
     private final OrderService orderService;
-    private final String ERROR_MESSAGE = "ERROR";
 
-
-//    @PostMapping("/")
-//    public MyResponse<Long> create(@RequestBody CreateRequest request, Principal principal) {
-//        String email = principal.getName();
-//        System.out.println("email = " + email);
-//        Long orderId;
-//        try {
-//            orderId = orderService.order(request, email);
-//        } catch (Exception e){
-//            return new MyResponse<>(HttpStatus.BAD_REQUEST, e.getMessage(), null);
-//        }
-//        return new MyResponse<>(HttpStatus.OK, "SUCCESS", orderId);
-//    }
+    @PostMapping("/")
+    public MyResponse<Long> test(@RequestBody OrderRequest.OrderCreate request,  Principal principal) {
+        Long order = orderService.order(request, principal.getName());
+        System.out.println("order = " + order);
+        return null;
+    }
 }
