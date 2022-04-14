@@ -98,5 +98,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
+    public static String makePasswordHash(String password) {
+        return new BCryptPasswordEncoder().encode(password);
+    }
 }
 

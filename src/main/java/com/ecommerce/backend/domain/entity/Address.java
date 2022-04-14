@@ -31,7 +31,7 @@ public class Address {
     /** Account와의 연관관계 설정, @ManyToOne
      * @param account
      */
-    public void setAccount(Account account) {
+    public void initAccount(Account account) {
         // 기존 Account와의 연관관계 제거
         if (this.account != null) this.account.getAddressList().remove(this);
 
