@@ -38,6 +38,7 @@ public class Order extends BaseEntity {
     private Delivery delivery;
 
     // 읽기 전용
+    @Builder.Default
     @OneToMany(mappedBy = "order",  fetch = FetchType.LAZY)
     public List<OrderItem> orderItemList = new ArrayList<>();
 

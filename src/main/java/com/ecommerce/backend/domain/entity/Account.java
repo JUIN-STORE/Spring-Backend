@@ -41,6 +41,7 @@ public class Account extends BaseEntity{
     // 읽기 전용, 연관관계 주인 아님
     @Setter
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Address> addressList = new ArrayList<>();
 
     // 읽기 전용, 연관관계 주인 아님
@@ -49,6 +50,7 @@ public class Account extends BaseEntity{
 
     // 읽기 전용, 연관관계 주인 아님
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @Builder.Default
     protected List<Order> orderList = new ArrayList<>();
 
     // 읽기용 매핑
