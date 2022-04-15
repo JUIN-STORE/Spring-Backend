@@ -23,7 +23,7 @@ public class AccountRequest {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        private AddressRequest.RegisterAddress address;
+        private AddressRequest.RegisterRequest address;
 
         public Account toAccount(){
             return Account.builder()

@@ -28,11 +28,11 @@ public class AddressResponse {
     }
 
     @Data @Accessors(chain = true)
-    public static class AddressCreate {
+    public static class CreateResponse {
         private Long id;
 
-        public static AddressCreate fromAddress(Address address) {
-            return new AddressCreate()
+        public static CreateResponse fromAddress(Address address) {
+            return new CreateResponse()
                     .setId(address.getId());
         }
     }
