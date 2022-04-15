@@ -54,10 +54,10 @@ public class Account extends BaseEntity{
     protected List<Order> orderList = new ArrayList<>();
 
     // 읽기용 매핑
-    public void addAddress(Address address){
+    public void addAddressList(Address address){
         this.addressList.add(address);
         if (address.getAccount() != this){
-            address.setAccount(this);
+            address.initAccount(this);
         }
     }
 }

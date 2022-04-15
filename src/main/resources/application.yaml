@@ -23,7 +23,7 @@ spring:
                 format_sql: true # 쿼리 가독성 좋게 포맷팅
 
                 hbm2ddl:
-                    auto: create
+                    auto: update
 
 jwt:
     header: Authorization

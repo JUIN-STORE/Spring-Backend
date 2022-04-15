@@ -34,12 +34,11 @@ public class AddressService {
         return AddressRead.fromAddress(address);
     }
 
-    public AddressResponse.AddressCreate save(Long accountId, AddressRequest.RegisterAddress request){
-        Account account = accountRepository.findById(accountId).orElseThrow(EntityNotFoundException::new);
+    public void save(AddressRequest.RegisterRequest request, String email){
+        Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
         Address address = request.toAddress(account);
         addressRepository.save(address);
-        return AddressResponse.AddressCreate.fromAddress(address);
     }
 
     public AddressResponse.AddressDelete delete(Long addressId) {

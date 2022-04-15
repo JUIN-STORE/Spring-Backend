@@ -2,9 +2,8 @@ package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.request.AccountRequest;
-import com.ecommerce.backend.domain.request.AccountRequest.LoginRequest;
+import com.ecommerce.backend.domain.response.AccountResponse;
 import com.ecommerce.backend.domain.response.AccountResponse.LoginResponse;
-import com.ecommerce.backend.domain.response.AccountResponse.RegisterResponse;
 import com.ecommerce.backend.jwt.JwtTokenUtil;
 import com.ecommerce.backend.service.AccountService;
 import io.swagger.annotations.Api;
@@ -12,7 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -21,9 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-
-import static com.ecommerce.backend.domain.response.AccountResponse.DeleteResponse;
-import static com.ecommerce.backend.domain.response.AccountResponse.ReadResponse;
+import java.security.Principal;
 
 /** Controller Naming
  * C -> create
@@ -42,13 +38,11 @@ public class AccountApiController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
 
-    private final String ERROR_MESSAGE = "ERROR";
-
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/register")
-    public MyResponse<RegisterResponse> register(@RequestBody AccountRequest.RegisterRequest request) {
+    public MyResponse<AccountResponse.RegisterResponse> register(@RequestBody AccountRequest.RegisterRequest request) {
         try {
-            log.info("__Call POST /api/accounts/register__");
+            log.info("Call POST /api/accounts/register: {}", request);
             return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", accountService.saveAccount(request));
         } catch (EntityNotFoundException e) {
             return new MyResponse<>(HttpStatus.OK, e.getMessage(), null);
@@ -57,52 +51,65 @@ public class AccountApiController {
 
     @ApiOperation(value = "로그인", notes = "로그인을 한다.")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) throws Exception {
+    public MyResponse<AccountResponse.LoginResponse> login(@RequestBody AccountRequest.LoginRequest request) {
         final String email = request.getEmail();
         final String password = request.getPasswordHash();
-        log.info("__Call POST /api/accounts/login__");
+        log.info("Call POST /api/accounts/login {}", request);
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password)); // 이 시점에 쿼리 나감.
             UserDetails userDetails = accountService.loadUserByUsername(email);
             String token = jwtTokenUtil.generateToken(userDetails);
-            LoginResponse response = LoginResponse.builder().token(token).build();
+            LoginResponse response = LoginResponse.fromAccount(token);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
-//            return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", accountService.login(request));
+            return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", response);
         } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
+            log.warn(e.getMessage());
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+            log.warn(e.getMessage());
         } catch (EntityNotFoundException e) {
             log.warn(e.getMessage());
-//            return new MyResponse<>(HttpStatus.NOT_FOUND, ERROR_MESSAGE, null);
         }
-        return null;
+        return new MyResponse<>(HttpStatus.NOT_FOUND, "POST FAIL", null);
     }
 
     @ApiOperation(value = "회원 정보 읽기", notes = "회원 정보를 읽어온다.")
     @GetMapping("/{accountId}")
-    public MyResponse<ReadResponse> read (@PathVariable Long accountId){
+    public MyResponse<AccountResponse.ReadResponse> read (@PathVariable Long accountId){
+        log.info("Call GET /api/accounts/{accountId} accountId: {}", accountId);
+
         try {
-            log.info("__Call GET /api/accounts/{id}__");
             return new MyResponse<>(HttpStatus.OK, "GET SUCCESS", accountService.findById(accountId));
         } catch (EntityNotFoundException e) {
-            log.info(e.toString());
-            log.warn("__Call GET /api/accounts/{id} EntityNotFoundException__");
-            return new MyResponse<>(HttpStatus.NOT_FOUND, ERROR_MESSAGE, null);
+            log.warn(e.getMessage());
+            return new MyResponse<>(HttpStatus.NOT_FOUND, "GET FAIL", null);
         }
     }
 
-    @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
-    @DeleteMapping("/{id}")
-    public MyResponse<DeleteResponse> remove (@PathVariable Long id){
-        try {
-            log.info("__Call DELETE /api/accounts/{id}__");
-            return new MyResponse<>(HttpStatus.OK, "DELETE SUCCESS", accountService.delete(id));
+    @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
+    @PatchMapping("/modify")
+    public MyResponse<AccountResponse.UpdateResponse> modify(@RequestBody AccountRequest.UpdateRequest request, Principal principal) {
+        log.info("Call /api/accounts/modify request: {}", request);
+
+        try{
+            return new MyResponse<>(HttpStatus.OK, "MODIFY SUCCESS", accountService.update(request, principal));
         } catch (EntityNotFoundException e) {
-            log.warn("__Call DELETE /api/accounts/{id} EntityNotFoundException__");
-            return new MyResponse<>(HttpStatus.NOT_FOUND, "DELETE" + ERROR_MESSAGE, null);
+            log.warn("Call /api/accounts/modify: {}", request);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, "MODIFY FAIL", null);
+        }
+
+    }
+
+    @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
+    @DeleteMapping("/{accountId}")
+    public MyResponse<AccountResponse.DeleteResponse> remove(@PathVariable Long accountId){
+        log.info("Call /api/accounts/{id} accountId: {}", accountId);
+
+        try {
+            return new MyResponse<>(HttpStatus.OK, "DELETE SUCCESS", accountService.delete(accountId));
+        } catch (EntityNotFoundException e) {
+            log.warn("Call /api/accounts/{id} FAIL accountId: {} ", accountId);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, "DELETE FAIL", null);
         }
     }
 }
