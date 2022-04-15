@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 public class AddressResponse {
     @Data @Accessors(chain = true)
-    public static class AddressRead {
+    public static class ReadResponse {
         private Long id;
 
         private String city;
@@ -17,33 +17,32 @@ public class AddressResponse {
 
         private boolean defaultAddress;
 
-        public static AddressRead fromAddress(Address address) {
-            return new AddressRead()
-                    .setId(address.getId())
-                    .setCity(address.getCity())
-                    .setStreet(address.getStreet())
-                    .setZipCode(address.getZipCode())
-                    .setDefaultAddress(address.isDefaultAddress());
+        public static ReadResponse fromAddress(Address entity) {
+            return new ReadResponse()
+                    .setId(entity.getId())
+                    .setCity(entity.getCity())
+                    .setStreet(entity.getStreet())
+                    .setZipCode(entity.getZipCode())
+                    .setDefaultAddress(entity.isDefaultAddress());
         }
     }
 
     @Data @Accessors(chain = true)
-    public static class CreateResponse {
+    public static class DeleteResponse {
         private Long id;
 
-        public static CreateResponse fromAddress(Address address) {
-            return new CreateResponse()
-                    .setId(address.getId());
-        }
-    }
+        private String city;
 
-    @Data @Accessors(chain = true)
-    public static class AddressDelete {
-        private Long id;
+        private String street;
 
-        public static AddressDelete fromAddress(Address entity) {
-            return new AddressDelete()
-                    .setId(entity.getId());
+        private String zipCode;
+
+        public static DeleteResponse fromAddress(Address entity) {
+            return new DeleteResponse()
+                    .setId(entity.getId())
+                    .setCity(entity.getCity())
+                    .setStreet(entity.getStreet())
+                    .setZipCode(entity.getZipCode());
         }
     }
 }
