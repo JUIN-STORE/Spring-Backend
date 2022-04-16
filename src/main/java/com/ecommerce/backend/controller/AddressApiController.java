@@ -46,24 +46,37 @@ public class AddressApiController {
 
     @ApiOperation(value = "주소 읽기", notes="주소를 불러온다.")
     @GetMapping("/{addressId}")
-    public MyResponse<AddressResponse.AddressRead> read(@PathVariable Long addressId) {
+    public MyResponse<AddressResponse.ReadResponse> read(@PathVariable Long addressId) {
+        log.info("GET /api/addresses/{addressId} addressId: {}", addressId);
         try {
-            log.info("GET /api/addresses/{id} id: {}", addressId);
             return new MyResponse<>(HttpStatus.OK, "GET SUCCESS", addressService.findById(addressId));
         } catch (EntityNotFoundException e) {
-            log.warn("__Call GET /api/addresses/{id} EntityNotFoundException__");
-            return new MyResponse<>(HttpStatus.NOT_FOUND, "ERROR", null);
+            log.warn("GET /api/addresses/{addressId} addressId: {} EntityNotFoundException", addressId);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, "GET FAIL", null);
+        }
+    }
+
+    @ApiOperation(value = "주소 수정", notes="주소를 수정한다.")
+    @PatchMapping("/update/{addressId}")
+    public MyResponse<Void> update(@PathVariable Long addressId, @RequestBody AddressRequest.UpdateRequest request){
+        log.info("PATCH /api/addresses/update/{addressId} -> request: {}", request);
+        try {
+            addressService.update(addressId, request);
+            return new MyResponse<>(HttpStatus.OK, "GET SUCCESS", null);
+        } catch (EntityNotFoundException e) {
+            log.warn("PATCH /api/addresses/{addressId} -> request: {} EntityNotFoundException", request);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, "PATCH FAIL", null);
         }
     }
 
     @ApiOperation(value = "주소 삭제", notes = "주소 정보를 삭제한다.")
     @DeleteMapping("/{addressId}")
-    public MyResponse<AddressResponse.AddressDelete> remove(@PathVariable Long addressId){
+    public MyResponse<AddressResponse.DeleteResponse> remove(@PathVariable Long addressId){
         try {
-            log.info("DELETE /api/addresses/{addressId}");
+            log.info("DELETE /api/addresses/{addressId} -> addressId: {}", addressId);
             return new MyResponse<>(HttpStatus.OK, "DELETE SUCCESS", addressService.delete(addressId));
         } catch (EntityNotFoundException e) {
-            return new MyResponse<>(HttpStatus.OK, "ENTITY NOT FOUND", null);
+            return new MyResponse<>(HttpStatus.OK, "DELETE FAIL", null);
         }
     }
 }

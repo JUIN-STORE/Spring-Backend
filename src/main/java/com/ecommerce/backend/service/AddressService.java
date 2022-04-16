@@ -4,7 +4,6 @@ import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.domain.response.AddressResponse;
-import com.ecommerce.backend.domain.response.AddressResponse.AddressRead;
 import com.ecommerce.backend.repository.AccountRepository;
 import com.ecommerce.backend.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +21,16 @@ import javax.persistence.EntityNotFoundException;
  */
 
 @Slf4j
-@Service
+@Service("addressService")
 @RequiredArgsConstructor
 public class AddressService {
     private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
 
     @Transactional(readOnly = true)
-    public AddressRead findById(Long addressId){
+    public AddressResponse.ReadResponse findById(Long addressId){
         Address address = addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
-        return AddressRead.fromAddress(address);
+        return AddressResponse.ReadResponse.fromAddress(address);
     }
 
     public void save(AddressRequest.RegisterRequest request, String email){
@@ -41,10 +40,16 @@ public class AddressService {
         addressRepository.save(address);
     }
 
-    public AddressResponse.AddressDelete delete(Long addressId) {
+    public void update(Long addressId, AddressRequest.UpdateRequest request){
+        final Address address = request.toAddress(addressId);
+
+        addressRepository.save(address);
+    }
+
+    public AddressResponse.DeleteResponse delete(Long addressId) {
         Address address = addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
         addressRepository.delete(address);
-        return AddressResponse.AddressDelete.fromAddress(address);
+        return AddressResponse.DeleteResponse.fromAddress(address);
     }
 }
 

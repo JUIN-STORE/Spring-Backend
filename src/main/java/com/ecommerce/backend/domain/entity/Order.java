@@ -40,7 +40,7 @@ public class Order extends BaseEntity {
     // 읽기 전용
     @Builder.Default
     @OneToMany(mappedBy = "order",  fetch = FetchType.LAZY)
-    public List<OrderItem> orderItemList = new ArrayList<>();
+    public List<OrderProduct> orderProductList = new ArrayList<>();
 
     // 쓰기 전용
     public void setAccount(Account account) {
@@ -51,9 +51,9 @@ public class Order extends BaseEntity {
         account.getOrderList().add(this);
     }
 
-    public void addOrderItem(OrderItem orderItem) {
-        orderItemList.add(orderItem);
-        orderItem.setOrder(this);
+    public void addOrderItem(OrderProduct orderProduct) {
+        orderProductList.add(orderProduct);
+        orderProduct.setOrder(this);
     }
 
     public void setDelivery(Delivery delivery) {
@@ -64,13 +64,13 @@ public class Order extends BaseEntity {
     public int getTotalPrice() {
         int totalPrice = 0;
 
-        for (OrderItem orderItem : orderItemList) {
-            totalPrice += orderItem.getTotalPrice();
+        for (OrderProduct orderProduct : orderProductList) {
+            totalPrice += orderProduct.getTotalPrice();
         }
         return totalPrice;
     }
 
-    public static Order createOrder(Account account, List<OrderItem> orderItemList) {
+    public static Order createOrder(Account account, List<OrderProduct> orderProductList) {
         Order order = Order.builder()
                 .account(account)
                 .orderStatus(OrderStatus.ORDER)
@@ -78,7 +78,7 @@ public class Order extends BaseEntity {
                 .build();
 
         //  for (OrderItem orderItem : orderItemList) { order.addOrderItem(orderItem); }
-        orderItemList.stream().forEach(orderItem -> order.addOrderItem(orderItem));
+        orderProductList.stream().forEach(orderItem -> order.addOrderItem(orderItem));
 
         return order;
     }

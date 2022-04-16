@@ -1,22 +1,21 @@
 package com.ecommerce.backend.domain.entity;
 
+import com.ecommerce.backend.domain.enums.ProductStatus;
 import com.ecommerce.backend.exception.NotEnoughStockException;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
-    @Id
-    @Column(name = "product_id")
+public class Product extends BaseEntity {
+    @Id @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -27,22 +26,15 @@ public class Product {
     private Integer price;
 
     @Column(nullable = false)
-    private Integer quantity; // 제품의 총 개수
+    private Integer quantity;   // 제품의 총 개수
 
-    private Integer soldCount;
+    private Integer soldCount;  // 제품의 판매 개수
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String thumbnailPath;
-
-    private String originImagePath;
-
-    @CreationTimestamp
-    private LocalDateTime createdAt; // 등록 시간
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt; // 수정 시간
+    @Enumerated(EnumType.STRING)
+    private ProductStatus productStatus;
 
 //    @NonNull
 //    @ManyToOne

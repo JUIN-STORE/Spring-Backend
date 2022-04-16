@@ -30,7 +30,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "order_item_id")
-    private OrderItem orderItem;
+    private OrderProduct orderProduct;
 
     @ManyToOne
     @JoinColumn(name = "account_id")

@@ -12,17 +12,20 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductImage extends BaseEntity{
+public class ProductImage extends BaseEntity {
     @Id @Column(name = "product_image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imageName;
+    private String imageName;           // 이미지 파일명
 
-    private String originImageName;
+    private String originImageName;     // 원본 이미지 파일명
 
-    private String imageUrl;
+    private String imageUrl;            // 이미지 조회 경로
 
+    private Boolean thumbnail;          // 썸네일 여부
+
+    // 연관관계 주인
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;

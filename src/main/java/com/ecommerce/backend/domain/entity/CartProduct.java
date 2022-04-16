@@ -12,13 +12,20 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cart {
-    @Id @Column(name = "cart_id")
+public class CartProduct {
+    @Id @Column(name = "cart_product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // 연관관계 주인
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    // 연관관계 주인
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    private Integer count;
 }

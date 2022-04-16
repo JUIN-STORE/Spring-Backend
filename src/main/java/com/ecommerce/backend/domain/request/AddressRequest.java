@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class AddressRequest {
     @Data @Accessors(chain = true)
-    public static class RegisterRequest implements Serializable{
+    public static class RegisterRequest implements Serializable {
         private String city;
 
         private String street;
@@ -27,12 +27,8 @@ public class AddressRequest {
         }
     }
 
-    @Getter @Setter @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AddressUpdateReq {
-        private Long accountId;
-
+    @Data @Accessors(chain = true)
+    public static class UpdateRequest implements Serializable {
         private String city;
 
         private String street;
@@ -40,5 +36,15 @@ public class AddressRequest {
         private String zipCode;
 
         private boolean defaultAddress;
+
+        public Address toAddress(Long addressId){
+            return Address.builder()
+                    .id(addressId)
+                    .city(city)
+                    .street(street)
+                    .zipCode(zipCode)
+                    .defaultAddress(isDefaultAddress())
+                    .build();
+        }
     }
 }
