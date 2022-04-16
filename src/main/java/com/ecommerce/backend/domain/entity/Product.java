@@ -14,9 +14,8 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
-    @Id
-    @Column(name = "product_id")
+public class Product extends BaseEntity {
+    @Id @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -27,16 +26,12 @@ public class Product {
     private Integer price;
 
     @Column(nullable = false)
-    private Integer quantity; // 제품의 총 개수
+    private Integer quantity;   // 제품의 총 개수
 
-    private Integer soldCount;
+    private Integer soldCount;  // 제품의 판매 개수
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    private String thumbnailPath;
-
-    private String originImagePath;
 
     @CreationTimestamp
     private LocalDateTime createdAt; // 등록 시간

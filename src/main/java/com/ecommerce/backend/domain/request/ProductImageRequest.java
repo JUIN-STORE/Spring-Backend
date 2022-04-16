@@ -1,62 +1,27 @@
 package com.ecommerce.backend.domain.request;
 
-import com.ecommerce.backend.domain.entity.Account;
-import com.ecommerce.backend.domain.entity.Address;
-import com.ecommerce.backend.domain.enums.AccountRole;
-import lombok.*;
+import com.ecommerce.backend.domain.entity.ProductImage;
+import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 public class ProductImageRequest {
+    @Data @Accessors(chain = true)
+    public static class CreateRequest {
+        private String imageName;           // 이미지 파일명
 
-    @NoArgsConstructor @ToString
-    @Getter @Setter @Accessors(chain = true)
-    public static class CreateRequest{
-        private String email;
-        private String passwordHash;
-        private String name;
+        private String originImageName;     // 원본 이미지 파일명
 
-        @Column(columnDefinition = "ENUM('USER','SELLER','ADMIN')")
-        @Enumerated(EnumType.STRING)
-        private AccountRole accountRole;
+        private String imageUrl;            // 이미지 조회 경로
 
-        private Address address;
+        private Boolean thumbnail;          // 썸네일 여부
 
-        public static Account toAccount(CreateRequest request){
-            return Account.builder()
-                    .email(request.getEmail())
-                    .passwordHash(new BCryptPasswordEncoder().encode(request.getPasswordHash()))
-                    .name(request.getName())
-                    .accountRole(request.getAccountRole())
-                    .lastLogin(LocalDateTime.now())
+        public ProductImage toProductImage() {
+            return ProductImage.builder()
+                    .imageName(this.imageName)
+                    .originImageName(this.originImageName)
+                    .imageUrl(this.imageUrl)
+                    .thumbnail(this.thumbnail)
                     .build();
         }
-    }
-
-    @Getter @Setter @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class LoginRequest implements Serializable {
-        private String email;
-        private String passwordHash;
-    }
-
-    @Getter @Setter @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateRequest {
-        private String email;
-
-        private String passwordHash;
-
-        private String new_passwordHash;
-
-        private String name;
     }
 }
