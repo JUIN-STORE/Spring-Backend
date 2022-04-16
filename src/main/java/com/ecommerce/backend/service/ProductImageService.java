@@ -1,6 +1,7 @@
 package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.FileUploadComponent;
+import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.entity.ProductImage;
 import com.ecommerce.backend.domain.request.ProductImageRequest;
 import com.ecommerce.backend.repository.ProductImageRepository;
@@ -23,7 +24,7 @@ public class ProductImageService {
     private final FileUploadComponent fileUploadComponent;
     private final ProductImageRepository productImageRepository;
 
-    public void saveProductImage(ProductImageRequest.CreateRequest request, MultipartFile multipartFile) throws IOException {
+    public void saveProductImage(ProductImageRequest.CreateRequest request, MultipartFile multipartFile, Product product) throws IOException {
         final String originalFilename = multipartFile.getOriginalFilename(); // cat.jpg
 
         // 파일 업로드
@@ -32,9 +33,13 @@ public class ProductImageService {
 
             final String copyFileName = fileUploadComponent.makeCopyFileName(originalFilename);
             final String fileUploadAbsPath = fileUploadComponent.makeAbsPath(productImageLocation, copyFileName);
-            final ProductImage productImage = request.toProductImage();
 
-            productImage.updateProductImage(originalFilename, copyFileName, fileUploadAbsPath);
+            request.setImageName(copyFileName);
+            request.setImageUrl(fileUploadAbsPath);
+            request.setOriginImageName(originalFilename);
+
+            final ProductImage productImage = request.toProductImage(product);
+
             productImageRepository.save(productImage);
         }
     }

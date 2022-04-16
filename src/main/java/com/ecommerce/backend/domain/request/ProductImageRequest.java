@@ -1,5 +1,6 @@
 package com.ecommerce.backend.domain.request;
 
+import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.entity.ProductImage;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -15,8 +16,9 @@ public class ProductImageRequest {
 
         private Boolean thumbnail;          // 썸네일 여부
 
-        public ProductImage toProductImage() {
+        public ProductImage toProductImage(Product product) {
             return ProductImage.builder()
+                    .product(product)
                     .imageName(this.imageName)
                     .originImageName(this.originImageName)
                     .imageUrl(this.imageUrl)

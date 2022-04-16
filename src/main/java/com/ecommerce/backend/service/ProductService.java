@@ -25,7 +25,6 @@ public class ProductService {
         productRepository.save(product);
 
         // 상품 이미지 등록
-
         for (int i = 0; i < productImageFileList.size(); i++){
             ProductImageRequest.CreateRequest createRequest = new ProductImageRequest.CreateRequest();
 
@@ -35,7 +34,7 @@ public class ProductService {
             else {
                 createRequest.setThumbnail(false);
             }
-            productImageService.saveProductImage(createRequest, productImageFileList.get(i));
+            productImageService.saveProductImage(createRequest, productImageFileList.get(i), product);
         }
         return product.getId();
     }

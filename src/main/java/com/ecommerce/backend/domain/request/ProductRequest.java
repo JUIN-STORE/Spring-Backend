@@ -4,8 +4,6 @@ import com.ecommerce.backend.domain.entity.Product;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-
 public class ProductRequest {
     @Data @Accessors(chain = true)
     public static class CreateRequest {
@@ -23,8 +21,6 @@ public class ProductRequest {
                     .price(this.price)
                     .quantity(this.quantity)
                     .description(this.description)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
                     .build();
         }
     }
