@@ -2,7 +2,7 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Order;
-import com.ecommerce.backend.domain.entity.OrderItem;
+import com.ecommerce.backend.domain.entity.OrderProduct;
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.repository.AccountRepository;
@@ -35,11 +35,11 @@ public class OrderService{
         Product product = productRepository.findById(request.getProductId()).orElseThrow(EntityNotFoundException::new);
         Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
-        List<OrderItem> orderItemList = new ArrayList<>();
+        List<OrderProduct> orderProductList = new ArrayList<>();
 
-        OrderItem.createOrderItem(product, product.getPrice(), request.getCount());
+        OrderProduct.createOrderProduct(product, product.getPrice(), request.getCount());
 
-        Order order = Order.createOrder(account, orderItemList);
+        Order order = Order.createOrder(account, orderProductList);
 
         orderRepository.save(order);
 

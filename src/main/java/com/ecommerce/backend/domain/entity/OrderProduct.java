@@ -9,10 +9,14 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItem extends BaseEntity{
-    @Id @Column(name = "order_item_id")
+public class OrderProduct extends BaseEntity{
+    @Id @Column(name = "order_product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private int orderPrice;
+
+    private int orderCount;
 
     // 연관관계 주인
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,13 +29,9 @@ public class OrderItem extends BaseEntity{
     @JoinColumn(name = "orders_id")
     private Order order;
 
-    private int orderPrice;
-
-    private int orderCount;
-
-    // orderItem 생성
-    public static OrderItem createOrderItem(Product product, int orderPrice, int orderCount){
-        OrderItem orderItem = OrderItem.builder()
+    // orderProduct 생성
+    public static OrderProduct createOrderProduct(Product product, int orderPrice, int orderCount){
+        OrderProduct orderProduct = OrderProduct.builder()
                                 .product(product)
                                 .orderPrice(orderPrice)
                                 .orderCount(orderCount)
@@ -39,7 +39,7 @@ public class OrderItem extends BaseEntity{
 
         product.removeQuantity(orderCount);
 
-        return orderItem;
+        return orderProduct;
     }
 
     public Integer getTotalPrice(){
