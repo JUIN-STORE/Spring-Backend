@@ -1,7 +1,9 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.request.ProductRequest;
+import com.ecommerce.backend.domain.response.ProductResponse;
 import com.ecommerce.backend.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +39,15 @@ public class ProductApiController {
         log.info("POST /api/products/admin/register request: {}", request);
         productService.saveProduct(request, productImageFileList);
         return new MyResponse<>(HttpStatus.OK, "상품 등록 성공", null);
+    }
+
+    @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
+    @GetMapping("/admin/register/{productId}")
+    public MyResponse<ProductResponse.ReadResponse> read(@PathVariable Long productId) {
+        final Product product = productService.findById(productId);
+        final ProductResponse.ReadResponse readResponse = ProductResponse.ReadResponse.fromProduct(product);
+
+        return new MyResponse<>(HttpStatus.OK, "상품 읽기 성공", readResponse);
     }
 
     @ExceptionHandler(IOException.class)

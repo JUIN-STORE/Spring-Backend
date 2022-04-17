@@ -7,10 +7,19 @@ import com.ecommerce.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
+
+/** Service Naming
+ * C -> save
+ * R -> findBy~
+ * U -> update
+ * D -> delete
+ */
 
 @Slf4j
 @Service
@@ -37,5 +46,13 @@ public class ProductService {
             productImageService.saveProductImage(createRequest, productImageFileList.get(i), product);
         }
         return product.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public Product findById(Long productId){
+        // 상품 조회
+        final Product product = productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
+
+        return product;
     }
 }

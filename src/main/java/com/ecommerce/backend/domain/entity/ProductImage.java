@@ -35,4 +35,14 @@ public class ProductImage extends BaseEntity {
         this.imageName = imageName;
         this.imageUrl = imageUrl;
     }
+
+    public void initProduct(Product product) {
+        // 기존 Product와의 연관관계 제거
+        if (this.product != null) this.product.getProductImageList().remove(this);
+
+        this.product = product;
+
+        // 무한루프 빠지지 않도록 처리
+        if (!product.getProductImageList().contains(this)) product.getProductImageList().add(this);
+    }
 }

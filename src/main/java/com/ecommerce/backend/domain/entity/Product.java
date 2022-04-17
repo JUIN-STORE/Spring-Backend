@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,6 +37,18 @@ public class Product extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
+
+    // 읽기 전용, 연관관계 주인 아님
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<ProductImage> productImageList = new ArrayList<>();
+
+    // 읽기용 매핑
+    public void addProductImageList(ProductImage productImage){
+        this.productImageList.add(productImage);
+        if (productImage.getProduct() != this){
+            productImage.initProduct(this);
+        }
+    }
 
 //    @NonNull
 //    @ManyToOne
