@@ -42,6 +42,10 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<ProductImage> productImageList = new ArrayList<>();
 
+    // 읽기 전용, 연관관계 주인 아님
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<OrderProduct> orderProductList = new ArrayList<>();
+
     // 읽기용 매핑
     public void addProductImageList(ProductImage productImage){
         this.productImageList.add(productImage);
@@ -50,22 +54,24 @@ public class Product extends BaseEntity {
         }
     }
 
-//    @NonNull
-//    @ManyToOne
-//    @JoinColumn(name = "seller_id")
-//    private Account seller;
-
     // 재고 증가
     public void addQuantity(Integer quantity){
         this.quantity += quantity;
+        this.soldCount -= quantity;
     }
     
     // 재고 삭제
     public void removeQuantity(Integer quantity){
         int restQuantity = this.quantity - quantity;
+
         if(restQuantity < 0){
             throw new NotEnoughStockException("Need More Stock. Current Stock: " + restQuantity);
         }
         this.quantity = restQuantity;
+        this.soldCount += quantity;
+    }
+
+    public Integer getTotalPrice(){
+        return this.price * this.soldCount;
     }
 }

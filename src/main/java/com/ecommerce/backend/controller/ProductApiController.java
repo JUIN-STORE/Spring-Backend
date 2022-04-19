@@ -24,7 +24,7 @@ import java.util.List;
  * D -> remove
  */
 
-@Api(tags = {"04. Product"})
+@Api(tags = {"03. Product"})
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -32,7 +32,7 @@ import java.util.List;
 public class ProductApiController {
     private final ProductService productService;
 
-    @ApiOperation(value = "상품 등록", notes="상품을 등록한다.")
+    @ApiOperation(value = "관리자 상품 등록", notes="관리자가 상품을 등록한다.")
     @PostMapping(value ="/admin/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, "multipart/form-data"})
     public MyResponse<Void> register(@RequestPart ProductRequest.CreateRequest request,
                                      @RequestPart("file") List<MultipartFile> productImageFileList) throws IOException {
@@ -41,8 +41,17 @@ public class ProductApiController {
         return new MyResponse<>(HttpStatus.OK, "상품 등록 성공", null);
     }
 
-    @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
+    @ApiOperation(value = "관리자 상품 읽기", notes = "관리자 페이지에서 상품을 읽는다.")
     @GetMapping("/admin/register/{productId}")
+    public MyResponse<ProductResponse.ReadResponse> adminRead(@PathVariable Long productId) {
+        final Product product = productService.findById(productId);
+        final ProductResponse.ReadResponse readResponse = ProductResponse.ReadResponse.fromProduct(product);
+
+        return new MyResponse<>(HttpStatus.OK, "상품 읽기 성공", readResponse);
+    }
+
+    @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
+    @GetMapping("/{productId}")
     public MyResponse<ProductResponse.ReadResponse> read(@PathVariable Long productId) {
         final Product product = productService.findById(productId);
         final ProductResponse.ReadResponse readResponse = ProductResponse.ReadResponse.fromProduct(product);

@@ -53,11 +53,19 @@ public class Account extends BaseEntity{
     @Builder.Default
     protected List<Order> orderList = new ArrayList<>();
 
-    // 읽기용 매핑
+    // 읽기용 매핑, 연관관계 주인 아님
     public void addAddressList(Address address){
         this.addressList.add(address);
         if (address.getAccount() != this){
-            address.initAccount(this);
+            address.fillAccountRelation(this);
+        }
+    }
+
+    // 읽기용 매핑, 연관관계 주인 아님
+    public void addOrderList(Order order){
+        this.orderList.add(order);
+        if (order.getAccount() != this){
+            order.fillAccountRelation(this);
         }
     }
 }

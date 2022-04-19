@@ -51,8 +51,6 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Product findById(Long productId){
         // 상품 조회
-        final Product product = productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
-
-        return product;
+        return  productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
     }
 }

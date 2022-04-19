@@ -5,14 +5,14 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@ToString
 @Getter
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Delivery {
-    @Id
-    @Column(name = "delivery_id")
+    @Id @Column(name = "delivery_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -25,8 +25,20 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
-    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
     @OneToOne(mappedBy = "delivery") // mappedBy가 있으면 연관관계 주인이 아님.
     private Order order;
 
+    public static Delivery createDelivery(Address address) {
+        return Delivery.builder()
+                .address(address)
+                .city(address.getCity())
+                .street(address.getStreet())
+                .zipCode(address.getZipCode())
+                .deliveryStatus(DeliveryStatus.READY)
+                .build();
+    }
 }

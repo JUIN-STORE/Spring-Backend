@@ -1,20 +1,13 @@
 package com.ecommerce.backend.service;
 
-import com.ecommerce.backend.domain.entity.Account;
-import com.ecommerce.backend.domain.entity.Order;
-import com.ecommerce.backend.domain.entity.OrderProduct;
-import com.ecommerce.backend.domain.entity.Product;
+import com.ecommerce.backend.domain.entity.*;
 import com.ecommerce.backend.domain.request.OrderRequest;
-import com.ecommerce.backend.repository.AccountRepository;
-import com.ecommerce.backend.repository.OrderRepository;
-import com.ecommerce.backend.repository.ProductRepository;
+import com.ecommerce.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Service Naming
  * C -> save
@@ -24,25 +17,43 @@ import java.util.List;
  */
 
 @Slf4j
-@Service
+@Service("orderService")
 @RequiredArgsConstructor
 public class OrderService{
     private final AccountRepository accountRepository;
-    private final ProductRepository productRepository;
+    private final AddressRepository addressRepository;
     private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
+    private final DeliveryRepository deliveryRepository;
 
-    public Long order(OrderRequest.OrderCreate request, String email){
-        Product product = productRepository.findById(request.getProductId()).orElseThrow(EntityNotFoundException::new);
-        Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+    private final ProductService productService;
 
-        List<OrderProduct> orderProductList = new ArrayList<>();
+    public Order order(OrderRequest.CreateRequest request, String email){
+        // 엔티티 조회
+        final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        final Address address = addressRepository.findByAccountId(account.getId()).orElseThrow(EntityNotFoundException::new);
+        final Product product = productService.findById(request.getProductId());
 
-        OrderProduct.createOrderProduct(product, product.getPrice(), request.getCount());
+        // 배송 정보 생성
+        final Delivery delivery = Delivery.createDelivery(address);
+        System.out.println(delivery.toString());
 
-        Order order = Order.createOrder(account, orderProductList);
-
+        // 주문 상품 생성
+        final OrderProduct orderProduct = OrderProduct.createOrderProduct(product, request.getCount(), product.getQuantity() * request.getCount());
+        final Order order = Order.createOrder(account, delivery, orderProduct);
+        
+        // 수정해야 되는 엔티티
+        deliveryRepository.save(delivery); // update product 쿼리 날아감. (오류)
         orderRepository.save(order);
+        orderProductRepository.save(orderProduct);
 
-        return order.getId();
+        return order;
+    }
+    
+    // 주문 취소
+    public void cancelOrder (Long orderId){
+        // 주문 엔티티 조회
+        final Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        order.cancel();
     }
 }

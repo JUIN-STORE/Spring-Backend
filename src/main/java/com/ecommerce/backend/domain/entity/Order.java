@@ -11,11 +11,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "orders")
+@Getter @Builder @Entity(name = "orders")
 public class Order extends BaseEntity {
     @Id
     @Column(name = "order_id")
@@ -27,38 +25,56 @@ public class Order extends BaseEntity {
 
     private LocalDateTime orderDate; // 주문일
 
-    // 연관관계 주인
+    // 연관관계 주인 -> fillAccountRelation 만들어야 됨.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
     
-    // 연관관계 주인
+    // 연관관계 주인 -> fillDeliveryRelation 만들어야 됨.
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
-    // 읽기 전용
+    // 읽기 전용 -> addOrderProduct 만들어야 됨.
     @Builder.Default
     @OneToMany(mappedBy = "order",  fetch = FetchType.LAZY)
-    public List<OrderProduct> orderProductList = new ArrayList<>();
+    private List<OrderProduct> orderProductList = new ArrayList<>();
 
-    // 쓰기 전용
-    public void setAccount(Account account) {
-        if (this.account != null){
-            this.account.getOrderList().remove(this);
-        }
+    // 연관관계 주인 -> Account 쓰기 전용
+    public void fillAccountRelation(Account account) {
+        if (this.account != null) this.account.getOrderList().remove(this);
         this.account = account;
         account.getOrderList().add(this);
     }
 
-    public void addOrderItem(OrderProduct orderProduct) {
+    /** Delivery 연관관계 설정, @OneToOne -> 연관관계 주인
+     * @param delivery
+     */
+    public void fillDeliveryRelation(Delivery delivery) {
+        this.delivery = delivery;
+    }
+    
+    // 읽기 전용
+    public void addOrderProduct(OrderProduct orderProduct) {
         orderProductList.add(orderProduct);
-        orderProduct.setOrder(this);
+        orderProduct.fillOrderRelation(this);
     }
 
-    public void setDelivery(Delivery delivery) {
-        this.delivery = delivery;
-        delivery.setOrder(this);
+    // 연관관계에 있는 객체들 파라미터로 받기
+    public static Order createOrder(Account account, Delivery delivery, OrderProduct... orderProductList) {
+        Order order = Order.builder()
+                .account(account)
+                .delivery(delivery)
+                .orderStatus(OrderStatus.ORDER)
+                .orderDate(LocalDateTime.now())
+                .build();
+
+        // orderProductList.stream().forEach(orderProduct -> order.addOrderProduct(orderProduct));
+        for (OrderProduct orderProduct : orderProductList) {
+            order.addOrderProduct(orderProduct);
+        }
+
+        return order;
     }
 
     public int getTotalPrice() {
@@ -70,33 +86,20 @@ public class Order extends BaseEntity {
         return totalPrice;
     }
 
-    public static Order createOrder(Account account, List<OrderProduct> orderProductList) {
-        Order order = Order.builder()
-                .account(account)
-                .orderStatus(OrderStatus.ORDER)
-                .orderDate(LocalDateTime.now())
-                .build();
-
-        //  for (OrderItem orderItem : orderItemList) { order.addOrderItem(orderItem); }
-        orderProductList.stream().forEach(orderItem -> order.addOrderItem(orderItem));
-
-        return order;
+    // 주문 취소
+    public void cancel(){
+        this.orderStatus = OrderStatus.CANCEL;
+        for(OrderProduct orderItem : orderProductList){
+            orderItem.cancel();
+        }
     }
-//    public void cancel(){
-////        this.setStatus((short)2);
-//        this.setStatus(OrderStatus.CANCEL);
-//        for(OrderItem orderItem:orderItems){
-//            orderItem.cancel();
-//        }
-//    }
-//
-//    //  주문 조회
-//    public Integer getGrandTotal(){
-//        Integer totalPrice  = 0;
-//        for(OrderItem orderItem: orderItems){
-//            grandTotal += orderItem.getTotalPrice();
-//        }
-//        return totalPrice;
-//    }
-//
+
+    //  전체 주문 가격 조회
+    public Integer getGrandTotal(){
+        Integer totalPrice  = 0;
+        for(OrderProduct orderProduct : orderProductList){
+            totalPrice += orderProduct.getTotalPrice();
+        }
+        return totalPrice;
+    }
 }

@@ -1,43 +1,28 @@
 package com.ecommerce.backend.domain.response;
 
-import com.ecommerce.backend.domain.entity.Account;
-import com.ecommerce.backend.domain.enums.AccountRole;
-import lombok.*;
+import com.ecommerce.backend.domain.entity.Order;
+import com.ecommerce.backend.domain.enums.OrderStatus;
+import lombok.Data;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.time.LocalDateTime;
 
 public class OrderResponse {
 
-    @NoArgsConstructor
-    @AllArgsConstructor @ToString
-    @Getter @Setter @Accessors(chain = true)
+    @Data @Accessors(chain = true)
     public static class CreateResponse {
         private Long id;
 
-        private String email;
-
-        private String name;
-
-        @CreationTimestamp
-        private LocalDateTime registeredAt;
-
-        private LocalDateTime lastLogin;
+        private int grandTotal;
 
         @Enumerated(EnumType.STRING)
-        private AccountRole accountRole;
+        private OrderStatus orderStatus; // 주문 상태
 
-        public static CreateResponse fromAccount(Account account) {
+        public static CreateResponse fromOrder(Order entity) {
             return new CreateResponse()
-                    .setId(account.getId())
-                    .setEmail(account.getEmail())
-                    .setName(account.getName())
-                    .setRegisteredAt(account.getRegisteredAt())
-                    .setLastLogin(account.getLastLogin())
-                    .setAccountRole(account.getAccountRole());
+                    .setId(entity.getId())
+                    .setGrandTotal(entity.getGrandTotal());
         }
     }
 }
