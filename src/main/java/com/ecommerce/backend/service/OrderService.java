@@ -39,7 +39,7 @@ public class OrderService{
         System.out.println(delivery.toString());
 
         // 주문 상품 생성
-        final OrderProduct orderProduct = OrderProduct.createOrderProduct(product, request.getCount(), product.getQuantity() * request.getCount());
+        final OrderProduct orderProduct = OrderProduct.createOrderProduct(product, request.getCount(), product.getPrice() * request.getCount());
         final Order order = Order.createOrder(account, delivery, orderProduct);
         
         // 수정해야 되는 엔티티
@@ -54,6 +54,9 @@ public class OrderService{
     public void cancelOrder (Long orderId){
         // 주문 엔티티 조회
         final Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        final OrderProduct orderProduct = orderProductRepository.findByOrderId(order.getId()).orElseThrow(EntityNotFoundException::new);
         order.cancel();
+        orderRepository.save(order);
+//        orderProductRepository.delete(orderProduct);
     }
 }

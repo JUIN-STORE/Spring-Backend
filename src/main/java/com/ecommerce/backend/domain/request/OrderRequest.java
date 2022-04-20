@@ -26,4 +26,21 @@ public class OrderRequest {
                     .build();
         }
     }
+
+    @Data @Accessors(chain = true)
+    public static class CancelRequest {
+        private Long productId;
+
+        private int count;
+
+        @Enumerated(EnumType.STRING)
+        private OrderStatus orderStatus; // 주문 상태
+
+        public Order toOrder(){
+            return Order.builder()
+                    .orderStatus(this.orderStatus)
+                    .orderDate(LocalDateTime.now())
+                    .build();
+        }
+    }
 }

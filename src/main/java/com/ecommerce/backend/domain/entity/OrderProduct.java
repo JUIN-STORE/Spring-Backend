@@ -56,9 +56,4 @@ public class OrderProduct extends BaseEntity{
         getProduct().addQuantity(orderCount);
     }
     
-    // 주문 상품 전체 가격 조회
-    public Integer getTotalPrice(){
-        return this.orderPrice * this.orderCount;
-    }
-
 }

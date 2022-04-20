@@ -1,6 +1,8 @@
 package com.ecommerce.backend.domain.entity;
 
+import com.ecommerce.backend.domain.enums.DeliveryStatus;
 import com.ecommerce.backend.domain.enums.OrderStatus;
+import com.ecommerce.backend.exception.AlreadyDeliveryException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -77,17 +79,10 @@ public class Order extends BaseEntity {
         return order;
     }
 
-    public int getTotalPrice() {
-        int totalPrice = 0;
-
-        for (OrderProduct orderProduct : orderProductList) {
-            totalPrice += orderProduct.getTotalPrice();
-        }
-        return totalPrice;
-    }
-
     // 주문 취소
     public void cancel(){
+        if (delivery.getDeliveryStatus() == DeliveryStatus.COMP) throw new AlreadyDeliveryException("이미 배송된 상품은 취소가 불가능합니다");
+
         this.orderStatus = OrderStatus.CANCEL;
         for(OrderProduct orderItem : orderProductList){
             orderItem.cancel();
@@ -95,10 +90,10 @@ public class Order extends BaseEntity {
     }
 
     //  전체 주문 가격 조회
-    public Integer getGrandTotal(){
-        Integer totalPrice  = 0;
+    public int getGrandTotal(){
+        int totalPrice  = 0;
         for(OrderProduct orderProduct : orderProductList){
-            totalPrice += orderProduct.getTotalPrice();
+            totalPrice += orderProduct.getOrderPrice();
         }
         return totalPrice;
     }

@@ -1,6 +1,7 @@
 package com.ecommerce.backend.domain.request;
 
 import com.ecommerce.backend.domain.entity.Product;
+import com.ecommerce.backend.domain.enums.ProductStatus;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -21,6 +22,8 @@ public class ProductRequest {
                     .price(this.price)
                     .quantity(this.quantity)
                     .description(this.description)
+                    .productStatus(ProductStatus.READY)
+                    .soldCount(0)
                     .build();
         }
     }
