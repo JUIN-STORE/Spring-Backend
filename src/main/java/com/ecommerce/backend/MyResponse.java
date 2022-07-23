@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 public class MyResponse<T> {
@@ -16,40 +18,18 @@ public class MyResponse<T> {
     // response
     private T data;
 
+    private LocalDateTime timeStamp;
+
+    public MyResponse(HttpStatus result, T data) {
+        this.result = result.value();
+        this.data = data;
+        this.timeStamp = LocalDateTime.now();
+    }
+
     public MyResponse(HttpStatus result, String message, T data) {
         this.result = result.value();
         this.message = message;
         this.data = data;
+        this.timeStamp = LocalDateTime.now();
     }
 }
-
-    //    // api 통신시간
-//    private LocalDateTime transactionTime;
-
-
-//    // OK
-//    public static <T> Response<T> OK() {
-//        return (Response<T>) Response.builder()
-//                .result(200)
-//                .message("OK")
-//                .build();
-//    }
-//
-//
-//    // DATA OK
-//    public static <T> Response<T> OK(T data) {
-//        return (Response<T>) Response.builder()
-//                .result(200)
-//                .message("OK")
-//                .data(data)
-//                .build();
-//    }
-//
-//    // ERROR
-//    public static <T> Response<T> ERROR(String description) {
-//        return (Response<T>) Response.builder()
-//                .result(404)
-//                .message(description)
-//                .build();
-//    }
-//}

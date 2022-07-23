@@ -1,6 +1,5 @@
 package com.ecommerce.backend.domain.request;
 
-import com.ecommerce.backend.config.SecurityConfig;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import lombok.Data;
@@ -28,7 +27,7 @@ public class AccountRequest {
         public Account toAccount(){
             return Account.builder()
                     .email(email)
-                    .passwordHash(SecurityConfig.makePasswordHash(passwordHash))
+                    .passwordHash(passwordHash)
                     .name(name)
                     .accountRole(accountRole)
                     .lastLogin(LocalDateTime.now())
@@ -44,19 +43,19 @@ public class AccountRequest {
 
     @Data @Accessors(chain = true)
     public static class UpdateRequest {
-        private Long id;
+        private String name;
 
-        private String newPasswordHash;
+        private String passwordHash;
 
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        public Account toAccount(Account account) {
+        public Account toAccount(Long pId, String pEmail) {
             return Account.builder()
-                    .id(id)
-                    .email(account.getEmail())
-                    .name(account.getName())
-                    .passwordHash(SecurityConfig.makePasswordHash(newPasswordHash))
+                    .id(pId)
+                    .email(pEmail)
+                    .name(name)
+                    .passwordHash(passwordHash)
                     .accountRole(accountRole)
                     .build();
         }
