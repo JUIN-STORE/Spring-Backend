@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,77 +38,79 @@ public class AccountApiController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
-    @PostMapping("/register")
-    public MyResponse<AccountResponse.RegisterResponse> register(@RequestBody AccountRequest.RegisterRequest request) {
+    @PostMapping("/signup")
+    public MyResponse<AccountResponse.RegisterResponse> signup(@RequestBody AccountRequest.RegisterRequest request) {
+        log.debug("POST /api/accounts/signup request: {}", request);
+
         try {
-            log.info("Call POST /api/accounts/register: {}", request);
-            return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", accountService.saveAccount(request));
+            return new MyResponse<>(HttpStatus.OK, accountService.saveAccount(request));
         } catch (EntityNotFoundException e) {
-            return new MyResponse<>(HttpStatus.OK, e.getMessage(), null);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage(), null);
         }
     }
 
     @ApiOperation(value = "로그인", notes = "로그인을 한다.")
     @PostMapping("/login")
     public MyResponse<AccountResponse.LoginResponse> login(@RequestBody AccountRequest.LoginRequest request) {
+        log.debug("POST /api/accounts/login request: {}", request);
+
         final String email = request.getEmail();
-        final String password = request.getPasswordHash();
-        log.info("Call POST /api/accounts/login {}", request);
+//        final String password = request.getPasswordHash();
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password)); // 이 시점에 쿼리 나감.
-            UserDetails userDetails = accountService.loadUserByUsername(email);
-            String token = jwtTokenUtil.generateToken(userDetails);
-            LoginResponse response = LoginResponse.fromAccount(token);
+//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            final UserDetails userDetails = accountService.loadUserByUsername(email); // 이 시점에 쿼리 나감.
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            final LoginResponse response = LoginResponse.fromAccount(email, token);
 
-            return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", response);
-        } catch (DisabledException e) {
-            log.warn(e.getMessage());
-        } catch (BadCredentialsException e) {
-            log.warn(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            log.warn(e.getMessage());
+            return new MyResponse<>(HttpStatus.OK, response);
+        } catch (Exception e) {
+            loginException(e);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, null);
         }
-        return new MyResponse<>(HttpStatus.NOT_FOUND, "POST FAIL", null);
     }
 
-    @ApiOperation(value = "회원 정보 읽기", notes = "회원 정보를 읽어온다.")
-    @GetMapping("/{accountId}")
-    public MyResponse<AccountResponse.ReadResponse> read (@PathVariable Long accountId){
-        log.info("Call GET /api/accounts/{accountId} accountId: {}", accountId);
+    @ApiOperation(value = "내 정보 읽기", notes = "내 정보를 읽어온다.")
+    @GetMapping("/profile")
+    public MyResponse<AccountResponse.ReadResponse> profile(Principal principal){
+        log.debug("POST /api/accounts/profile principal: {}", principal);
 
         try {
-            return new MyResponse<>(HttpStatus.OK, "GET SUCCESS", accountService.findById(accountId));
+            return new MyResponse<>(HttpStatus.OK, accountService.findIdByEmail(principal.getName()));
         } catch (EntityNotFoundException e) {
-            log.warn(e.getMessage());
-            return new MyResponse<>(HttpStatus.NOT_FOUND, "GET FAIL", null);
+            log.warn("EntityNotFoundException - GET /api/accounts/profile principal: {}", principal);
+            return new MyResponse<>(HttpStatus.NOT_FOUND,null);
         }
     }
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
     @PatchMapping("/modify")
     public MyResponse<AccountResponse.UpdateResponse> modify(@RequestBody AccountRequest.UpdateRequest request, Principal principal) {
-        log.info("Call /api/accounts/modify request: {}", request);
+        log.debug("Patch /api/accounts/modify request: {}", request);
 
         try{
-            return new MyResponse<>(HttpStatus.OK, "MODIFY SUCCESS", accountService.update(request, principal));
+            return new MyResponse<>(HttpStatus.OK, accountService.update(request, principal));
         } catch (EntityNotFoundException e) {
-            log.warn("Call /api/accounts/modify: {}", request);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, "MODIFY FAIL", null);
+            log.warn("EntityNotFoundException - GET /api/accounts/modify request: {}", request);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, null);
         }
-
     }
 
     @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
-    @DeleteMapping("/{accountId}")
-    public MyResponse<AccountResponse.DeleteResponse> remove(@PathVariable Long accountId){
-        log.info("Call /api/accounts/{id} accountId: {}", accountId);
+    @DeleteMapping("/remove")
+    public MyResponse<AccountResponse.DeleteResponse> remove(Principal principal){
+        log.debug("Delete /api/accounts/{id} principal: {}", principal);
 
         try {
-            return new MyResponse<>(HttpStatus.OK, "DELETE SUCCESS", accountService.delete(accountId));
+            return new MyResponse<>(HttpStatus.OK, accountService.delete(principal));
         } catch (EntityNotFoundException e) {
-            log.warn("Call /api/accounts/{id} FAIL accountId: {} ", accountId);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, "DELETE FAIL", null);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, null);
         }
+    }
+
+    private void loginException(Exception e){
+        if (e instanceof DisabledException) log.warn("DisabledException - 스피링 시큐리티 오류");
+        if (e instanceof EntityNotFoundException) log.warn("EntityNotFoundException - 디비에 정보 없음.");
+        if (e instanceof BadCredentialsException) log.warn("BadCredentialsException - 스피링 시큐리티 오류");
     }
 }

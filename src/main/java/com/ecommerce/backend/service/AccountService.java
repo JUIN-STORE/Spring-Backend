@@ -43,8 +43,8 @@ public class AccountService implements UserDetailsService {
         // 검사
         validateDuplicateAccountEmail(request);
 
-        Account account = request.toAccount();
-        Address address = request.getAddress().toAddress(account);
+        final Account account = request.toAccount();
+        final Address address = request.getAddress().toAddress(account);
 
         accountRepository.save(account);
         addressRepository.save(address);
@@ -63,20 +63,32 @@ public class AccountService implements UserDetailsService {
         return AccountResponse.ReadResponse.fromAccount(account);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public AccountResponse.DeleteResponse delete(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-        addressRepository.deleteByAccountId(id);
-        accountRepository.delete(account);
-        return AccountResponse.DeleteResponse.fromAccount(account);
+    @Transactional(readOnly = true)
+    public AccountResponse.ReadResponse findIdByEmail(String email) {
+        Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        return AccountResponse.ReadResponse.fromAccount(account);
     }
 
     public AccountResponse.UpdateResponse update(AccountRequest.UpdateRequest request, Principal principal) {
         final String email = principal.getName();
         final Account findAccount = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        final Account account = accountRepository.save(request.toAccount(findAccount));
+
+        Account account = request.toAccount(findAccount.getId(), email);
+        accountRepository.save(account);
 
         return AccountResponse.UpdateResponse.fromAccount(account);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public AccountResponse.DeleteResponse delete(Principal principal) {
+        final String email = principal.getName();
+        final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        final Address address = addressRepository.findByAccountId(account.getId()).orElseThrow(EntityNotFoundException::new);
+
+        addressRepository.delete(address);
+        accountRepository.delete(account);
+
+        return AccountResponse.DeleteResponse.fromAccount(account);
+    }
+
 }

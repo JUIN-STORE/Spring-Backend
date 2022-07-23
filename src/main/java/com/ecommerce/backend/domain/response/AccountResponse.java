@@ -40,12 +40,15 @@ public class AccountResponse {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
+        private AddressResponse.ReadResponse address;
+
         public static ReadResponse fromAccount(Account account) {
             return new ReadResponse()
                     .setId(account.getId())
                     .setEmail(account.getEmail())
                     .setName(account.getName())
-                    .setAccountRole(account.getAccountRole());
+                    .setAccountRole(account.getAccountRole())
+                    .setAddress(AddressResponse.ReadResponse.fromAddress(account.getAddressList().get(0)));
         }
     }
 
@@ -71,10 +74,13 @@ public class AccountResponse {
 
     @Data @Accessors(chain = true)
     public static class LoginResponse implements Serializable {
+        private String email;
+
         private String token;
 
-        public static LoginResponse fromAccount(String token) {
+        public static LoginResponse fromAccount(String email, String token) {
             return new LoginResponse()
+                    .setEmail(email)
                     .setToken(token);
         }
     }
