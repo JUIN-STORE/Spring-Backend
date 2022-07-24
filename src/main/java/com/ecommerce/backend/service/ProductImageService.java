@@ -29,10 +29,11 @@ public class ProductImageService {
 
         // 파일 업로드
         if(StringUtils.hasText(originalFilename)){
-            fileUploadComponent.uploadFile(productImageLocation, originalFilename, multipartFile.getBytes());
-
             final String copyFileName = fileUploadComponent.makeCopyFileName(originalFilename);
             final String fileUploadAbsPath = fileUploadComponent.makeAbsPath(productImageLocation, copyFileName);
+
+            fileUploadComponent.uploadFile(productImageLocation, originalFilename, multipartFile.getBytes()); // 원본
+            fileUploadComponent.uploadFile(productImageLocation, copyFileName, multipartFile.getBytes());     // copy
 
             request.setImageName(copyFileName);
             request.setImageUrl(fileUploadAbsPath);

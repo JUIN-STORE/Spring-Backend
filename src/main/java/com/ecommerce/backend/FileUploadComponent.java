@@ -12,8 +12,12 @@ import java.util.UUID;
 @Slf4j
 @Component("fileUploadComponent")
 public class FileUploadComponent {
-    public void uploadFile(String uploadPath, String originFileName, byte[] fileData){
-        try(FileOutputStream fos = new FileOutputStream(makeAbsPath(uploadPath, originFileName))){
+
+    private static final String RANDOM_UUID = String.valueOf(UUID.randomUUID()).substring(0, 13);
+
+    public void uploadFile(String uploadPath, String fileName, byte[] fileData){
+        // originFile을 먼저 저장하고
+        try(FileOutputStream fos = new FileOutputStream(makeAbsPath(uploadPath, fileName))){
             fos.write(fileData);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -33,20 +37,14 @@ public class FileUploadComponent {
         }
     }
 
-    // uuid를 생성한다.
-    public String makeUUID() {
-        String uuid = String.valueOf(UUID.randomUUID());
-        return uuid.substring(0, 13);
-    }
-
     // 원래 파일명 + "-" + uuid + 확장자를 통해 copyFileName을 생성한다.
     public String makeCopyFileName(String originFileName){
-        return makeUUID() + "-" + originFileName;
+        return RANDOM_UUID + "-" + originFileName;
     }
 
     // 생성된 copyFileName을 통해 절대 저장 경로를 생성한다.
-    public String makeAbsPath(String uploadPath, String originFileName){
-        final String fileUploadAbsPath = uploadPath + File.separator + makeCopyFileName(originFileName);
+    public String makeAbsPath(String uploadPath, String fileName){
+        final String fileUploadAbsPath = uploadPath + File.separator + fileName;
         return fileUploadAbsPath;
     }
 }
