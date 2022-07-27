@@ -33,6 +33,9 @@ public class Product extends BaseEntity {
     private Integer soldCount;  // 제품의 판매 개수
 
     @Column(columnDefinition = "TEXT")
+    private String category;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)

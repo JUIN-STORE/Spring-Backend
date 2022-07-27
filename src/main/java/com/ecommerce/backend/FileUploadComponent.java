@@ -14,6 +14,7 @@ import java.util.UUID;
 public class FileUploadComponent {
 
     private static final String RANDOM_UUID = String.valueOf(UUID.randomUUID()).substring(0, 13);
+    private static final String SLASH = "/";
 
     public void uploadFile(String uploadPath, String fileName, byte[] fileData){
         // originFile을 먼저 저장하고
@@ -44,7 +45,7 @@ public class FileUploadComponent {
 
     // 생성된 copyFileName을 통해 절대 저장 경로를 생성한다.
     public String makeAbsPath(String uploadPath, String fileName){
-        final String fileUploadAbsPath = uploadPath + File.separator + fileName;
+        final String fileUploadAbsPath = uploadPath + SLASH + fileName;
         return fileUploadAbsPath;
     }
 }

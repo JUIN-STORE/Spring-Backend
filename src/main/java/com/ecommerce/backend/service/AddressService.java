@@ -41,9 +41,9 @@ public class AddressService {
     }
 
     public void update(Long addressId, AddressRequest.UpdateRequest request){
-        final Address address = request.toAddress(addressId);
-
-        addressRepository.save(address);
+//        final Address address = request.toAddress(addressId);
+//
+//        addressRepository.save(address);
     }
 
     public AddressResponse.DeleteResponse delete(Long addressId) {

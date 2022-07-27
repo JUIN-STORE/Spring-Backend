@@ -13,32 +13,35 @@ import java.util.stream.Collectors;
 
 public class ProductResponse {
     @Data @Accessors(chain = true)
-    public static class ReadResponse {
-        private String productName;
+    public static class Read {
+        private Long id;
 
-        private Integer price;
+        private String productName;             // 제품의 이름
 
-        private Integer quantity;   // 제품의 총 개수
+        private Integer price;                  // 제품의 가격
 
-        private Integer soldCount;  // 제품의 판매 개수
+        private Integer quantity;               // 제품의 총 개수
 
-        private String description;
+        private Integer soldCount;              // 제품의 판매 개수
+
+        private String description;             // 제품 설명
 
         @Enumerated(EnumType.STRING)
-        private ProductStatus productStatus;
+        private ProductStatus productStatus;    // 제품의 상태
 
-        private List<ProductImageResponse.ReadResponse> ProductImageList = new ArrayList<>();
+        private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
 
-        public static ReadResponse fromProduct(Product entity) {
-            return new ReadResponse()
-                    .setProductName(entity.getProductName())
-                    .setPrice(entity.getPrice())
-                    .setQuantity(entity.getQuantity())
-                    .setSoldCount(entity.getSoldCount())
-                    .setDescription(entity.getDescription())
-                    .setProductStatus(entity.getProductStatus())
-                    .setProductImageList(entity.getProductImageList().stream()
-                            .map(productImage -> ProductImageResponse.ReadResponse.fromProduct(productImage))
+        public static Read fromProduct(Product product) {
+            return new Read()
+                    .setId(product.getId())
+                    .setProductName(product.getProductName())
+                    .setPrice(product.getPrice())
+                    .setQuantity(product.getQuantity())
+                    .setSoldCount(product.getSoldCount())
+                    .setDescription(product.getDescription())
+                    .setProductStatus(product.getProductStatus())
+                    .setProductImageList(product.getProductImageList().stream()
+                            .map(ProductImageResponse.Read::fromProduct)
                             .collect(Collectors.toList()));
         }
     }

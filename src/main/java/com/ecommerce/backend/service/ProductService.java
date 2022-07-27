@@ -53,4 +53,16 @@ public class ProductService {
         // 상품 조회
         return  productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
     }
+
+    public Long delete(Long productId){
+        final Product product = findById(productId);
+
+        productImageService.delete(productId);
+        productRepository.delete(product);
+        return product.getId();
+    }
+
+    public List<Product> findAll(){
+        return productRepository.findAll();
+    }
 }

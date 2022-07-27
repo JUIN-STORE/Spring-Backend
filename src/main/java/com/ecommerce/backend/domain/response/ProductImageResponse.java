@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 public class ProductImageResponse {
     @Data @Accessors(chain = true)
-    public static class ReadResponse {
+    public static class Read {
 
         private String imageName;           // 이미지 파일명
 
@@ -16,12 +16,12 @@ public class ProductImageResponse {
 
         private Boolean thumbnail;          // 썸네일 여부
 
-        public static ReadResponse fromProduct(ProductImage entity) {
-            return new ReadResponse()
-                    .setImageName(entity.getImageName())
-                    .setOriginImageName(entity.getOriginImageName())
-                    .setImageUrl(entity.getImageUrl())
-                    .setThumbnail(entity.getThumbnail());
+        public static Read fromProduct(ProductImage productImage) {
+            return new Read()
+                    .setImageName(productImage.getImageName())
+                    .setOriginImageName(productImage.getOriginImageName())
+                    .setImageUrl(productImage.getImageUrl())
+                    .setThumbnail(productImage.getThumbnail());
         }
     }
 }

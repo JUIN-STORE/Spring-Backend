@@ -9,20 +9,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductImageService {
-    @Value("${productImageLocation}")
-    private String productImageLocation;
-
     private final FileUploadComponent fileUploadComponent;
     private final ProductImageRepository productImageRepository;
+
+    @Value("${productImageLocation}")
+    private String productImageLocation;
 
     public void saveProductImage(ProductImageRequest.CreateRequest request, MultipartFile multipartFile, Product product) throws IOException {
         final String originalFilename = multipartFile.getOriginalFilename(); // cat.jpg
@@ -43,5 +45,16 @@ public class ProductImageService {
 
             productImageRepository.save(productImage);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductImage> findById(Long productId){
+        // 상품이미지 조회
+        return productImageRepository.findByProductId(productId);
+    }
+
+    public void delete(Long productId) {
+        final List<ProductImage> productImageList = this.findById(productId);
+        productImageRepository.deleteAll(productImageList);
     }
 }

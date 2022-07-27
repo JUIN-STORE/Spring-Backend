@@ -35,5 +35,8 @@ jwt:
     secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
     token-validity-in-seconds: 86400
 
-productImageLocation: C:/shop/product  # 상품 이미지 업로드 경로
-uploadPath: file:///C:/shop/           # 리소스 업로드 경로
+#productImageLocation: C:/shop/product  # 상품 이미지 업로드 경로
+#uploadPath: file:///C:/shop/           # 리소스 업로드 경로
+
+productImageLocation: ../frontend/src/assets/products/  # 상품 이미지 업로드 경로
+uploadPath: file:///../frontend/src/assets/products/           # 리소스 업로드 경로

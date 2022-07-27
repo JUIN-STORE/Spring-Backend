@@ -66,7 +66,7 @@ class ProductServiceTest {
         final List<MultipartFile> multipartFileList = createMultipartFileList();
         final Long productId = productService.saveProduct(request, multipartFileList);
 
-        List<ProductImage> productImageList = productImageRepository.findByProductIdOrderById(productId);
+        List<ProductImage> productImageList = productImageRepository.findByProductId(productId);
 
         final Product product = productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
 

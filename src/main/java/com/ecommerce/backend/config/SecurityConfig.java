@@ -91,8 +91,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("/api/accounts/login",
-                        "/api/accounts/signup").permitAll()
+                .antMatchers("/api/accounts/login", "/api/accounts/signup",
+                        "/api/products").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

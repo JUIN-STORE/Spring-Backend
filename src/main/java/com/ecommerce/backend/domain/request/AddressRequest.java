@@ -2,7 +2,7 @@ package com.ecommerce.backend.domain.request;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
-import lombok.*;
+import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -37,9 +37,8 @@ public class AddressRequest {
 
         private boolean defaultAddress;
 
-        public Address toAddress(Long addressId){
+        public Address toAddress(Account account){
             return Address.builder()
-                    .id(addressId)
                     .city(city)
                     .street(street)
                     .zipCode(zipCode)
