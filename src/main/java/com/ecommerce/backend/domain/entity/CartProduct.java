@@ -32,4 +32,11 @@ public class CartProduct {
     public void addCount(int count){
         this.count += count;
     }
+
+    public static CartProduct createCartProduct(Product product, Cart cart) {
+        return CartProduct.builder()
+                .product(product)
+                .cart(cart)
+                .build();
+    }
 }
