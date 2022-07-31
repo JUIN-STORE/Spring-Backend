@@ -13,12 +13,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Builder @Entity(name = "orders")
+@Entity(name = "orders")
 public class Order extends BaseEntity {
-    @Id
-    @Column(name = "order_id")
+    @Id @Column(name = "order_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

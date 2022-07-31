@@ -17,15 +17,19 @@ public class CartProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 연관관계 주인
-    @ManyToOne(fetch = FetchType.LAZY)
+    // 연관관계 주인 -> fillCart
     @JoinColumn(name = "cart_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cart cart;
 
-    // 연관관계 주인
-    @ManyToOne(fetch = FetchType.LAZY)
+    // 연관관계 주인 -> fillProduct
     @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    private Integer count;
+    private int count;
+
+    public void addCount(int count){
+        this.count += count;
+    }
 }

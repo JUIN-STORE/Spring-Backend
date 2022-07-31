@@ -11,8 +11,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
+@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,6 +48,11 @@ public class Product extends BaseEntity {
     // 읽기 전용, 연관관계 주인 아님
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderProduct> orderProductList = new ArrayList<>();
+
+    // 연관관계 주인 -> fillCart
+    @JoinColumn(name = "cart_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cart cart;
 
     // 읽기용 매핑
     public void addProductImageList(ProductImage productImage){

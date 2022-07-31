@@ -40,7 +40,7 @@ public class ProductResponse {
                     .setSoldCount(product.getSoldCount())
                     .setDescription(product.getDescription())
                     .setProductStatus(product.getProductStatus())
-                    .setProductImageList(product.getProductImageList().stream()
+                    .setProductImageList(product.getProductImageList().stream() // 이 시점에 쿼리 나감
                             .map(ProductImageResponse.Read::fromProduct)
                             .collect(Collectors.toList()));
         }

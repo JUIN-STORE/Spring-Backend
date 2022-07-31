@@ -6,6 +6,8 @@ import com.ecommerce.backend.domain.request.ProductRequest;
 import com.ecommerce.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,6 +56,7 @@ public class ProductService {
         return  productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Long delete(Long productId){
         final Product product = findById(productId);
 
@@ -62,7 +65,12 @@ public class ProductService {
         return product.getId();
     }
 
-    public List<Product> findAll(){
-        return productRepository.findAll();
+    public Page<Product> findAll(Pageable pageable){
+        return productRepository.findAll(pageable);
     }
+
+    public Long count(){
+        return productRepository.count();
+    }
+
 }

@@ -1,41 +1,31 @@
 package com.ecommerce.backend.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
 @Getter
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Accessors(chain = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Category {
-    @Id
+    @Id @Column(name = "category_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryId;
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    private String categoryName;
+
     @JoinColumn(name = "parent_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category parent;
 
-    private Integer leftBound;
+    @OneToMany(mappedBy = "parent")
+    private List<Category> child = new ArrayList<>();
 
-    private Integer rightBound;
-
-    private String title;
-
-    private String metaTitle;
-
-    private String slug;
-
-    @Column(columnDefinition = "TEXT")
-    private String content;
 }

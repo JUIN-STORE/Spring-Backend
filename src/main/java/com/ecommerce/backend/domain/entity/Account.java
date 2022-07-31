@@ -40,18 +40,20 @@ public class Account extends BaseEntity{
 
     // 읽기 전용, 연관관계 주인 아님
     @Setter
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    private Cart cart;
+
+    // 읽기 전용 -> addAddressList 만들어야 됨.
     @Builder.Default
+    @Setter(value = AccessLevel.PRIVATE)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<Address> addressList = new ArrayList<>();
 
-    // 읽기 전용, 연관관계 주인 아님
-    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
-    protected Cart cart;
-
-    // 읽기 전용, 연관관계 주인 아님
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    // 읽기 전용 -> addOrderList 만들어야 됨.
     @Builder.Default
-    protected List<Order> orderList = new ArrayList<>();
+    @Setter(value = AccessLevel.PRIVATE)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private List<Order> orderList = new ArrayList<>();
 
     // 읽기용 매핑, 연관관계 주인 아님
     public void addAddressList(Address address){

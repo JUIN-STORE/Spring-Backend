@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,10 +56,10 @@ public class AccountApiController {
         log.debug("POST /api/accounts/login request: {}", request);
 
         final String email = request.getEmail();
-//        final String password = request.getPasswordHash();
+        final String password = request.getPasswordHash();
 
         try {
-//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             final UserDetails userDetails = accountService.loadUserByUsername(email); // 이 시점에 쿼리 나감.
             final String token = jwtTokenUtil.generateToken(userDetails);
             final LoginResponse response = LoginResponse.fromAccount(email, token);
@@ -76,7 +77,7 @@ public class AccountApiController {
         log.debug("POST /api/accounts/profile principal: {}", principal);
 
         try {
-            return new MyResponse<>(HttpStatus.OK, accountService.findIdByEmail(principal.getName()));
+            return new MyResponse<>(HttpStatus.OK, accountService.findByEmail(principal.getName()));
         } catch (EntityNotFoundException e) {
             log.warn("EntityNotFoundException - GET /api/accounts/profile principal: {}", principal);
             return new MyResponse<>(HttpStatus.NOT_FOUND,null);

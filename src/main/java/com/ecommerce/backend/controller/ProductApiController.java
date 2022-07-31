@@ -9,6 +9,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -97,8 +100,8 @@ public class ProductApiController {
     // FIXME: 쿼리 한 방만 날려야 됨. 1+N 발생
     @ApiOperation(value = "전체 상품 읽기", notes = "전체 상품을 읽는다.")
     @GetMapping
-    public MyResponse<List<ProductResponse.Read>> test() {
-        final List<Product> productList = productService.findAll();
+    public MyResponse<List<ProductResponse.Read>> readAll(@PageableDefault(size = 10) Pageable pageable) {
+        final Page<Product> productList = productService.findAll(pageable);
         final List<ProductResponse.Read> readAllResponse = new ArrayList<>();
 
         for (Product product : productList) {
@@ -107,5 +110,13 @@ public class ProductApiController {
 
         return new MyResponse<>(HttpStatus.OK, readAllResponse);
     }
+
+
+    @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
+    @GetMapping("/count")
+    public Long readCount() {
+        return productService.count();
+    }
+
 }
 

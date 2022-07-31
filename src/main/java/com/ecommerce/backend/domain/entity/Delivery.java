@@ -1,11 +1,13 @@
 package com.ecommerce.backend.domain.entity;
 
 import com.ecommerce.backend.domain.enums.DeliveryStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@ToString
 @Getter
 @Entity
 @Builder
@@ -25,8 +27,8 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Address address;
 
     @OneToOne(mappedBy = "delivery") // mappedBy가 있으면 연관관계 주인이 아님.

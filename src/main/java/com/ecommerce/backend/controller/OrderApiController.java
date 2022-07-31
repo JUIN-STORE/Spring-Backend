@@ -30,7 +30,7 @@ public class OrderApiController {
     private final OrderService orderService;
 
     @ApiOperation(value = "주문하기", notes="주문을 한다.")
-    @PostMapping("/new-order")
+    @PostMapping("/new")
     public MyResponse<OrderResponse.CreateResponse> create(@RequestBody OrderRequest.CreateRequest request, Principal principal) {
         final Order order = orderService.order(request, principal.getName());
         return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", OrderResponse.CreateResponse.fromOrder(order));

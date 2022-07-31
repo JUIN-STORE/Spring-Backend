@@ -1,13 +1,17 @@
 package com.ecommerce.backend.domain.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@ToString
+@Getter
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity @Getter @Builder
 public class Address {
     @Id @Column(name = "address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +30,6 @@ public class Address {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    /** Account와의 연관관계 설정, @ManyToOne -> 연관관계 주인
-     * @param account
-     */
     public void fillAccountRelation(Account account) {
         // 기존 Account와의 연관관계 제거
         if (this.account != null) this.account.getAddressList().remove(this);

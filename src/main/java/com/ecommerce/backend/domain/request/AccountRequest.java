@@ -1,5 +1,6 @@
 package com.ecommerce.backend.domain.request;
 
+import com.ecommerce.backend.config.SecurityConfig;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class AccountRequest {
         public Account toAccount(){
             return Account.builder()
                     .email(email)
-                    .passwordHash(passwordHash)
+                    .passwordHash(SecurityConfig.makePasswordHash(passwordHash))
                     .name(name)
                     .accountRole(accountRole)
                     .lastLogin(LocalDateTime.now())
@@ -55,7 +56,7 @@ public class AccountRequest {
                     .id(pId)
                     .email(pEmail)
                     .name(name)
-                    .passwordHash(passwordHash)
+                    .passwordHash(SecurityConfig.makePasswordHash(passwordHash))
                     .accountRole(accountRole)
                     .build();
         }

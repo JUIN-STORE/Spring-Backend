@@ -1,13 +1,17 @@
 package com.ecommerce.backend.domain.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@ToString
+@Getter
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Builder @Entity
 public class OrderProduct extends BaseEntity{
     @Id @Column(name = "order_product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,14 +21,14 @@ public class OrderProduct extends BaseEntity{
 
     private int orderCount;         // 주몬 수량
 
-    // 연관관계 주인 -> setProduct 만들어야 됨.
-    @ManyToOne(fetch = FetchType.LAZY)
+    // 연관관계 주인 -> fillProduct 만들어야 됨.
     @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    // 연관관계 주인 -> setOrder 만들어야 됨.
-    @ManyToOne(fetch = FetchType.LAZY)
+    // 연관관계 주인 -> fillOrderRelation 만들어야 됨.
     @JoinColumn(name = "orders_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
     // orderProduct 생성
