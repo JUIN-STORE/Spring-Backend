@@ -9,10 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -36,5 +33,12 @@ public class CartApiController {
     public MyResponse<CartProductResponse.Add> addCart(@RequestBody CartProductRequest.Add request, Principal principal) {
         final CartProductResponse.Add response = cartProductService.addCart(request, principal);
         return new MyResponse<>(HttpStatus.OK, response);
+    }
+
+    @ApiOperation(value = "카트 제거", notes="카트에서 제거한다.")
+    @DeleteMapping("/clear")
+    public MyResponse<Integer> clearCart(@RequestBody CartProductRequest.Clear request, Principal principal) {
+        final int deleteCount = cartProductService.deleteCart(request, principal);
+        return new MyResponse<>(HttpStatus.OK, deleteCount);
     }
 }

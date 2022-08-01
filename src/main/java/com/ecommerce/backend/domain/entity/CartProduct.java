@@ -33,10 +33,11 @@ public class CartProduct {
         this.count += count;
     }
 
-    public static CartProduct createCartProduct(Product product, Cart cart) {
+    public static CartProduct createCartProduct(Product product, Cart cart, int count) {
         return CartProduct.builder()
                 .product(product)
                 .cart(cart)
+                .count(count)
                 .build();
     }
 }

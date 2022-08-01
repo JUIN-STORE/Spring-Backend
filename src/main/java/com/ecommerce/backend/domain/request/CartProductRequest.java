@@ -21,4 +21,16 @@ public class CartProductRequest {
                     .build();
         }
     }
+
+    @Data @Accessors(chain = true)
+    public static class Clear implements Serializable{
+        private Long productId;
+
+        public CartProduct toCartProduct() {
+            return CartProduct.builder()
+                    .product(Product.builder().id(productId).build())
+                    .count(0)
+                    .build();
+        }
+    }
 }

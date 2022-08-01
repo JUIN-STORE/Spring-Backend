@@ -7,14 +7,14 @@ import lombok.experimental.Accessors;
 public class CartProductResponse {
     @Data @Accessors(chain = true)
     public static class Add {
-        private Long cartId;
-
         private Long productId;
+
+        private int count;
 
         public static Add fromCartProduct(CartProduct cartProduct) {
             return new Add()
-                    .setCartId(cartProduct.getCart().getId())
-                    .setProductId(cartProduct.getProduct().getId());
+                    .setProductId(cartProduct.getProduct().getId())
+                    .setCount(cartProduct.getCount());
         }
     }
 }
