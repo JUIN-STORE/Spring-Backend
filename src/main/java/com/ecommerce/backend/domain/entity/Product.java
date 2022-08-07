@@ -50,9 +50,9 @@ public class Product extends BaseEntity {
     private List<OrderProduct> orderProductList = new ArrayList<>();
 
     // 연관관계 주인 -> fillCart
-    @JoinColumn(name = "cart_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Cart cart;
+//    @JoinColumn(name = "cart_id")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Cart cart;
 
     // 읽기용 매핑
     public void addProductImageList(ProductImage productImage){

@@ -8,12 +8,24 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface CartProductRepository extends JpaRepository<CartProduct, Long> {
+
+    @Query(nativeQuery = true,
+            value = "SELECT * " +
+                    "FROM cart_product " +
+                    "WHERE cart_id=:cartId"
+    )
+    List<CartProduct> findByCartIdIn(@Param("cartId") Long cartId);
+
     CartProduct findByCartIdAndProductId(Long cartId, Long productId);
 
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM cart_product WHERE cart_id = :cartId and product_id = :productId", nativeQuery = true)
     int deleteByCartIdAndProductId(@Param("cartId") Long cartId, @Param("productId") Long productId);
+
+
 }

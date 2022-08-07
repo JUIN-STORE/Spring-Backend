@@ -110,8 +110,8 @@ public class AccountApiController {
     }
 
     private void loginException(Exception e){
-        if (e instanceof DisabledException) log.warn("DisabledException - 스피링 시큐리티 오류");
+        if (e instanceof DisabledException) log.warn("DisabledException - 스프링 시큐리티 오류");
         if (e instanceof EntityNotFoundException) log.warn("EntityNotFoundException - 디비에 정보 없음.");
-        if (e instanceof BadCredentialsException) log.warn("BadCredentialsException - 스피링 시큐리티 오류");
+        if (e instanceof BadCredentialsException) log.warn("BadCredentialsException - 스프링 시큐리티 오류");
     }
 }

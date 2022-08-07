@@ -81,7 +81,7 @@ public class AccountResponse {
         public static LoginResponse fromAccount(String email, String token) {
             return new LoginResponse()
                     .setEmail(email)
-                    .setToken(token);
+                    .setToken("Bearer " + token);
         }
     }
 

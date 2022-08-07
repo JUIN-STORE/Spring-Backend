@@ -60,7 +60,7 @@ public class ProductApiController {
         log.info("GET /api/products/admin/{productId} productId: {}", productId);
 
         try {
-            final Product product = productService.findById(productId);
+            final Product product = productService.findByProductId(productId);
             final ProductResponse.Read read = ProductResponse.Read.fromProduct(product);
             return new MyResponse<>(HttpStatus.OK, "상품 읽기 성공", read);
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class ProductApiController {
         log.info("POST /api/products/{productId} productId: {}", productId);
 
         try {
-            final Product product = productService.findById(productId);
+            final Product product = productService.findByProductId(productId);
             final ProductResponse.Read read = ProductResponse.Read.fromProduct(product);
 
             return new MyResponse<>(HttpStatus.OK, read);

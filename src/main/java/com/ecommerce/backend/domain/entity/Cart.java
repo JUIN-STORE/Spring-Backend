@@ -1,10 +1,11 @@
 package com.ecommerce.backend.domain.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -22,10 +23,10 @@ public class Cart {
     private Account account;
 
     // 연관관계 주인 아님
-    @Setter
-    @Builder.Default
-    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
-    private List<Product> productList = new ArrayList<>();
+//    @Setter
+//    @Builder.Default
+//    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
+//    private List<Product> productList = new ArrayList<>();
 
     public void fillAccount(Account account) {
         this.account = account;

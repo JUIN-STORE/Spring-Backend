@@ -32,7 +32,7 @@ public class OrderService{
         // 엔티티 조회
         final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         final Address address = addressRepository.findByAccountId(account.getId()).orElseThrow(EntityNotFoundException::new);
-        final Product product = productService.findById(request.getProductId());
+        final Product product = productService.findByProductId(request.getProductId());
 
         // 배송 정보 생성
         final Delivery delivery = Delivery.createDelivery(address);

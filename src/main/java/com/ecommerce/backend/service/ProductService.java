@@ -10,10 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /** Service Naming
@@ -51,14 +53,23 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Product findById(Long productId){
+    public Product findByProductId(Long productId){
         // 상품 조회
-        return  productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
+        return productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Product> findByIdIn(List<Long> productId){
+        final List<Product> productList = productRepository.findByIdIn(productId);
+
+        if (CollectionUtils.isEmpty(productList)) return Collections.emptyList();
+
+        return productList;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public Long delete(Long productId){
-        final Product product = findById(productId);
+        final Product product = this.findByProductId(productId);
 
         productImageService.delete(productId);
         productRepository.delete(product);
