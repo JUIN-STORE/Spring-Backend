@@ -64,7 +64,7 @@ public class Order extends BaseEntity {
     }
 
     // 연관관계에 있는 객체들 파라미터로 받기
-    public static Order createOrder(Account account, Delivery delivery, OrderProduct... orderProductList) {
+    public static Order createOrder(Account account, Delivery delivery, List<OrderProduct> orderProductList) {
         Order order = Order.builder()
                 .account(account)
                 .delivery(delivery)
@@ -72,11 +72,7 @@ public class Order extends BaseEntity {
                 .orderDate(LocalDateTime.now())
                 .build();
 
-        // orderProductList.stream().forEach(orderProduct -> order.addOrderProduct(orderProduct));
-        for (OrderProduct orderProduct : orderProductList) {
-            order.addOrderProduct(orderProduct);
-        }
-
+        orderProductList.forEach(order::addOrderProduct);
         return order;
     }
 

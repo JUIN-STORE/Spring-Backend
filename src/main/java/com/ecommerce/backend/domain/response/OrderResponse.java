@@ -9,9 +9,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 public class OrderResponse {
-
     @Data @Accessors(chain = true)
-    public static class CreateResponse {
+    public static class Create {
         private Long id;
 
         private int grandTotal;
@@ -19,8 +18,8 @@ public class OrderResponse {
         @Enumerated(EnumType.STRING)
         private OrderStatus orderStatus; // 주문 상태
 
-        public static CreateResponse fromOrder(Order entity) {
-            return new CreateResponse()
+        public static Create of(Order entity) {
+            return new Create()
                     .setId(entity.getId())
                     .setGrandTotal(entity.getGrandTotal());
         }

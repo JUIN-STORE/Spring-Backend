@@ -44,7 +44,6 @@ public class OrderProduct extends BaseEntity{
         return orderProduct;
     }
 
-    //
     public void fillOrderRelation(Order order) {
         // 기존 Order와의 연관관계 제거
         if (this.order != null) this.order.getOrderProductList().remove(this);

@@ -8,11 +8,12 @@ import lombok.experimental.Accessors;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderRequest {
     @Data @Accessors(chain = true)
-    public static class CreateRequest {
-        private Long productId;
+    public static class Create {
+        private List<Long> productIdList;
 
         private int count;
 
