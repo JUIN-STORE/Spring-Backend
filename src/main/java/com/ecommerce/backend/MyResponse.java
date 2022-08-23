@@ -26,6 +26,12 @@ public class MyResponse<T> {
         this.timeStamp = LocalDateTime.now();
     }
 
+    public MyResponse(HttpStatus result, String message) {
+        this.result = result.value();
+        this.message = message;
+        this.timeStamp = LocalDateTime.now();
+    }
+
     public MyResponse(HttpStatus result, String message, T data) {
         this.result = result.value();
         this.message = message;

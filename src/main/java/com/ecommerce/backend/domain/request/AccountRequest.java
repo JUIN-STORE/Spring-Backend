@@ -8,17 +8,21 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class AccountRequest {
     @Data @Accessors(chain = true)
-    public static class RegisterRequest implements Serializable{
+    public static class SignUp implements Serializable{
         private String email;
 
         private String passwordHash;
 
         private String name;
+
+        @Pattern(regexp = "[0-9]{10,11}", message = "10~11자리의 숫자만 입력가능합니다")
+        private String phoneNumber;
 
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
@@ -27,17 +31,18 @@ public class AccountRequest {
 
         public Account toAccount(){
             return Account.builder()
-                    .email(email)
-                    .passwordHash(SecurityConfig.makePasswordHash(passwordHash))
-                    .name(name)
-                    .accountRole(accountRole)
+                    .email(this.email)
+                    .passwordHash(SecurityConfig.makePasswordHash(this.passwordHash))
+                    .name(this.name)
+                    .phoneNumber(this.phoneNumber)
+                    .accountRole(this.accountRole)
                     .lastLogin(LocalDateTime.now())
                     .build();
         }
     }
 
     @Data @Accessors(chain = true)
-    public static class LoginRequest implements Serializable {
+    public static class Login implements Serializable {
         private String email;
         private String passwordHash;
     }

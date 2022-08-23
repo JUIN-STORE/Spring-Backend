@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 public class AccountResponse {
     @Data @Accessors(chain = true)
-    public static class RegisterResponse {
+    public static class SignUp {
         private String email;
 
         private String name;
@@ -21,8 +21,8 @@ public class AccountResponse {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        public static RegisterResponse fromAccount(Account account) {
-            return new RegisterResponse()
+        public static SignUp fromAccount(Account account) {
+            return new SignUp()
                     .setEmail(account.getEmail())
                     .setName(account.getName())
                     .setAccountRole(account.getAccountRole());

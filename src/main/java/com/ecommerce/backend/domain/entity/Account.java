@@ -5,6 +5,7 @@ import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,10 @@ public class Account extends BaseEntity{
     @NotNull
     @Column(nullable = false)
     private String name;
+
+    @NotNull
+    @Pattern(regexp = "[0-9]{10,11}", message = "10~11자리의 숫자만 입력가능합니다")
+    private String phoneNumber;
 
     @NotNull
     @Enumerated(EnumType.STRING)

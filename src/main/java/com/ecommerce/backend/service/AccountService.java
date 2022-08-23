@@ -36,14 +36,15 @@ public class AccountService implements UserDetailsService {
 
     private final CartService cartService;
 
-    private void validateDuplicateAccountEmail(AccountRequest.RegisterRequest request){
+    private void validateDuplicateEmail(AccountRequest.SignUp request){
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
         if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
     }
 
-    public AccountResponse.RegisterResponse saveAccount(AccountRequest.RegisterRequest request) {
-        // 검사
-        validateDuplicateAccountEmail(request);
+    @Transactional
+    public AccountResponse.SignUp save(AccountRequest.SignUp request) {
+        // 이메일 중복 검사
+        validateDuplicateEmail(request);
 
         final Account account = request.toAccount();
         final Address address = request.getAddress().toAddress(account);
@@ -52,7 +53,7 @@ public class AccountService implements UserDetailsService {
         addressRepository.save(address);
         cartService.createCart(account);
 
-        return AccountResponse.RegisterResponse.fromAccount(account);
+        return AccountResponse.SignUp.fromAccount(account);
     }
 
     @Override
@@ -98,5 +99,10 @@ public class AccountService implements UserDetailsService {
     public Account findByPrincipal(Principal principal) {
         final String email = principal.getName();
         return accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public String test(AccountRequest.SignUp request){
+        final Optional<Account> byEmail = accountRepository.findByEmail(request.getEmail());
+        return byEmail.get().toString();
     }
 }

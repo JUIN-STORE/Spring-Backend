@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("/api/accounts/login", "/api/accounts/signup",
+                .antMatchers("/api/accounts/login", "/api/accounts/sign-up",
                         "/api/products", "/api/products/count").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()

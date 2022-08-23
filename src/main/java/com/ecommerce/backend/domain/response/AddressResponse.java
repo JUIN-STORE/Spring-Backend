@@ -13,7 +13,7 @@ public class AddressResponse {
 
         private String street;
 
-        private String zipCode;
+        private Integer zipCode;
 
         private boolean defaultAddress;
 
@@ -35,7 +35,7 @@ public class AddressResponse {
 
         private String street;
 
-        private String zipCode;
+        private Integer zipCode;
 
         public static DeleteResponse fromAddress(Address entity) {
             return new DeleteResponse()

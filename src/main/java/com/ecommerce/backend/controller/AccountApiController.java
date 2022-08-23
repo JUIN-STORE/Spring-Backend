@@ -39,21 +39,21 @@ public class AccountApiController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
-    @PostMapping("/signup")
-    public MyResponse<AccountResponse.RegisterResponse> signup(@RequestBody AccountRequest.RegisterRequest request) {
-        log.debug("POST /api/accounts/signup request: {}", request);
+    @PostMapping("/sign-up")
+    public MyResponse<AccountResponse.SignUp> signUp(@RequestBody AccountRequest.SignUp request) {
+        log.info("POST /api/accounts/sign-up request: {}", request);
 
         try {
-            return new MyResponse<>(HttpStatus.OK, accountService.saveAccount(request));
+            return new MyResponse<>(HttpStatus.OK, accountService.save(request));
         } catch (EntityNotFoundException e) {
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage(), null);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @ApiOperation(value = "로그인", notes = "로그인을 한다.")
     @PostMapping("/login")
-    public MyResponse<AccountResponse.LoginResponse> login(@RequestBody AccountRequest.LoginRequest request) {
-        log.debug("POST /api/accounts/login request: {}", request);
+    public MyResponse<AccountResponse.LoginResponse> login(@RequestBody AccountRequest.Login request) {
+        log.info("POST /api/accounts/login request: {}", request);
 
         final String email = request.getEmail();
         final String password = request.getPasswordHash();

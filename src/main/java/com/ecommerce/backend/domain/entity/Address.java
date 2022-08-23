@@ -21,7 +21,7 @@ public class Address {
 
     private String street;
 
-    private String zipCode;
+    private Integer zipCode;
 
     private boolean defaultAddress; // 기본 주소로 쓸 건지
 
