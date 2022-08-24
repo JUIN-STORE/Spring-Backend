@@ -16,12 +16,24 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+/** Service Naming
+ * C -> save
+ * R -> findBy~
+ * U -> update
+ * D -> delete
+ */
+
+/** Service Rule
+ *  Declare only ONE Repository and pull the others from the Service
+ */
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductImageService {
-    private final FileUploadComponent fileUploadComponent;
     private final ProductImageRepository productImageRepository;
+
+    private final FileUploadComponent fileUploadComponent;
 
     @Value("${productImageLocation}")
     private String productImageLocation;

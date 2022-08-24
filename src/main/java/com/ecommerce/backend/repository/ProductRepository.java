@@ -20,4 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
                     "WHERE product_id IN (:productIdList)"
     )
     List<Product> findByIdIn(@Param("productIdList") List<Long> productIdList);
+
+    // 참고 https://yonguri.tistory.com/122
+    List<Product> findByProductNameContaining(String productName);
 }

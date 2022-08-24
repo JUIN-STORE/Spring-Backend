@@ -101,9 +101,4 @@ public class AccountService implements UserDetailsService {
         final String email = principal.getName();
         return accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
     }
-
-    public String test(AccountRequest.SignUp request){
-        final Optional<Account> byEmail = accountRepository.findByEmail(request.getEmail());
-        return byEmail.get().toString();
-    }
 }

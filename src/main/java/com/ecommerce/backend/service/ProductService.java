@@ -88,4 +88,8 @@ public class ProductService {
     public Long count(){
         return productRepository.count();
     }
+
+    public List<Product> search(String searchString) {
+        return productRepository.findByProductNameContaining(searchString);
+    }
 }
