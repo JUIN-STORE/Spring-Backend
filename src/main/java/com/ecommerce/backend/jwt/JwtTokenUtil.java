@@ -74,12 +74,12 @@ public class JwtTokenUtil implements Serializable {
     /**
      * username으로 토큰생성
      *
-     * @param userDetails
+     * @param userName
      * @return
      */
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
+        return doGenerateToken(claims, userName);
     }
 
     /**

@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final AccountService accountService;
     private final JwtTokenUtil jwtTokenUtil;

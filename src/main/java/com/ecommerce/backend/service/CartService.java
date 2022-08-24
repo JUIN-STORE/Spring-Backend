@@ -24,4 +24,8 @@ public class CartService {
         final Cart cart = Cart.createCart(account);
         cartRepository.save(cart);
     }
+
+    public void delete(Account account) {
+        cartRepository.delete(account.getCart());
+    }
 }

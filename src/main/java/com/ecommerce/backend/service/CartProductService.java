@@ -131,4 +131,20 @@ public class CartProductService {
 
         return null;
     }
+
+    @Transactional
+    public  List<CartProductResponse.Buy> readBuyInfoCart(List<Long> productIdList, Principal principal) {
+        final Cart cart = check(principal);
+
+        final List<Product> productList = productService.findByIdIn(productIdList);
+        final List<CartProductResponse.Buy> readAllResponse = new ArrayList<>();
+
+        // FIXME: 쿼리 N번
+        for (Product product : productList) {
+            CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
+            readAllResponse.add(CartProductResponse.Buy.fromCartProduct(product, cartProduct.getCount()));
+        }
+
+        return readAllResponse;
+    }
 }

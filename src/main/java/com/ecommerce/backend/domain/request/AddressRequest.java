@@ -14,7 +14,7 @@ public class AddressRequest {
 
         private String street;
 
-        private String zipCode;
+        private Integer zipCode;
 
         public Address toAddress(Account account){
             return Address.builder()
@@ -33,7 +33,7 @@ public class AddressRequest {
 
         private String street;
 
-        private String zipCode;
+        private Integer zipCode;
 
         private boolean defaultAddress;
 

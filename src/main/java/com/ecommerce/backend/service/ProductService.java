@@ -25,11 +25,16 @@ import java.util.List;
  * D -> delete
  */
 
+/** Service Rule
+ *  Declare only ONE Repository and pull the others from the Service
+ */
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+
     private final ProductImageService productImageService;
 
     public Long saveProduct(ProductRequest.CreateRequest request, List<MultipartFile> productImageFileList) throws IOException {
@@ -37,16 +42,16 @@ public class ProductService {
         final Product product = request.toProduct();
         productRepository.save(product);
 
+        boolean isThumbnail;
+
         // 상품 이미지 등록
         for (int i = 0; i < productImageFileList.size(); i++){
             ProductImageRequest.CreateRequest createRequest = new ProductImageRequest.CreateRequest();
 
-            if (i == 0) {
-                createRequest.setThumbnail(true);
-            }
-            else {
-                createRequest.setThumbnail(false);
-            }
+            if (i == 0) isThumbnail = true;
+            else isThumbnail = false;
+
+            createRequest.setThumbnail(isThumbnail);
             productImageService.saveProductImage(createRequest, productImageFileList.get(i), product);
         }
         return product.getId();
@@ -83,5 +88,4 @@ public class ProductService {
     public Long count(){
         return productRepository.count();
     }
-
 }

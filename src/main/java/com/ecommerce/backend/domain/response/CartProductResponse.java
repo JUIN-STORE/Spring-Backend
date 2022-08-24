@@ -63,4 +63,31 @@ public class CartProductResponse {
                     .setCount(cartProduct.getCount());
         }
     }
+
+    @Data @Accessors(chain = true)
+    public static class Buy {
+        private Long productId;
+
+        private String productName;             // 제품의 이름
+
+        private Integer price;                  // 제품의 가격
+
+        private Integer count;                  // 제품의 총 개수
+
+        private String description;             // 제품 설명
+
+        private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
+
+        public static CartProductResponse.Buy fromCartProduct(Product product, int count) {
+            return new CartProductResponse.Buy()
+                    .setProductId(product.getId())
+                    .setProductName(product.getProductName())
+                    .setPrice(product.getPrice())
+                    .setCount(count)
+                    .setDescription(product.getDescription())
+                    .setProductImageList(product.getProductImageList().stream() // 이 시점에 쿼리 나감
+                            .map(ProductImageResponse.Read::fromProduct)
+                            .collect(Collectors.toList()));
+        }
+    }
 }

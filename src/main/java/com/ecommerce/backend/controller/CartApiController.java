@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/carts")
-public class CartApiController {
+class CartApiController {
     private final CartProductService cartProductService;
 
     @ApiOperation(value = "카트에 있는 프로덕트 정보 읽기", notes="카트에 있는 프로덕트 정보를 읽어온다.")
@@ -50,10 +50,17 @@ public class CartApiController {
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
-    @ApiOperation(value = "카트 제거", notes="카트에서 제거한다.")
+    @ApiOperation(value = "카트 제거", notes="카트에 추가된 상품을 제거한다.")
     @DeleteMapping("/clear")
     public MyResponse<Integer> clearCart(@RequestBody CartProductRequest.Clear request, Principal principal) {
         final int deleteCount = cartProductService.deleteCart(request, principal);
         return new MyResponse<>(HttpStatus.OK, deleteCount);
+    }
+
+    @ApiOperation(value = "카트에셔 buy를 클릭했을 때", notes="Order 전 데이터를 읽어온다.")
+    @GetMapping("/buy")
+    public MyResponse<List<CartProductResponse.Buy>> buy(@RequestParam List<Long> productList, Principal principal) {
+        final List<CartProductResponse.Buy> response = cartProductService.readBuyInfoCart(productList, principal);
+        return new MyResponse<>(HttpStatus.OK, response);
     }
 }
