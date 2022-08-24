@@ -1,6 +1,7 @@
 package com.ecommerce.backend.domain.response;
 
 import com.ecommerce.backend.domain.entity.Product;
+import com.ecommerce.backend.domain.entity.ProductImage;
 import com.ecommerce.backend.domain.enums.ProductStatus;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -30,7 +31,8 @@ public class ProductResponse {
         private ProductStatus productStatus;    // 제품의 상태
 
         private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
-
+        
+        // 단건
         public static Read fromProduct(Product product) {
             return new Read()
                     .setId(product.getId())
@@ -43,6 +45,19 @@ public class ProductResponse {
                     .setProductImageList(product.getProductImageList().stream() // 이 시점에 쿼리 나감
                             .map(ProductImageResponse.Read::fromProduct)
                             .collect(Collectors.toList()));
+        }
+
+        // 다건
+        public static Read fromProduct(Product product, ProductImage productImage) {
+            return new Read()
+                    .setId(product.getId())
+                    .setProductName(product.getProductName())
+                    .setPrice(product.getPrice())
+                    .setQuantity(product.getQuantity())
+                    .setSoldCount(product.getSoldCount())
+                    .setDescription(product.getDescription())
+                    .setProductStatus(product.getProductStatus())
+                    .setProductImageList(List.of(ProductImageResponse.Read.fromProduct(productImage)));
         }
     }
 }

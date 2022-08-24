@@ -2,8 +2,10 @@ package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.entity.Product;
+import com.ecommerce.backend.domain.entity.ProductImage;
 import com.ecommerce.backend.domain.request.ProductRequest;
 import com.ecommerce.backend.domain.response.ProductResponse;
+import com.ecommerce.backend.service.ProductImageService;
 import com.ecommerce.backend.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller Naming
@@ -36,7 +39,7 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductApiController {
     private final ProductService productService;
-//    private final ProductImageService productImageService;
+    private final ProductImageService productImageService;
 
     @ApiOperation(value = "관리자 상품 등록", notes = "관리자가 상품을 등록한다.")
     @PostMapping(value = "/admin/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -97,26 +100,30 @@ public class ProductApiController {
         }
     }
 
-    // FIXME: 쿼리 한 방만 날려야 됨. 1+N 발생
     @ApiOperation(value = "전체 상품 읽기", notes = "전체 상품을 읽는다.")
     @GetMapping
     public MyResponse<List<ProductResponse.Read>> readAll(@PageableDefault(size = 10) Pageable pageable) {
+        log.info("GET /api/products pageable: {}", pageable);
+
         final Page<Product> productList = productService.findAll(pageable);
+        final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
+
+        final List<ProductImage> productImageList = productImageService.findAllByProductId(productIdList);
         final List<ProductResponse.Read> readAllResponse = new ArrayList<>();
 
-        for (Product product : productList) {
-            readAllResponse.add(ProductResponse.Read.fromProduct(product));
+        final int size = productImageList.size();
+
+        for (int i = 0; i < size; i++){
+            readAllResponse.add(ProductResponse.Read.fromProduct(productList.getContent().get(i), productImageList.get(i)));
         }
 
         return new MyResponse<>(HttpStatus.OK, readAllResponse);
     }
-
 
     @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
     @GetMapping("/count")
     public Long readCount() {
         return productService.count();
     }
-
 }
 

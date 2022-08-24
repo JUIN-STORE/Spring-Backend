@@ -63,37 +63,38 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public AccountResponse.ReadResponse findById(Long id) {
+    public AccountResponse.Read findById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new); // select * from cart where account_id = ? 쿼리도 나감 (오류)
-        return AccountResponse.ReadResponse.fromAccount(account);
+        return AccountResponse.Read.fromAccount(account);
     }
 
     @Transactional(readOnly = true)
-    public AccountResponse.ReadResponse findByEmail(String email) {
+    public AccountResponse.Read findByEmail(String email) {
         Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        return AccountResponse.ReadResponse.fromAccount(account);
+        return AccountResponse.Read.fromAccount(account);
     }
 
-    public AccountResponse.UpdateResponse update(AccountRequest.UpdateRequest request, Principal principal) {
+    public AccountResponse.Modify update(AccountRequest.Modify request, Principal principal) {
         final String email = principal.getName();
         final Account findAccount = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
         Account account = request.toAccount(findAccount.getId(), email);
         accountRepository.save(account);
 
-        return AccountResponse.UpdateResponse.fromAccount(account);
+        return AccountResponse.Modify.fromAccount(account);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AccountResponse.DeleteResponse delete(Principal principal) {
+    public AccountResponse.Remove delete(Principal principal) {
         final String email = principal.getName();
         final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         final Address address = addressRepository.findByAccountId(account.getId()).orElseThrow(EntityNotFoundException::new);
 
+        cartService.delete(account);
         addressRepository.delete(address);
         accountRepository.delete(account);
 
-        return AccountResponse.DeleteResponse.fromAccount(account);
+        return AccountResponse.Remove.fromAccount(account);
     }
 
     public Account findByPrincipal(Principal principal) {

@@ -51,5 +51,10 @@ public class AddressService {
         addressRepository.delete(address);
         return AddressResponse.DeleteResponse.fromAddress(address);
     }
+
+    public void deleteAccount(Account account) {
+
+    }
+
 }
 

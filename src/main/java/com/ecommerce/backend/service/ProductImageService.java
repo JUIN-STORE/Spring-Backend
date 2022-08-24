@@ -53,8 +53,13 @@ public class ProductImageService {
         return productImageRepository.findByProductId(productId);
     }
 
+    @Transactional()
     public void delete(Long productId) {
         final List<ProductImage> productImageList = this.findById(productId);
         productImageRepository.deleteAll(productImageList);
+    }
+
+    public List<ProductImage> findAllByProductId(List<Long> productIdList) {
+        return productImageRepository.findAllByProductId(productIdList);
     }
 }

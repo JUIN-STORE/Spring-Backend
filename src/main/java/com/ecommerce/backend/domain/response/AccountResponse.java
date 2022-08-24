@@ -30,30 +30,33 @@ public class AccountResponse {
     }
 
     @Data @Accessors(chain = true)
-    public static class ReadResponse {
+    public static class Read {
         private Long id;
 
         private String email;
 
         private String name;
+
+        private String phoneNumber;
 
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
         private AddressResponse.ReadResponse address;
 
-        public static ReadResponse fromAccount(Account account) {
-            return new ReadResponse()
+        public static Read fromAccount(Account account) {
+            return new Read()
                     .setId(account.getId())
                     .setEmail(account.getEmail())
                     .setName(account.getName())
+                    .setPhoneNumber(account.getPhoneNumber())
                     .setAccountRole(account.getAccountRole())
                     .setAddress(AddressResponse.ReadResponse.fromAddress(account.getAddressList().get(0)));
         }
     }
 
     @Data @Accessors(chain = true)
-    public static class DeleteResponse {
+    public static class Remove {
         private Long id;
 
         private String email;
@@ -63,8 +66,8 @@ public class AccountResponse {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        public static DeleteResponse fromAccount(Account account) {
-            return new DeleteResponse()
+        public static Remove fromAccount(Account account) {
+            return new Remove()
                     .setId(account.getId())
                     .setEmail(account.getEmail())
                     .setName(account.getName())
@@ -73,23 +76,25 @@ public class AccountResponse {
     }
 
     @Data @Accessors(chain = true)
-    public static class LoginResponse implements Serializable {
+    public static class Login implements Serializable {
         private String email;
 
         private String token;
 
-        public static LoginResponse fromAccount(String email, String token) {
-            return new LoginResponse()
+        public static Login fromAccount(String email, String token) {
+            return new Login()
                     .setEmail(email)
                     .setToken("Bearer " + token);
         }
     }
 
     @Data @Accessors(chain = true)
-    public static class UpdateResponse {
+    public static class Modify {
         private String email;
 
         private String name;
+
+        private String phoneNumber;
 
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
@@ -97,10 +102,11 @@ public class AccountResponse {
         @LastModifiedDate
         private LocalDateTime updatedAt;
 
-        public static UpdateResponse fromAccount(Account account) {
-            return new UpdateResponse()
+        public static Modify fromAccount(Account account) {
+            return new Modify()
                     .setEmail(account.getEmail())
                     .setName(account.getName())
+                    .setPhoneNumber(account.getPhoneNumber())
                     .setAccountRole(account.getAccountRole())
                     .setUpdatedAt(LocalDateTime.now());
         }

@@ -48,21 +48,24 @@ public class AccountRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class UpdateRequest {
+    public static class Modify {
+        private String passwordHash;
+
         private String name;
 
-        private String passwordHash;
+        private String phoneNumber;
 
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        public Account toAccount(Long pId, String pEmail) {
+        public Account toAccount(Long id, String email) {
             return Account.builder()
-                    .id(pId)
-                    .email(pEmail)
-                    .name(name)
-                    .passwordHash(SecurityConfig.makePasswordHash(passwordHash))
-                    .accountRole(accountRole)
+                    .id(id)
+                    .email(email)
+                    .name(this.name)
+                    .phoneNumber(this.phoneNumber)
+                    .passwordHash(SecurityConfig.makePasswordHash(this.passwordHash))
+                    .accountRole(this.accountRole)
                     .build();
         }
     }

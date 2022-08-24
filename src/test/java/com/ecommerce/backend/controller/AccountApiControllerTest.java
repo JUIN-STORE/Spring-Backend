@@ -61,6 +61,7 @@ class AccountApiControllerTest {
         signUp.setAddress(registerRequest);
 
         final String json = objectMapper.writeValueAsString(signUp);
+
         // when
         final ResultActions perform = mockMvc.perform(post(ACCOUNT_END_POINT + "/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
