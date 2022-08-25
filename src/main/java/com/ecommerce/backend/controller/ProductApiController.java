@@ -126,10 +126,10 @@ public class ProductApiController {
         return productService.count();
     }
 
-    @ApiOperation(value = "상품 검색하기", notes = "상품을 상품 7 ㅇㅇ이름으로 검색해서 찾는다")
+    @ApiOperation(value = "상품 검색하기", notes = "상품을 상품이름으로 검색해서 찾는다")
     @GetMapping("/search")
-    public MyResponse<List<ProductResponse.Read>> search(@RequestParam("productName") String searchString) {
-        final List<Product> productList = productService.search(searchString);
+    public MyResponse<List<ProductResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable, @RequestParam("productName") String searchString) {
+        final Page<Product> productList = productService.search(pageable, searchString);
         final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
 
         final List<ProductImage> productImageList = productImageService.findAllByProductId(productIdList);
@@ -138,7 +138,7 @@ public class ProductApiController {
         final int size = productImageList.size();
 
         for (int i = 0; i < size; i++){
-            readAllResponse.add(ProductResponse.Read.fromProduct(productList.get(i), productImageList.get(i)));
+            readAllResponse.add(ProductResponse.Read.fromProduct(productList.getContent().get(i), productImageList.get(i)));
         }
 
         return new MyResponse<>(HttpStatus.OK, readAllResponse);

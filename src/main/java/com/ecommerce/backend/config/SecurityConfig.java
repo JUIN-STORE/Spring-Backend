@@ -34,7 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtRequestFilter jwtRequestFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    /** 비밀번호 해시
+    /**
+     * 비밀번호 해시
+     *
      * @return
      */
     @Bean
@@ -53,32 +55,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    /** 인증방법
-     * @param auth 
+    /**
+     * 인증방법
+     *
+     * @param auth
      * @throws Exception
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-          auth.userDetailsService(accountService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(accountService).passwordEncoder(passwordEncoder());
     }
 
-    /** 시큐리티가 무시
-     * @param webSecurity 
+    /**
+     * 시큐리티가 무시
+     *
+     * @param webSecurity
      */
     @Override
     public void configure(WebSecurity webSecurity) {
         webSecurity.ignoring().antMatchers(
-         "/css/**",
-                    "/js/**",
-                    "/img/**",
-                    "/lib/**",
-                    "/v2/api-docs",
-                    "/configuration/ui",
-                    "/swagger-resources/**",
-                    "/configuration/security",
-//                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "/webjars/**"
+                "/css/**",
+                "/js/**",
+                "/img/**",
+                "/lib/**",
+                "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui/**",
+                "/webjars/**"
         );
     }
 
@@ -90,10 +95,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // security 기본 /login 페이지 사용 안 함.
         httpSecurity.httpBasic().disable();
 
+        final String[] whitelist = new String[]{
+                "/api/accounts/login",
+                "/api/accounts/sign-up",
+                "/api/products",
+                "/api/products/search/**",
+                "/api/products/count"
+        };
+
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("/api/accounts/login", "/api/accounts/sign-up",
-                        "/api/products", "/api/products/count").permitAll()
+                .antMatchers(whitelist).permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -104,7 +116,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    // FIXME: 이미 프론트에서 처리하여 메서드만 남겨둠.
     public static String makePasswordHash(String password) {
         return new BCryptPasswordEncoder().encode(password);
     }
