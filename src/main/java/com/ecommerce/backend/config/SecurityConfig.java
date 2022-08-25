@@ -99,8 +99,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/accounts/login",
                 "/api/accounts/sign-up",
                 "/api/products",
+                "/api/products/count",
                 "/api/products/search/**",
-                "/api/products/count"
+                "/api/products/search/count"
         };
 
         httpSecurity

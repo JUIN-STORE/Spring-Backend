@@ -23,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 
     // 참고 https://yonguri.tistory.com/122
     Page<Product> findByProductNameContaining(Pageable pageable, String productName);
+
+    Long countByProductNameContaining(String productName);
 }

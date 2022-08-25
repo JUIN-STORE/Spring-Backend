@@ -89,7 +89,11 @@ public class ProductService {
         return productRepository.count();
     }
 
-    public Page<Product> search(Pageable pageable, String searchString) {
-        return productRepository.findByProductNameContaining(pageable, searchString);
+    public Page<Product> search(Pageable pageable, String searchTitle) {
+        return productRepository.findByProductNameContaining(pageable, searchTitle);
+    }
+
+    public Long searchCount(String searchTitle){
+        return productRepository.countByProductNameContaining(searchTitle);
     }
 }
