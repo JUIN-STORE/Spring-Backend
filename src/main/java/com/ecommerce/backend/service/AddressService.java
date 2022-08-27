@@ -31,6 +31,10 @@ public class AddressService {
         return addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
     }
 
+    public void addAddress(Address address){
+        addressRepository.save(address);
+    }
+
     public void addAddress(AddressRequest.Register request, String email){
         Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
@@ -54,5 +58,12 @@ public class AddressService {
 
     }
 
+    public Address findByAccountId(Long accountId) {
+        return addressRepository.findByAccountId(accountId).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public void remove(Address address) {
+        addressRepository.delete(address);
+    }
 }
 

@@ -2,7 +2,10 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.*;
 import com.ecommerce.backend.domain.request.OrderRequest;
-import com.ecommerce.backend.repository.*;
+import com.ecommerce.backend.repository.AddressRepository;
+import com.ecommerce.backend.repository.DeliveryRepository;
+import com.ecommerce.backend.repository.OrderProductRepository;
+import com.ecommerce.backend.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,20 +26,20 @@ import java.util.stream.Collectors;
 @Service("orderService")
 @RequiredArgsConstructor
 public class OrderService{
-    private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
     private final DeliveryRepository deliveryRepository;
 
+    private final AccountService accountService;
     private final ProductService productService;
 
     public Order addOrder(OrderRequest.Create request, String email){
         // 엔티티 조회
-        final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        final Account account = accountService.readByEmail(email);
         final Address address = addressRepository.findByAccountId(account.getId()).orElseThrow(EntityNotFoundException::new);
         final List<Long> productIdList = request.getProductIdList();
-        final List<Product> productList = productIdList.stream().map(productService::findByProductId).collect(Collectors.toList());
+        final List<Product> productList = productIdList.stream().map(productService::readByProductId).collect(Collectors.toList());
 
         // 배송 정보 생성
         final Delivery delivery = Delivery.createDelivery(address);

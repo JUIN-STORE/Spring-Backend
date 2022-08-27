@@ -3,9 +3,7 @@ package com.ecommerce.backend.service;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.request.AccountRequest;
-import com.ecommerce.backend.domain.response.AccountResponse;
 import com.ecommerce.backend.repository.AccountRepository;
-import com.ecommerce.backend.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,8 +23,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
-    private final AddressRepository addressRepository;
 
+    private final AddressService addressService;
     private final CartService cartService;
 
     private void validateDuplicateEmail(AccountRequest.SignUp request){
@@ -43,7 +41,8 @@ public class AccountService implements UserDetailsService {
         final Address address = request.getAddress().toAddress(account);
 
         accountRepository.save(account);
-        addressRepository.save(address);
+
+        addressService.addAddress(address);
         cartService.addCart(account);
 
         return account;
@@ -56,9 +55,8 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public AccountResponse.Read findById(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new); // select * from cart where account_id = ? 쿼리도 나감 (오류)
-        return AccountResponse.Read.from(account);
+    public Account readById(Long id) {
+        return accountRepository.findById(id).orElseThrow(EntityNotFoundException::new); // select * from cart where account_id = ? 쿼리도 나감 (오류)
     }
 
     @Transactional(readOnly = true)
@@ -80,10 +78,11 @@ public class AccountService implements UserDetailsService {
     public Account removeAccount(Principal principal) {
         final String email = principal.getName();
         final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        final Address address = addressRepository.findByAccountId(account.getId()).orElseThrow(EntityNotFoundException::new);
+        final Address address = addressService.readById(account.getId());
 
-        cartService.delete(account);
-        addressRepository.delete(address);
+        cartService.remove(account);
+        addressService.remove(address);
+
         accountRepository.delete(account);
 
         return account;

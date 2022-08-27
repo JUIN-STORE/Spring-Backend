@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CartProductRepository extends JpaRepository<CartProduct, Long> {
@@ -18,7 +19,7 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Long> 
                     "FROM cart_product " +
                     "WHERE cart_id=:cartId"
     )
-    List<CartProduct> findByCartIdIn(@Param("cartId") Long cartId);
+    Optional<List<CartProduct>> findByCartIdIn(@Param("cartId") Long cartId);
 
     CartProduct findByCartIdAndProductId(Long cartId, Long productId);
 
@@ -27,5 +28,11 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Long> 
     @Query(value = "DELETE FROM cart_product WHERE cart_id = :cartId and product_id = :productId", nativeQuery = true)
     int deleteByCartIdAndProductId(@Param("cartId") Long cartId, @Param("productId") Long productId);
 
-
+    @Query(nativeQuery = true,
+            value = "SELECT * " +
+                    "FROM cart_product " +
+                    "WHERE cart_id = :cartId AND product_id IN (:productIdList)"
+    )
+    List<CartProduct> findByCartIdListAndProductIdList(@Param("cartId") Long cartId,
+                                                   @Param("productIdList") List<Long> productIdList);
 }

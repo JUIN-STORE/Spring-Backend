@@ -2,12 +2,12 @@ package com.ecommerce.backend.domain.response;
 
 import com.ecommerce.backend.domain.entity.CartProduct;
 import com.ecommerce.backend.domain.entity.Product;
+import com.ecommerce.backend.domain.entity.ProductImage;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CartProductResponse {
     @Data @Accessors(chain = true)
@@ -24,16 +24,14 @@ public class CartProductResponse {
 
         private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
 
-        public static CartProductResponse.Read from(Product product, int count) {
+        public static CartProductResponse.Read from(Product product, ProductImage productImage, int count) {
             return new CartProductResponse.Read()
                     .setProductId(product.getId())
                     .setProductName(product.getProductName())
                     .setPrice(product.getPrice())
                     .setCount(count)
                     .setDescription(product.getDescription())
-                    .setProductImageList(product.getProductImageList().stream() // 이 시점에 쿼리 나감
-                            .map(ProductImageResponse.Read::of)
-                            .collect(Collectors.toList()));
+                    .setProductImageList(List.of(ProductImageResponse.Read.of(productImage)));
         }
     }
 
@@ -77,16 +75,14 @@ public class CartProductResponse {
 
         private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
 
-        public static CartProductResponse.Buy from(Product product, int count) {
+        public static CartProductResponse.Buy from(Product product, ProductImage productImage, int count) {
             return new CartProductResponse.Buy()
                     .setProductId(product.getId())
                     .setProductName(product.getProductName())
                     .setPrice(product.getPrice())
                     .setCount(count)
                     .setDescription(product.getDescription())
-                    .setProductImageList(product.getProductImageList().stream() // 이 시점에 쿼리 나감
-                            .map(ProductImageResponse.Read::of)
-                            .collect(Collectors.toList()));
+                    .setProductImageList(List.of(ProductImageResponse.Read.of(productImage)));
         }
     }
 }

@@ -58,14 +58,13 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Product findByProductId(Long productId){
-        // 상품 조회
+    public Product readByProductId(Long productId){
         return productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
-    public List<Product> findByIdIn(List<Long> productId){
-        final List<Product> productList = productRepository.findByIdIn(productId);
+    public List<Product> readByIdList(List<Long> productId){
+        final List<Product> productList = productRepository.findByIdList(productId);
 
         if (CollectionUtils.isEmpty(productList)) return Collections.emptyList();
 
@@ -74,18 +73,18 @@ public class ProductService {
 
     @Transactional(rollbackFor = Exception.class)
     public Long remove(Long productId){
-        final Product product = this.findByProductId(productId);
+        final Product product = this.readByProductId(productId);
 
         productImageService.delete(productId);
         productRepository.delete(product);
         return product.getId();
     }
 
-    public Page<Product> findAll(Pageable pageable){
+    public Page<Product> readAll(Pageable pageable){
         return productRepository.findAll(pageable);
     }
 
-    public Long count(){
+    public Long readCount(){
         return productRepository.count();
     }
 
@@ -93,7 +92,7 @@ public class ProductService {
         return productRepository.findByProductNameContaining(pageable, searchTitle);
     }
 
-    public Long searchCount(String searchTitle){
+    public Long readSearchCount(String searchTitle){
         return productRepository.countByProductNameContaining(searchTitle);
     }
 }

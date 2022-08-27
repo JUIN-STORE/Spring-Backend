@@ -33,6 +33,6 @@ public class OrderApiController {
     @DeleteMapping("/cancel/{orderId}")
     public MyResponse<OrderResponse.Create> cancel(@PathVariable Long orderId) {
         orderService.cancelOrder(orderId);
-        return new MyResponse<>(HttpStatus.OK, "POST SUCCESS", null);
+        return new MyResponse<>(HttpStatus.OK, null);
     }
 }
