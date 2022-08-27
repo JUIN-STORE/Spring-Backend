@@ -1,9 +1,6 @@
 package com.ecommerce.backend.service;
 
-import com.ecommerce.backend.domain.entity.Account;
-import com.ecommerce.backend.domain.entity.Cart;
-import com.ecommerce.backend.domain.entity.CartProduct;
-import com.ecommerce.backend.domain.entity.Product;
+import com.ecommerce.backend.domain.entity.*;
 import com.ecommerce.backend.domain.request.CartProductRequest;
 import com.ecommerce.backend.domain.response.CartProductResponse;
 import com.ecommerce.backend.repository.CartProductRepository;
@@ -13,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,40 +30,65 @@ import java.util.Objects;
 public class CartProductService {
     private final AccountService accountService;
     private final ProductService productService;
+    private final ProductImageService productImageService;
 
     private final CartRepository cartRepository;
     private final CartProductRepository cartProductRepository;
 
-    private List<CartProduct> findByCartId(Long cartId) {
-        return cartProductRepository.findByCartIdIn(cartId);
+    private List<CartProduct> readByCartId(Long cartId) {
+        return cartProductRepository.findByCartIdIn(cartId).orElseThrow(EntityNotFoundException::new);
     }
 
+    // FIXME: return entity로 변경해야 됨.
     @Transactional
     public  List<CartProductResponse.Read> readCart(Principal principal) {
         final Cart cart = check(principal);
-        final List<CartProduct> cartProductList = this.findByCartId(cart.getId());
+        final List<CartProduct> cartProductList = readByCartId(cart.getId());
         final List<Long> productIdList = new ArrayList<>();
 
+        // productIdList 추가
         for (CartProduct cartProduct : cartProductList) {
             productIdList.add(cartProduct.getProduct().getId());
         }
 
-        final List<Product> productList = productService.findByIdIn(productIdList);
+        final List<Product> productList = productService.readByIdList(productIdList);
+        final int size = productList.size();
 
-        final List<CartProductResponse.Read> readAllResponse = new ArrayList<>();
+        final List<CartProduct> cartProductListInCart = cartProductRepository.findByCartIdListAndProductIdList(cart.getId(), productIdList);
+        final List<ProductImage> productImageList = productImageService.findAllByProductId(productIdList);
 
-        // FIXME: 쿼리 N번
-        for (Product product : productList) {
-            CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
-            readAllResponse.add(CartProductResponse.Read.from(product, cartProduct.getCount()));
+        final List<CartProductResponse.Read> response = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            response.add(CartProductResponse.Read.from(productList.get(i), productImageList.get(i), cartProductListInCart.get(i).getCount()));
         }
 
-        return readAllResponse;
+        return response;
+    }
+
+    // FIXME: return entity로 변경해야 됨.
+    @Transactional
+    public  List<CartProductResponse.Buy> readBuyInfoCart(List<Long> productIdList, Principal principal) {
+        final Cart cart = check(principal);
+
+        final List<Product> productList = productService.readByIdList(productIdList);
+        final int size = productList.size();
+
+        final List<CartProduct> cartProductListInCart = cartProductRepository.findByCartIdListAndProductIdList(cart.getId(), productIdList);
+        final List<ProductImage> productImageList = productImageService.findAllByProductId(productIdList);
+
+        final List<CartProductResponse.Buy> response = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            response.add(CartProductResponse.Buy.from(productList.get(i), productImageList.get(i), cartProductListInCart.get(i).getCount()));
+        }
+
+        return response;
     }
 
     public CartProductResponse.Create addCart(CartProductRequest.Add request, Principal principal) {
         final Cart cart = check(principal);
-        final Product product = productService.findByProductId(request.getProductId());
+        final Product product = productService.readByProductId(request.getProductId());
 
         CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
 
@@ -82,14 +105,14 @@ public class CartProductService {
 
     private Cart check(Principal principal) {
         final Account account = accountService.findByPrincipal(principal);
-        return this.findByAccountId(account.getId());
+        return this.readByAccountId(account.getId());
     }
 
-    private Cart findByAccountId(long cartId) {
+    private Cart readByAccountId(long cartId) {
         return cartRepository.findByAccountId(cartId);
     }
 
-    private CartProduct findById(long cartId) {
+    private CartProduct readById(long cartId) {
         return cartProductRepository.findById(cartId).get();
     }
 
@@ -106,45 +129,11 @@ public class CartProductService {
 
     public int updateQuantity(CartProductRequest.Update request, Principal principal) {
         final Cart cart = check(principal);
-        final Product product = productService.findByProductId(request.getProductId());
+        final Product product = productService.readByProductId(request.getProductId());
         final CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
         final CartProduct save = CartProduct.createCartProduct(cartProduct.getId(), product, cart, request.getCount());
 
         cartProductRepository.save(save);
         return save.getCount();
-    }
-
-
-    private CartProduct findByCartIdAndProductId(Object request, Principal principal) {
-        final Cart cart = check(principal);
-        Product product = null;
-
-        if (request instanceof CartProductRequest.Add)
-            product = productService.findByProductId(((CartProductRequest.Add) request).getProductId());
-        if (request instanceof CartProductRequest.Update)
-            product = productService.findByProductId(((CartProductRequest.Update) request).getProductId());
-
-        if (Objects.nonNull(product)) {
-            final CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
-            return cartProduct;
-        }
-
-        return null;
-    }
-
-    @Transactional
-    public  List<CartProductResponse.Buy> readBuyInfoCart(List<Long> productIdList, Principal principal) {
-        final Cart cart = check(principal);
-
-        final List<Product> productList = productService.findByIdIn(productIdList);
-        final List<CartProductResponse.Buy> readAllResponse = new ArrayList<>();
-
-        // FIXME: 쿼리 N번
-        for (Product product : productList) {
-            CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
-            readAllResponse.add(CartProductResponse.Buy.from(product, cartProduct.getCount()));
-        }
-
-        return readAllResponse;
     }
 }

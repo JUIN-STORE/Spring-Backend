@@ -27,14 +27,15 @@ public class AddressApiController {
     @PostMapping("/new")
     public MyResponse<Void> newAddress(@RequestBody AddressRequest.Register request, Principal principal) {
         final String email = principal.getName();
+
         log.info("POST /api/addresses/create -> email: {}, request: {}", email, request);
 
         try {
             addressService.addAddress(request, email);
-            return new MyResponse<>(HttpStatus.OK, "주소 추가 성공", null);
+            return new MyResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
             log.warn("POST /api/addresses/create -> email: {}, request: {} EntityNotFoundException", email, request);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, "POST FAIL", null);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, null);
         }
     }
 

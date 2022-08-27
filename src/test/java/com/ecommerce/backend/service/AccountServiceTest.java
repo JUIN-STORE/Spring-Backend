@@ -1,9 +1,10 @@
 package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
+import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
+import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.repository.AccountRepository;
-import com.ecommerce.backend.repository.AddressRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,10 +25,10 @@ import static org.mockito.BDDMockito.given;
 class AccountServiceTest {
 
     @InjectMocks
-    private AccountService mockAccountService;
+    private AccountService sut;
 
     @Mock private AccountRepository mockAccountRepository;
-    @Mock private AddressRepository mockAddressRepository;
+    @Mock private AddressService mockAddressService;
     @Mock private CartService mockCartService;
 
     @Test
@@ -46,7 +47,7 @@ class AccountServiceTest {
         given(mockAccountRepository.findByEmail(anyString())).willReturn(Optional.of(entity));
 
         // when
-        EntityExistsException actual = Assertions.assertThrows(EntityExistsException.class, () -> mockAccountService.add(request));
+        EntityExistsException actual = Assertions.assertThrows(EntityExistsException.class, () -> sut.add(request));
 
         // then
         assertEquals(expected, actual.getMessage());

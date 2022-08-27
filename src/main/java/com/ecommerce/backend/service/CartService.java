@@ -25,7 +25,7 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    public void delete(Account account) {
+    public void remove(Account account) {
         cartRepository.delete(account.getCart());
     }
 }

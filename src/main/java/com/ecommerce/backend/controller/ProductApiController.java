@@ -55,7 +55,7 @@ public class ProductApiController {
         log.info("GET /api/products/admin/{productId} productId: {}", productId);
 
         try {
-            final Product product = productService.findByProductId(productId);
+            final Product product = productService.readByProductId(productId);
             final ProductResponse.Read response = ProductResponse.Read.from(product);
 
             return new MyResponse<>(HttpStatus.OK, "상품 읽기 성공", response);
@@ -85,7 +85,7 @@ public class ProductApiController {
         log.info("POST /api/products/{productId} productId: {}", productId);
 
         try {
-            final Product product = productService.findByProductId(productId);
+            final Product product = productService.readByProductId(productId);
             final ProductResponse.Read read = ProductResponse.Read.from(product);
 
             return new MyResponse<>(HttpStatus.OK, read);
@@ -100,7 +100,7 @@ public class ProductApiController {
     public MyResponse<List<ProductResponse.Read>> all(@PageableDefault(size = 10) Pageable pageable) {
         log.info("GET /api/products pageable: {}", pageable);
 
-        final Page<Product> productList = productService.findAll(pageable);
+        final Page<Product> productList = productService.readAll(pageable);
         final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
 
         final List<ProductImage> productImageList = productImageService.findAllByProductId(productIdList);
@@ -118,7 +118,7 @@ public class ProductApiController {
     @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
     @GetMapping("/count")
     public Long readCount() {
-        return productService.count();
+        return productService.readCount();
     }
 
     @ApiOperation(value = "상품 검색하기", notes = "상품을 상품이름으로 검색해서 찾는다")
@@ -142,7 +142,7 @@ public class ProductApiController {
     @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
     @GetMapping("/search/count")
     public Long readSearchCount(@RequestParam("productName") String searchTitle) {
-        return productService.searchCount(searchTitle);
+        return productService.readSearchCount(searchTitle);
     }
 }
 

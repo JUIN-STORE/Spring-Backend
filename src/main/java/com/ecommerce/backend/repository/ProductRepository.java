@@ -19,7 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
                     "FROM product " +
                     "WHERE product_id IN (:productIdList)"
     )
-    List<Product> findByIdIn(@Param("productIdList") List<Long> productIdList);
+    List<Product> findByIdList(@Param("productIdList") List<Long> productIdList);
 
     // 참고 https://yonguri.tistory.com/122
     Page<Product> findByProductNameContaining(Pageable pageable, String productName);
