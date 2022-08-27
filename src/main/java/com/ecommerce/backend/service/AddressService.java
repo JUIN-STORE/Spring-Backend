@@ -3,7 +3,6 @@ package com.ecommerce.backend.service;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.request.AddressRequest;
-import com.ecommerce.backend.domain.response.AddressResponse;
 import com.ecommerce.backend.repository.AccountRepository;
 import com.ecommerce.backend.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,28 +27,27 @@ public class AddressService {
     private final AddressRepository addressRepository;
 
     @Transactional(readOnly = true)
-    public AddressResponse.ReadResponse findById(Long addressId){
-        Address address = addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
-        return AddressResponse.ReadResponse.fromAddress(address);
+    public Address readById(Long addressId){
+        return addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
     }
 
-    public void save(AddressRequest.RegisterRequest request, String email){
+    public void addAddress(AddressRequest.Register request, String email){
         Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
         Address address = request.toAddress(account);
         addressRepository.save(address);
     }
 
-    public void update(Long addressId, AddressRequest.UpdateRequest request){
+    public void update(Long addressId, AddressRequest.Update request){
 //        final Address address = request.toAddress(addressId);
 //
 //        addressRepository.save(address);
     }
 
-    public AddressResponse.DeleteResponse delete(Long addressId) {
+    public Address remove(Long addressId) {
         Address address = addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
         addressRepository.delete(address);
-        return AddressResponse.DeleteResponse.fromAddress(address);
+        return address;
     }
 
     public void deleteAccount(Account account) {

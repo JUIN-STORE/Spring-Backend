@@ -24,15 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Controller Naming
- * C -> create
- * R -> read
- * U -> modify
- * D -> remove
- */
-
-@Api(tags = {"03. Product"})
+@Api(tags = {"05. Product"})
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -43,14 +35,14 @@ public class ProductApiController {
 
     @ApiOperation(value = "관리자 상품 등록", notes = "관리자가 상품을 등록한다.")
     @PostMapping(value = "/admin/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public MyResponse<Long> register(@RequestPart ProductRequest.CreateRequest request,
+    public MyResponse<Long> register(@RequestPart ProductRequest.Create request,
                                      @RequestPart("fileList") List<MultipartFile> productImageFileList) {
         log.info("POST /api/products/admin/register request: {}", request);
 
         try {
-            final Long aLong = productService.saveProduct(request, productImageFileList);
+            final Long response = productService.add(request, productImageFileList);
 
-            return new MyResponse<>(HttpStatus.OK, aLong);
+            return new MyResponse<>(HttpStatus.OK, response);
         } catch (Exception e) {
             log.warn("파일 등록에 실패하였습니다.");
             return new MyResponse<>(HttpStatus.FORBIDDEN, null);
@@ -64,8 +56,9 @@ public class ProductApiController {
 
         try {
             final Product product = productService.findByProductId(productId);
-            final ProductResponse.Read read = ProductResponse.Read.fromProduct(product);
-            return new MyResponse<>(HttpStatus.OK, "상품 읽기 성공", read);
+            final ProductResponse.Read response = ProductResponse.Read.from(product);
+
+            return new MyResponse<>(HttpStatus.OK, "상품 읽기 성공", response);
         } catch (Exception e) {
             return null;
         }
@@ -77,7 +70,9 @@ public class ProductApiController {
         log.info("DELETE /api/products/admin/{productId} productId: {}", productId);
 
         try {
-            return new MyResponse<>(HttpStatus.OK, productService.delete(productId));
+            final Long response = productService.remove(productId);
+
+            return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("EntityNotFoundException 발생");
             return null;
@@ -86,12 +81,12 @@ public class ProductApiController {
 
     @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
     @GetMapping("/{productId}")
-    public MyResponse<ProductResponse.Read> read(@PathVariable Long productId) {
+    public MyResponse<ProductResponse.Read> one(@PathVariable Long productId) {
         log.info("POST /api/products/{productId} productId: {}", productId);
 
         try {
             final Product product = productService.findByProductId(productId);
-            final ProductResponse.Read read = ProductResponse.Read.fromProduct(product);
+            final ProductResponse.Read read = ProductResponse.Read.from(product);
 
             return new MyResponse<>(HttpStatus.OK, read);
         } catch (Exception e) {
@@ -102,7 +97,7 @@ public class ProductApiController {
 
     @ApiOperation(value = "전체 상품 읽기", notes = "전체 상품을 읽는다.")
     @GetMapping
-    public MyResponse<List<ProductResponse.Read>> readAll(@PageableDefault(size = 10) Pageable pageable) {
+    public MyResponse<List<ProductResponse.Read>> all(@PageableDefault(size = 10) Pageable pageable) {
         log.info("GET /api/products pageable: {}", pageable);
 
         final Page<Product> productList = productService.findAll(pageable);
@@ -114,7 +109,7 @@ public class ProductApiController {
         final int size = productImageList.size();
 
         for (int i = 0; i < size; i++){
-            readAllResponse.add(ProductResponse.Read.fromProduct(productList.getContent().get(i), productImageList.get(i)));
+            readAllResponse.add(ProductResponse.Read.of(productList.getContent().get(i), productImageList.get(i)));
         }
 
         return new MyResponse<>(HttpStatus.OK, readAllResponse);
@@ -138,7 +133,7 @@ public class ProductApiController {
         final int size = productImageList.size();
 
         for (int i = 0; i < size; i++){
-            readAllResponse.add(ProductResponse.Read.fromProduct(productList.getContent().get(i), productImageList.get(i)));
+            readAllResponse.add(ProductResponse.Read.of(productList.getContent().get(i), productImageList.get(i)));
         }
 
         return new MyResponse<>(HttpStatus.OK, readAllResponse);

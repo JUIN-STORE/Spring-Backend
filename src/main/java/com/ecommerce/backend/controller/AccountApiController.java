@@ -1,6 +1,7 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.response.AccountResponse;
 import com.ecommerce.backend.jwt.JwtTokenUtil;
@@ -20,13 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 
-/** Controller Naming
- * C -> create
- * R -> read
- * U -> modify
- * D -> remove
- */
-
 @Api(tags = {"01. Account"})
 @Slf4j
 @RestController
@@ -43,7 +37,10 @@ public class AccountApiController {
         log.info("POST /api/accounts/sign-up request: {}", request);
 
         try {
-            return new MyResponse<>(HttpStatus.OK, accountService.save(request));
+            final Account account = accountService.add(request);
+            final AccountResponse.SignUp response = AccountResponse.SignUp.from(account);
+
+            return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -61,7 +58,7 @@ public class AccountApiController {
             // 이 시점에 １번　쿼리 나감.
             final Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             final String token = jwtTokenUtil.generateToken(authentication.getName());
-            final AccountResponse.Login response = AccountResponse.Login.fromAccount(email, token);
+            final AccountResponse.Login response = AccountResponse.Login.of(email, token);
 
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (Exception e) {
@@ -76,7 +73,10 @@ public class AccountApiController {
         log.info("POST /api/accounts/profile principal: {}", principal);
 
         try {
-            return new MyResponse<>(HttpStatus.OK, accountService.findByEmail(principal.getName()));
+            final Account account = accountService.readByEmail(principal.getName());
+            final AccountResponse.Read response = AccountResponse.Read.from(account);
+
+            return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("EntityNotFoundException - GET /api/accounts/profile principal: {}", principal);
             return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
@@ -85,24 +85,31 @@ public class AccountApiController {
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
     @PatchMapping("/modify")
-    public MyResponse<AccountResponse.Modify> modify(@RequestBody AccountRequest.Modify request, Principal principal) {
+    public MyResponse<AccountResponse.Update> update(@RequestBody AccountRequest.Update request, Principal principal) {
         log.debug("Patch /api/accounts/modify request: {}", request);
 
         try{
-            return new MyResponse<>(HttpStatus.OK, accountService.update(request, principal));
+            final Account account = accountService.modifyAccount(request, principal);
+            final AccountResponse.Update response = AccountResponse.Update.from(account);
+
+            return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("EntityNotFoundException - Patch /api/accounts/modify request: {}", request);
             return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
+    // FIXME: 엔드포인트 변경해야 됨.
     @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
     @DeleteMapping("/remove")
-    public MyResponse<AccountResponse.Remove> remove(Principal principal) {
+    public MyResponse<AccountResponse.Delete> delete(Principal principal) {
         log.debug("Delete /api/accounts/{id} principal: {}", principal);
 
         try {
-            return new MyResponse<>(HttpStatus.OK, accountService.delete(principal));
+            final Account account = accountService.removeAccount(principal);
+            final AccountResponse.Delete response = AccountResponse.Delete.from(account);
+
+            return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }

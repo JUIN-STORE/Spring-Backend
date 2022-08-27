@@ -57,13 +57,13 @@ public class CartProductService {
         // FIXME: 쿼리 N번
         for (Product product : productList) {
             CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
-            readAllResponse.add(CartProductResponse.Read.fromCartProduct(product, cartProduct.getCount()));
+            readAllResponse.add(CartProductResponse.Read.from(product, cartProduct.getCount()));
         }
 
         return readAllResponse;
     }
 
-    public CartProductResponse.Add addCart(CartProductRequest.Add request, Principal principal) {
+    public CartProductResponse.Create addCart(CartProductRequest.Add request, Principal principal) {
         final Cart cart = check(principal);
         final Product product = productService.findByProductId(request.getProductId());
 
@@ -77,7 +77,7 @@ public class CartProductService {
 
         final CartProduct save = cartProductRepository.save(cartProduct);
 
-        return CartProductResponse.Add.fromCartProduct(save);
+        return CartProductResponse.Create.of(save);
     }
 
     private Cart check(Principal principal) {
@@ -142,7 +142,7 @@ public class CartProductService {
         // FIXME: 쿼리 N번
         for (Product product : productList) {
             CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
-            readAllResponse.add(CartProductResponse.Buy.fromCartProduct(product, cartProduct.getCount()));
+            readAllResponse.add(CartProductResponse.Buy.from(product, cartProduct.getCount()));
         }
 
         return readAllResponse;

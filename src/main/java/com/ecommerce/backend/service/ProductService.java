@@ -37,7 +37,7 @@ public class ProductService {
 
     private final ProductImageService productImageService;
 
-    public Long saveProduct(ProductRequest.CreateRequest request, List<MultipartFile> productImageFileList) throws IOException {
+    public Long add(ProductRequest.Create request, List<MultipartFile> productImageFileList) throws IOException {
         // 상품 등록
         final Product product = request.toProduct();
         productRepository.save(product);
@@ -46,7 +46,7 @@ public class ProductService {
 
         // 상품 이미지 등록
         for (int i = 0; i < productImageFileList.size(); i++){
-            ProductImageRequest.CreateRequest createRequest = new ProductImageRequest.CreateRequest();
+            ProductImageRequest.Create createRequest = new ProductImageRequest.Create();
 
             if (i == 0) isThumbnail = true;
             else isThumbnail = false;
@@ -73,7 +73,7 @@ public class ProductService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Long delete(Long productId){
+    public Long remove(Long productId){
         final Product product = this.findByProductId(productId);
 
         productImageService.delete(productId);

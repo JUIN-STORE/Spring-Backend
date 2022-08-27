@@ -53,7 +53,7 @@ class AccountApiControllerTest {
         signUp.setPhoneNumber("010-1111-2222");
         signUp.setAccountRole(AccountRole.ADMIN);
 
-        var registerRequest = new AddressRequest.RegisterRequest();
+        var registerRequest = new AddressRequest.Register();
         registerRequest.setCity("도시");
         registerRequest.setStreet("상세 주소");
         registerRequest.setZipCode(12345);

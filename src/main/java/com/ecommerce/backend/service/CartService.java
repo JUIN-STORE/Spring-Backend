@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /** Service Naming
- * C -> save
+ * C -> add
  * R -> findBy~
  * U -> update
  * D -> delete
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class CartService {
     private final CartRepository cartRepository;
 
-    public void createCart(Account account){
+    public void addCart(Account account){
         final Cart cart = Cart.createCart(account);
         cartRepository.save(cart);
     }

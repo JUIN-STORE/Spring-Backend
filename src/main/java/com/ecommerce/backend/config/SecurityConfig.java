@@ -78,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/js/**",
                 "/img/**",
                 "/lib/**",
-                "/v2/api-docs",
+                "/v3/api-docs",
                 "/configuration/ui",
                 "/swagger-resources/**",
                 "/configuration/security",
@@ -99,6 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/accounts/login",
                 "/api/accounts/sign-up",
                 "/api/products",
+                "/api/products/*/**",
                 "/api/products/count",
                 "/api/products/search/**",
                 "/api/products/search/count"
@@ -125,6 +126,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+        // front url
         configuration.addAllowedOrigin("http://localhost:54321");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

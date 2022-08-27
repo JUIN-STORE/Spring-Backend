@@ -16,7 +16,7 @@ public class ProductImageResponse {
 
         private Boolean thumbnail;          // 썸네일 여부
 
-        public static Read fromProduct(ProductImage productImage) {
+        public static Read of(ProductImage productImage) {
             return new Read()
                     .setImageName(productImage.getImageName())
                     .setOriginImageName(productImage.getOriginImageName())

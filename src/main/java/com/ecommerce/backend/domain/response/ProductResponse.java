@@ -33,7 +33,7 @@ public class ProductResponse {
         private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
         
         // 단건
-        public static Read fromProduct(Product product) {
+        public static Read from(Product product) {
             return new Read()
                     .setId(product.getId())
                     .setProductName(product.getProductName())
@@ -43,12 +43,12 @@ public class ProductResponse {
                     .setDescription(product.getDescription())
                     .setProductStatus(product.getProductStatus())
                     .setProductImageList(product.getProductImageList().stream() // 이 시점에 쿼리 나감
-                            .map(ProductImageResponse.Read::fromProduct)
+                            .map(ProductImageResponse.Read::of)
                             .collect(Collectors.toList()));
         }
 
         // 다건
-        public static Read fromProduct(Product product, ProductImage productImage) {
+        public static Read of(Product product, ProductImage productImage) {
             return new Read()
                     .setId(product.getId())
                     .setProductName(product.getProductName())
@@ -57,7 +57,7 @@ public class ProductResponse {
                     .setSoldCount(product.getSoldCount())
                     .setDescription(product.getDescription())
                     .setProductStatus(product.getProductStatus())
-                    .setProductImageList(List.of(ProductImageResponse.Read.fromProduct(productImage)));
+                    .setProductImageList(List.of(ProductImageResponse.Read.of(productImage)));
         }
     }
 }

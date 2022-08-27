@@ -29,7 +29,7 @@ public class OrderRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class CancelRequest {
+    public static class Cancel {
         private Long productId;
 
         private int count;

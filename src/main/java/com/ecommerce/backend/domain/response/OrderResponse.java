@@ -18,10 +18,10 @@ public class OrderResponse {
         @Enumerated(EnumType.STRING)
         private OrderStatus orderStatus; // 주문 상태
 
-        public static Create of(Order entity) {
+        public static Create of(Order order) {
             return new Create()
-                    .setId(entity.getId())
-                    .setGrandTotal(entity.getGrandTotal());
+                    .setId(order.getId())
+                    .setGrandTotal(order.getGrandTotal());
         }
     }
 }

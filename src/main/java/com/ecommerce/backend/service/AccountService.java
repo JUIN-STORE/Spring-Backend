@@ -20,13 +20,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Optional;
 
-/** Service Naming
- * C -> save
- * R -> findBy~
- * U -> update
- * D -> delete
- */
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -42,7 +35,7 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public AccountResponse.SignUp save(AccountRequest.SignUp request) {
+    public Account add(AccountRequest.SignUp request) {
         // 이메일 중복 검사
         validateDuplicateEmail(request);
 
@@ -51,9 +44,9 @@ public class AccountService implements UserDetailsService {
 
         accountRepository.save(account);
         addressRepository.save(address);
-        cartService.createCart(account);
+        cartService.addCart(account);
 
-        return AccountResponse.SignUp.fromAccount(account);
+        return account;
     }
 
     @Override
@@ -65,27 +58,26 @@ public class AccountService implements UserDetailsService {
     @Transactional(readOnly = true)
     public AccountResponse.Read findById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new); // select * from cart where account_id = ? 쿼리도 나감 (오류)
-        return AccountResponse.Read.fromAccount(account);
+        return AccountResponse.Read.from(account);
     }
 
     @Transactional(readOnly = true)
-    public AccountResponse.Read findByEmail(String email) {
-        Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        return AccountResponse.Read.fromAccount(account);
+    public Account readByEmail(String email) {
+        return accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
     }
 
-    public AccountResponse.Modify update(AccountRequest.Modify request, Principal principal) {
+    public Account modifyAccount(AccountRequest.Update request, Principal principal) {
         final String email = principal.getName();
         final Account findAccount = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
         Account account = request.toAccount(findAccount.getId(), email);
         accountRepository.save(account);
 
-        return AccountResponse.Modify.fromAccount(account);
+        return account;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AccountResponse.Remove delete(Principal principal) {
+    public Account removeAccount(Principal principal) {
         final String email = principal.getName();
         final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         final Address address = addressRepository.findByAccountId(account.getId()).orElseThrow(EntityNotFoundException::new);
@@ -94,7 +86,7 @@ public class AccountService implements UserDetailsService {
         addressRepository.delete(address);
         accountRepository.delete(account);
 
-        return AccountResponse.Remove.fromAccount(account);
+        return account;
     }
 
     public Account findByPrincipal(Principal principal) {

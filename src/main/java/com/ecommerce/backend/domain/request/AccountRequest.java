@@ -27,7 +27,7 @@ public class AccountRequest {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        private AddressRequest.RegisterRequest address;
+        private AddressRequest.Register address;
 
         public Account toAccount(){
             return Account.builder()
@@ -48,7 +48,7 @@ public class AccountRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class Modify {
+    public static class Update {
         private String passwordHash;
 
         private String name;

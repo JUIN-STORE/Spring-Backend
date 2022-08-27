@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 public class AddressResponse {
     @Data @Accessors(chain = true)
-    public static class ReadResponse {
+    public static class Read {
         private Long id;
 
         private String city;
@@ -17,18 +17,18 @@ public class AddressResponse {
 
         private boolean defaultAddress;
 
-        public static ReadResponse fromAddress(Address entity) {
-            return new ReadResponse()
-                    .setId(entity.getId())
-                    .setCity(entity.getCity())
-                    .setStreet(entity.getStreet())
-                    .setZipCode(entity.getZipCode())
-                    .setDefaultAddress(entity.isDefaultAddress());
+        public static Read from(Address address) {
+            return new Read()
+                    .setId(address.getId())
+                    .setCity(address.getCity())
+                    .setStreet(address.getStreet())
+                    .setZipCode(address.getZipCode())
+                    .setDefaultAddress(address.isDefaultAddress());
         }
     }
 
     @Data @Accessors(chain = true)
-    public static class DeleteResponse {
+    public static class Delete {
         private Long id;
 
         private String city;
@@ -37,12 +37,12 @@ public class AddressResponse {
 
         private Integer zipCode;
 
-        public static DeleteResponse fromAddress(Address entity) {
-            return new DeleteResponse()
-                    .setId(entity.getId())
-                    .setCity(entity.getCity())
-                    .setStreet(entity.getStreet())
-                    .setZipCode(entity.getZipCode());
+        public static Delete from(Address address) {
+            return new Delete()
+                    .setId(address.getId())
+                    .setCity(address.getCity())
+                    .setStreet(address.getStreet())
+                    .setZipCode(address.getZipCode());
         }
     }
 }

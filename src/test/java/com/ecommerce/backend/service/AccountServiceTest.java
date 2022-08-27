@@ -46,7 +46,7 @@ class AccountServiceTest {
         given(mockAccountRepository.findByEmail(anyString())).willReturn(Optional.of(entity));
 
         // when
-        EntityExistsException actual = Assertions.assertThrows(EntityExistsException.class, () -> mockAccountService.save(request));
+        EntityExistsException actual = Assertions.assertThrows(EntityExistsException.class, () -> mockAccountService.add(request));
 
         // then
         assertEquals(expected, actual.getMessage());

@@ -14,14 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
-/** Controller Naming
- * C -> create
- * R -> read
- * U -> modify
- * D -> remove
- */
-
-@Api(tags = {"05. Order"})
+@Api(tags = {"04. Order"})
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -31,8 +24,8 @@ public class OrderApiController {
 
     @ApiOperation(value = "주문하기", notes="주문을 한다.")
     @PostMapping("/new")
-    public MyResponse<OrderResponse.Create> create(@RequestBody OrderRequest.Create request, Principal principal) {
-        final Order order = orderService.newOrder(request, principal.getName());
+    public MyResponse<OrderResponse.Create> newOrder(@RequestBody OrderRequest.Create request, Principal principal) {
+        final Order order = orderService.addOrder(request, principal.getName());
         return new MyResponse<>(HttpStatus.OK, OrderResponse.Create.of(order));
     }
 

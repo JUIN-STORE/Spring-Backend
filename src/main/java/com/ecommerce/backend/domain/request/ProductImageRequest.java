@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 
 public class ProductImageRequest {
     @Data @Accessors(chain = true)
-    public static class CreateRequest {
+    public static class Create {
         private String imageName;           // 이미지 파일명
 
         private String originImageName;     // 원본 이미지 파일명

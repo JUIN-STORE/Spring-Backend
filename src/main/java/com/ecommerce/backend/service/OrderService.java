@@ -31,7 +31,7 @@ public class OrderService{
 
     private final ProductService productService;
 
-    public Order newOrder(OrderRequest.Create request, String email){
+    public Order addOrder(OrderRequest.Create request, String email){
         // 엔티티 조회
         final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         final Address address = addressRepository.findByAccountId(account.getId()).orElseThrow(EntityNotFoundException::new);

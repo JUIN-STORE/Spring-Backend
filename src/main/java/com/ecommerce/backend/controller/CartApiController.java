@@ -14,14 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-/** Controller Naming
- * C -> create
- * R -> read
- * U -> modify
- * D -> remove
- */
-
-@Api(tags = {"04. Cart"})
+@Api(tags = {"03. Cart"})
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -31,15 +24,15 @@ class CartApiController {
 
     @ApiOperation(value = "카트에 있는 프로덕트 정보 읽기", notes="카트에 있는 프로덕트 정보를 읽어온다.")
     @GetMapping
-    public MyResponse<List<CartProductResponse.Read>> readCart(Principal principal) {
+    public MyResponse<List<CartProductResponse.Read>> one(Principal principal) {
         final List<CartProductResponse.Read> response = cartProductService.readCart(principal);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
     @ApiOperation(value = "카트에 항목을 추가", notes="카트에 항목을 추가한다.")
     @PostMapping("/add")
-    public MyResponse<CartProductResponse.Add> addCart(@RequestBody CartProductRequest.Add request, Principal principal) {
-        final CartProductResponse.Add response = cartProductService.addCart(request, principal);
+    public MyResponse<CartProductResponse.Create> newCart(@RequestBody CartProductRequest.Add request, Principal principal) {
+        final CartProductResponse.Create response = cartProductService.addCart(request, principal);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
@@ -50,7 +43,8 @@ class CartApiController {
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
-    @ApiOperation(value = "카트 제거", notes="카트에 추가된 상품을 제거한다.")
+    // FIXME: 엔드포인트가 직관적이지 않아서 변경해야 되는데 어떤 게 좋을지;;
+    @ApiOperation(value = "카트에 추가된 상품을 제거", notes="카트에 추가된 상품을 제거한다.")
     @DeleteMapping("/clear")
     public MyResponse<Integer> clearCart(@RequestBody CartProductRequest.Clear request, Principal principal) {
         final int deleteCount = cartProductService.deleteCart(request, principal);

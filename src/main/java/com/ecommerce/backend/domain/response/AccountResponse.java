@@ -21,7 +21,7 @@ public class AccountResponse {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        public static SignUp fromAccount(Account account) {
+        public static SignUp from(Account account) {
             return new SignUp()
                     .setEmail(account.getEmail())
                     .setName(account.getName())
@@ -42,21 +42,21 @@ public class AccountResponse {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        private AddressResponse.ReadResponse address;
+        private AddressResponse.Read address;
 
-        public static Read fromAccount(Account account) {
+        public static Read from(Account account) {
             return new Read()
                     .setId(account.getId())
                     .setEmail(account.getEmail())
                     .setName(account.getName())
                     .setPhoneNumber(account.getPhoneNumber())
                     .setAccountRole(account.getAccountRole())
-                    .setAddress(AddressResponse.ReadResponse.fromAddress(account.getAddressList().get(0)));
+                    .setAddress(AddressResponse.Read.from(account.getAddressList().get(0)));
         }
     }
 
     @Data @Accessors(chain = true)
-    public static class Remove {
+    public static class Delete {
         private Long id;
 
         private String email;
@@ -66,8 +66,8 @@ public class AccountResponse {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        public static Remove fromAccount(Account account) {
-            return new Remove()
+        public static Delete from(Account account) {
+            return new Delete()
                     .setId(account.getId())
                     .setEmail(account.getEmail())
                     .setName(account.getName())
@@ -81,7 +81,7 @@ public class AccountResponse {
 
         private String token;
 
-        public static Login fromAccount(String email, String token) {
+        public static Login of(String email, String token) {
             return new Login()
                     .setEmail(email)
                     .setToken("Bearer " + token);
@@ -89,7 +89,7 @@ public class AccountResponse {
     }
 
     @Data @Accessors(chain = true)
-    public static class Modify {
+    public static class Update {
         private String email;
 
         private String name;
@@ -102,8 +102,8 @@ public class AccountResponse {
         @LastModifiedDate
         private LocalDateTime updatedAt;
 
-        public static Modify fromAccount(Account account) {
-            return new Modify()
+        public static Update from(Account account) {
+            return new Update()
                     .setEmail(account.getEmail())
                     .setName(account.getName())
                     .setPhoneNumber(account.getPhoneNumber())

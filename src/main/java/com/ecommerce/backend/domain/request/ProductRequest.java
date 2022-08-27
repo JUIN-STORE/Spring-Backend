@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 
 public class ProductRequest {
     @Data @Accessors(chain = true)
-    public static class CreateRequest {
+    public static class Create {
         private String productName;
 
         private Integer price;          // 제품의 가격

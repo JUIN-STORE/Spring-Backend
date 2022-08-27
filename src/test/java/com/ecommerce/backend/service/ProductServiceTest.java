@@ -56,7 +56,7 @@ class ProductServiceTest {
     @WithMockUser(username = "admin", roles = "ADMIN")
     void product_register_test() throws IOException {
         // given, when
-        final ProductRequest.CreateRequest request = new ProductRequest.CreateRequest();
+        final ProductRequest.Create request = new ProductRequest.Create();
         request.setProductName("cat0.jpg");
         request.setPrice(10000);
         request.setQuantity(100);
@@ -64,7 +64,7 @@ class ProductServiceTest {
         request.setDescription("testDescription");
 
         final List<MultipartFile> multipartFileList = createMultipartFileList();
-        final Long productId = productService.saveProduct(request, multipartFileList);
+        final Long productId = productService.add(request, multipartFileList);
 
         List<ProductImage> productImageList = productImageRepository.findByProductId(productId);
 

@@ -38,7 +38,7 @@ public class ProductImageService {
     @Value("${productImageLocation}")
     private String productImageLocation;
 
-    public void saveProductImage(ProductImageRequest.CreateRequest request, MultipartFile multipartFile, Product product) throws IOException {
+    public void saveProductImage(ProductImageRequest.Create request, MultipartFile multipartFile, Product product) throws IOException {
         final String originalFilename = multipartFile.getOriginalFilename(); // cat.jpg
 
         // 파일 업로드

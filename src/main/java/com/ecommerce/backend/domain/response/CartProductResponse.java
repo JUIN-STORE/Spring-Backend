@@ -18,13 +18,13 @@ public class CartProductResponse {
 
         private Integer price;                  // 제품의 가격
 
-        private Integer count;               // 제품의 총 개수
+        private Integer count;                  // 제품의 총 개수
 
         private String description;             // 제품 설명
 
         private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
 
-        public static CartProductResponse.Read fromCartProduct(Product product, int count) {
+        public static CartProductResponse.Read from(Product product, int count) {
             return new CartProductResponse.Read()
                     .setProductId(product.getId())
                     .setProductName(product.getProductName())
@@ -32,33 +32,32 @@ public class CartProductResponse {
                     .setCount(count)
                     .setDescription(product.getDescription())
                     .setProductImageList(product.getProductImageList().stream() // 이 시점에 쿼리 나감
-                            .map(ProductImageResponse.Read::fromProduct)
+                            .map(ProductImageResponse.Read::of)
                             .collect(Collectors.toList()));
         }
     }
 
-
     @Data @Accessors(chain = true)
-    public static class Add {
+    public static class Create {
         private Long productId;
 
         private int count;
 
-        public static Add fromCartProduct(CartProduct cartProduct) {
-            return new Add()
+        public static Create of(CartProduct cartProduct) {
+            return new Create()
                     .setProductId(cartProduct.getProduct().getId())
                     .setCount(cartProduct.getCount());
         }
     }
 
     @Data @Accessors(chain = true)
-    public static class Remove {
+    public static class Delete {
         private Long productId;
 
         private int count;
 
-        public static Add fromCartProduct(CartProduct cartProduct) {
-            return new Add()
+        public static Create from(CartProduct cartProduct) {
+            return new Create()
                     .setProductId(cartProduct.getProduct().getId())
                     .setCount(cartProduct.getCount());
         }
@@ -78,7 +77,7 @@ public class CartProductResponse {
 
         private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
 
-        public static CartProductResponse.Buy fromCartProduct(Product product, int count) {
+        public static CartProductResponse.Buy from(Product product, int count) {
             return new CartProductResponse.Buy()
                     .setProductId(product.getId())
                     .setProductName(product.getProductName())
@@ -86,7 +85,7 @@ public class CartProductResponse {
                     .setCount(count)
                     .setDescription(product.getDescription())
                     .setProductImageList(product.getProductImageList().stream() // 이 시점에 쿼리 나감
-                            .map(ProductImageResponse.Read::fromProduct)
+                            .map(ProductImageResponse.Read::of)
                             .collect(Collectors.toList()));
         }
     }

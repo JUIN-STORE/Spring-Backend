@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class AddressRequest {
     @Data @Accessors(chain = true)
-    public static class RegisterRequest implements Serializable {
+    public static class Register implements Serializable {
         private String city;
 
         private String street;
@@ -28,7 +28,7 @@ public class AddressRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class UpdateRequest implements Serializable {
+    public static class Update implements Serializable {
         private String city;
 
         private String street;
