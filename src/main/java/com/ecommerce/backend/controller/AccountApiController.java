@@ -24,8 +24,8 @@ import java.security.Principal;
 @Api(tags = {"01. Account"})
 @Slf4j
 @RestController
-@RequestMapping("/api/accounts")
 @AllArgsConstructor
+@RequestMapping("/api/accounts")
 public class AccountApiController {
     private final AccountService accountService;
     private final AuthenticationManager authenticationManager;
@@ -84,7 +84,7 @@ public class AccountApiController {
     }
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
-    @PatchMapping("/modify")
+    @PatchMapping("/update")
     public MyResponse<AccountResponse.Update> update(@RequestBody AccountRequest.Update request, Principal principal) {
         log.debug("Patch /api/accounts/modify request: {}", request);
 
@@ -99,14 +99,13 @@ public class AccountApiController {
         }
     }
 
-    // FIXME: 엔드포인트 변경해야 됨.
     @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
-    @DeleteMapping("/remove")
-    public MyResponse<AccountResponse.Delete> delete(Principal principal) {
+    @DeleteMapping("/{accountId}")
+    public MyResponse<AccountResponse.Delete> delete(@PathVariable Long accountId, Principal principal) {
         log.debug("Delete /api/accounts/{id} principal: {}", principal);
 
         try {
-            final Account account = accountService.removeAccount(principal);
+            final Account account = accountService.removeAccount(accountId, principal);
             final AccountResponse.Delete response = AccountResponse.Delete.from(account);
 
             return new MyResponse<>(HttpStatus.OK, response);

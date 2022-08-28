@@ -26,6 +26,7 @@ public class CartService {
     }
 
     public void remove(Account account) {
+        cartRepository.deleteByAccountId(account.getId());
         cartRepository.delete(account.getCart());
     }
 }

@@ -75,9 +75,9 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Account removeAccount(Principal principal) {
+    public Account removeAccount(Long accountId, Principal principal) {
         final String email = principal.getName();
-        final Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        final Account account = accountRepository.findByIdAndEmail(accountId, email).orElseThrow(EntityNotFoundException::new);
         final Address address = addressService.readById(account.getId());
 
         cartService.remove(account);

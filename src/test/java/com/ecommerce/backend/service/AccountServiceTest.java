@@ -32,6 +32,30 @@ class AccountServiceTest {
     @Mock private CartService mockCartService;
 
     @Test
+    @DisplayName("정상적으로 회원가입")
+    void saveSuccess() {
+        // given
+        final var accountRequest = new AccountRequest.SignUp();
+        accountRequest.setEmail("js@gmail.com");
+        accountRequest.setName("준수");
+        accountRequest.setAccountRole(AccountRole.USER);
+        accountRequest.setPhoneNumber("01011112222");
+
+        final var addressRequest = new AddressRequest.Register();
+        addressRequest.setCity("서울시");
+        addressRequest.setStreet("동작구");
+        addressRequest.setZipCode(12345);
+
+        accountRequest.setAddress(addressRequest);
+
+        // when
+
+
+        // then
+    }
+
+
+    @Test
     @DisplayName("중복 이메일 체크")
     void duplicateEmail() {
         // given
@@ -52,4 +76,6 @@ class AccountServiceTest {
         // then
         assertEquals(expected, actual.getMessage());
     }
+
+
 }

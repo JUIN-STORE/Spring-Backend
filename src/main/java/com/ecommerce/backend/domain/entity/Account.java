@@ -3,6 +3,7 @@ package com.ecommerce.backend.domain.entity;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.sun.istack.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -12,9 +13,8 @@ import java.util.List;
 
 @Getter
 @Entity
-@Builder
+@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Account extends BaseEntity{
     @Id @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
