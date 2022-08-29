@@ -21,11 +21,17 @@ public class Category {
 
     private String categoryName;
 
+    private Long depth;
+
     @JoinColumn(name = "parent_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Category parent;
 
+    @Builder.Default
     @OneToMany(mappedBy = "parent")
-    private List<Category> child = new ArrayList<>();
+    private List<Category> childList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "product")
+    private List<ProductCategory> productCategoryList = new ArrayList<>();
 }

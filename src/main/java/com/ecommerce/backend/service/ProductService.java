@@ -1,5 +1,6 @@
 package com.ecommerce.backend.service;
 
+import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.request.ProductImageRequest;
 import com.ecommerce.backend.domain.request.ProductRequest;
@@ -36,10 +37,12 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     private final ProductImageService productImageService;
+    private final CategoryService categoryService;
 
     public Long add(ProductRequest.Create request, List<MultipartFile> productImageFileList) throws IOException {
         // 상품 등록
-        final Product product = request.toProduct();
+        final Category category = categoryService.readById(request.getCategoryId());
+        final Product product = request.toProduct(category);
         productRepository.save(product);
 
         boolean isThumbnail;

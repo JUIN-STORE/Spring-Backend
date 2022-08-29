@@ -30,10 +30,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Integer quantity;   // 제품의 총 개수
 
-    private Integer soldCount;  // 제품의 판매 개수
-
-    @Column(columnDefinition = "TEXT")
-    private String category;
+    private Integer soldCount;  // 제품의 판매 개수, quantity가 업데이트될 수 있어서 필요
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -41,18 +38,20 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
+    // product 테이블에 category_id 컬럼을 만들어 준다.
+    @JoinColumn(name = "category_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+
+    // 테이블에 아무 것도 안 생김.
     // 읽기 전용, 연관관계 주인 아님
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<ProductImage> productImageList = new ArrayList<>();
 
+    // 테이블에 아무 것도 안 생김.
     // 읽기 전용, 연관관계 주인 아님
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderProduct> orderProductList = new ArrayList<>();
-
-    // 연관관계 주인 -> fillCart
-//    @JoinColumn(name = "cart_id")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Cart cart;
 
     // 읽기용 매핑
     public void addProductImageList(ProductImage productImage){

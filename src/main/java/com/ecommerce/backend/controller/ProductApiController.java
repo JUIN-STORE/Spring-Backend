@@ -1,10 +1,13 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.entity.ProductImage;
 import com.ecommerce.backend.domain.request.ProductRequest;
+import com.ecommerce.backend.domain.response.CategoryResponse;
 import com.ecommerce.backend.domain.response.ProductResponse;
+import com.ecommerce.backend.service.CategoryService;
 import com.ecommerce.backend.service.ProductImageService;
 import com.ecommerce.backend.service.ProductService;
 import io.swagger.annotations.Api;
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 public class ProductApiController {
     private final ProductService productService;
     private final ProductImageService productImageService;
+    private final CategoryService categoryService;
 
     @ApiOperation(value = "관리자 상품 등록", notes = "관리자가 상품을 등록한다.")
     @PostMapping(value = "/admin/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -143,6 +147,20 @@ public class ProductApiController {
     @GetMapping("/search/count")
     public Long readSearchCount(@RequestParam("productName") String searchTitle) {
         return productService.readSearchCount(searchTitle);
+    }
+
+    // https://bestinu.tistory.com/52
+    @GetMapping("/categories")
+    public MyResponse<List<CategoryResponse.Read>> all() {
+        final List<Category> categoryList = categoryService.readAll();
+        final List<CategoryResponse.Read> response = new ArrayList<>();
+
+        // FIXME: N번 나가는 쿼리
+        for (Category category : categoryList) {
+            response.add(CategoryResponse.Read.from(category));
+        }
+
+        return new MyResponse<>(HttpStatus.OK, response);
     }
 }
 
