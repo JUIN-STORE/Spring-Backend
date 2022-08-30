@@ -38,11 +38,15 @@ public class ProductService {
 
     private final ProductImageService productImageService;
     private final CategoryService categoryService;
+    private final ProductCategoryService productCategoryService;
 
+    @Transactional
     public Long add(ProductRequest.Create request, List<MultipartFile> productImageFileList) throws IOException {
         // 상품 등록
         final Category category = categoryService.readById(request.getCategoryId());
         final Product product = request.toProduct(category);
+
+        productCategoryService.add(product, category);
         productRepository.save(product);
 
         boolean isThumbnail;
