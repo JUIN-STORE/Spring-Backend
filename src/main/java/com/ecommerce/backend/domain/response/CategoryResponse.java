@@ -6,7 +6,6 @@ import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CategoryResponse {
     @Data
@@ -18,16 +17,39 @@ public class CategoryResponse {
 
         private Long depth;
 
-        private Category parent;
+        private List<CategoryResponse.ReadChildList> childList = new ArrayList<>();
 
-        private List<CategoryResponse.Read> childList = new ArrayList<>();
-
-        public static Read from(Category category) {
+        public static Read from(Category category, List<CategoryResponse.ReadChildList> childList) {
             return new Read()
                     .setId(category.getId())
                     .setCategoryName(category.getCategoryName())
-                    .setDepth(category.getDepth())
-                    .setChildList(category.getChildList().stream().map(Read::from).collect(Collectors.toList()));
+                    .setDepth(category.getDepth());
+//                    .setChildList(childList);
+        }
+    }
+
+    @Data
+    @Accessors(chain = true)
+    public static class ReadChildList {
+        private Long id;
+
+        private String categoryName;
+
+        private Long depth;
+
+        public static List<ReadChildList> from(List<Category> categoryChildList) {
+            List<ReadChildList> response = new ArrayList<>();
+
+            for (Category category : categoryChildList) {
+                response.add(
+                        new ReadChildList()
+                                .setId(category.getId())
+                                .setCategoryName(category.getCategoryName())
+                                .setDepth(category.getDepth())
+                );
+            }
+
+            return response;
         }
     }
 }

@@ -19,17 +19,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-/** Service Naming
- * C -> save
- * R -> findBy~
- * U -> update
- * D -> delete
- */
-
-/** Service Rule
- *  Declare only ONE Repository and pull the others from the Service
- */
-
 @Slf4j
 @Service
 @RequiredArgsConstructor

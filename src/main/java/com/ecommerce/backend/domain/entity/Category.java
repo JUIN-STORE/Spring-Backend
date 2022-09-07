@@ -28,10 +28,10 @@ public class Category {
     private Category parent;
 
     @Builder.Default
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<Category> childList = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<ProductCategory> productCategoryList = new ArrayList<>();
 }
