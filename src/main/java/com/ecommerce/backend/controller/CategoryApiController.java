@@ -6,6 +6,7 @@ import com.ecommerce.backend.domain.request.CategoryRequest;
 import com.ecommerce.backend.domain.response.CategoryResponse;
 import com.ecommerce.backend.service.CategoryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class CategoryApiController {
     private final CategoryService categoryService;
 
     // https://bestinu.tistory.com/52
+    @ApiOperation(value = "모든 카테고리 읽기", notes = "모든 카테고리를 읽어온다.")
     @GetMapping
     public MyResponse<List<CategoryResponse.Read>> all() {
         final List<Category> categoryList = categoryService.readAll();
@@ -38,6 +40,7 @@ public class CategoryApiController {
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
+    @ApiOperation(value = "카테고리 추가", notes = "카테고리를 추가한다.")
     @PostMapping("/admin/new")
     public MyResponse<Long> createCategory(@RequestBody CategoryRequest.Create request) {
         final Long response = categoryService.add(request);

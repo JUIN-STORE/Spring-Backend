@@ -28,7 +28,11 @@ public class CategoryService {
     @Transactional
     public Long add(CategoryRequest.Create request) {
         final Long parentId = request.getParentId();
-        final Category parent = this.readById(parentId);
+
+        Category parent = null;
+
+        // 0일 때 최상위에 추가함.
+        if (parentId > 0) parent = this.readById(parentId);
 
         final Category category = request.toCategory(parent);
         final Category save = categoryRepository.save(category);

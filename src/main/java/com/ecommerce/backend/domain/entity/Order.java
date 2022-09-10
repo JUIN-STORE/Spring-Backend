@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity(name = "orders")
 public class Order extends BaseEntity {
-    @Id @Column(name = "order_id")
+    @Id @Column(name = "orders_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
