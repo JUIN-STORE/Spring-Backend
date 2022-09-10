@@ -13,16 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-/**
- * Service Naming
- * C -> save
- * R -> findBy~
- * U -> update
- * D -> delete
- */
 
 @Slf4j
 @Service
@@ -43,6 +36,9 @@ public class CartProductService {
     @Transactional
     public  List<CartProductResponse.Read> readCart(Principal principal) {
         final Cart cart = check(principal);
+
+        if (cart == null) return Collections.emptyList();
+
         final List<CartProduct> cartProductList = readByCartId(cart.getId());
         final List<Long> productIdList = new ArrayList<>();
 
@@ -71,6 +67,8 @@ public class CartProductService {
     public  List<CartProductResponse.Buy> readBuyInfoCart(List<Long> productIdList, Principal principal) {
         final Cart cart = check(principal);
 
+        if (cart == null) return Collections.emptyList();
+
         final List<Product> productList = productService.readByIdList(productIdList);
         final int size = productList.size();
 
@@ -86,8 +84,12 @@ public class CartProductService {
         return response;
     }
 
+    @Transactional
     public CartProductResponse.Create addCart(CartProductRequest.Add request, Principal principal) {
         final Cart cart = check(principal);
+
+        if (cart == null) return new CartProductResponse.Create();
+
         final Product product = productService.readByProductId(request.getProductId());
 
         CartProduct cartProduct = cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId());
@@ -104,7 +106,7 @@ public class CartProductService {
     }
 
     private Cart check(Principal principal) {
-        final Account account = accountService.findByPrincipal(principal);
+        final Account account = accountService.readByPrincipal(principal);
         return this.readByAccountId(account.getId());
     }
 

@@ -11,13 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-
-/** Service Naming
- * C -> save
- * R -> findBy~
- * U -> update
- * D -> delete
- */
+import java.util.List;
 
 @Slf4j
 @Service("addressService")
@@ -54,16 +48,8 @@ public class AddressService {
         return address;
     }
 
-    public void deleteAccount(Account account) {
-
-    }
-
-    public Address findByAccountId(Long accountId) {
+    public List<Address> readByAccountId(Long accountId) {
         return addressRepository.findByAccountId(accountId).orElseThrow(EntityNotFoundException::new);
-    }
-
-    public void remove(Address address) {
-        addressRepository.delete(address);
     }
 }
 

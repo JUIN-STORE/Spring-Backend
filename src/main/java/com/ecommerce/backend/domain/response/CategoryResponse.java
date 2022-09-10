@@ -23,8 +23,8 @@ public class CategoryResponse {
             return new Read()
                     .setId(category.getId())
                     .setCategoryName(category.getCategoryName())
-                    .setDepth(category.getDepth());
-//                    .setChildList(childList);
+                    .setDepth(category.getDepth())
+                    .setChildList(childList);
         }
     }
 

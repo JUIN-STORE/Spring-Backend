@@ -2,8 +2,12 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
+import com.ecommerce.backend.domain.entity.Order;
+import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.repository.AccountRepository;
+import com.ecommerce.backend.repository.OrderProductRepository;
+import com.ecommerce.backend.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,16 +20,22 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
+    private final OrderProductRepository orderProductRepository;
+    private final OrderRepository orderRepository;
 
     private final AddressService addressService;
     private final CartService cartService;
+    private final DeliveryService deliveryService;
+//    private final OrderService orderService;
 
     private void validateDuplicateEmail(AccountRequest.SignUp request){
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
@@ -77,19 +87,36 @@ public class AccountService implements UserDetailsService {
     @Transactional(rollbackFor = Exception.class)
     public Account removeAccount(Long accountId, Principal principal) {
         final String email = principal.getName();
-        final Account account = accountRepository.findByIdAndEmail(accountId, email).orElseThrow(EntityNotFoundException::new);
-        final Address address = addressService.readById(account.getId());
+        final Account account = this.readByIdAndEmail(accountId, email);
 
-        cartService.remove(account);
-        addressService.remove(address);
+        final List<Address> addressList = addressService.readByAccountId(account.getId());
+        final List<Long> addressIdList = addressList.stream().map(Address::getId).collect(Collectors.toList());
 
-        accountRepository.delete(account);
+        final List<Order> orderList = orderRepository.findByAccountId(account.getId());
+        final List<Long> orderIdList = orderList.stream().map(Order::getId).collect(Collectors.toList());
+
+        orderProductRepository.deleteByOrderIdList(orderIdList);  // order_product 삭제
+        orderRepository.deleteByAccountId(accountId);             // order 삭제
+
+        deliveryService.remove(addressIdList);      // delivery 삭제
+        addressService.remove(accountId);           // address 삭제
+        cartService.remove(account);                // cart 삭제
+
+        accountRepository.delete(account);          // account 삭제
 
         return account;
     }
 
-    public Account findByPrincipal(Principal principal) {
+    public Account readByPrincipal(Principal principal) {
         final String email = principal.getName();
         return accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public boolean checkSeller(Principal principal) {
+        return this.readByPrincipal(principal).getAccountRole() == AccountRole.SELLER;
+    }
+
+    public Account readByIdAndEmail(Long accountId, String email){
+        return accountRepository.findByIdAndEmail(accountId, email).orElseThrow(EntityNotFoundException::new);
     }
 }

@@ -33,8 +33,8 @@ public class ProductApiController {
     private final ProductService productService;
     private final ProductImageService productImageService;
 
-    @ApiOperation(value = "관리자 상품 등록", notes = "관리자가 상품을 등록한다.")
-    @PostMapping(value = "/admin/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation(value = "판매자 상품 등록", notes = "관리자가 상품을 등록한다.")
+    @PostMapping(value = "/seller/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public MyResponse<Long> register(@RequestPart ProductRequest.Create request,
                                      @RequestPart("fileList") List<MultipartFile> productImageFileList) {
         log.info("POST /api/products/admin/register request: {}", request);
@@ -49,8 +49,8 @@ public class ProductApiController {
         }
     }
 
-    @ApiOperation(value = "관리자 상품 읽기", notes = "관리자 페이지에서 상품을 읽는다.")
-    @GetMapping("/admin/{productId}")
+    @ApiOperation(value = "판매자 상품 읽기", notes = "관리자 페이지에서 상품을 읽는다.")
+    @GetMapping("/seller/{productId}")
     public MyResponse<ProductResponse.Read> adminRead(@PathVariable Long productId) {
         log.info("GET /api/products/admin/{productId} productId: {}", productId);
 
@@ -64,8 +64,8 @@ public class ProductApiController {
         }
     }
 
-    @ApiOperation(value = "관리자 상품 삭제", notes = "관리자 페이지에서 상품을 삭제.")
-    @DeleteMapping("/admin/{productId}")
+    @ApiOperation(value = "판매자 상품 삭제", notes = "관리자 페이지에서 상품을 삭제.")
+    @DeleteMapping("/seller/{productId}")
     public MyResponse<Long> adminRemove(@PathVariable Long productId) {
         log.info("DELETE /api/products/admin/{productId} productId: {}", productId);
 
