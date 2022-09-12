@@ -1,7 +1,11 @@
 # eCommerce/Spring-Backend
+
 ---
+# ERD 구조
+![erd.png](erd.png)
 
 # API 목록
+![api.png](api.png)
 
 # 1. Account
 - POST /api/accounts/sign-up (회원가입)
