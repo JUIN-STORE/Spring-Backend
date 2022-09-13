@@ -3,6 +3,7 @@ package com.ecommerce.backend.service;
 import com.ecommerce.backend.domain.entity.*;
 import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.repository.DeliveryRepository;
+import com.ecommerce.backend.repository.OrderJoinResult;
 import com.ecommerce.backend.repository.OrderProductRepository;
 import com.ecommerce.backend.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +28,11 @@ public class OrderService {
     private final AccountService accountService;
     private final AddressService addressService;
     private final ProductService productService;
+
+    public List<OrderJoinResult> join(Principal principal) {
+        final Account account = accountService.readByPrincipal(principal);
+        return orderRepository.findOrderJoinOrderProductJoinProductByAccountId(account.getId());
+    }
 
     @Transactional
     public Order addOrder(OrderRequest.Create request, String email) {

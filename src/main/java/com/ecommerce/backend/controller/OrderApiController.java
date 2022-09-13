@@ -4,6 +4,7 @@ import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.domain.response.OrderResponse;
+import com.ecommerce.backend.repository.OrderJoinResult;
 import com.ecommerce.backend.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Api(tags = {"04. Order"})
 @Slf4j
@@ -21,6 +23,13 @@ import java.security.Principal;
 @RequestMapping("/api/orders")
 public class OrderApiController {
     private final OrderService orderService;
+
+    @ApiOperation(value = "주문 상세보기", notes="주문 취소를 한다.")
+    @GetMapping
+    public MyResponse<List<OrderJoinResult>> all(Principal principal) {
+        final List<OrderJoinResult> response = orderService.join(principal);
+        return new MyResponse<>(HttpStatus.OK, response);
+    }
 
     @ApiOperation(value = "주문하기", notes="주문을 한다.")
     @PostMapping("/new")
