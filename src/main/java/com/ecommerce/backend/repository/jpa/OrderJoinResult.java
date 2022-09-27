@@ -1,4 +1,4 @@
-package com.ecommerce.backend.repository;
+package com.ecommerce.backend.repository.jpa;
 
 import com.ecommerce.backend.domain.enums.OrderStatus;
 

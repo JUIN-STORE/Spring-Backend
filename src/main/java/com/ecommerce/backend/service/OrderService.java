@@ -2,10 +2,10 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.*;
 import com.ecommerce.backend.domain.request.OrderRequest;
-import com.ecommerce.backend.repository.DeliveryRepository;
-import com.ecommerce.backend.repository.OrderJoinResult;
-import com.ecommerce.backend.repository.OrderProductRepository;
-import com.ecommerce.backend.repository.OrderRepository;
+import com.ecommerce.backend.repository.jpa.DeliveryRepository;
+import com.ecommerce.backend.repository.jpa.OrderJoinResult;
+import com.ecommerce.backend.repository.jpa.OrderProductRepository;
+import com.ecommerce.backend.repository.jpa.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
