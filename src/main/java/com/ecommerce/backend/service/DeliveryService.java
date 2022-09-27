@@ -1,7 +1,7 @@
 package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Delivery;
-import com.ecommerce.backend.repository.DeliveryRepository;
+import com.ecommerce.backend.repository.jpa.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -4,7 +4,7 @@ import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.domain.response.OrderResponse;
-import com.ecommerce.backend.repository.OrderJoinResult;
+import com.ecommerce.backend.repository.jpa.OrderJoinResult;
 import com.ecommerce.backend.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

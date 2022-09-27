@@ -2,7 +2,7 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.request.CategoryRequest;
-import com.ecommerce.backend.repository.CategoryRepository;
+import com.ecommerce.backend.repository.jpa.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

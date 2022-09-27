@@ -4,7 +4,7 @@ import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.request.AddressRequest;
-import com.ecommerce.backend.repository.AccountRepository;
+import com.ecommerce.backend.repository.jpa.AccountRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -4,7 +4,7 @@ import com.ecommerce.backend.FileUploadComponent;
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.entity.ProductImage;
 import com.ecommerce.backend.domain.request.ProductImageRequest;
-import com.ecommerce.backend.repository.ProductImageRepository;
+import com.ecommerce.backend.repository.jpa.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package com.ecommerce.backend.repository;
+package com.ecommerce.backend.repository.jpa;
 
 import com.ecommerce.backend.domain.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;

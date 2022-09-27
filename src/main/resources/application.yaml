@@ -40,3 +40,5 @@ jwt:
 
 productImageLocation: ../frontend/src/assets/products/  # 상품 이미지 업로드 경로
 uploadPath: file:///../frontend/src/assets/products/           # 리소스 업로드 경로
+
+personalColorEndPoint: "http://localhost:55555/upload"

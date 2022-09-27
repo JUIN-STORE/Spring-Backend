@@ -2,8 +2,8 @@ package com.ecommerce.backend.domain.entity;
 
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
-import com.ecommerce.backend.repository.AccountRepository;
-import com.ecommerce.backend.repository.CartRepository;
+import com.ecommerce.backend.repository.jpa.AccountRepository;
+import com.ecommerce.backend.repository.jpa.CartRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
