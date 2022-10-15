@@ -3,8 +3,8 @@ package com.ecommerce.backend.controller;
 import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.request.OrderRequest;
+import com.ecommerce.backend.domain.response.OrderJoinResponse;
 import com.ecommerce.backend.domain.response.OrderResponse;
-import com.ecommerce.backend.repository.jpa.OrderJoinResult;
 import com.ecommerce.backend.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,8 +26,8 @@ public class OrderApiController {
 
     @ApiOperation(value = "주문 상세보기", notes="주문 취소를 한다.")
     @GetMapping
-    public MyResponse<List<OrderJoinResult>> all(Principal principal) {
-        final List<OrderJoinResult> response = orderService.join(principal);
+    public MyResponse<List<OrderJoinResponse>> all(Principal principal) {
+        final List<OrderJoinResponse> response = orderService.join(principal);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 

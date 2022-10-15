@@ -2,8 +2,8 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.*;
 import com.ecommerce.backend.domain.request.OrderRequest;
+import com.ecommerce.backend.domain.response.OrderJoinResponse;
 import com.ecommerce.backend.repository.jpa.DeliveryRepository;
-import com.ecommerce.backend.repository.jpa.OrderJoinResult;
 import com.ecommerce.backend.repository.jpa.OrderProductRepository;
 import com.ecommerce.backend.repository.jpa.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class OrderService {
     private final AddressService addressService;
     private final ProductService productService;
 
-    public List<OrderJoinResult> join(Principal principal) {
+    public List<OrderJoinResponse> join(Principal principal) {
         final Account account = accountService.readByPrincipal(principal);
         return orderRepository.findOrderJoinOrderProductJoinProductByAccountId(account.getId());
     }
