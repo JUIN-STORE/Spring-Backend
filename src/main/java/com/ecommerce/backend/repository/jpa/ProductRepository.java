@@ -13,13 +13,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long>, CustomProductRepository {
     Page<Product> findAll(Pageable pageable);
 
-//    @Query(nativeQuery = true,
-//            value = "SELECT * " +
-//                    "FROM product " +
-//                    "WHERE product_id IN (:productIdList)"
-//    )
-//    List<Product> findByIdList(@Param("productIdList") List<Long> productIdList);
-
     List<Product> findByIdList(List<Long> productIdList);
 
     // 참고 https://yonguri.tistory.com/122

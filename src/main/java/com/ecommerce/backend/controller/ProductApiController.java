@@ -101,18 +101,7 @@ public class ProductApiController {
         log.info("GET /api/products pageable: {}", pageable);
 
         final Page<Product> productList = productService.readAll(pageable);
-        final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
-
-        final List<ProductImage> productImageList = productImageService.findAllByProductId(productIdList);
-        final List<ProductResponse.Read> readAllResponse = new ArrayList<>();
-
-        final int size = productImageList.size();
-
-        for (int i = 0; i < size; i++){
-            readAllResponse.add(ProductResponse.Read.of(productList.getContent().get(i), productImageList.get(i)));
-        }
-
-        return new MyResponse<>(HttpStatus.OK, readAllResponse);
+        return new MyResponse<>(HttpStatus.OK, getResponse(productList));
     }
 
     @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
@@ -123,8 +112,19 @@ public class ProductApiController {
 
     @ApiOperation(value = "상품 검색하기", notes = "상품을 상품이름으로 검색해서 찾는다")
     @GetMapping("/search")
-    public MyResponse<List<ProductResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable, @RequestParam("productName") String searchTitle) {
+    public MyResponse<List<ProductResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
+                                                         @RequestParam("productName") String searchTitle) {
         final Page<Product> productList = productService.search(pageable, searchTitle);
+        return new MyResponse<>(HttpStatus.OK, getResponse(productList));
+    }
+
+    @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
+    @GetMapping("/search/count")
+    public Long readSearchCount(@RequestParam("productName") String searchTitle) {
+        return productService.readSearchCount(searchTitle);
+    }
+
+    private List<ProductResponse.Read> getResponse(Page<Product> productList) {
         final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
 
         final List<ProductImage> productImageList = productImageService.findAllByProductId(productIdList);
@@ -132,17 +132,11 @@ public class ProductApiController {
 
         final int size = productImageList.size();
 
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             readAllResponse.add(ProductResponse.Read.of(productList.getContent().get(i), productImageList.get(i)));
         }
 
-        return new MyResponse<>(HttpStatus.OK, readAllResponse);
-    }
-
-    @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
-    @GetMapping("/search/count")
-    public Long readSearchCount(@RequestParam("productName") String searchTitle) {
-        return productService.readSearchCount(searchTitle);
+        return readAllResponse;
     }
 }
 

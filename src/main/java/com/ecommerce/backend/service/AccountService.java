@@ -66,14 +66,18 @@ public class AccountService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public Account readById(Long id) {
-        return accountRepository.findById(id).orElseThrow(EntityNotFoundException::new); // select * from cart where account_id = ? 쿼리도 나감 (오류)
+        return accountRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new); // select * from cart where account_id = ? 쿼리도 나감 (오류)
     }
 
     @Transactional(readOnly = true)
     public Account readByEmail(String email) {
-        return accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        return accountRepository
+                .findByEmail(email)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
+    @Transactional
     public Account modifyAccount(AccountRequest.Update request, Principal principal) {
         final String email = principal.getName();
         final Account findAccount = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);

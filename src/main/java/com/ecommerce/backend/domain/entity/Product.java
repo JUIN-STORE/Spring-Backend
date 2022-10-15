@@ -6,10 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity
@@ -80,5 +82,11 @@ public class Product extends BaseEntity {
 
     public Integer getTotalPrice(){
         return this.price * this.soldCount;
+    }
+
+    public static List<Long> makeProductIdList(Page<Product> productList) {
+        return productList.stream()
+                .map(Product::getId)
+                .collect(Collectors.toList());
     }
 }
