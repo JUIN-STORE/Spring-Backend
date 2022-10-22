@@ -23,10 +23,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    // Repo
     private final ProductRepository productRepository;
 
-    // Service
     private final ProductImageService productImageService;
     private final CategoryService categoryService;
     private final ProductCategoryService productCategoryService;

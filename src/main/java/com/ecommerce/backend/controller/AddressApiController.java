@@ -31,7 +31,7 @@ public class AddressApiController {
         log.info("POST /api/addresses/create -> email: {}, request: {}", email, request);
 
         try {
-            addressService.addAddress(request, email);
+            addressService.addAddress(request, principal);
             return new MyResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
             log.warn("POST /api/addresses/create -> email: {}, request: {} EntityNotFoundException", email, request);

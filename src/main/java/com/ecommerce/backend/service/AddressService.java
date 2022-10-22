@@ -3,7 +3,6 @@ package com.ecommerce.backend.service;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.request.AddressRequest;
-import com.ecommerce.backend.repository.jpa.AccountRepository;
 import com.ecommerce.backend.repository.jpa.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,14 +10,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
 @Service("addressService")
 @RequiredArgsConstructor
 public class AddressService {
-    private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
+
+    private final JwtService jwtService;
 
     @Transactional(readOnly = true)
     public Address readById(Long addressId){
@@ -29,8 +30,8 @@ public class AddressService {
         addressRepository.save(address);
     }
 
-    public void addAddress(AddressRequest.Register request, String email){
-        Account account = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+    public void addAddress(AddressRequest.Register request, Principal principal){
+        Account account = jwtService.readByPrincipal(principal);
 
         Address address = request.toAddress(account);
         addressRepository.save(address);
