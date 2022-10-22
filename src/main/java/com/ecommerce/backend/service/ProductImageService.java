@@ -71,7 +71,7 @@ public class ProductImageService {
         productImageRepository.deleteAll(productImageList);
     }
 
-    public List<ProductImage> findAllByProductId(List<Long> productIdList) {
+    public List<ProductImage> readAllByProductId(List<Long> productIdList) {
         return productImageRepository.findAllByProductId(productIdList);
     }
 }
