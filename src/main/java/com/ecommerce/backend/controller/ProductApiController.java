@@ -127,7 +127,7 @@ public class ProductApiController {
     private List<ProductResponse.Read> getResponse(Page<Product> productList) {
         final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
 
-        final List<ProductImage> productImageList = productImageService.findAllByProductId(productIdList);
+        final List<ProductImage> productImageList = productImageService.readAllByProductId(productIdList);
         final List<ProductResponse.Read> readAllResponse = new ArrayList<>();
 
         final int size = productImageList.size();

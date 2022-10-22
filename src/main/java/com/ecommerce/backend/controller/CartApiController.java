@@ -46,8 +46,8 @@ class CartApiController {
     // FIXME: 엔드포인트가 직관적이지 않아서 변경해야 되는데 어떤 게 좋을지;;
     @ApiOperation(value = "카트에 추가된 상품을 제거", notes="카트에 추가된 상품을 제거한다.")
     @DeleteMapping("/clear")
-    public MyResponse<Integer> clearCart(@RequestBody CartProductRequest.Clear request, Principal principal) {
-        final int deleteCount = cartProductService.deleteCart(request, principal);
+    public MyResponse<Long> clearCart(@RequestBody CartProductRequest.Clear request, Principal principal) {
+        final Long deleteCount = cartProductService.removeCart(request, principal);
         return new MyResponse<>(HttpStatus.OK, deleteCount);
     }
 
