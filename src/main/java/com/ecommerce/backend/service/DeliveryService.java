@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -19,7 +20,8 @@ public class DeliveryService {
     }
 
     public List<Delivery> readByAddressIdList(List<Long> addressIdList) {
-        return deliveryRepository.findByAddressIdList(addressIdList);
+        return deliveryRepository.findByAddressIdList(addressIdList)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     public void add(Delivery delivery) {
