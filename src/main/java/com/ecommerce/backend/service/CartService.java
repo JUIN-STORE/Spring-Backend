@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,5 +23,10 @@ public class CartService {
     public void remove(Account account) {
         cartRepository.deleteByAccountId(account.getId());
         cartRepository.delete(account.getCart());
+    }
+
+    public Cart readByAccountId(Long accountId) {
+        return cartRepository.findByAccountId(accountId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }

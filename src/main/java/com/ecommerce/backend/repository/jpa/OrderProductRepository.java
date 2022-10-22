@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface OrderProductRepository extends JpaRepository<OrderProduct, Long> {
     Optional<OrderProduct> findByOrderId(Long oderId);
 
+    // querydsl에는 delete join 기능이 없어서 네이티브 사용
     @Modifying
     @Transactional
     @Query(nativeQuery = true,

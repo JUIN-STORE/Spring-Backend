@@ -4,7 +4,6 @@ import com.ecommerce.backend.domain.entity.*;
 import com.ecommerce.backend.domain.request.CartProductRequest;
 import com.ecommerce.backend.domain.response.CartProductResponse;
 import com.ecommerce.backend.repository.jpa.CartProductRepository;
-import com.ecommerce.backend.repository.jpa.CartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,12 +20,12 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class CartProductService {
-    private final AccountService accountService;
+    private final CartProductRepository cartProductRepository;
+
+    private final JwtService jwtService;
     private final ProductService productService;
     private final ProductImageService productImageService;
-
-    private final CartRepository cartRepository;
-    private final CartProductRepository cartProductRepository;
+    private final CartService cartService;
 
     private List<CartProduct> readByCartId(Long cartId) {
         return cartProductRepository.findByCartIdIn(cartId).orElseThrow(EntityNotFoundException::new);
@@ -34,7 +33,7 @@ public class CartProductService {
 
     // FIXME: return entity로 변경해야 됨.
     @Transactional
-    public  List<CartProductResponse.Read> readCart(Principal principal) {
+    public List<CartProductResponse.Read> readCart(Principal principal) {
         final Cart cart = check(principal);
 
         if (cart == null) return Collections.emptyList();
@@ -106,16 +105,8 @@ public class CartProductService {
     }
 
     private Cart check(Principal principal) {
-        final Account account = accountService.readByPrincipal(principal);
-        return this.readByAccountId(account.getId());
-    }
-
-    private Cart readByAccountId(long cartId) {
-        return cartRepository.findByAccountId(cartId);
-    }
-
-    private CartProduct readById(long cartId) {
-        return cartProductRepository.findById(cartId).get();
+        final Account account = jwtService.readByPrincipal(principal);
+        return cartService.readByAccountId(account.getId());
     }
 
     public int deleteCart(CartProductRequest.Clear request, Principal principal) {

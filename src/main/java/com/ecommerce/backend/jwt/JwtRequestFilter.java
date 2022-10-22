@@ -1,6 +1,6 @@
 package com.ecommerce.backend.jwt;
 
-import com.ecommerce.backend.service.AccountService;
+import com.ecommerce.backend.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
-    private final AccountService accountService;
+    private final JwtService jwtService;
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
@@ -50,7 +50,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // 토큰을 가져오면 검증을 한다
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.accountService.loadUserByUsername(email);
+            UserDetails userDetails = jwtService.loadUserByUsername(email);
 
             // 토큰이 유효한 경우 수동으로 인증을 설정하도록 스프링 시큐리티를 구성.
             if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {

@@ -6,20 +6,14 @@ import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.repository.jpa.AccountRepository;
-import com.ecommerce.backend.repository.jpa.OrderProductRepository;
-import com.ecommerce.backend.repository.jpa.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,18 +21,19 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AccountService implements UserDetailsService {
+public class AccountService {
     private final AccountRepository accountRepository;
-    private final OrderProductRepository orderProductRepository;
-    private final OrderRepository orderRepository;
 
+    private final JwtService jwtService;
     private final AddressService addressService;
     private final CartService cartService;
     private final DeliveryService deliveryService;
-//    private final OrderService orderService;
+    private final OrderService orderService;
+    private final OrderProductService orderProductService;
 
     private void validateDuplicateEmail(AccountRequest.SignUp request){
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
+
         if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
     }
 
@@ -58,12 +53,6 @@ public class AccountService implements UserDetailsService {
         return account;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("user name not found!"));
-        return new org.springframework.security.core.userdetails.User(account.getEmail(), account.getPasswordHash(), new ArrayList<>());
-    }
-
     @Transactional(readOnly = true)
     public Account readById(Long id) {
         return accountRepository.findById(id)
@@ -72,15 +61,14 @@ public class AccountService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public Account readByEmail(String email) {
-        return accountRepository
-                .findByEmail(email)
+        return accountRepository.findByEmail(email)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional
     public Account modifyAccount(AccountRequest.Update request, Principal principal) {
         final String email = principal.getName();
-        final Account findAccount = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        final Account findAccount = this.readByEmail(email);
 
         Account account = request.toAccount(findAccount.getId(), email);
         accountRepository.save(account);
@@ -96,31 +84,26 @@ public class AccountService implements UserDetailsService {
         final List<Address> addressList = addressService.readByAccountId(account.getId());
         final List<Long> addressIdList = addressList.stream().map(Address::getId).collect(Collectors.toList());
 
-        final List<Order> orderList = orderRepository.findByAccountId(account.getId());
+        final List<Order> orderList = orderService.readByAccountId(account.getId());
         final List<Long> orderIdList = orderList.stream().map(Order::getId).collect(Collectors.toList());
 
-        orderProductRepository.deleteByOrderIdList(orderIdList);  // order_product 삭제
-        orderRepository.deleteByAccountId(accountId);             // order 삭제
+        orderProductService.removeByOrderIdList(orderIdList);       // order_product 삭제
+        orderService.removeByAccountId(accountId);                  // orders 삭제
 
-        deliveryService.remove(addressIdList);      // delivery 삭제
-        addressService.remove(accountId);           // address 삭제
-        cartService.remove(account);                // cart 삭제
+        deliveryService.remove(addressIdList);                      // delivery 삭제
+        addressService.remove(accountId);                           // address 삭제
+        cartService.remove(account);                                // cart 삭제
 
-        accountRepository.delete(account);          // account 삭제
+        accountRepository.delete(account);                          // account 삭제
 
         return account;
     }
 
-    public Account readByPrincipal(Principal principal) {
-        final String email = principal.getName();
-        return accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+    public Account readByIdAndEmail(Long accountId, String email){
+        return accountRepository.findByIdAndEmail(accountId, email).orElseThrow(EntityNotFoundException::new);
     }
 
     public boolean checkSeller(Principal principal) {
-        return this.readByPrincipal(principal).getAccountRole() == AccountRole.SELLER;
-    }
-
-    public Account readByIdAndEmail(Long accountId, String email){
-        return accountRepository.findByIdAndEmail(accountId, email).orElseThrow(EntityNotFoundException::new);
+        return jwtService.readByPrincipal(principal).getAccountRole() == AccountRole.SELLER;
     }
 }

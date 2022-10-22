@@ -15,6 +15,9 @@ import java.util.List;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
+@Table(name = "account", indexes = {
+        @Index(name = "account__email", columnList = "email")
+})
 public class Account extends BaseEntity{
     @Id @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -21,4 +21,8 @@ public class DeliveryService {
     public List<Delivery> readByAddressIdList(List<Long> addressIdList) {
         return deliveryRepository.findByAddressIdList(addressIdList);
     }
+
+    public void add(Delivery delivery) {
+        deliveryRepository.save(delivery);
+    }
 }

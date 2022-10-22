@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, CustomOrderRepository {
-    List<Order> findByAccountId(Long accountId);
+    Optional<List<Order>> findByAccountId(Long accountId);
 
 //    @Query(nativeQuery = true,
 //            value = "SELECT o.order_date AS orderDate, " +
