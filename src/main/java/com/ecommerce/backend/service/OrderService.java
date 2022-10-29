@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,30 +20,33 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
 
-    private final JwtService jwtService;
     private final AddressService addressService;
     private final ProductService productService;
     private final OrderProductService orderProductService;
     private final DeliveryService deliveryService;
 
-    public List<OrderJoinResponse> join(Principal principal) {
-        final Account account = jwtService.readByPrincipal(principal);
+    public List<OrderJoinResponse> join(Account account) {
         return orderRepository.findOrderJoinOrderProductJoinProductByAccountId(account.getId());
     }
 
     @Transactional
-    public Order addOrder(OrderRequest.Create request, Principal principal) {
+    public Order addOrder(Account account, OrderRequest.Create request) {
         // 엔티티 조회
-        final Account account = jwtService.readByPrincipal(principal);
-        // FIXME: List<Address> 받아야 됨.
-        final Address address = addressService.readByAccountId(account.getId()).get(0);
+        final Address address = addressService.readByAccountIdAndDefaultAddress(account.getId());
         final List<Long> productIdList = request.getProductIdList();
         final List<Product> productList = productIdList.stream().map(productService::readByProductId).collect(Collectors.toList());
 
         // 배송 정보 생성
-        final Delivery delivery = Delivery.createDelivery(address);
+        var deliveryReceiverRequest = request.getDeliveryReceiver();
 
-        deliveryService.add(delivery); // update product 쿼리 날아감. (오류)
+        final DeliveryReceiver deliveryReceiver = DeliveryReceiver.createDeliveryReceiver(
+                deliveryReceiverRequest.getReceiverName(),
+                deliveryReceiverRequest.getReceiverPhoneNumber(),
+                deliveryReceiverRequest.getReceiverEmail()
+        );
+        final Delivery delivery = Delivery.createDelivery(deliveryReceiver, address);
+
+        deliveryService.add(delivery);
 
         final List<OrderProduct> orderProductList = new ArrayList<>();
 
@@ -74,7 +76,7 @@ public class OrderService {
     }
 
     // 주문 취소
-    public void cancelOrder (Long orderId){
+    public void cancelOrder (Account account, Long orderId){
         // 주문 엔티티 조회
         final Order order = readById(orderId);
         final OrderProduct orderProduct = orderProductService.readByOrderId(order.getId());

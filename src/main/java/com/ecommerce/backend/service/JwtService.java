@@ -13,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.util.ArrayList;
 
+// FIXME: 인터셉터로 뽑아야 하는 케이스인가?
 @Slf4j
 @Service
 @RequiredArgsConstructor

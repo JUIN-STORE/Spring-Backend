@@ -20,6 +20,8 @@ public class OrderRequest {
         @Enumerated(EnumType.STRING)
         private OrderStatus orderStatus; // 주문 상태
 
+        private DeliveryRequest.Create deliveryReceiver;
+
         public Order toOrder(){
             return Order.builder()
                     .orderStatus(this.orderStatus)

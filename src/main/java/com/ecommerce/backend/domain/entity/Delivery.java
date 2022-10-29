@@ -34,7 +34,7 @@ public class Delivery {
     @OneToOne(mappedBy = "delivery") // mappedBy가 있으면 연관관계 주인이 아님.
     private Order order;
 
-    public static Delivery createDelivery(Address address) {
+    public static Delivery createDelivery(DeliveryReceiver deliveryReceiver, Address address) {
         return Delivery.builder()
                 .address(address)
                 .city(address.getCity())
