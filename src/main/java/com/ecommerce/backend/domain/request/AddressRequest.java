@@ -5,15 +5,19 @@ import com.ecommerce.backend.domain.entity.Address;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 public class AddressRequest {
     @Data @Accessors(chain = true)
     public static class Register implements Serializable {
+        @NotBlank
         private String city;
 
+        @NotBlank
         private String street;
 
+        @NotBlank
         private Integer zipCode;
 
         public Address toAddress(Account account){
@@ -29,6 +33,8 @@ public class AddressRequest {
 
     @Data @Accessors(chain = true)
     public static class Update implements Serializable {
+        private Long addressId;
+
         private String city;
 
         private String street;
@@ -37,12 +43,13 @@ public class AddressRequest {
 
         private boolean defaultAddress;
 
-        public Address toAddress(Account account){
+        public Address toAddress(){
             return Address.builder()
+                    .id(addressId)
                     .city(city)
                     .street(street)
                     .zipCode(zipCode)
-                    .defaultAddress(isDefaultAddress())
+                    .defaultAddress(defaultAddress)
                     .build();
         }
     }

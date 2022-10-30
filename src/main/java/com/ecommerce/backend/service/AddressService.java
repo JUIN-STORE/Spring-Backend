@@ -10,47 +10,46 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.security.Principal;
 import java.util.List;
 
 @Slf4j
-@Service("addressService")
+@Service
 @RequiredArgsConstructor
 public class AddressService {
     private final AddressRepository addressRepository;
 
-    private final JwtService jwtService;
-
     @Transactional(readOnly = true)
     public Address readById(Long addressId){
-        return addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
+        return addressRepository.findById(addressId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
-    public void addAddress(Address address){
+    public Address addAddress(Address address){
+        return addressRepository.save(address);
+    }
+
+    public Address addAddress(Account account, AddressRequest.Register request){
+        final Address address = request.toAddress(account);
+
+        return addressRepository.save(address);
+    }
+
+    public void update(AddressRequest.Update request){
+        final Address address = request.toAddress();
+
         addressRepository.save(address);
-    }
-
-    public void addAddress(AddressRequest.Register request, Principal principal){
-        Account account = jwtService.readByPrincipal(principal);
-
-        Address address = request.toAddress(account);
-        addressRepository.save(address);
-    }
-
-    public void update(Long addressId, AddressRequest.Update request){
-//        final Address address = request.toAddress(addressId);
-//
-//        addressRepository.save(address);
     }
 
     public Address remove(Long addressId) {
-        Address address = addressRepository.findById(addressId).orElseThrow(EntityNotFoundException::new);
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(EntityNotFoundException::new);
         addressRepository.delete(address);
         return address;
     }
 
     public List<Address> readByAccountId(Long accountId) {
-        return addressRepository.findByAccountId(accountId).orElseThrow(EntityNotFoundException::new);
+        return addressRepository.findByAccountId(accountId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }
 
