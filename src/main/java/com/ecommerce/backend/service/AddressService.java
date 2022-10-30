@@ -51,5 +51,10 @@ public class AddressService {
         return addressRepository.findByAccountId(accountId)
                 .orElseThrow(EntityNotFoundException::new);
     }
+
+    public Address readByAccountIdAndDefaultAddress(Long accountId) {
+        return addressRepository.findByAccountIdAndDefaultAddress(accountId)
+                .orElseThrow(EntityNotFoundException::new);
+    }
 }
 
