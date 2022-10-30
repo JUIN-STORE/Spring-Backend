@@ -1,6 +1,7 @@
-package com.ecommerce.backend.repository.custom;
+package com.ecommerce.backend.repository.querydsl.impl;
 
 import com.ecommerce.backend.domain.entity.CartProduct;
+import com.ecommerce.backend.repository.querydsl.ifs.QuerydslCartProductRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +12,11 @@ import java.util.Optional;
 import static com.ecommerce.backend.domain.entity.QCartProduct.cartProduct;
 
 @RequiredArgsConstructor
-public class CustomCartProductRepositoryImpl implements CustomCartProductRepository {
+public class QuerydslCartProductRepositoryImpl implements QuerydslCartProductRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<List<CartProduct>> findByCartIdIn(Long cartId) {
+    public Optional<List<CartProduct>> findByCartId(Long cartId) {
         return Optional.ofNullable(
                 queryFactory
                     .select(cartProduct)
@@ -35,7 +36,7 @@ public class CustomCartProductRepositoryImpl implements CustomCartProductReposit
     }
 
     @Override
-    public Optional<List<CartProduct>> findByCartIdListAndProductIdList(Long cartId, List<Long> productIdList) {
+    public Optional<List<CartProduct>> findByCartIdAndProductIdIn(Long cartId, List<Long> productIdList) {
         return Optional.ofNullable(
                 queryFactory
                         .select(cartProduct)

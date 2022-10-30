@@ -29,7 +29,7 @@ public class CartProductService {
     private final CartService cartService;
 
     private List<CartProduct> readByCartId(Long cartId) {
-        return cartProductRepository.findByCartIdIn(cartId)
+        return cartProductRepository.findByCartId(cartId)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
@@ -131,7 +131,7 @@ public class CartProductService {
     }
 
     public List<CartProduct> readByCartIdListAndProductIdList(Long cartId, List<Long> productIdList){
-        return cartProductRepository.findByCartIdListAndProductIdList(cartId, productIdList)
+        return cartProductRepository.findByCartIdAndProductIdIn(cartId, productIdList)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
