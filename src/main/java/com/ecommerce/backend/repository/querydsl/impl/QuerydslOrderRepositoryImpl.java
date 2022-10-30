@@ -1,12 +1,13 @@
 package com.ecommerce.backend.repository.querydsl.impl;
 
 import com.ecommerce.backend.domain.response.OrderJoinResponse;
-import com.ecommerce.backend.repository.querydsl.ifs.QuerydslOrderRepository;
+import com.ecommerce.backend.repository.querydsl.QuerydslOrderRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.ecommerce.backend.domain.entity.QOrder.order;
 import static com.ecommerce.backend.domain.entity.QOrderProduct.orderProduct;
@@ -27,9 +28,10 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
     }
 
     @Override
-    public List<OrderJoinResponse> findOrderJoinOrderProductJoinProductByAccountId(Long accountId) {
-        return queryFactory
-                .select(Projections.fields(OrderJoinResponse.class
+    public Optional<List<OrderJoinResponse>> findOrderJoinOrderProductJoinProductByAccountId(Long accountId) {
+        return Optional.ofNullable(
+                queryFactory
+                    .select(Projections.fields(OrderJoinResponse.class
                         , order.orderDate
                         , orderProduct.orderCount
                         , product.id.as("productId")
@@ -39,13 +41,15 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
                         , orderProduct.product.id.as("orderProductId")
                         , order.delivery.id.as("deliveryId")
                         , order.orderStatus
-                ))
-                .from(order)
-                .join(orderProduct)
-                .on(order.id.eq(orderProduct.order.id))
-                .join(product)
-                .on(product.id.eq(orderProduct.product.id))
-                .where(order.account.id.eq(accountId))
-                .fetch();
+                           )
+                        )
+                    .from(order)
+                    .join(orderProduct)
+                    .on(order.id.eq(orderProduct.order.id))
+                    .join(product)
+                    .on(product.id.eq(orderProduct.product.id))
+                    .where(order.account.id.eq(accountId))
+                    .fetch()
+        );
     }
 }

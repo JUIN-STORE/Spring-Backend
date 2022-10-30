@@ -1,7 +1,7 @@
 package com.ecommerce.backend.repository.jpa;
 
 import com.ecommerce.backend.domain.entity.Order;
-import com.ecommerce.backend.repository.querydsl.ifs.QuerydslOrderRepository;
+import com.ecommerce.backend.repository.querydsl.QuerydslOrderRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

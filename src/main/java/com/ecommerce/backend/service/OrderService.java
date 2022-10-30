@@ -3,6 +3,7 @@ package com.ecommerce.backend.service;
 import com.ecommerce.backend.domain.entity.*;
 import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.domain.response.OrderJoinResponse;
+import com.ecommerce.backend.exception.NotOrderException;
 import com.ecommerce.backend.repository.jpa.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,23 +21,20 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
 
-    private final JwtService jwtService;
     private final AddressService addressService;
     private final ProductService productService;
     private final OrderProductService orderProductService;
     private final DeliveryService deliveryService;
 
-    public List<OrderJoinResponse> join(Principal principal) {
-        final Account account = jwtService.readByPrincipal(principal);
-        return orderRepository.findOrderJoinOrderProductJoinProductByAccountId(account.getId());
+    public List<OrderJoinResponse> join(Account account) {
+        return orderRepository.findOrderJoinOrderProductJoinProductByAccountId(account.getId())
+                .orElseThrow(NotOrderException::new);
     }
 
     @Transactional
-    public Order addOrder(OrderRequest.Create request, Principal principal) {
+    public Order addOrder(Account account, OrderRequest.Create request) {
         // 엔티티 조회
-        final Account account = jwtService.readByPrincipal(principal);
-        // FIXME: List<Address> 받아야 됨.
-        final Address address = addressService.readByAccountId(account.getId()).get(0);
+        final Address address = addressService.readByAccountIdAndDefaultAddress(account.getId());
         final List<Long> productIdList = request.getProductIdList();
         final List<Product> productList = productIdList.stream().map(productService::readByProductId).collect(Collectors.toList());
 
