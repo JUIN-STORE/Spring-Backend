@@ -60,7 +60,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<Product> readByIdList(List<Long> productId){
-        final List<Product> productList = productRepository.findByIdList(productId);
+        final List<Product> productList = productRepository.findByIdIn(productId);
 
         if (CollectionUtils.isEmpty(productList)) return Collections.emptyList();
 

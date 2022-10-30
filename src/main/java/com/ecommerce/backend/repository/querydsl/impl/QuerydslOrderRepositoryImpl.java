@@ -1,6 +1,7 @@
-package com.ecommerce.backend.repository.custom;
+package com.ecommerce.backend.repository.querydsl.impl;
 
 import com.ecommerce.backend.domain.response.OrderJoinResponse;
+import com.ecommerce.backend.repository.querydsl.ifs.QuerydslOrderRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import static com.ecommerce.backend.domain.entity.QProduct.product;
 
 
 @RequiredArgsConstructor
-public class CustomOrderRepositoryImpl implements CustomOrderRepository {
+public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
 
     private final JPAQueryFactory queryFactory;
 

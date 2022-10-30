@@ -1,6 +1,7 @@
-package com.ecommerce.backend.repository.custom;
+package com.ecommerce.backend.repository.querydsl.impl;
 
 import com.ecommerce.backend.domain.entity.Delivery;
+import com.ecommerce.backend.repository.querydsl.ifs.QuerydslDeliveryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,12 +12,12 @@ import java.util.Optional;
 import static com.ecommerce.backend.domain.entity.QDelivery.delivery;
 
 @RequiredArgsConstructor
-public class CustomDeliveryRepositoryImpl implements CustomDeliveryRepository {
+public class QuerydslDeliveryRepositoryImpl implements QuerydslDeliveryRepository {
     private final JPAQueryFactory queryFactory;
 
     @Transactional
     @Override
-    public Long deleteByAddressIdList(List<Long> addressIdList) {
+    public Long deleteByAddressIdIn(List<Long> addressIdList) {
         return queryFactory
                 .delete(delivery)
                 .where(delivery.address.id.in(addressIdList))
@@ -24,7 +25,7 @@ public class CustomDeliveryRepositoryImpl implements CustomDeliveryRepository {
     }
 
     @Override
-    public Optional<List<Delivery>> findByAddressIdList(List<Long> addressIdList) {
+    public Optional<List<Delivery>> findByAddressIdIn(List<Long> addressIdList) {
         return Optional.ofNullable(
                 queryFactory
                         .select(delivery)

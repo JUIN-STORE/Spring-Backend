@@ -1,7 +1,7 @@
 package com.ecommerce.backend.repository.jpa;
 
 import com.ecommerce.backend.domain.entity.Order;
-import com.ecommerce.backend.repository.custom.CustomOrderRepository;
+import com.ecommerce.backend.repository.querydsl.ifs.QuerydslOrderRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long>, CustomOrderRepository {
+public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslOrderRepository {
     Optional<List<Order>> findByAccountId(Long accountId);
 
 //    @Query(nativeQuery = true,

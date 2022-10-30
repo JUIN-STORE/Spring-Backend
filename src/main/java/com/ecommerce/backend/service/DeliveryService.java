@@ -16,11 +16,11 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
 
     public void remove(List<Long> addressIdList) {
-        deliveryRepository.deleteByAddressIdList(addressIdList);
+        deliveryRepository.deleteByAddressIdIn(addressIdList);
     }
 
     public List<Delivery> readByAddressIdList(List<Long> addressIdList) {
-        return deliveryRepository.findByAddressIdList(addressIdList)
+        return deliveryRepository.findByAddressIdIn(addressIdList)
                 .orElseThrow(EntityNotFoundException::new);
     }
 

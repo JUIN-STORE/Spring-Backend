@@ -73,7 +73,7 @@ public class ProductImageService {
     }
 
     public List<ProductImage> readAllByProductId(List<Long> productIdList) {
-        return productImageRepository.findAllByProductId(productIdList)
+        return productImageRepository.findAllByProductIdIn(productIdList)
                 .orElseThrow(EntityNotFoundException::new);
     }
 }
