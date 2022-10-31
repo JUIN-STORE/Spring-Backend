@@ -1,7 +1,6 @@
-package com.ecommerce.backend.repository.querydsl.impl;
+package com.ecommerce.backend.repository.querydsl;
 
 import com.ecommerce.backend.domain.response.OrderJoinResponse;
-import com.ecommerce.backend.repository.querydsl.QuerydslOrderRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

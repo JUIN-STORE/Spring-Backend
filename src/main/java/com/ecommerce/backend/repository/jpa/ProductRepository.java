@@ -1,7 +1,7 @@
 package com.ecommerce.backend.repository.jpa;
 
 import com.ecommerce.backend.domain.entity.Product;
-import com.ecommerce.backend.repository.querydsl.ifs.QuerydslProductRepository;
+import com.ecommerce.backend.repository.querydsl.QuerydslProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

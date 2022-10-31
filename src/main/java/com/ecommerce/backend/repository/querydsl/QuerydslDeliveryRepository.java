@@ -1,4 +1,4 @@
-package com.ecommerce.backend.repository.querydsl.ifs;
+package com.ecommerce.backend.repository.querydsl;
 
 import com.ecommerce.backend.domain.entity.Delivery;
 import org.springframework.stereotype.Repository;
