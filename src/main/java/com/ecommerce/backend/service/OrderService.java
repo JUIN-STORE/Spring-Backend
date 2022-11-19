@@ -37,9 +37,10 @@ public class OrderService {
         final Address address = addressService.readByAccountIdAndDefaultAddress(account.getId());
         final List<Long> productIdList = request.getProductIdList();
         final List<Product> productList = productIdList.stream().map(productService::readByProductId).collect(Collectors.toList());
+        final DeliveryReceiver deliveryReceiver = request.getDeliveryReceiver();
 
         // 배송 정보 생성
-        final Delivery delivery = Delivery.createDelivery(address);
+        final Delivery delivery = Delivery.createDelivery(deliveryReceiver, address);
 
         deliveryService.add(delivery); // update product 쿼리 날아감. (오류)
 

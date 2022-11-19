@@ -1,5 +1,6 @@
 package com.ecommerce.backend.domain.request;
 
+import com.ecommerce.backend.domain.entity.DeliveryReceiver;
 import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.enums.OrderStatus;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class OrderRequest {
 
         @Enumerated(EnumType.STRING)
         private OrderStatus orderStatus; // 주문 상태
+
+        private DeliveryReceiver deliveryReceiver;
 
         public Order toOrder(){
             return Order.builder()
