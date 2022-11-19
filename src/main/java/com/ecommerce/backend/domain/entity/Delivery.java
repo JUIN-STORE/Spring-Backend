@@ -18,14 +18,11 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String city;
-
-    private String street;
-
-    private Integer zipCode;
-
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
+
+    @Embedded
+    private DeliveryReceiver deliveryReceiver;
 
     @JoinColumn(name = "address_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,12 +31,10 @@ public class Delivery {
     @OneToOne(mappedBy = "delivery") // mappedBy가 있으면 연관관계 주인이 아님.
     private Order order;
 
-    public static Delivery createDelivery(Address address) {
+    public static Delivery createDelivery(DeliveryReceiver deliveryReceiver, Address address) {
         return Delivery.builder()
                 .address(address)
-                .city(address.getCity())
-                .street(address.getStreet())
-                .zipCode(address.getZipCode())
+                .deliveryReceiver(deliveryReceiver)
                 .deliveryStatus(DeliveryStatus.READY)
                 .build();
     }
