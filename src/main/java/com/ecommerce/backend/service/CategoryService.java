@@ -17,8 +17,9 @@ import java.util.List;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    public List<Category> readAll() {
-        return categoryRepository.findAll();
+    public List<Category> readByParentId() {
+        // 최상위 카테고리는 null
+        return categoryRepository.findByParentId(null);
     }
 
     public Category readById(Long categoryId) {
