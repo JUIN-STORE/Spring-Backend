@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryResponse {
-    @Data
-    @Accessors(chain = true)
+    @Data @Accessors(chain = true)
     public static class Read {
         private Long id;
 
