@@ -28,14 +28,15 @@ public class CategoryResponse {
         }
     }
 
-    @Data
-    @Accessors(chain = true)
+    @Data @Accessors(chain = true)
     public static class ReadChildList {
         private Long id;
 
         private String categoryName;
 
         private Long depth;
+
+        private List<CategoryResponse.ReadChildList> childList = new ArrayList<>();
 
         public static List<ReadChildList> from(List<Category> categoryChildList) {
             List<ReadChildList> response = new ArrayList<>();
@@ -46,6 +47,7 @@ public class CategoryResponse {
                                 .setId(category.getId())
                                 .setCategoryName(category.getCategoryName())
                                 .setDepth(category.getDepth())
+                                .setChildList(from(category.getChildList()))
                 );
             }
 
