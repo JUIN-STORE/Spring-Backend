@@ -3,6 +3,7 @@ package com.ecommerce.backend.repository.jpa;
 import com.ecommerce.backend.domain.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,6 +23,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "  FROM category AS c2\n" +
             "\tJOIN cte ON cte.category_id = c2.parent_id\n" +
             ")\n" +
-            "SELECT category_id, category_name, depth, parent_id FROM cte")
-    List<Category> findByParentId(Long parentId);
+            "SELECT category_id, category_name, depth, parent_id FROM cte WHERE parent_id IS NULL GROUP BY category_id, parent_id")
+    List<Category> findByParentId(@Param("parentId") Long parentId);
 }
