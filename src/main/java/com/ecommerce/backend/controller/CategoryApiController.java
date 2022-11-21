@@ -27,7 +27,7 @@ public class CategoryApiController {
     @ApiOperation(value = "모든 카테고리 읽기", notes = "모든 카테고리를 읽어온다.")
     @GetMapping
     public MyResponse<List<CategoryResponse.Read>> all() {
-        final List<Category> categoryList = categoryService.readAll();
+        final List<Category> categoryList = categoryService.readByParentId();
 
         final List<CategoryResponse.Read> response = new ArrayList<>();
 
