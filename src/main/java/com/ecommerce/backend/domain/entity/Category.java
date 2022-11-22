@@ -28,7 +28,7 @@ public class Category {
     private Category parent;
 
     @Builder.Default
-    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<Category> childList = new ArrayList<>();
 
     @Builder.Default

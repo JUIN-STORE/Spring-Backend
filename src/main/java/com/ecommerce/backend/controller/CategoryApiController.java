@@ -27,11 +27,11 @@ public class CategoryApiController {
     @ApiOperation(value = "모든 카테고리 읽기", notes = "모든 카테고리를 읽어온다.")
     @GetMapping
     public MyResponse<List<CategoryResponse.Read>> all() {
+        // FIXME: 쿼리 N방 날아감
         final List<Category> categoryList = categoryService.readByParentId();
 
         final List<CategoryResponse.Read> response = new ArrayList<>();
 
-        // FIXME: 쿼리 N방 날아감
         for (Category category : categoryList) {
             final List<CategoryResponse.ReadChildList> childListResponse = CategoryResponse.ReadChildList.from(category.getChildList());
             response.add(CategoryResponse.Read.from(category, childListResponse));
