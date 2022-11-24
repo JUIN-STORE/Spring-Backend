@@ -76,16 +76,19 @@ public class ProductService {
         return product.getId();
     }
 
-    public Page<Product> readAll(Pageable pageable){
-        return productRepository.findAll(pageable);
+    public Page<Product> read(Pageable pageable, Long categoryId) {
+        if (categoryId == null) return productRepository.findAll(pageable);
+
+        return productRepository.findByCategoryId(pageable, categoryId);
     }
 
     public Long readCount(){
         return productRepository.count();
     }
 
-    public Page<Product> search(Pageable pageable, String searchTitle) {
-        return productRepository.findByProductNameContaining(pageable, searchTitle);
+    public Page<Product> search(Pageable pageable, String searchTitle, Long categoryId) {
+        if (categoryId == null) return productRepository.findByProductNameContaining(pageable, searchTitle);
+        return productRepository.findByProductNameContainingAndCategoryId(pageable, searchTitle, categoryId);
     }
 
     public Long readSearchCount(String searchTitle){

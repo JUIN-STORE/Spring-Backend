@@ -95,12 +95,13 @@ public class ProductApiController {
         }
     }
 
-    @ApiOperation(value = "전체 상품 읽기", notes = "전체 상품을 읽는다.")
+    @ApiOperation(value = "상품 목록 읽기", notes = "전체 또는 카테고리 별 상품 조회")
     @GetMapping
-    public MyResponse<List<ProductResponse.Read>> all(@PageableDefault(size = 10) Pageable pageable) {
+    public MyResponse<List<ProductResponse.Read>> all(@PageableDefault(size = 10) Pageable pageable,
+                                                      @RequestParam(required = false) Long categoryId) {
         log.info("GET /api/products pageable: {}", pageable);
 
-        final Page<Product> productList = productService.readAll(pageable);
+        final Page<Product> productList = productService.read(pageable, categoryId);
         return new MyResponse<>(HttpStatus.OK, getResponse(productList));
     }
 
@@ -110,11 +111,12 @@ public class ProductApiController {
         return productService.readCount();
     }
 
-    @ApiOperation(value = "상품 검색하기", notes = "상품을 상품이름으로 검색해서 찾는다")
+    @ApiOperation(value = "상품 검색하기", notes = "전체 또는 특정 카테고리에서 상품을 상품이름으로 검색해서 찾는다")
     @GetMapping("/search")
     public MyResponse<List<ProductResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
-                                                         @RequestParam("productName") String searchTitle) {
-        final Page<Product> productList = productService.search(pageable, searchTitle);
+                                                         @RequestParam("productName") String searchTitle,
+                                                         @RequestParam(value = "categoryId", required = false) Long categoryId) {
+        final Page<Product> productList = productService.search(pageable, searchTitle, categoryId);
         return new MyResponse<>(HttpStatus.OK, getResponse(productList));
     }
 
