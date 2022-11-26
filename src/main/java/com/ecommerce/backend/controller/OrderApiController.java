@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -28,16 +29,17 @@ public class OrderApiController {
 
     private final OrderService orderService;
 
-    @ApiOperation(value = "주문 상세보기", notes="주문 취소를 한다.")
+    @ApiOperation(value = "주문 상세보기", notes = "주문 상세 내역을 조회한다.")
     @GetMapping
-    public MyResponse<List<OrderJoinResponse>> all(Principal principal) {
+    public MyResponse<List<OrderJoinResponse>> all(Principal principal,
+                                                   @Valid @ModelAttribute OrderRequest.Read request) {
         final Account account = jwtService.readByPrincipal(principal);
 
-        final List<OrderJoinResponse> response = orderService.join(account);
+        final List<OrderJoinResponse> response = orderService.join(account, request);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
-    @ApiOperation(value = "주문하기", notes="주문을 한다.")
+    @ApiOperation(value = "주문하기", notes = "주문을 한다.")
     @PostMapping("/new")
     public MyResponse<OrderResponse.Create> newOrder(Principal principal,
                                                      @RequestBody OrderRequest.Create request) {
@@ -47,7 +49,7 @@ public class OrderApiController {
         return new MyResponse<>(HttpStatus.OK, OrderResponse.Create.of(order));
     }
 
-    @ApiOperation(value = "주문 취소하기", notes="주문 취소를 한다.")
+    @ApiOperation(value = "주문 취소하기", notes = "주문 취소를 한다.")
     @DeleteMapping("/cancel/{orderId}")
     public MyResponse<OrderResponse.Create> cancel(@PathVariable Long orderId) {
         orderService.cancelOrder(orderId);

@@ -1,5 +1,6 @@
 package com.ecommerce.backend.repository.querydsl;
 
+import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.domain.response.OrderJoinResponse;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +13,5 @@ import java.util.Optional;
 public interface QuerydslOrderRepository {
     void deleteByAccountId(Long accountId);
 
-    Optional<List<OrderJoinResponse>> findOrderJoinOrderProductJoinProductByAccountId(Long accountId);
+    Optional<List<OrderJoinResponse>> findOrderJoinOrderProductJoinProductByAccountId(Long accountId, OrderRequest.Read request);
 }
