@@ -27,12 +27,8 @@ public class OrderService {
     private final DeliveryService deliveryService;
 
     public List<OrderJoinResponse> join(Account account, OrderRequest.Read request) {
-        return orderRepository.findOrderJoinOrderProductJoinProductByAccountId(
-                        account.getId(),
-                        request.getStartDate().atStartOfDay(),
-                        request.getEndDate().atStartOfDay(),
-                        request.getOrderStatus()
-                ).orElseThrow(NotOrderException::new);
+        return orderRepository
+                .findOrderJoinOrderProductJoinProductByAccountId(account.getId(), request).orElseThrow(NotOrderException::new);
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.ecommerce.backend.repository.querydsl;
 
 import com.ecommerce.backend.domain.enums.OrderStatus;
+import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.domain.response.OrderJoinResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -31,31 +32,34 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
 
     @Override
     public Optional<List<OrderJoinResponse>> findOrderJoinOrderProductJoinProductByAccountId(Long accountId,
-                                                                                             LocalDateTime startDate,
-                                                                                             LocalDateTime endDate,
-                                                                                             OrderStatus orderStatus) {
+                                                                                             OrderRequest.Read request) {
         return Optional.ofNullable(
                 queryFactory
-                    .select(Projections.fields(OrderJoinResponse.class
-                        , order.orderDate
-                        , orderProduct.orderCount
-                        , product.id.as("productId")
-                        , product.price
-                        , product.productName
-                        , order.id.as("ordersId")
-                        , orderProduct.product.id.as("orderProductId")
-                        , order.delivery.id.as("deliveryId")
-                        , order.orderStatus
-                           )
+                        .select(Projections.fields(OrderJoinResponse.class
+                                        , order.orderDate
+                                        , orderProduct.orderCount
+                                        , product.id.as("productId")
+                                        , product.price
+                                        , product.productName
+                                        , order.id.as("ordersId")
+                                        , orderProduct.product.id.as("orderProductId")
+                                        , order.delivery.id.as("deliveryId")
+                                        , order.orderStatus
+                                )
                         )
-                    .from(order)
-                    .join(orderProduct)
-                    .on(order.id.eq(orderProduct.order.id))
-                    .join(product)
-                    .on(product.id.eq(orderProduct.product.id))
-                    .where(order.account.id.eq(accountId), orderDateBetween(startDate, endDate), orderStatusEq(orderStatus))
+                        .from(order)
+                        .join(orderProduct)
+                        .on(order.id.eq(orderProduct.order.id))
+                        .join(product)
+                        .on(product.id.eq(orderProduct.product.id))
+                        .where(order.account.id.eq(accountId),
+                                orderDateBetween(
+                                        request.getStartDate().atStartOfDay(),
+                                        request.getEndDate().atStartOfDay()
+                                ),
+                                orderStatusEq(request.getOrderStatus()))
                         .orderBy(order.id.desc())
-                    .fetch()
+                        .fetch()
         );
     }
 
