@@ -5,9 +5,12 @@ import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.enums.OrderStatus;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,6 +32,19 @@ public class OrderRequest {
                     .orderDate(LocalDateTime.now())
                     .build();
         }
+    }
+
+    @Data @Accessors(chain = true)
+    public static class Read {
+        @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        private LocalDate startDate;
+
+        @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        private LocalDate endDate;
+
+        private OrderStatus orderStatus;
     }
 
     @Data @Accessors(chain = true)

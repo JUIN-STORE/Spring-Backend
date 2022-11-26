@@ -26,9 +26,13 @@ public class OrderService {
     private final OrderProductService orderProductService;
     private final DeliveryService deliveryService;
 
-    public List<OrderJoinResponse> join(Account account) {
-        return orderRepository.findOrderJoinOrderProductJoinProductByAccountId(account.getId())
-                .orElseThrow(NotOrderException::new);
+    public List<OrderJoinResponse> join(Account account, OrderRequest.Read request) {
+        return orderRepository.findOrderJoinOrderProductJoinProductByAccountId(
+                        account.getId(),
+                        request.getStartDate().atStartOfDay(),
+                        request.getEndDate().atStartOfDay(),
+                        request.getOrderStatus()
+                ).orElseThrow(NotOrderException::new);
     }
 
     @Transactional
@@ -72,7 +76,7 @@ public class OrderService {
     }
 
     // 주문 취소
-    public void cancelOrder (Long orderId){
+    public void cancelOrder(Long orderId) {
         // 주문 엔티티 조회
         final Order order = readById(orderId);
         final OrderProduct orderProduct = orderProductService.readByOrderId(order.getId());
