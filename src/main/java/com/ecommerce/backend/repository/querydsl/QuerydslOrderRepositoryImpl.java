@@ -68,17 +68,21 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return Optional.of(new PageImpl<>(orderJoinResponseList, pageable, countOrderProduct(accountId)));
+        return Optional.of(new PageImpl<>(orderJoinResponseList, pageable, countOrderProduct(accountId, request)));
     }
 
-    private Long countOrderProduct(Long accountId) {
-        List<Long> fetch = queryFactory.select(Wildcard.count)
+    private Long countOrderProduct(Long accountId, OrderRequest.Read request) {
+        return queryFactory.select(Wildcard.count)
                 .from(order)
                 .join(orderProduct)
                 .on(order.id.eq(orderProduct.order.id))
-                .where(order.account.id.eq(accountId))
-                .fetch();
-        return fetch.get(0);
+                .where(order.account.id.eq(accountId),
+                        orderDateBetween(
+                                request.getStartDate().atStartOfDay(),
+                                request.getEndDate().atStartOfDay()
+                        ),
+                        orderStatusEq(request.getOrderStatus()))
+                .fetchOne();
     }
 
     private BooleanExpression orderDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
