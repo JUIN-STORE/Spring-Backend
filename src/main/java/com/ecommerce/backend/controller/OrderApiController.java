@@ -12,12 +12,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 
 @Api(tags = {"04. Order"})
 @Slf4j
@@ -31,11 +33,12 @@ public class OrderApiController {
 
     @ApiOperation(value = "주문 상세보기", notes = "주문 상세 내역을 조회한다.")
     @GetMapping
-    public MyResponse<List<OrderJoinResponse>> all(Principal principal,
-                                                   @Valid @ModelAttribute OrderRequest.Read request) {
+    public MyResponse<Page<OrderJoinResponse>> all(Principal principal,
+                                                   @Valid @ModelAttribute OrderRequest.Read request,
+                                                   @PageableDefault(size = 10) Pageable pageable) {
         final Account account = jwtService.readByPrincipal(principal);
 
-        final List<OrderJoinResponse> response = orderService.join(account, request);
+        Page<OrderJoinResponse> response = orderService.join(account, request, pageable);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 

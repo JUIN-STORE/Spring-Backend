@@ -7,6 +7,8 @@ import com.ecommerce.backend.exception.NotOrderException;
 import com.ecommerce.backend.repository.jpa.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +28,10 @@ public class OrderService {
     private final OrderProductService orderProductService;
     private final DeliveryService deliveryService;
 
-    public List<OrderJoinResponse> join(Account account, OrderRequest.Read request) {
+    public Page<OrderJoinResponse> join(Account account, OrderRequest.Read request, Pageable pageable) {
         return orderRepository
-                .findOrderJoinOrderProductJoinProductByAccountId(account.getId(), request).orElseThrow(NotOrderException::new);
+                .findOrderJoinOrderProductJoinProductByAccountId(account.getId(), request, pageable)
+                .orElseThrow(NotOrderException::new);
     }
 
     @Transactional
