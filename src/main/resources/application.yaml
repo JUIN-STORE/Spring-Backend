@@ -21,7 +21,7 @@ spring:
 #            show_sql: true   # 실행되는 쿼리 콘솔 출력
 #            use_sql_comments: true # 추가적으로 주석 생성됨
 #            format_sql: true # 쿼리 가독성 좋게 포맷팅
-            ddl-auto: update
+                ddl-auto: update
 
 
     servlet:

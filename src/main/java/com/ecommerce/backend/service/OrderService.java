@@ -34,13 +34,20 @@ public class OrderService {
     @Transactional
     public Order addOrder(Account account, OrderRequest.Create request) {
         // 엔티티 조회
-        final Address address = addressService.readByAccountIdAndDefaultAddress(account.getId());
+        Address deliveryAddress;
+
+        if (request.getDeliveryAddress().isDefaultAddress()) {
+            deliveryAddress = addressService.readByAccountIdAndDefaultAddress(account.getId());
+        } else {
+            deliveryAddress = addressService.readByAccountIdAndZipCodeAndCityAndStreet(account, request.getDeliveryAddress());
+        }
+
         final List<Long> productIdList = request.getProductIdList();
         final List<Product> productList = productIdList.stream().map(productService::readByProductId).collect(Collectors.toList());
-        final DeliveryReceiver deliveryReceiver = request.getDeliveryReceiver();
+        final DeliveryReceiver deliveryReceiver = request.getDeliveryReceiver().toDeliveryReceiver();
 
         // 배송 정보 생성
-        final Delivery delivery = Delivery.createDelivery(deliveryReceiver, address);
+        final Delivery delivery = Delivery.createDelivery(deliveryReceiver, deliveryAddress);
 
         deliveryService.add(delivery); // update product 쿼리 날아감. (오류)
 
@@ -72,7 +79,7 @@ public class OrderService {
     }
 
     // 주문 취소
-    public void cancelOrder (Long orderId){
+    public void cancelOrder(Long orderId) {
         // 주문 엔티티 조회
         final Order order = readById(orderId);
         final OrderProduct orderProduct = orderProductService.readByOrderId(order.getId());

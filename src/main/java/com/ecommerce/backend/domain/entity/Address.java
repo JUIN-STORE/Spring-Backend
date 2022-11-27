@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Getter
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_receiver_address",
+                columnNames = {"city", "street", "zipCode", "account_id"})
+})
 @Entity
 @Builder
 @NoArgsConstructor
@@ -17,11 +21,14 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String city;
+    @Column(nullable = false)
+    private Integer zipCode;          // 우편 번호
 
-    private String street;
+    @Column(nullable = false)
+    private String city;             // 어느 도시에서 거주하는지
 
-    private Integer zipCode;
+    @Column(nullable = false)
+    private String street;          // 상세주소
 
     private boolean defaultAddress; // 기본 주소로 쓸 건지
 

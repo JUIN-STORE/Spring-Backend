@@ -20,13 +20,15 @@ public class AddressRequest {
         @NotBlank
         private Integer zipCode;
 
+        private boolean defaultAddress;
+
         public Address toAddress(Account account){
             return Address.builder()
                     .account(account)
                     .city(city)
                     .street(street)
                     .zipCode(zipCode)
-                    .defaultAddress(false)
+                    .defaultAddress(defaultAddress)
                     .build();
         }
     }
@@ -43,9 +45,9 @@ public class AddressRequest {
 
         private boolean defaultAddress;
 
-        public Address toAddress(){
+        public Address toAddress(Account account){
             return Address.builder()
-                    .id(addressId)
+                    .account(account)
                     .city(city)
                     .street(street)
                     .zipCode(zipCode)

@@ -39,7 +39,7 @@ public class OrderApiController {
 
     @ApiOperation(value = "주문하기", notes="주문을 한다.")
     @PostMapping("/new")
-    public MyResponse<OrderResponse.Create> newOrder(Principal principal,
+    public MyResponse<OrderResponse.Create> newOrder(final Principal principal,
                                                      @RequestBody OrderRequest.Create request) {
         final Account account = jwtService.readByPrincipal(principal);
 
