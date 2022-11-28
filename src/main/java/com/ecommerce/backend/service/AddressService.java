@@ -19,23 +19,23 @@ public class AddressService {
     private final AddressRepository addressRepository;
 
     @Transactional(readOnly = true)
-    public Address readById(Long addressId){
-        return addressRepository.findById(addressId)
+    public Address readByIdAndAccountId(Long addressId, Long accountId) {
+        return addressRepository.findByIdAndAccountId(addressId, accountId)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    public Address addAddress(Address address){
+    public Address addAddress(Address address) {
         return addressRepository.save(address);
     }
 
-    public Address addAddress(Account account, AddressRequest.Register request){
+    public Address addAddress(Account account, AddressRequest.Register request) {
         final Address address = request.toAddress(account);
 
         return addressRepository.save(address);
     }
 
-    public void update(AddressRequest.Update request){
-        final Address address = request.toAddress();
+    public void update(Account account, AddressRequest.Update request) {
+        final Address address = request.toAddress(account);
 
         addressRepository.save(address);
     }
@@ -55,6 +55,17 @@ public class AddressService {
     public Address readByAccountIdAndDefaultAddress(Long accountId) {
         return addressRepository.findByAccountIdAndDefaultAddress(accountId)
                 .orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Address readByAccountIdAndZipCodeAndCityAndStreet(Account account, AddressRequest.Register addressRegister) {
+        final Address address =
+                addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(account.getId(), addressRegister);
+
+        if (address == null) {
+            return addAddress(account, addressRegister);
+        } else {
+            return address;
+        }
     }
 }
 

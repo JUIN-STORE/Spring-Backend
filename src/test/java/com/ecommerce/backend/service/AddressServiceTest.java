@@ -61,7 +61,7 @@ class AddressServiceTest {
             given(addressRepository.findById(any(Long.class))).willReturn(Optional.of(address));
 
             // when
-            final Address actual = sut.readById(1L);
+            final Address actual = sut.readByIdAndAccountId(1L, 1L);
 
             // then
             assertThat(actual).isEqualTo(address);

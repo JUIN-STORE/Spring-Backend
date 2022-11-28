@@ -26,14 +26,14 @@ public class Delivery {
 
     @JoinColumn(name = "address_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Address address;
+    private Address deliveryAddress;
 
     @OneToOne(mappedBy = "delivery") // mappedBy가 있으면 연관관계 주인이 아님.
     private Order order;
 
-    public static Delivery createDelivery(DeliveryReceiver deliveryReceiver, Address address) {
+    public static Delivery createDelivery(DeliveryReceiver deliveryReceiver, Address deliveryAddress) {
         return Delivery.builder()
-                .address(address)
+                .deliveryAddress(deliveryAddress)
                 .deliveryReceiver(deliveryReceiver)
                 .deliveryStatus(DeliveryStatus.READY)
                 .build();
