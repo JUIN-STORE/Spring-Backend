@@ -21,7 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Api(tags = {"05. Product"})
@@ -128,17 +130,19 @@ public class ProductApiController {
 
     private List<ProductResponse.Read> getResponse(Page<Product> productList) {
         final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
-
         final List<ProductImage> productImageList = productImageService.readAllByProductId(productIdList);
-        final List<ProductResponse.Read> readAllResponse = new ArrayList<>();
+        final Map<Long, List<ProductImage>> productIdImageMap = new HashMap<>();
 
-        final int size = productImageList.size();
-
-        for (int i = 0; i < size; i++) {
-            readAllResponse.add(ProductResponse.Read.of(productList.getContent().get(i), productImageList.get(i)));
+        for (ProductImage productImage : productImageList) {
+            Long productId = productImage.getProduct().getId();
+            List<ProductImage> imageListInProduct = productIdImageMap.getOrDefault(productId, new ArrayList<>());
+            imageListInProduct.add(productImage);
+            productIdImageMap.put(productId, imageListInProduct);
         }
 
-        return readAllResponse;
+        return productList.stream()
+                .map(image -> ProductResponse.Read.of(image, productIdImageMap.get(image.getId())))
+                .collect(Collectors.toList());
     }
 }
 
