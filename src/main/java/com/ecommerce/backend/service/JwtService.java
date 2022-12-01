@@ -4,6 +4,7 @@ import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.repository.jpa.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,19 +22,18 @@ public class JwtService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Account account = accountRepository
+        final Account account = accountRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("user name not found!"));
 
-        return new org.springframework.security.core.userdetails.User(
-                account.getEmail(), account.getPasswordHash(), new ArrayList<>()
-        );
+        return new User(account.getEmail(), account.getPasswordHash(), new ArrayList<>());
     }
 
     public Account readByPrincipal(Principal principal) {
         final String email = principal.getName();
+
         return accountRepository
                 .findByEmail(email)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("email not found by principal!"));
     }
 }
