@@ -91,7 +91,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public void removeByAccountId(Long accountId) {
-        orderRepository.deleteByAccountId(accountId);
+    public long removeByAccountId(Long accountId) {
+        return orderRepository.deleteByAccountId(accountId);
     }
 }

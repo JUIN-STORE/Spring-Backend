@@ -16,12 +16,14 @@ spring:
                 enabled: true
 
     jpa:
+        database: MYSQL
         properties:
             hibernate:
+                hbm2ddl:
+                    auto: update      # create, create-drop, update, validate, none
 #            show_sql: true   # 실행되는 쿼리 콘솔 출력
 #            use_sql_comments: true # 추가적으로 주석 생성됨
 #            format_sql: true # 쿼리 가독성 좋게 포맷팅
-                ddl-auto: update
 
 
     servlet:

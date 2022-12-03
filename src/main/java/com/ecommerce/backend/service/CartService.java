@@ -15,14 +15,15 @@ import javax.persistence.EntityNotFoundException;
 public class CartService {
     private final CartRepository cartRepository;
 
-    public void addCart(Account account){
+    public void add(Account account){
         final Cart cart = Cart.createCart(account);
         cartRepository.save(cart);
     }
 
-    public void remove(Account account) {
-        cartRepository.deleteByAccountId(account.getId());
-        cartRepository.delete(account.getCart());
+    // FIXME: cart, cart_product 분리해야 됨.
+    public void removeByAccount(Account account) {
+        cartRepository.deleteByAccountId(account.getId()); // cart_product 삭제
+        cartRepository.delete(account.getCart());          // cart 삭제
     }
 
     public Cart readByAccountId(Long accountId) {

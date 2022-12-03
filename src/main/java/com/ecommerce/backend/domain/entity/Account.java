@@ -13,8 +13,9 @@ import java.util.List;
 
 @Getter
 @Entity
+@ToString
 @SuperBuilder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "account", indexes = {
         @Index(name = "account__email", columnList = "email")
 })

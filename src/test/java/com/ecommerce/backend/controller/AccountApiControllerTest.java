@@ -149,7 +149,7 @@ class AccountApiControllerTest {
                 .accountRole(AccountRole.ADMIN)
                 .lastLogin(LocalDateTime.now())
                 .addressList(List.of(address))
-                .registeredAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
     }

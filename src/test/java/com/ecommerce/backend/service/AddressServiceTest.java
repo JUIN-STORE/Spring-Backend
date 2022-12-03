@@ -48,7 +48,7 @@ class AddressServiceTest {
             given(addressRepository.save(any(Address.class))).willReturn(address);
 
             // when
-            final Address actual = sut.addAddress(address);
+            final Address actual = sut.add(address);
 
             // then
             assertThat(actual).isEqualTo(address);

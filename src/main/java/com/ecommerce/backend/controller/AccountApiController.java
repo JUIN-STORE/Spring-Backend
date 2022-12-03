@@ -56,7 +56,8 @@ public class AccountApiController {
 
         try {
             // 이 시점에 １번　쿼리 나감.
-            final Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            final Authentication authentication =
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             final String token = jwtTokenUtil.generateToken(authentication.getName());
             final AccountResponse.Login response = AccountResponse.Login.of(email, token);
 
@@ -85,11 +86,12 @@ public class AccountApiController {
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
     @PatchMapping("/update")
-    public MyResponse<AccountResponse.Update> update(@RequestBody AccountRequest.Update request, Principal principal) {
+    public MyResponse<AccountResponse.Update> update(final Principal principal,
+                                                     @RequestBody AccountRequest.Update request) {
         log.debug("Patch /api/accounts/modify request: {}", request);
 
         try{
-            final Account account = accountService.modifyAccount(request, principal);
+            final Account account = accountService.modify(principal, request);
             final AccountResponse.Update response = AccountResponse.Update.from(account);
 
             return new MyResponse<>(HttpStatus.OK, response);
@@ -101,11 +103,12 @@ public class AccountApiController {
 
     @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
     @DeleteMapping("/{accountId}")
-    public MyResponse<AccountResponse.Delete> delete(@PathVariable Long accountId, Principal principal) {
+    public MyResponse<AccountResponse.Delete> delete(final Principal principal,
+                                                     @PathVariable Long accountId) {
         log.debug("Delete /api/accounts/{id} principal: {}", principal);
 
         try {
-            final Account account = accountService.removeAccount(accountId, principal);
+            final Account account = accountService.remove(principal, accountId);
             final AccountResponse.Delete response = AccountResponse.Delete.from(account);
 
             return new MyResponse<>(HttpStatus.OK, response);

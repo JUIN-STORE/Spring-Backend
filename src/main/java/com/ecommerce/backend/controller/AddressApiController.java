@@ -36,7 +36,7 @@ public class AddressApiController {
         final Account account = jwtService.readByPrincipal(principal);
 
         try {
-            addressService.addAddress(account, request);
+            addressService.add(account, request);
             return new MyResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
             log.warn("POST /api/addresses -> request: {} EntityNotFoundException",  request);
@@ -94,7 +94,7 @@ public class AddressApiController {
         final Account account = jwtService.readByPrincipal(principal);
 
         try {
-            addressService.update(account, request);
+            addressService.modify(account, request);
             return new MyResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
             log.warn("PATCH /api/addresses/{addressId} -> request: {} EntityNotFoundException", request);

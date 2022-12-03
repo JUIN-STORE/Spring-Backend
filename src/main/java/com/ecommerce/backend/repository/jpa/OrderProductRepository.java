@@ -16,6 +16,7 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Long
     Optional<OrderProduct> findByOrderId(Long oderId);
 
     // querydsl에는 delete join 기능이 없어서 네이티브 사용
+    // return 값 int밖에 사용 불가
     @Modifying
     @Transactional
     @Query(nativeQuery = true,
@@ -24,5 +25,5 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Long
                     "LEFT JOIN order_product ON orders.orders_id = order_product.orders_id " +
                     "WHERE orders.orders_id IN (:orderIdList)"
     )
-    void deleteByOrderIdList(@Param("orderIdList") List<Long> orderIdList);
+    int deleteByOrderIdList(@Param("orderIdList") List<Long> orderIdList);
 }
