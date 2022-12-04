@@ -13,5 +13,7 @@ public interface QuerydslAddressRepository {
 
     Address findByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressRequest.Register register);
 
-    long removeByAddressIdList(List<Long> addressIdList);
+    long delete(Long accountId, Long addressId);
+
+    long deleteByAddressIdList(Long accountId, List<Long> addressIdList);
 }

@@ -44,9 +44,9 @@ public class AddressApiController {
         }
     }
 
-    @ApiOperation(value = "유저의 모든 주소 읽기", notes="유저의 모든 주소를 불러온다.")
+    @ApiOperation(value = "한 유저의 모든 주소 읽기", notes="한 유저의 모든 주소를 불러온다.")
     @GetMapping("/all")
-    public MyResponse<List<AddressResponse.Read>> allAddress(final Principal principal) {
+    public MyResponse<List<AddressResponse.Read>> all(final Principal principal) {
         final Account account = jwtService.readByPrincipal(principal);
 
         try {
@@ -60,7 +60,7 @@ public class AddressApiController {
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("GET /api/addresses EntityNotFoundException");
-            return new MyResponse<>(HttpStatus.NOT_FOUND, null);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ public class AddressApiController {
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("GET /api/addresses/{addressId} addressId: {} EntityNotFoundException", addressId);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, "GET FAIL", null);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
@@ -98,25 +98,24 @@ public class AddressApiController {
             return new MyResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
             log.warn("PATCH /api/addresses/{addressId} -> request: {} EntityNotFoundException", request);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, "PATCH FAIL", null);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
-    // FIXME: 비정상적인 동작
     @ApiOperation(value = "주소 삭제", notes = "주소 정보를 삭제한다.")
     @DeleteMapping("/{addressId}")
-    public MyResponse<AddressResponse.Delete> delete(final Principal principal,
-                                                     @PathVariable Long addressId){
+    public MyResponse<Long> delete(final Principal principal,
+                                   @PathVariable Long addressId) {
         log.info("DELETE /api/addresses/{addressId} -> addressId: {}", addressId);
+
         final Account account = jwtService.readByPrincipal(principal);
 
         try {
-            final Address address = addressService.remove(addressId);
-            final AddressResponse.Delete response = AddressResponse.Delete.from(address);
+            final long action = addressService.remove(account.getId(), addressId);
 
-            return new MyResponse<>(HttpStatus.OK, "DELETE SUCCESS", response);
+            return new MyResponse<>(HttpStatus.OK, action);
         } catch (EntityNotFoundException e) {
-            return new MyResponse<>(HttpStatus.OK, "DELETE FAIL", null);
+            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 }
