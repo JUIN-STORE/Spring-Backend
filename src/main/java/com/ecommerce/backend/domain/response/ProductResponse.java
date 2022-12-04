@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductResponse {
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Read {
         private Long id;
 
@@ -31,7 +32,7 @@ public class ProductResponse {
         private ProductStatus productStatus;    // 제품의 상태
 
         private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
-        
+
         // 단건
         public static Read from(Product product) {
             return new Read()
@@ -48,7 +49,7 @@ public class ProductResponse {
         }
 
         // 다건
-        public static Read of(Product product, ProductImage productImage) {
+        public static Read of(Product product, List<ProductImage> productImageList) {
             return new Read()
                     .setId(product.getId())
                     .setProductName(product.getProductName())
@@ -57,7 +58,11 @@ public class ProductResponse {
                     .setSoldCount(product.getSoldCount())
                     .setDescription(product.getDescription())
                     .setProductStatus(product.getProductStatus())
-                    .setProductImageList(List.of(ProductImageResponse.Read.of(productImage)));
+                    .setProductImageList(
+                            productImageList.stream()
+                                    .map(ProductImageResponse.Read::of)
+                                    .collect(Collectors.toList())
+                    );
         }
     }
 }

@@ -21,7 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Api(tags = {"05. Product"})
@@ -43,9 +45,12 @@ public class ProductApiController {
             final Long response = productService.add(request, productImageFileList);
 
             return new MyResponse<>(HttpStatus.OK, response);
+        } catch (EntityNotFoundException e) {
+            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
         } catch (Exception e) {
             log.warn("파일 등록에 실패하였습니다.");
-            return new MyResponse<>(HttpStatus.FORBIDDEN, null);
+            return new MyResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
 
@@ -59,8 +64,9 @@ public class ProductApiController {
             final ProductResponse.Read response = ProductResponse.Read.from(product);
 
             return new MyResponse<>(HttpStatus.OK, "상품 읽기 성공", response);
-        } catch (Exception e) {
-            return null;
+        } catch (EntityNotFoundException e) {
+            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
 
@@ -74,8 +80,8 @@ public class ProductApiController {
 
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("EntityNotFoundException 발생");
-            return null;
+            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
 
@@ -89,9 +95,9 @@ public class ProductApiController {
             final ProductResponse.Read read = ProductResponse.Read.from(product);
 
             return new MyResponse<>(HttpStatus.OK, read);
-        } catch (Exception e) {
-            log.warn("Exception: {}", e.getMessage());
-            return new MyResponse<>(HttpStatus.FORBIDDEN, null);
+        } catch (EntityNotFoundException e) {
+            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
 
@@ -99,10 +105,17 @@ public class ProductApiController {
     @GetMapping
     public MyResponse<List<ProductResponse.Read>> all(@PageableDefault(size = 10) Pageable pageable,
                                                       @RequestParam(required = false) Long categoryId) {
+
         log.info("GET /api/products pageable: {}", pageable);
 
-        final Page<Product> productList = productService.read(pageable, categoryId);
-        return new MyResponse<>(HttpStatus.OK, getResponse(productList));
+        try {
+            final Page<Product> productList = productService.read(pageable, categoryId);
+            List<ProductResponse.Read> response = getResponse(productList);
+            return new MyResponse<>(HttpStatus.OK, response);
+        } catch (EntityNotFoundException e) {
+            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
+        }
     }
 
     @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
@@ -116,11 +129,18 @@ public class ProductApiController {
     public MyResponse<List<ProductResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
                                                          @RequestParam("productName") String searchTitle,
                                                          @RequestParam(value = "categoryId", required = false) Long categoryId) {
-        final Page<Product> productList = productService.search(pageable, searchTitle, categoryId);
-        return new MyResponse<>(HttpStatus.OK, getResponse(productList));
+        try {
+            final Page<Product> productList = productService.search(pageable, searchTitle, categoryId);
+            List<ProductResponse.Read> response = getResponse(productList);
+            return new MyResponse<>(HttpStatus.OK, response);
+        } catch (EntityNotFoundException e) {
+            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
+        }
+
     }
 
-    @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
+    @ApiOperation(value = "검색한 상품의 개수", notes = "검색한 상품의 개수를 반환한다.")
     @GetMapping("/search/count")
     public Long readSearchCount(@RequestParam("productName") String searchTitle) {
         return productService.readSearchCount(searchTitle);
@@ -128,17 +148,22 @@ public class ProductApiController {
 
     private List<ProductResponse.Read> getResponse(Page<Product> productList) {
         final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
-
         final List<ProductImage> productImageList = productImageService.readAllByProductId(productIdList);
-        final List<ProductResponse.Read> readAllResponse = new ArrayList<>();
+        final Map<Long, List<ProductImage>> productIdImageMap = new HashMap<>();
 
-        final int size = productImageList.size();
+        for (ProductImage productImage : productImageList) {
+            Product product = productImage.getProduct();
+            if (product == null) continue;
 
-        for (int i = 0; i < size; i++) {
-            readAllResponse.add(ProductResponse.Read.of(productList.getContent().get(i), productImageList.get(i)));
+            Long productId = product.getId();
+            List<ProductImage> imageListInProduct = productIdImageMap.getOrDefault(productId, new ArrayList<>());
+            imageListInProduct.add(productImage);
+            productIdImageMap.put(productId, imageListInProduct);
         }
 
-        return readAllResponse;
+        return productList.stream()
+                .map(image -> ProductResponse.Read.of(image, productIdImageMap.get(image.getId())))
+                .collect(Collectors.toList());
     }
 }
 
