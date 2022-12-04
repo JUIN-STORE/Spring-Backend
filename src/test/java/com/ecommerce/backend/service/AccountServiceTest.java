@@ -66,16 +66,16 @@ class AccountServiceTest {
             // given
             String expected = "존재하는 이메일입니다. 다른 이메일을 입력해 주세요.";
 
-            var account = getAccount(AccountRole.USER);
-            var request = getSignUpRequest();
+            var account = makeAccount(AccountRole.USER);
+            var request = makeSignUpRequest();
 
             given(mockAccountRepository.findByEmail(anyString())).willReturn(Optional.of(account));
 
             // when
             Method method =
-                    AccountService.class.getDeclaredMethod("isDuplicatedEmail", AccountRequest.SignUp.class);
+                    AccountService.class.getDeclaredMethod("checkDuplicatedEmail", AccountRequest.SignUp.class);
             method.setAccessible(true);
-            var action = assertThatThrownBy(() -> {
+            var actual = assertThatThrownBy(() -> {
                         try {
                             method.invoke(sut, request);
                         } catch (InvocationTargetException e) {
@@ -85,20 +85,20 @@ class AccountServiceTest {
             );
 
             // then
-            action.isInstanceOf(EntityExistsException.class).hasMessage(expected);
+            actual.isInstanceOf(EntityExistsException.class).hasMessage(expected);
         }
 
         @Test
         @DisplayName("중복된 이메일이 없을 때")
         void duplicateEmailTest02() throws Exception {
             // given
-            var request = getSignUpRequest();
+            var request = makeSignUpRequest();
 
             given(mockAccountRepository.findByEmail(anyString())).willReturn(Optional.empty());
 
             // when, then
             Method method =
-                    AccountService.class.getDeclaredMethod("isDuplicatedEmail", AccountRequest.SignUp.class);
+                    AccountService.class.getDeclaredMethod("checkDuplicatedEmail", AccountRequest.SignUp.class);
             method.setAccessible(true);
             method.invoke(sut, request);
         }
@@ -114,8 +114,8 @@ class AccountServiceTest {
             MockedStatic<SecurityConfig> mockSecurityConfig = mockStatic(SecurityConfig.class);
             given(SecurityConfig.makePasswordHash(any())).willReturn("securityPasswordHash");
 
-            final var accountRequest = getSignUpRequest();
-            final var expected = getAccount(AccountRole.USER);
+            final var accountRequest = makeSignUpRequest();
+            final var expected = makeAccount(AccountRole.USER);
 
             // when
             final Account actual = sut.add(accountRequest);
@@ -135,7 +135,7 @@ class AccountServiceTest {
         @DisplayName("정상 케이스")
         void readByIdTest01() {
             // given
-            final var expected = getAccount(AccountRole.USER);
+            final var expected = makeAccount(AccountRole.USER);
             given(mockAccountRepository.findById(any())).willReturn(Optional.of(expected));
 
             // when
@@ -151,10 +151,12 @@ class AccountServiceTest {
             // given
             given(mockAccountRepository.findById(any())).willReturn(Optional.empty());
 
-            // when, then
-            assertThatThrownBy(() -> sut.readById(1L))
-                    .isInstanceOf(EntityNotFoundException.class)
-                    .hasMessage(Msg.ACCOUNT_NOT_FOUND);
+            // when
+            var actual =
+                    assertThatThrownBy(() -> sut.readById(1L));
+
+            // then
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
         }
     }
 
@@ -165,7 +167,7 @@ class AccountServiceTest {
         @DisplayName("정상 케이스")
         void readByEmailTest01() {
             // given
-            final var expected = getAccount(AccountRole.USER);
+            final var expected = makeAccount(AccountRole.USER);
             given(mockAccountRepository.findByEmail(any())).willReturn(Optional.of(expected));
 
             // when
@@ -181,10 +183,12 @@ class AccountServiceTest {
             // given
             given(mockAccountRepository.findByEmail(any())).willReturn(Optional.empty());
 
-            // when, then
-            assertThatThrownBy(() -> sut.readByEmail(EMAIL))
-                    .isInstanceOf(EntityNotFoundException.class)
-                    .hasMessage(Msg.ACCOUNT_NOT_FOUND);
+            // when
+            var actual =
+                    assertThatThrownBy(() -> sut.readByEmail(EMAIL));
+
+            // then
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
         }
     }
 
@@ -196,9 +200,9 @@ class AccountServiceTest {
         void modifyTest01() {
             // given
             final Principal mockPrincipal = Mockito.mock(Principal.class);
-            final AccountRequest.Update request = getUpdateRequest();
+            final AccountRequest.Update request = makeUpdateRequest();
 
-            final Account expected = getAccount(AccountRole.USER);
+            final Account expected = makeAccount(AccountRole.USER);
             request.toAccount(expected.getId(), EMAIL);
 
             given(mockPrincipal.getName()).willReturn(EMAIL);
@@ -217,7 +221,26 @@ class AccountServiceTest {
             assertNotEquals(expected.getAccountRole(), actual.getAccountRole());
         }
 
-        // TODO: 실패 케이스는 뭐가 있을까?
+        @Test
+        @DisplayName("account를 못 찾아서 수정 실패")
+        void modifyTest02() {
+            // given
+            final Principal mockPrincipal = Mockito.mock(Principal.class);
+            final AccountRequest.Update request = makeUpdateRequest();
+
+            final Account expected = makeAccount(AccountRole.USER);
+            request.toAccount(expected.getId(), EMAIL);
+
+            given(mockPrincipal.getName()).willReturn(EMAIL);
+            given(mockAccountRepository.findByEmail(any())).willReturn(Optional.empty());
+
+            // when
+            var actual =
+                    assertThatThrownBy(() -> sut.modify(mockPrincipal, request));
+
+            // then
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
+        }
     }
 
     @Nested
@@ -230,14 +253,14 @@ class AccountServiceTest {
             final Principal mockPrincipal = Mockito.mock(Principal.class);
             given(mockPrincipal.getName()).willReturn(EMAIL);
 
-            final Account account = getAccount(AccountRole.USER);
+            final Account account = makeAccount(AccountRole.USER);
 
             List<Address> addressList =
-                    Arrays.asList(getAddress(1L, true), getAddress(3L,false));
+                    Arrays.asList(makeAddress(1L, true), makeAddress(3L,false));
             given(mockAccountRepository.findByIdAndEmail(anyLong(), anyString())).willReturn(Optional.of(account));
 
             List<Order> orderList =
-                    Arrays.asList(getOrder(1L), getOrder(10L));
+                    Arrays.asList(makeOrder(1L), makeOrder(10L));
             given(mockAddressService.readByAccountId(anyLong())).willReturn(addressList);
 
             // when
@@ -255,7 +278,7 @@ class AccountServiceTest {
         @DisplayName("id와 email을 통해 계정을 찾음")
         void readByIdAndEmailTest01() {
             // given
-            final var expected = getAccount(AccountRole.USER);
+            final var expected = makeAccount(AccountRole.USER);
             given(mockAccountRepository.findByIdAndEmail(anyLong(), anyString())).willReturn(Optional.of(expected));
 
             // when
@@ -271,10 +294,12 @@ class AccountServiceTest {
             // given
             given(mockAccountRepository.findByIdAndEmail(anyLong(), anyString())).willReturn(Optional.empty());
 
-            // when, then
-            assertThatThrownBy(() -> sut.readByIdAndEmail(1L, EMAIL))
-                    .isInstanceOf(EntityNotFoundException.class)
-                    .hasMessage(Msg.ACCOUNT_NOT_FOUND);
+            // when
+            var actual =
+                    assertThatThrownBy(() -> sut.readByIdAndEmail(1L, EMAIL));
+
+            // then
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
         }
     }
 
@@ -286,7 +311,7 @@ class AccountServiceTest {
         void checkNotUserTest01() {
             // given
             final Principal mockPrincipal = Mockito.mock(Principal.class);
-            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(getAccount(AccountRole.ADMIN));
+            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(makeAccount(AccountRole.ADMIN));
 
             // when
             final boolean actual = sut.checkNotUser(mockPrincipal);
@@ -300,7 +325,7 @@ class AccountServiceTest {
         void checkNotUserTest02() {
             // given
             final Principal mockPrincipal = Mockito.mock(Principal.class);
-            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(getAccount(AccountRole.SELLER));
+            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(makeAccount(AccountRole.SELLER));
 
             // when
             final boolean actual = sut.checkNotUser(mockPrincipal);
@@ -314,7 +339,7 @@ class AccountServiceTest {
         void checkNotUserTest03() {
             // given
             final Principal mockPrincipal = Mockito.mock(Principal.class);
-            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(getAccount(AccountRole.USER));
+            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(makeAccount(AccountRole.USER));
 
             // when
             final boolean actual = sut.checkNotUser(mockPrincipal);
@@ -324,13 +349,13 @@ class AccountServiceTest {
         }
     }
 
-    private Order getOrder(Long id) {
+    private Order makeOrder(Long id) {
         return Order.builder()
                 .id(id)
                 .build();
     }
 
-    private AccountRequest.Update getUpdateRequest() {
+    private AccountRequest.Update makeUpdateRequest() {
         final AccountRequest.Update request = new AccountRequest.Update();
         request.setAccountRole(AccountRole.ADMIN);
         request.setPasswordHash("updatePasswordHash");
@@ -342,7 +367,7 @@ class AccountServiceTest {
     }
 
 
-    private AccountRequest.SignUp getSignUpRequest() {
+    private AccountRequest.SignUp makeSignUpRequest() {
         final var request = new AccountRequest.SignUp();
         request.setEmail(EMAIL);
         request.setPasswordHash("passwordHash");
@@ -359,7 +384,7 @@ class AccountServiceTest {
         return request;
     }
 
-    private Address getAddress(Long id, boolean isDefaultAddress) {
+    private Address makeAddress(Long id, boolean isDefaultAddress) {
         return Address.builder()
                 .id(id)
                 .city("서울시 " + isDefaultAddress)
@@ -369,7 +394,7 @@ class AccountServiceTest {
                 .build();
     }
 
-    private Account getAccount(AccountRole accountRole) {
+    private Account makeAccount(AccountRole accountRole) {
         return Account.builder()
                 .id(1L)
                 .email(EMAIL)

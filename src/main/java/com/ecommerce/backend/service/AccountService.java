@@ -32,7 +32,7 @@ public class AccountService {
     private final OrderService orderService;
     private final OrderProductService orderProductService;
 
-    private void isDuplicatedEmail(AccountRequest.SignUp request) {
+    private void checkDuplicatedEmail(AccountRequest.SignUp request) {
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
 
         if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
@@ -41,7 +41,7 @@ public class AccountService {
     @Transactional
     public Account add(AccountRequest.SignUp request) {
         // 이메일 중복 검사
-        isDuplicatedEmail(request);
+        checkDuplicatedEmail(request);
 
         final Account account = request.toAccount();
         final Address address = request.getAddress().toAddress(account);
