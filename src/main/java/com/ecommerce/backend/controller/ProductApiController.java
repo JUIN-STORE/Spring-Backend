@@ -87,7 +87,7 @@ public class ProductApiController {
 
     @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
     @GetMapping("/{productId}")
-    public MyResponse<ProductResponse.Read> one(@PathVariable Long productId) {
+    public MyResponse<ProductResponse.Read> retrieveOne(@PathVariable Long productId) {
         log.info("POST /api/products/{productId} productId: {}", productId);
 
         try {
@@ -103,8 +103,8 @@ public class ProductApiController {
 
     @ApiOperation(value = "상품 목록 읽기", notes = "전체 또는 카테고리 별 상품 조회")
     @GetMapping
-    public MyResponse<List<ProductResponse.Read>> all(@PageableDefault(size = 10) Pageable pageable,
-                                                      @RequestParam(required = false) Long categoryId) {
+    public MyResponse<List<ProductResponse.Read>> retrieveAll(@PageableDefault(size = 10) Pageable pageable,
+                                                              @RequestParam(required = false) Long categoryId) {
 
         log.info("GET /api/products pageable: {}", pageable);
 
