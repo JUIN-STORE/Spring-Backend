@@ -40,7 +40,7 @@ public class AddressApiController {
             return new MyResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
             log.warn("POST /api/addresses -> request: {} EntityNotFoundException",  request);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, null);
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
 
@@ -60,7 +60,7 @@ public class AddressApiController {
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("GET /api/addresses EntityNotFoundException");
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ public class AddressApiController {
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("GET /api/addresses/{addressId} addressId: {} EntityNotFoundException", addressId);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ public class AddressApiController {
             return new MyResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
             log.warn("PATCH /api/addresses/{addressId} -> request: {} EntityNotFoundException", request);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -115,7 +115,7 @@ public class AddressApiController {
 
             return new MyResponse<>(HttpStatus.OK, action);
         } catch (EntityNotFoundException e) {
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

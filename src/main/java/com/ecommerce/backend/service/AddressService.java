@@ -8,6 +8,7 @@ import com.ecommerce.backend.repository.jpa.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -64,13 +65,16 @@ public class AddressService {
     }
 
 
+    @Transactional
     public Address modify(Account account, AddressRequest.Update request) {
         // address 있는지 확인
-        this.readByIdAndAccountId(request.getAddressId(), account.getId());
+        final Address oldAddress = this.readByIdAndAccountId(request.getAddressId(), account.getId());
 
         // 있으면 변경
-        final Address address = request.toAddress(account);
-        return add(address);
+        final Address newAddress = request.toAddress(account);
+        oldAddress.dirtyChecking(newAddress);
+
+        return newAddress;
     }
 
 

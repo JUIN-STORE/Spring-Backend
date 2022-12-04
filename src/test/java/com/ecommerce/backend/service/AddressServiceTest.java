@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
@@ -189,7 +188,7 @@ class AddressServiceTest {
 
             // when
             final Address actual = sut.readByIdAndAccountId(3L, 1L);
-            
+
             // then
             assertEquals(expected, actual);
         }
@@ -316,20 +315,25 @@ class AddressServiceTest {
         @DisplayName("정상적으로 수정")
         void modifyTest01() {
             // given
-            var oldAddress = makeAddress(true);
-            given(addressRepository.findByIdAndAccountId(anyLong(), anyLong())).willReturn(Optional.of(oldAddress));
+            var expected = makeAddress(true);
+            given(addressRepository.findByIdAndAccountId(anyLong(), anyLong())).willReturn(Optional.of(expected));
 
             var account = makeAccount(AccountRole.SELLER);
             var request = makeUpdateRequest(false);
-            var expected = request.toAddress(account);
+            var newAddress = request.toAddress(account);
 
-            given(addressRepository.save(any(Address.class))).willReturn(expected);
+            expected.dirtyChecking(newAddress);
 
             // when
             final Address actual = sut.modify(account, request);
 
             // then
-            assertEquals(expected, actual);
+            assertAll(
+                    () -> assertEquals(expected.getId(), actual.getId()),
+                    () -> assertEquals(expected.getCity(), actual.getCity()),
+                    () -> assertEquals(expected.getStreet(), actual.getStreet()),
+                    () -> assertEquals(expected.getZipCode(), actual.getZipCode())
+            );
         }
 
         @Test
@@ -422,7 +426,7 @@ class AddressServiceTest {
 
     private AddressRequest.Update makeUpdateRequest(boolean isDefaultAddress) {
         final AddressRequest.Update request = new AddressRequest.Update();
-        
+
         return request
                 .setAddressId(3L)
                 .setCity("update 서울시")
