@@ -5,6 +5,7 @@ import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
+import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class AccountService {
     private final OrderService orderService;
     private final OrderProductService orderProductService;
 
-    private void validateDuplicateEmail(AccountRequest.SignUp request){
+    private void checkDuplicatedEmail(AccountRequest.SignUp request) {
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
 
         if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
@@ -40,70 +41,88 @@ public class AccountService {
     @Transactional
     public Account add(AccountRequest.SignUp request) {
         // 이메일 중복 검사
-        validateDuplicateEmail(request);
+        checkDuplicatedEmail(request);
 
         final Account account = request.toAccount();
         final Address address = request.getAddress().toAddress(account);
 
         accountRepository.save(account);
 
-        addressService.addAddress(address);
-        cartService.addCart(account);
+        addressService.add(address);
+        cartService.add(account);
 
         return account;
     }
 
     @Transactional(readOnly = true)
     public Account readById(Long id) {
-        return accountRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new); // select * from cart where account_id = ? 쿼리도 나감 (오류)
+        return accountRepository.findById(id) // select * from cart where account_id = ? 쿼리도 나감
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public Account readByEmail(String email) {
         return accountRepository.findByEmail(email)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
     }
 
     @Transactional
-    public Account modifyAccount(AccountRequest.Update request, Principal principal) {
+    public Account modify(Principal principal, AccountRequest.Update request) {
         final String email = principal.getName();
-        final Account findAccount = this.readByEmail(email);
+        final Account oldAccount = this.readByEmail(email);
 
-        Account account = request.toAccount(findAccount.getId(), email);
-        accountRepository.save(account);
+        Account newAccount = request.toAccount(oldAccount.getId(), email);
+        accountRepository.save(newAccount);
 
-        return account;
+        return newAccount;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Account removeAccount(Long accountId, Principal principal) {
+    public Account remove(Principal principal, Long accountId) {
         final String email = principal.getName();
         final Account account = this.readByIdAndEmail(accountId, email);
 
+        // Address 구하기
         final List<Address> addressList = addressService.readByAccountId(account.getId());
         final List<Long> addressIdList = addressList.stream().map(Address::getId).collect(Collectors.toList());
 
         final List<Order> orderList = orderService.readByAccountId(account.getId());
         final List<Long> orderIdList = orderList.stream().map(Order::getId).collect(Collectors.toList());
 
-        orderProductService.removeByOrderIdList(orderIdList);       // order_product 삭제
-        orderService.removeByAccountId(accountId);                  // orders 삭제
+        // FK 걸려있는 데이터들 삭제
+        final int orderProductDeletedCount = orderProductService.removeByOrderIdList(orderIdList); // order_product 삭제
+        final long ordersDeletedCount = orderService.removeByAccountId(accountId);                  // orders 삭제
 
-        deliveryService.remove(addressIdList);                      // delivery 삭제
-        addressService.remove(accountId);                           // address 삭제
-        cartService.remove(account);                                // cart 삭제
+        final long deliveryDeletedCount = deliveryService.removeByAddressIdList(addressIdList);    // delivery 삭제
+        final long addressDeletedCount = addressService.removeByAddressIdList(addressIdList);       // address 삭제
+
+        // FIXME: cart, cart_product 분리해야 됨.
+        cartService.removeByAccount(account);                       // cart, cart_product 삭제
 
         accountRepository.delete(account);                          // account 삭제
+
+        log.info("삭제한 계정: {}, " +
+                 "order_product 삭제 개수: {}, " +
+                 "orders 삭제 개수: {}, " +
+                 "delivery 삭제 개수: {}, " +
+                 "address 삭제 개수: {}, "
+                , account.getEmail()
+                , orderProductDeletedCount
+                , ordersDeletedCount
+                , deliveryDeletedCount
+                , addressDeletedCount
+        );
 
         return account;
     }
 
-    public Account readByIdAndEmail(Long accountId, String email){
-        return accountRepository.findByIdAndEmail(accountId, email).orElseThrow(EntityNotFoundException::new);
+    public Account readByIdAndEmail(Long accountId, String email) {
+        return accountRepository.findByIdAndEmail(accountId, email)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
     }
 
-    public boolean checkSeller(Principal principal) {
-        return jwtService.readByPrincipal(principal).getAccountRole() == AccountRole.SELLER;
+    public boolean checkNotUser(Principal principal) {
+        final AccountRole accountRole = jwtService.readByPrincipal(principal).getAccountRole();
+        return accountRole == AccountRole.ADMIN || accountRole == AccountRole.SELLER;
     }
 }

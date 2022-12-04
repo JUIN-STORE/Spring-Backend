@@ -15,8 +15,8 @@ import java.util.List;
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
 
-    public void remove(List<Long> addressIdList) {
-        deliveryRepository.deleteByAddressIdIn(addressIdList);
+    public long removeByAddressIdList(List<Long> addressIdList) {
+        return deliveryRepository.deleteByAddressIdIn(addressIdList);
     }
 
     public List<Delivery> readByAddressIdList(List<Long> addressIdList) {

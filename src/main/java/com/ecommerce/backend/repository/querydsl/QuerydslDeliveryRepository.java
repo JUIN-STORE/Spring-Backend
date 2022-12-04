@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface QuerydslDeliveryRepository {
-    Long deleteByAddressIdIn(List<Long> addressIdList);
+    long deleteByAddressIdIn(List<Long> addressIdList);
 
     Optional<List<Delivery>> findByAddressIdIn(List<Long> addressIdList);
 }

@@ -5,6 +5,7 @@ import com.ecommerce.backend.domain.request.AddressRequest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.ecommerce.backend.domain.entity.QAddress.address;
@@ -36,5 +37,14 @@ public class QuerydslAddressRepositoryImpl implements QuerydslAddressRepository 
                         .where(address.city.eq(register.getCity()))
                         .where(address.street.eq(register.getStreet()))
                         .fetchOne();
+    }
+
+    @Override
+    public long removeByAddressIdList(List<Long> addressIdList) {
+        return
+                queryFactory
+                .delete(address)
+                .where(address.id.in(addressIdList))
+                .execute();
     }
 }

@@ -27,8 +27,8 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public void deleteByAccountId(Long accountId) {
-        queryFactory
+    public long deleteByAccountId(Long accountId) {
+        return queryFactory
                 .delete(order)
                 .where(order.account.id.eq(accountId))
                 .execute();

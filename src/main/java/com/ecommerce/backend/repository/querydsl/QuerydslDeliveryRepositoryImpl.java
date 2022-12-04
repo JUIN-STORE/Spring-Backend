@@ -16,10 +16,10 @@ public class QuerydslDeliveryRepositoryImpl implements QuerydslDeliveryRepositor
 
     @Transactional
     @Override
-    public Long deleteByAddressIdIn(List<Long> addressIdList) {
+    public long deleteByAddressIdIn(List<Long> addressIdList) {
         return queryFactory
                 .delete(delivery)
-                .where(delivery.address.id.in(addressIdList))
+                .where(delivery.deliveryAddress.id.in(addressIdList))
                 .execute();
     }
 
@@ -29,7 +29,7 @@ public class QuerydslDeliveryRepositoryImpl implements QuerydslDeliveryRepositor
                 queryFactory
                         .select(delivery)
                         .from(delivery)
-                        .where(delivery.address.id.in(addressIdList))
+                        .where(delivery.deliveryAddress.id.in(addressIdList))
                         .fetch()
         );
     }

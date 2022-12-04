@@ -20,8 +20,11 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime registeredAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    //    @CreationTimestamp // ZonedDateTime
+    //    @UpdateTimestamp // ZonedDateTime
 }
