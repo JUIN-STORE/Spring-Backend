@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import javax.persistence.EntityNotFoundException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -69,12 +70,7 @@ class ProductApiControllerTest {
         @DisplayName("판매자 상품 등록 성공")
         public void registerTest01() throws Exception {
             // given
-            var createRequest = new ProductRequest.Create()
-                    .setCategoryId(1L)
-                    .setProductName("product")
-                    .setPrice(10000)
-                    .setQuantity(1)
-                    .setDescription("description");
+            var createRequest = getCreateRequest();
 
             var file = new MockMultipartFile(
                     "fileList",
@@ -106,12 +102,7 @@ class ProductApiControllerTest {
         @DisplayName("존재하지 않는 카테고리")
         public void registerTest02() throws Exception {
             // given
-            var createRequest = new ProductRequest.Create()
-                    .setCategoryId(1L)
-                    .setProductName("product")
-                    .setPrice(10000)
-                    .setQuantity(1)
-                    .setDescription("description");
+            var createRequest = getCreateRequest();
 
             var file = new MockMultipartFile(
                     "fileList",
@@ -144,12 +135,7 @@ class ProductApiControllerTest {
         @DisplayName("파일 등록 실패")
         public void registerTest03() throws Exception {
             // given
-            var createRequest = new ProductRequest.Create()
-                    .setCategoryId(1L)
-                    .setProductName("product")
-                    .setPrice(10000)
-                    .setQuantity(1)
-                    .setDescription("description");
+            var createRequest = getCreateRequest();
 
             var file = new MockMultipartFile(
                     "fileList",
@@ -180,7 +166,6 @@ class ProductApiControllerTest {
         }
 
     }
-
     @Nested
     @DisplayName("판매자 상품 읽기")
     class AdminReadTest {
@@ -188,7 +173,7 @@ class ProductApiControllerTest {
         @DisplayName("판매자 상품 읽기 성공")
         public void adminReadTest01() throws Exception {
             // given
-            var product = getProduct();
+            var product = getProductByInfo(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
             given(mockProductService.readByProductId(1L)).willReturn(product);
 
             // when
@@ -259,7 +244,7 @@ class ProductApiControllerTest {
         @DisplayName("상품 읽기 성공")
         public void RetrieveOneTest01() throws Exception {
             // given
-            var product = getProduct();
+            var product = getProductByInfo(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
             given(mockProductService.readByProductId(1L)).willReturn(product);
 
             // when
@@ -288,6 +273,7 @@ class ProductApiControllerTest {
     }
 
     @Nested
+    @DisplayName("상품 목록 읽기")
     class RetrieveAllTest {
         @Test
         @DisplayName("전체 상품 목록 읽기 성공")
@@ -410,6 +396,19 @@ class ProductApiControllerTest {
         List<OrderProduct> orderProductList = new ArrayList<>();
 
         List<Product> productList = new ArrayList<>();
+        Product product = getProductByInfo(productImageList, orderProductList);
+        productList.add(product);
+
+        ProductImage productImage = productImageBuilder
+                .product(product)
+                .build();
+        productImageList.add(productImage);
+
+        return productList;
+    }
+
+    private static Product getProductByInfo(List<ProductImage> productImageList,
+                                            List<OrderProduct> orderProductList) {
         Product product = new Product(
                 1L,
                 "product",
@@ -421,28 +420,15 @@ class ProductApiControllerTest {
                 new Category(),
                 productImageList,
                 orderProductList);
-        productList.add(product);
-
-        ProductImage productImage = productImageBuilder
-                .product(product)
-                .build();
-        productImageList.add(productImage);
-
-        return productList;
+        return product;
     }
 
-    private static Product getProduct() {
-        Product product = new Product(
-                1L,
-                "product",
-                10000,
-                1,
-                0,
-                "description",
-                ProductStatus.SELL,
-                new Category(),
-                new ArrayList<>(),
-                new ArrayList<>());
-        return product;
+    private static ProductRequest.Create getCreateRequest() {
+        return new ProductRequest.Create()
+                .setCategoryId(1L)
+                .setProductName("product")
+                .setPrice(10000)
+                .setQuantity(1)
+                .setDescription("description");
     }
 }
