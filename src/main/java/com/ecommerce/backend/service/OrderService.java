@@ -42,7 +42,7 @@ public class OrderService {
         if (request.getDeliveryAddress().isDefaultAddress()) {
             deliveryAddress = addressService.readByAccountIdAndDefaultAddress(account.getId());
         } else {
-            deliveryAddress = addressService.readByAccountIdAndZipCodeAndCityAndStreet(account, request.getDeliveryAddress());
+            deliveryAddress = addressService.addIfNull(account, request.getDeliveryAddress());
         }
 
         final List<Long> productIdList = request.getProductIdList();

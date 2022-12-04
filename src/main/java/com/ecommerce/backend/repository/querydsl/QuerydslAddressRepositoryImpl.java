@@ -4,6 +4,7 @@ import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.request.AddressRequest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,11 +40,24 @@ public class QuerydslAddressRepositoryImpl implements QuerydslAddressRepository 
                         .fetchOne();
     }
 
+    @Transactional
     @Override
-    public long removeByAddressIdList(List<Long> addressIdList) {
+    public long delete(Long accountId, Long addressId) {
+        return
+                queryFactory
+                        .delete(address)
+                        .where(address.account.id.eq(accountId))
+                        .where(address.id.eq(addressId))
+                        .execute();
+    }
+
+    @Transactional
+    @Override
+    public long deleteByAddressIdList(Long accountId, List<Long> addressIdList) {
         return
                 queryFactory
                 .delete(address)
+                .where(address.account.id.eq(accountId))
                 .where(address.id.in(addressIdList))
                 .execute();
     }

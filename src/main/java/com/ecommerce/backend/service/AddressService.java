@@ -19,12 +19,6 @@ import java.util.List;
 public class AddressService {
     private final AddressRepository addressRepository;
 
-    @Transactional(readOnly = true)
-    public Address readByIdAndAccountId(Long addressId, Long accountId) {
-        return addressRepository.findByIdAndAccountId(addressId, accountId)
-                .orElseThrow(EntityNotFoundException::new);
-    }
-
     public Address add(Address address) {
         return addressRepository.save(address);
     }
@@ -32,23 +26,28 @@ public class AddressService {
     public Address add(Account account, AddressRequest.Register request) {
         final Address address = request.toAddress(account);
 
-        return addressRepository.save(address);
+        return add(address);
     }
 
-    public void modify(Account account, AddressRequest.Update request) {
-        final Address address = request.toAddress(account);
+    public Address addIfNull(Account account, AddressRequest.Register addressRegister) {
+        final Address address = readByAccountIdAndZipCodeAndCityAndStreet(account.getId(), addressRegister);
 
-        addressRepository.save(address);
+        if (address == null) {
+            return add(account, addressRegister);
+        } else {
+            return address;
+        }
     }
 
-    public Address remove(Long addressId) {
-        Address address = this.readById(addressId);
-        addressRepository.delete(address);
-        return address;
+
+    public Address readById(Long addressId) {
+        return addressRepository.findById(addressId)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND));
     }
 
-    public long removeByAddressIdList(List<Long> addressIdList) {
-        return addressRepository.removeByAddressIdList(addressIdList);
+    public Address readByIdAndAccountId(Long addressId, Long accountId) {
+        return addressRepository.findByIdAndAccountId(addressId, accountId)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND));
     }
 
     public List<Address> readByAccountId(Long accountId) {
@@ -61,20 +60,30 @@ public class AddressService {
                 .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND));
     }
 
-    public Address readByAccountIdAndZipCodeAndCityAndStreet(Account account, AddressRequest.Register addressRegister) {
-        final Address address =
-                addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(account.getId(), addressRegister);
-
-        if (address == null) {
-            return add(account, addressRegister);
-        } else {
-            return address;
-        }
+    public Address readByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressRequest.Register addressRegister) {
+        return addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(accountId, addressRegister);
     }
 
-    public Address readById(Long addressId) {
-        return addressRepository.findById(addressId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND));
+
+    @Transactional
+    public Address modify(Account account, AddressRequest.Update request) {
+        // address 있는지 확인
+        final Address oldAddress = this.readByIdAndAccountId(request.getAddressId(), account.getId());
+
+        // 있으면 변경
+        final Address newAddress = request.toAddress(account);
+        oldAddress.dirtyChecking(newAddress);
+
+        return newAddress;
+    }
+
+
+    public long remove(Long accountId, Long addressId) {
+        return addressRepository.delete(accountId, addressId);
+    }
+
+    public long removeByAddressIdList(Long accountId, List<Long> addressIdList) {
+        return addressRepository.deleteByAddressIdList(accountId, addressIdList);
     }
 }
 

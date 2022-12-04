@@ -47,6 +47,7 @@ public class AddressRequest {
 
         public Address toAddress(Account account){
             return Address.builder()
+                    .id(addressId)
                     .account(account)
                     .city(city)
                     .street(street)

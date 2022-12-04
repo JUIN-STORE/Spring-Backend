@@ -94,7 +94,8 @@ public class AccountService {
         final long ordersDeletedCount = orderService.removeByAccountId(accountId);                  // orders 삭제
 
         final long deliveryDeletedCount = deliveryService.removeByAddressIdList(addressIdList);    // delivery 삭제
-        final long addressDeletedCount = addressService.removeByAddressIdList(addressIdList);       // address 삭제
+        final long addressDeletedCount =
+                addressService.removeByAddressIdList(account.getId(), addressIdList);              // address 삭제
 
         // FIXME: cart, cart_product 분리해야 됨.
         cartService.removeByAccount(account);                       // cart, cart_product 삭제

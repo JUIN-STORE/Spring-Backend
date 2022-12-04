@@ -1,9 +1,6 @@
 package com.ecommerce.backend.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 })
 @Entity
 @Builder
+@ToString(exclude = {"account"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {
@@ -45,6 +43,13 @@ public class Address {
 
         // 무한루프 빠지지 않도록 처리
         if (!account.getAddressList().contains(this)) account.getAddressList().add(this);
+    }
+
+    public void dirtyChecking(Address newAddress) {
+        this.zipCode = newAddress.getZipCode();
+        this.city = newAddress.getCity();
+        this.street = newAddress.getStreet();
+        this.defaultAddress = newAddress.isDefaultAddress();
     }
 }
 

@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long>, QuerydslAddressRepository {
-    Long deleteByAccountId(Long id);
     Optional<List<Address>> findByAccountId(Long id);
 
     Optional<Address> findByIdAndAccountId(Long addressId, Long accountId);
