@@ -152,7 +152,10 @@ public class ProductApiController {
         final Map<Long, List<ProductImage>> productIdImageMap = new HashMap<>();
 
         for (ProductImage productImage : productImageList) {
-            Long productId = productImage.getProduct().getId();
+            Product product = productImage.getProduct();
+            if (product == null) continue;
+
+            Long productId = product.getId();
             List<ProductImage> imageListInProduct = productIdImageMap.getOrDefault(productId, new ArrayList<>());
             imageListInProduct.add(productImage);
             productIdImageMap.put(productId, imageListInProduct);
