@@ -1,19 +1,20 @@
 package com.ecommerce.backend.domain.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartProduct {
-    @Id @Column(name = "cart_product_id")
+public class CartProduct extends BaseEntity {
+    @Id
+    @Column(name = "cart_product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -29,24 +30,13 @@ public class CartProduct {
 
     private int count;
 
-    public void addCount(int count){
+    public void addCount(int count) {
         this.count += count;
     }
 
-    public static CartProduct createCartProduct(Long id, Product product, Cart cart, int count) {
-        return CartProduct.builder()
-                .id(id)
-                .product(product)
-                .cart(cart)
-                .count(count)
-                .build();
-    }
-
-    public static CartProduct createCartProduct(Product product, Cart cart, int count) {
-        return CartProduct.builder()
-                .product(product)
-                .cart(cart)
-                .count(count)
-                .build();
+    public void dirtyChecking(CartProduct newCartProduct) {
+        this.cart = newCartProduct.getCart();
+        this.product = newCartProduct.getProduct();
+        this.count = newCartProduct.getCount();
     }
 }

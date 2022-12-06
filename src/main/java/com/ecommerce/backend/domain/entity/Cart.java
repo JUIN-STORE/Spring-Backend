@@ -1,18 +1,18 @@
 package com.ecommerce.backend.domain.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cart {
+public class Cart extends BaseEntity{
     @Id @Column(name = "cart_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

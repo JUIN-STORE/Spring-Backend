@@ -4,6 +4,9 @@ import com.ecommerce.backend.domain.entity.ProductImage;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProductImageResponse {
     @Data @Accessors(chain = true)
     public static class Read {
@@ -22,6 +25,16 @@ public class ProductImageResponse {
                     .setOriginImageName(productImage.getOriginImageName())
                     .setImageUrl(productImage.getImageUrl())
                     .setThumbnail(productImage.getThumbnail());
+        }
+
+        public static List<Read> of(List<ProductImage> productImage) {
+            List<ProductImageResponse.Read> response = new ArrayList<>();
+
+            for (ProductImage image : productImage) {
+                response.add(ProductImageResponse.Read.of(image));
+            }
+
+            return response;
         }
     }
 }

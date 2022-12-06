@@ -1,8 +1,11 @@
 package com.ecommerce.backend.service;
 
-import com.ecommerce.backend.domain.entity.*;
+import com.ecommerce.backend.domain.entity.Account;
+import com.ecommerce.backend.domain.entity.Cart;
+import com.ecommerce.backend.domain.entity.CartProduct;
+import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.request.CartProductRequest;
-import com.ecommerce.backend.domain.response.CartProductResponse;
+import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.CartProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,119 +22,77 @@ import java.util.stream.Collectors;
 public class CartProductService {
     private final CartProductRepository cartProductRepository;
 
-    private final JwtService jwtService;
-    private final ProductService productService;
-    private final ProductImageService productImageService;
     private final CartService cartService;
+    private final ProductService productService;
 
-    private List<CartProduct> readByCartId(Long cartId) {
-        return cartProductRepository.findByCartId(cartId)
-                .orElseThrow(EntityNotFoundException::new);
-    }
 
-    // FIXME: return entity로 변경해야 됨.
-    public List<CartProductResponse.Read> readCart(Principal principal) {
-        final Cart cart = check(principal);
-
-        if (cart == null) return Collections.emptyList();
-
-        final List<CartProduct> cartProductList = this.readByCartId(cart.getId());
-        final List<Long> productIdList =
-                cartProductList.stream().map(cp -> cp.getProduct().getId()).collect(Collectors.toList());
-
-        final List<Product> productList = productService.readByIdList(productIdList);
-        final int size = productList.size();
-
-        final List<CartProduct> cartProductListInCart =
-                this.readByCartIdListAndProductIdList(cart.getId(), productIdList);
-        final List<ProductImage> productImageList = productImageService.readAllByProductId(productIdList);
-
-        final List<CartProductResponse.Read> response = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            response.add(CartProductResponse.Read.from(productList.get(i), productImageList.get(i), cartProductListInCart.get(i).getCount()));
-        }
-
-        return response;
-    }
-
-    // FIXME: return entity로 변경해야 됨.
-    public  List<CartProductResponse.Buy> readBuyInfoCart(List<Long> productIdList, Principal principal) {
-        final Cart cart = check(principal);
-
-        if (cart == null) return Collections.emptyList();
-
-        final List<Product> productList = productService.readByIdList(productIdList);
-        final int size = productList.size();
-
-        final List<CartProduct> cartProductListInCart =
-                this.readByCartIdListAndProductIdList(cart.getId(), productIdList);
-        final List<ProductImage> productImageList = productImageService.readAllByProductId(productIdList);
-
-        final List<CartProductResponse.Buy> response = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            response.add(CartProductResponse.Buy.from(productList.get(i), productImageList.get(i), cartProductListInCart.get(i).getCount()));
-        }
-
-        return response;
-    }
-
-    @Transactional
-    public CartProductResponse.Create addCart(CartProductRequest.Add request, Principal principal) {
-        final Cart cart = check(principal);
-
-        if (cart == null) return new CartProductResponse.Create();
+    public CartProduct add(Account account, CartProductRequest.Add request) {
+        final Cart cart = cartService.readByAccountId(account.getId());
 
         final Product product = productService.readByProductId(request.getProductId());
 
         CartProduct cartProduct = readByCartIdAndProductId(cart.getId(), product.getId());
 
-        if (Objects.isNull(cartProduct)) {
-            cartProduct = CartProduct.createCartProduct(product, cart, request.getCount());
+        if (cartProduct == null) {
+            cartProduct = request.toCartProduct(cart, product, request.getCount());
         } else {
             cartProduct.addCount(request.getCount());
         }
 
-        final CartProduct save = cartProductRepository.save(cartProduct);
-
-        return CartProductResponse.Create.of(save);
+        return cartProductRepository.save(cartProduct);
     }
 
-    private Cart check(Principal principal) {
-        final Account account = jwtService.readByPrincipal(principal);
-        return cartService.readByAccountId(account.getId());
+
+    public List<CartProduct> readByCartId(Long cartId) {
+        return cartProductRepository.findByCartId(cartId)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND_IN_CART));
     }
 
-    public Long removeCart(CartProductRequest.Clear request, Principal principal) {
-        final Cart cart = check(principal);
+    public CartProduct readByCartIdAndProductId(Long cartId, Long productId) {
+        return cartProductRepository.findByCartIdAndProductId(cartId, productId);
+    }
+
+    public List<CartProduct> readByCartIdAndProductIdList(Long cartId, List<Long> productIdList) {
+        return cartProductRepository.findByCartIdAndProductIdIn(cartId, productIdList)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    public List<Long> getProductIdListByCart(Cart cart) {
+        final List<CartProduct> cartProductList = readByCartId(cart.getId());
+        return cartProductList.stream().map(cp -> cp.getProduct().getId()).collect(Collectors.toList());
+    }
+
+
+    // FIXME: 쿼리 너무 많이 날아감. 이게 맞나?
+    @Transactional
+    public int modifyQuantity(Account account, CartProductRequest.Update request) {
+        final Cart cart = cartService.readByAccountId(account.getId());
+
+        final Product product = productService.readByProductId(request.getProductId());
+        final CartProduct oldCartProduct = readByCartIdAndProductId(cart.getId(), product.getId());
+
+        final CartProduct newCartProduct =
+                request.toCartProduct(oldCartProduct.getId(), cart, product, request.getCount());
+
+        oldCartProduct.dirtyChecking(newCartProduct);
+        return newCartProduct.getCount();
+    }
+
+
+    public long remove(Account account, CartProductRequest.Clear request) {
+        final Cart cart = cartService.readByAccountId(account.getId());
 
         try {
             return cartProductRepository.deleteByCartIdAndProductId(cart.getId(), request.getProductId());
         } catch (Exception e) {
             log.warn(e.getMessage());
         }
-        
+
         // 실패했을 때
-        return -1L;
+        return -1;
     }
 
-    public int updateQuantity(CartProductRequest.Update request, Principal principal) {
-        final Cart cart = check(principal);
-        final Product product = productService.readByProductId(request.getProductId());
-        final CartProduct cartProduct = readByCartIdAndProductId(cart.getId(), product.getId());
-        final CartProduct save = CartProduct.createCartProduct(cartProduct.getId(), product, cart, request.getCount());
-
-        cartProductRepository.save(save);
-        return save.getCount();
-    }
-
-    public List<CartProduct> readByCartIdListAndProductIdList(Long cartId, List<Long> productIdList){
-        return cartProductRepository.findByCartIdAndProductIdIn(cartId, productIdList)
-                .orElseThrow(EntityNotFoundException::new);
-    }
-
-    public CartProduct readByCartIdAndProductId(Long cartId, Long productId) {
-        return cartProductRepository.findByCartIdAndProductId(cartId, productId);
+    public void removeByAccount(Account account) {
+        cartProductRepository.deleteByAccountId(account.getId());
     }
 }

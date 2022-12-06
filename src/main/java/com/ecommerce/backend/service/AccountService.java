@@ -28,6 +28,7 @@ public class AccountService {
     private final JwtService jwtService;
     private final AddressService addressService;
     private final CartService cartService;
+    private final CartProductService cartProductService;
     private final DeliveryService deliveryService;
     private final OrderService orderService;
     private final OrderProductService orderProductService;
@@ -97,16 +98,16 @@ public class AccountService {
         final long addressDeletedCount =
                 addressService.removeByAddressIdList(account.getId(), addressIdList);              // address 삭제
 
-        // FIXME: cart, cart_product 분리해야 됨.
-        cartService.removeByAccount(account);                       // cart, cart_product 삭제
+        cartProductService.removeByAccount(account);// cart_product 삭제
+        cartService.removeByAccount(account);                       // cart 삭제
 
         accountRepository.delete(account);                          // account 삭제
 
-        log.info("삭제한 계정: {}, " +
-                 "order_product 삭제 개수: {}, " +
-                 "orders 삭제 개수: {}, " +
-                 "delivery 삭제 개수: {}, " +
-                 "address 삭제 개수: {}, "
+        log.info("삭제한 계정:({}), " +
+                 "order_product 삭제 개수:({}), " +
+                 "orders 삭제 개수:({}), " +
+                 "delivery 삭제 개수:({}), " +
+                 "address 삭제 개수:({})"
                 , account.getEmail()
                 , orderProductDeletedCount
                 , ordersDeletedCount

@@ -1,9 +1,13 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.domain.entity.Account;
+import com.ecommerce.backend.domain.entity.CartProduct;
 import com.ecommerce.backend.domain.request.CartProductRequest;
 import com.ecommerce.backend.domain.response.CartProductResponse;
 import com.ecommerce.backend.service.CartProductService;
+import com.ecommerce.backend.service.JwtService;
+import com.ecommerce.backend.service.relation.CartRelationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -20,41 +24,65 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/carts")
 class CartApiController {
+    private final JwtService jwtService;
+
+    private final CartRelationService cartRelationService;
+
     private final CartProductService cartProductService;
 
-    @ApiOperation(value = "카트에 있는 프로덕트 정보 읽기", notes="카트에 있는 프로덕트 정보를 읽어온다.")
+    @ApiOperation(value = "카트에 있는 제품 정보 읽기", notes = "카트에 있는 제품 정보를 읽어온다.")
     @GetMapping
-    public MyResponse<List<CartProductResponse.Read>> one(Principal principal) {
-        final List<CartProductResponse.Read> response = cartProductService.readCart(principal);
+    public MyResponse<List<CartProductResponse.Read>> one(final Principal principal) {
+
+        final Account account = jwtService.readByPrincipal(principal);
+
+        var response = cartRelationService.makeCartProductReadResponse(account);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
-    @ApiOperation(value = "카트에 항목을 추가", notes="카트에 항목을 추가한다.")
+    @ApiOperation(value = "카트에 항목을 추가", notes = "카트에 항목을 추가한다.")
     @PostMapping("/add")
-    public MyResponse<CartProductResponse.Create> newCart(@RequestBody CartProductRequest.Add request, Principal principal) {
-        final CartProductResponse.Create response = cartProductService.addCart(request, principal);
+    public MyResponse<CartProductResponse.Create> newCartItem(final Principal principal,
+                                                              @RequestBody CartProductRequest.Add request) {
+
+        final Account account = jwtService.readByPrincipal(principal);
+        final CartProduct cartProduct = cartProductService.add(account, request);
+
+        var response = CartProductResponse.Create.of(cartProduct);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
-    @ApiOperation(value = "카트 개수 변경.", notes="카트에 개수를 변경한다.")
+    @ApiOperation(value = "카트 개수 변경.", notes = "카트에 개수를 변경한다.")
     @PutMapping("/quantity")
-    public MyResponse<Integer> updateQuantity(@RequestBody CartProductRequest.Update request, Principal principal) {
-        final int response = cartProductService.updateQuantity(request, principal);
+    public MyResponse<Integer> updateQuantity(final Principal principal,
+                                              @RequestBody CartProductRequest.Update request) {
+
+        final Account account = jwtService.readByPrincipal(principal);
+
+        var response = cartProductService.modifyQuantity(account, request);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
     // FIXME: 엔드포인트가 직관적이지 않아서 변경해야 되는데 어떤 게 좋을지;;
-    @ApiOperation(value = "카트에 추가된 상품을 제거", notes="카트에 추가된 상품을 제거한다.")
+    @ApiOperation(value = "카트에 추가된 상품을 제거", notes = "카트에 추가된 상품을 제거한다.")
     @DeleteMapping("/clear")
-    public MyResponse<Long> clearCart(@RequestBody CartProductRequest.Clear request, Principal principal) {
-        final Long deleteCount = cartProductService.removeCart(request, principal);
-        return new MyResponse<>(HttpStatus.OK, deleteCount);
+    public MyResponse<Long> clearCart(final Principal principal,
+                                      @RequestBody CartProductRequest.Clear request) {
+
+        final Account account = jwtService.readByPrincipal(principal);
+
+        var response = cartProductService.remove(account, request);
+        return new MyResponse<>(HttpStatus.OK, response);
     }
 
-    @ApiOperation(value = "카트에셔 buy를 클릭했을 때", notes="Order 전 데이터를 읽어온다.")
+    @ApiOperation(value = "카트에셔 buy를 클릭했을 때", notes = "주문 정보 데이터를 읽어온다.")
     @GetMapping("/buy")
-    public MyResponse<List<CartProductResponse.Buy>> buy(@RequestParam List<Long> productList, Principal principal) {
-        final List<CartProductResponse.Buy> response = cartProductService.readBuyInfoCart(productList, principal);
+    public MyResponse<List<CartProductResponse.Buy>> buy(final Principal principal,
+                                                         @RequestParam List<Long> productList) {
+
+        final Account account = jwtService.readByPrincipal(principal);
+
+        var response = cartRelationService.makeCartProductBuyResponse(account, productList);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 }
