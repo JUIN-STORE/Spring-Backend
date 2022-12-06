@@ -50,19 +50,22 @@ public class ProductResponse {
 
         // 다건
         public static Read of(Product product, List<ProductImage> productImageList) {
-            return new Read()
+            Read read = new Read()
                     .setId(product.getId())
                     .setProductName(product.getProductName())
                     .setPrice(product.getPrice())
                     .setQuantity(product.getQuantity())
                     .setSoldCount(product.getSoldCount())
                     .setDescription(product.getDescription())
-                    .setProductStatus(product.getProductStatus())
-                    .setProductImageList(
-                            productImageList.stream()
-                                    .map(ProductImageResponse.Read::of)
-                                    .collect(Collectors.toList())
-                    );
+                    .setProductStatus(product.getProductStatus());
+
+            if (productImageList != null) {
+                read.setProductImageList(productImageList.stream()
+                        .map(ProductImageResponse.Read::of)
+                        .collect(Collectors.toList()));
+            }
+
+            return read;
         }
     }
 }
