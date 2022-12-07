@@ -30,7 +30,9 @@ public class ProductService {
     private final ProductCategoryService productCategoryService;
 
     @Transactional
-    public Long add(ProductRequest.Create request, List<MultipartFile> productImageFileList) throws IOException {
+    public Long add(ProductRequest.Create request,
+                    MultipartFile thumbnailImage,
+                    List<MultipartFile> productImageFileList) throws IOException {
         // 상품 등록
         final Category category = categoryService.readById(request.getCategoryId());
         final Product product = request.toProduct(category);
@@ -38,18 +40,14 @@ public class ProductService {
         productCategoryService.add(product, category);
         productRepository.save(product);
 
-        boolean isThumbnail;
+        // 썸네일 등록
+        productImageService.saveProductImage(new ProductImageRequest.Create().setThumbnail(true), thumbnailImage, product);
 
-        // 상품 이미지 등록
-        for (int i = 0; i < productImageFileList.size(); i++){
-            ProductImageRequest.Create createRequest = new ProductImageRequest.Create();
-
-            if (i == 0) isThumbnail = true;
-            else isThumbnail = false;
-
-            createRequest.setThumbnail(isThumbnail);
-            productImageService.saveProductImage(createRequest, productImageFileList.get(i), product);
+        // 썸네일 외 이미지 등록
+        for (MultipartFile productImageFile : productImageFileList) {
+            productImageService.saveProductImage(new ProductImageRequest.Create().setThumbnail(false), productImageFile, product);
         }
+
         return product.getId();
     }
 
