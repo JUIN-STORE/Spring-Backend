@@ -2,7 +2,6 @@ package com.ecommerce.backend.service.relation;
 
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.entity.ProductImage;
-import com.ecommerce.backend.domain.response.CartProductResponse;
 import com.ecommerce.backend.service.ProductImageService;
 import com.ecommerce.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,4 @@ public class ProductRelationService {
         return productImageService.readByThumbnail(isThumbnail);
     }
 
-
-    public List<CartProductResponse.Read> getCartProductReadResponse(List<Long> productIdList) {
-        return productService.readAllByProductIdAndProductImageIdAndThumbnail(productIdList);
-    }
 }

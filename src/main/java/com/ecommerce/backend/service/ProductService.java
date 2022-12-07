@@ -4,8 +4,6 @@ import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.request.ProductImageRequest;
 import com.ecommerce.backend.domain.request.ProductRequest;
-import com.ecommerce.backend.domain.response.CartProductResponse;
-import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,10 +86,5 @@ public class ProductService {
 
     public Long readSearchCount(String searchTitle){
         return productRepository.countByProductNameContaining(searchTitle);
-    }
-
-    public List<CartProductResponse.Read> readAllByProductIdAndProductImageIdAndThumbnail(List<Long> productIdList) {
-        return productRepository.findAllByProductIdAndProductImageIdAndThumbnail(productIdList)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.CART_PRODUCT_JOIN_NOT_FOUND));
     }
 }
