@@ -38,11 +38,12 @@ public class ProductApiController {
     @ApiOperation(value = "판매자 상품 등록", notes = "관리자가 상품을 등록한다.")
     @PostMapping(value = "/seller/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public MyResponse<Long> register(@RequestPart ProductRequest.Create request,
-                                     @RequestPart("fileList") List<MultipartFile> productImageFileList) {
+                                     @RequestPart(value = "thumbnail") MultipartFile thumbnailImage,
+                                     @RequestPart(value = "fileList", required = false) List<MultipartFile> productImageFileList) {
         log.info("POST /api/products/admin/register request: {}", request);
 
         try {
-            final Long response = productService.add(request, productImageFileList);
+            final Long response = productService.add(request, thumbnailImage, productImageFileList);
 
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
