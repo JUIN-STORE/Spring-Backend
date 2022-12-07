@@ -67,10 +67,13 @@ public class ProductImageService {
         return productImageRepository.findByProductId(productId);
     }
 
-    @Transactional()
-    public void delete(Long productId) {
+    @Transactional
+    public long deleteListByProductId(Long productId) {
         final List<ProductImage> productImageList = this.findById(productId);
-        productImageRepository.deleteAll(productImageList);
+        long deleted = productImageRepository.deleteAll(productImageList);
+
+        log.info("[P9][SRV][PROD][DLBP]: productId({}), productImageList({}), deleted({})", productId, productImageList, deleted);
+        return deleted;
     }
 
     public List<ProductImage> readByThumbnail(boolean isThumbnail) {

@@ -67,7 +67,7 @@ public class ProductService {
     public Long remove(Long productId){
         final Product product = this.readByProductId(productId);
 
-        productImageService.delete(productId);
+        productImageService.deleteListByProductId(productId);
         productRepository.delete(product);
         return product.getId();
     }
