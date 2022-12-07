@@ -1,5 +1,6 @@
 package com.ecommerce.backend.domain.request;
 
+import com.ecommerce.backend.domain.entity.Cart;
 import com.ecommerce.backend.domain.entity.CartProduct;
 import com.ecommerce.backend.domain.entity.Product;
 import lombok.Data;
@@ -29,19 +30,29 @@ public class CartProductRequest {
 
         private int count;
 
-        public CartProduct toCartProduct() {
+        public CartProduct toCartProduct(Cart cart, Product product, int count) {
             return CartProduct.builder()
-                    .product(Product.builder().id(productId).build())
+                    .cart(cart)
+                    .product(product)
                     .count(count)
                     .build();
         }
     }
 
     @Data @Accessors(chain = true)
-    public static class Update implements Serializable{
+    public static class Update implements Serializable {
         private Long productId;
 
         private int count;
+
+        public CartProduct toCartProduct(Long id, Cart cart, Product product, int count) {
+            return CartProduct.builder()
+                    .id(id)
+                    .cart(cart)
+                    .product(product)
+                    .count(count)
+                    .build();
+        }
     }
 
 

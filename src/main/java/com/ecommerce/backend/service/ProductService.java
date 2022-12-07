@@ -4,6 +4,8 @@ import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.request.ProductImageRequest;
 import com.ecommerce.backend.domain.request.ProductRequest;
+import com.ecommerce.backend.domain.response.CartProductResponse;
+import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -51,18 +52,14 @@ public class ProductService {
         return product.getId();
     }
 
-    @Transactional(readOnly = true)
     public Product readByProductId(Long productId){
         return productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
     public List<Product> readByIdList(List<Long> productId){
-        final List<Product> productList = productRepository.findByIdIn(productId);
-
-        if (CollectionUtils.isEmpty(productList)) return Collections.emptyList();
-
-        return productList;
+        return productRepository.findByIdIn(productId)
+                .orElse(new ArrayList<>());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -91,5 +88,10 @@ public class ProductService {
 
     public Long readSearchCount(String searchTitle){
         return productRepository.countByProductNameContaining(searchTitle);
+    }
+
+    public List<CartProductResponse.Read> readAllByProductIdAndProductImageIdAndThumbnail(List<Long> productIdList) {
+        return productRepository.findAllByProductIdAndProductImageIdAndThumbnail(productIdList)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.CART_PRODUCT_JOIN_NOT_FOUND));
     }
 }

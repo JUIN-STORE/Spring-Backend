@@ -2,6 +2,7 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Cart;
+import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.CartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +21,13 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    // FIXME: cart, cart_product 분리해야 됨.
     public void removeByAccount(Account account) {
-        cartRepository.deleteByAccountId(account.getId()); // cart_product 삭제
+//        cartRepository.deleteByAccountId(account.getId()); // cart_product 삭제
         cartRepository.delete(account.getCart());          // cart 삭제
     }
 
     public Cart readByAccountId(Long accountId) {
         return cartRepository.findByAccountId(accountId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException(Msg.CART_NOT_FOUND));
     }
 }

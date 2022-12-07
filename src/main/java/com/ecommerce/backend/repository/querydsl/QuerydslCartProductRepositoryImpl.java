@@ -15,6 +15,11 @@ public class QuerydslCartProductRepositoryImpl implements QuerydslCartProductRep
     private final JPAQueryFactory queryFactory;
 
     @Override
+    public Optional<List<CartProduct>> findByAccountId(Long accountId) {
+        return null;
+    }
+
+    @Override
     public Optional<List<CartProduct>> findByCartId(Long cartId) {
         return Optional.ofNullable(
                 queryFactory
@@ -27,7 +32,7 @@ public class QuerydslCartProductRepositoryImpl implements QuerydslCartProductRep
 
     @Override
     @Transactional
-    public Long deleteByCartIdAndProductId(Long cartId, Long productId) {
+    public long deleteByCartIdAndProductId(Long cartId, Long productId) {
         return queryFactory
                 .delete(cartProduct)
                 .where(cartProduct.cart.id.eq(cartId).and(cartProduct.product.id.eq(productId)))

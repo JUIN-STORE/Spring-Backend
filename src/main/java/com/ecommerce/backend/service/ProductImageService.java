@@ -4,6 +4,7 @@ import com.ecommerce.backend.FileUploadComponent;
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.entity.ProductImage;
 import com.ecommerce.backend.domain.request.ProductImageRequest;
+import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +71,11 @@ public class ProductImageService {
     public void delete(Long productId) {
         final List<ProductImage> productImageList = this.findById(productId);
         productImageRepository.deleteAll(productImageList);
+    }
+
+    public List<ProductImage> readByThumbnail(boolean isThumbnail) {
+        return productImageRepository.findByThumbnail(isThumbnail)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.THUMBNAIL_NOT_FOUND));
     }
 
     public List<ProductImage> readAllByProductId(List<Long> productIdList) {
