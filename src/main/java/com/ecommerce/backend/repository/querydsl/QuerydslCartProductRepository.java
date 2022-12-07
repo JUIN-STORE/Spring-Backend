@@ -1,6 +1,7 @@
 package com.ecommerce.backend.repository.querydsl;
 
 import com.ecommerce.backend.domain.entity.CartProduct;
+import com.ecommerce.backend.domain.response.CartProductResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,8 @@ public interface QuerydslCartProductRepository {
     long deleteByCartIdAndProductId(Long cartId, Long productId);
 
     Optional<List<CartProduct>> findByCartIdAndProductIdIn(Long cartId, List<Long> productIdList);
+
+    Optional<List<CartProductResponse.Read>>
+    findAllByCartIdAndProductIdListAndThumbnail(Long cartId, List<Long> productIdList, boolean isThumbnail);
+
 }

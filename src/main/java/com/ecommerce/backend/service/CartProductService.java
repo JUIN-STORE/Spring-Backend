@@ -5,6 +5,7 @@ import com.ecommerce.backend.domain.entity.Cart;
 import com.ecommerce.backend.domain.entity.CartProduct;
 import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.request.CartProductRequest;
+import com.ecommerce.backend.domain.response.CartProductResponse;
 import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.CartProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -52,16 +53,11 @@ public class CartProductService {
         return cartProductRepository.findByCartIdAndProductId(cartId, productId);
     }
 
-    public List<CartProduct> readByCartIdAndProductIdList(Long cartId, List<Long> productIdList) {
-        return cartProductRepository.findByCartIdAndProductIdIn(cartId, productIdList)
-                .orElseThrow(EntityNotFoundException::new);
+    public List<CartProductResponse.Read>
+    readAllByCartIdAndProductIdListAndThumbnail(Long cartId, List<Long> productIdList, boolean isThumbnail) {
+        return cartProductRepository.findAllByCartIdAndProductIdListAndThumbnail(cartId, productIdList, isThumbnail)
+                .orElse(new ArrayList<>());
     }
-
-    public List<Long> getProductIdListByCart(Cart cart) {
-        final List<CartProduct> cartProductList = readByCartId(cart.getId());
-        return cartProductList.stream().map(cp -> cp.getProduct().getId()).collect(Collectors.toList());
-    }
-
 
     // FIXME: 쿼리 너무 많이 날아감. 이게 맞나?
     @Transactional

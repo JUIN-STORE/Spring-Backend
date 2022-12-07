@@ -28,7 +28,7 @@ public class CartRelationService {
         final List<Long> productIdList =
                 cartProductList.stream().map(cp -> cp.getProduct().getId()).collect(Collectors.toList());
 
-        return productRelationService.getCartProductReadResponse(productIdList);
+        return cartProductService.readAllByCartIdAndProductIdListAndThumbnail(cart.getId(), productIdList, true);
     }
 
     public List<CartProductResponse.Buy> makeCartProductBuyResponse(Account account, List<Long> productIdList) {
