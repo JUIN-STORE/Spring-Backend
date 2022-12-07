@@ -21,7 +21,7 @@ public class ProductRelationService {
         return productService.readByIdList(productIdList);
     }
 
-    public List<ProductImage> getProductImageList(List<Long> productIdList) {
-        return productImageService.readAllByProductId(productIdList);
+    public List<ProductImage> getThumbnailProductImageList(boolean isThumbnail) {
+        return productImageService.readByThumbnail(isThumbnail);
     }
 }

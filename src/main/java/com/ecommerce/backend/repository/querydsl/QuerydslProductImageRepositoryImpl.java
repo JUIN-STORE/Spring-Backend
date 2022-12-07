@@ -14,6 +14,15 @@ public class QuerydslProductImageRepositoryImpl implements QuerydslProductImageR
     private final JPAQueryFactory queryFactory;
 
     @Override
+    public Optional<List<ProductImage>> findByThumbnail(boolean isThumbnail) {
+        return Optional.ofNullable(
+                queryFactory.selectFrom(productImage)
+                        .where(productImage.thumbnail.eq(isThumbnail))
+                        .fetch()
+        );
+    }
+
+    @Override
     public Optional<List<ProductImage>> findAllByProductIdIn(List<Long> productIdList) {
         return Optional.ofNullable(
                 queryFactory

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,14 +23,15 @@ public class CartRelationService {
 
     public List<CartProductResponse.Read> makeCartProductReadResponse(Account account) {
         final Cart cart = cartService.readByAccountId(account.getId());
-        final List<Long> productIdList = cartProductService.getProductIdListByCart(cart);
+
+        final List<CartProduct> cartProductList = cartProductService.readByCartId(cart.getId());
+        final List<Long> productIdList =
+                cartProductList.stream().map(cp -> cp.getProduct().getId()).collect(Collectors.toList());
 
         final List<Product> productList = productRelationService.getProductList(productIdList);
         final int size = productList.size();
 
-        final List<CartProduct> cartProductList =
-                cartProductService.readByCartIdAndProductIdList(cart.getId(), productIdList);
-        final List<ProductImage> productImageList = productRelationService.getProductImageList(productIdList);
+        final List<ProductImage> productImageList = productRelationService.getThumbnailProductImageList(true);
 
         final List<CartProductResponse.Read> response = new ArrayList<>();
 
@@ -52,9 +54,8 @@ public class CartRelationService {
         final List<Product> productList = productRelationService.getProductList(productIdList);
         final int size = productList.size();
 
-        final List<CartProduct> cartProductListInCart =
-                cartProductService.readByCartIdAndProductIdList(cart.getId(), productIdList);
-        final List<ProductImage> productImageList = productRelationService.getProductImageList(productIdList);
+        final List<CartProduct> cartProductListInCart = cartProductService.readByCartId(cart.getId());
+        final List<ProductImage> productImageList = productRelationService.getThumbnailProductImageList(true);
 
         final List<CartProductResponse.Buy> response = new ArrayList<>();
 
