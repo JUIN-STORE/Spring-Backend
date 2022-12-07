@@ -28,24 +28,7 @@ public class CartRelationService {
         final List<Long> productIdList =
                 cartProductList.stream().map(cp -> cp.getProduct().getId()).collect(Collectors.toList());
 
-        final List<Product> productList = productRelationService.getProductList(productIdList);
-        final int size = productList.size();
-
-        final List<ProductImage> productImageList = productRelationService.getThumbnailProductImageList(true);
-
-        final List<CartProductResponse.Read> response = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            response.add(
-                    CartProductResponse.Read.from(
-                            productList.get(i),
-                            productImageList.get(i),
-                            cartProductList.get(i).getCount()
-                    )
-            );
-        }
-
-        return response;
+        return productRelationService.getCartProductReadResponse(productIdList);
     }
 
     public List<CartProductResponse.Buy> makeCartProductBuyResponse(Account account, List<Long> productIdList) {

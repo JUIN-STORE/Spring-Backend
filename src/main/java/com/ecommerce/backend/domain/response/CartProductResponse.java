@@ -18,21 +18,18 @@ public class CartProductResponse {
 
         private Integer price;                  // 제품의 가격
 
-        private Integer count;                  // 제품의 총 개수
+        private Integer count;                  // 카트 안에 들어 있는 제품의 총 개수
 
         private String description;             // 제품 설명
 
-        private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
+        private String imageName;               // 이미지 파일명
 
-        public static CartProductResponse.Read from(Product product, ProductImage productImage, int count) {
-            return new CartProductResponse.Read()
-                    .setProductId(product.getId())
-                    .setProductName(product.getProductName())
-                    .setPrice(product.getPrice())
-                    .setCount(count)
-                    .setDescription(product.getDescription())
-                    .setProductImageList(List.of(ProductImageResponse.Read.of(productImage)));
-        }
+        private String originImageName;         // 원본 이미지 파일명
+
+        private String imageUrl;                // 이미지 조회 경로
+
+        private Boolean thumbnail;              // 썸네일 여부
+
     }
 
     @Data @Accessors(chain = true)
