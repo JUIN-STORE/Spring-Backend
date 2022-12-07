@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class ProductService {
     public Long add(ProductRequest.Create request,
                     MultipartFile thumbnailImage,
                     List<MultipartFile> productImageFileList) throws IOException {
+        if (thumbnailImage == null) throw new InvalidParameterException(Msg.PRODUCT_THUMBNAIL_IMAGE_REQUIRED);
+
         // 상품 등록
         final Category category = categoryService.readById(request.getCategoryId());
         final Product product = request.toProduct(category);

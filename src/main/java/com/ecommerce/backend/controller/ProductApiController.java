@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,9 @@ public class ProductApiController {
             final Long response = productService.add(request, thumbnailImage, productImageFileList);
 
             return new MyResponse<>(HttpStatus.OK, response);
+        } catch (InvalidParameterException e) {
+            log.warn("상품 썸네일은 필수입니다. message: ({})", e.getMessage(), e);
+            return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
         } catch (EntityNotFoundException e) {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new MyResponse<>(HttpStatus.BAD_REQUEST, null);
