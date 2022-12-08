@@ -99,20 +99,23 @@ public class AccountService {
                 addressService.removeByAddressIdList(account.getId(), addressIdList);              // address 삭제
 
         cartProductService.removeByAccount(account);// cart_product 삭제
-        cartService.removeByAccount(account);                       // cart 삭제
+        final long cartDeletedCount = cartService.removeByAccountId(account.getId());// cart 삭제
 
         accountRepository.delete(account);                          // account 삭제
 
-        log.info("삭제한 계정:({}), " +
-                 "order_product 삭제 개수:({}), " +
-                 "orders 삭제 개수:({}), " +
-                 "delivery 삭제 개수:({}), " +
-                 "address 삭제 개수:({})"
+        log.info("[P9][SRV][ACNT][REMV]: " +
+                        "account 삭제 개수:({}), " +
+                        "order_product 삭제 개수:({}), " +
+                        "orders 삭제 개수:({}), " +
+                        "delivery 삭제 개수:({}), " +
+                        "address 삭제 개수:({}), " +
+                        "cart 삭제 개수:({})"
                 , account.getEmail()
                 , orderProductDeletedCount
                 , ordersDeletedCount
                 , deliveryDeletedCount
                 , addressDeletedCount
+                , cartDeletedCount
         );
 
         return account;
