@@ -36,7 +36,7 @@ public class ProductService {
     public Long add(ProductRequest.Create request,
                     MultipartFile thumbnailImage,
                     List<MultipartFile> productImageFileList) throws IOException {
-        if (thumbnailImage == null) throw new InvalidParameterException(Msg.PRODUCT_THUMBNAIL_IMAGE_REQUIRED);
+        if (thumbnailImage == null) throw new InvalidParameterException(Msg.PRODUCT_THUMBNAIL_REQUIRED);
 
         // 상품 등록
         final Category category = categoryService.readById(request.getCategoryId());
@@ -60,7 +60,8 @@ public class ProductService {
     }
 
     public Product readByProductId(Long productId){
-        return productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)

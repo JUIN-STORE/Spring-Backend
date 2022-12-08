@@ -2,6 +2,7 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.request.CategoryRequest;
+import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,8 @@ public class CategoryService {
     }
 
     public Category readById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.CATEGORY_NOT_FOUND));
     }
 
     @Transactional
