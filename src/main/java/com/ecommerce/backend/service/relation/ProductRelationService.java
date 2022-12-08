@@ -34,15 +34,15 @@ public class ProductRelationService {
 
     public List<ProductResponse.Read> read(Pageable pageable, Long categoryId) {
         Page<Product> productList = productService.read(pageable, categoryId);
-        return getResponse(productList);
+        return makeProductReadResponse(productList);
     }
 
     public List<ProductResponse.Read> search(Pageable pageable, String searchTitle, Long categoryId) {
         Page<Product> productList = productService.search(pageable, searchTitle, categoryId);
-        return getResponse(productList);
+        return makeProductReadResponse(productList);
     }
 
-    private List<ProductResponse.Read> getResponse(Page<Product> productList) {
+    private List<ProductResponse.Read> makeProductReadResponse(Page<Product> productList) {
         final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
         final List<ProductImage> productImageList = productImageService.readAllByProductId(productIdList);
         final Map<Long, List<ProductImage>> productIdImageMap = new HashMap<>();
