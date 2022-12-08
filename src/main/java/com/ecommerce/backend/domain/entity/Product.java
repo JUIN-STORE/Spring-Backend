@@ -80,6 +80,10 @@ public class Product extends BaseEntity {
         this.soldCount += quantity;
     }
 
+    public void updateStatus(ProductStatus productStatus) {
+        this.productStatus = productStatus;
+    }
+
     public Integer getTotalPrice(){
         return this.price * this.soldCount;
     }
