@@ -125,8 +125,9 @@ class CartServiceTest {
             assertEquals(expected, actual);
         }
 
+        // FIXME: 쿼리 오류일 때 Exception 뱉는 거 고려하기
         @Test
-        @DisplayName("삭제 실패")
+        @DisplayName("where절에 매칭되는 게 없어서 삭제 실패")
         void deleteByAccountIdTest02() {
             // given
             var expected = 0L;
