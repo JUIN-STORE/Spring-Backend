@@ -32,12 +32,4 @@ public class QuerydslProductImageRepositoryImpl implements QuerydslProductImageR
                         .fetch()
         );
     }
-
-    @Override
-    public long deleteAll(List<ProductImage> productImageList) {
-        return queryFactory
-                .delete(productImage)
-                .where(productImage.in(productImageList))
-                .execute();
-    }
 }

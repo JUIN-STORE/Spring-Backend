@@ -67,15 +67,6 @@ public class ProductImageService {
         return productImageRepository.findByProductId(productId);
     }
 
-    @Transactional
-    public long deleteListByProductId(Long productId) {
-        final List<ProductImage> productImageList = this.findById(productId);
-        long deleted = productImageRepository.deleteAll(productImageList);
-
-        log.info("[P9][SRV][PROD][DLBP]: productId({}), productImageList({}), deleted({})", productId, productImageList, deleted);
-        return deleted;
-    }
-
     public List<ProductImage> readByThumbnail(boolean isThumbnail) {
         return productImageRepository.findByThumbnail(isThumbnail)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.THUMBNAIL_NOT_FOUND));
