@@ -16,18 +16,20 @@ import javax.persistence.EntityNotFoundException;
 public class CartService {
     private final CartRepository cartRepository;
 
-    public void add(Account account){
+    public void add(Account account) {
         final Cart cart = Cart.createCart(account);
+
         cartRepository.save(cart);
     }
 
-    public void removeByAccount(Account account) {
-//        cartRepository.deleteByAccountId(account.getId()); // cart_product 삭제
-        cartRepository.delete(account.getCart());          // cart 삭제
-    }
 
     public Cart readByAccountId(Long accountId) {
         return cartRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.CART_NOT_FOUND));
+    }
+
+
+    public long removeByAccountId(Long accountId) {
+        return cartRepository.deleteByAccountId(accountId);
     }
 }
