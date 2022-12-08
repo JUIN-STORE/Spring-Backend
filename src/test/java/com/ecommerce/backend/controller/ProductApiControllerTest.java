@@ -6,8 +6,9 @@ import com.ecommerce.backend.domain.entity.Product;
 import com.ecommerce.backend.domain.entity.ProductImage;
 import com.ecommerce.backend.domain.enums.ProductStatus;
 import com.ecommerce.backend.domain.request.ProductRequest;
-import com.ecommerce.backend.service.ProductImageService;
+import com.ecommerce.backend.domain.response.ProductResponse;
 import com.ecommerce.backend.service.ProductService;
+import com.ecommerce.backend.service.relation.ProductRelationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
@@ -33,7 +33,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,7 +51,7 @@ class ProductApiControllerTest {
     private ProductService mockProductService;
 
     @Mock
-    private ProductImageService mockProductImageService;
+    private ProductRelationService mockProductRelationService;
 
     @InjectMocks
     private ProductApiController sut;
@@ -72,6 +73,12 @@ class ProductApiControllerTest {
             // given
             var createRequest = getCreateRequest();
 
+            var thumbnail = new MockMultipartFile(
+                    "thumbnail",
+                    "thumbnail.jpg",
+                    MediaType.MULTIPART_FORM_DATA_VALUE,
+                    new byte[0]);
+
             var file = new MockMultipartFile(
                     "fileList",
                     "test.jpg",
@@ -85,12 +92,13 @@ class ProductApiControllerTest {
                     MediaType.APPLICATION_JSON_VALUE,
                     json.getBytes());
 
-            given(mockProductService.add(any(), any())).willReturn(1L);
+            given(mockProductService.add(any(), any(), any())).willReturn(1L);
 
             // when
             final ResultActions perform = mockMvc.perform(
                     multipart(PRODUCT_END_POINT + "/seller/register")
                             .file(request)
+                            .file(thumbnail)
                             .file(file)
             );
 
@@ -104,6 +112,12 @@ class ProductApiControllerTest {
             // given
             var createRequest = getCreateRequest();
 
+            var thumbnailFile = new MockMultipartFile(
+                    "thumbnail",
+                    "test.jpg",
+                    MediaType.MULTIPART_FORM_DATA_VALUE,
+                    new byte[0]);
+
             var file = new MockMultipartFile(
                     "fileList",
                     "test.jpg",
@@ -117,12 +131,13 @@ class ProductApiControllerTest {
                     MediaType.APPLICATION_JSON_VALUE,
                     json.getBytes());
 
-            given(mockProductService.add(any(), any())).willThrow(new EntityNotFoundException());
+            given(mockProductService.add(any(), any(), any())).willThrow(new EntityNotFoundException());
 
             // whenㅔ
             final ResultActions perform = mockMvc.perform(
                     multipart(PRODUCT_END_POINT + "/seller/register")
                             .file(request)
+                            .file(thumbnailFile)
                             .file(file)
             );
 
@@ -137,6 +152,12 @@ class ProductApiControllerTest {
             // given
             var createRequest = getCreateRequest();
 
+            var thumbnailFile = new MockMultipartFile(
+                    "thumbnail",
+                    "test.jpg",
+                    MediaType.MULTIPART_FORM_DATA_VALUE,
+                    new byte[0]);
+
             var file = new MockMultipartFile(
                     "fileList",
                     "test.jpg",
@@ -150,13 +171,14 @@ class ProductApiControllerTest {
                     MediaType.APPLICATION_JSON_VALUE,
                     json.getBytes());
 
-            given(mockProductService.add(any(), any()))
+            given(mockProductService.add(any(), any(), any()))
                     .willThrow(new FileNotFoundException());
 
             // when
             final ResultActions perform = mockMvc.perform(
                     multipart(PRODUCT_END_POINT + "/seller/register")
                             .file(request)
+                            .file(thumbnailFile)
                             .file(file)
             );
 
@@ -238,6 +260,102 @@ class ProductApiControllerTest {
     }
 
     @Nested
+    @DisplayName("상품 검색하기")
+    class SearchTest {
+        @Test
+        @DisplayName("성공")
+        void searchTest01() throws Exception {
+            // given
+            var page = 0;
+            var size = 10;
+
+            var pageRequest = PageRequest.of(page, size);
+            var searchTitle = "title";
+
+            var productList = getProductList();
+            List<ProductResponse.Read> response = new ArrayList<>();
+            for (Product product : productList) {
+                response.add(ProductResponse.Read.of(product, product.getProductImageList()));
+            }
+
+            given(mockProductRelationService.search(pageRequest, searchTitle, null)).willReturn(response);
+
+            // when
+            final ResultActions perform = mockMvc.perform(
+                    get(PRODUCT_END_POINT + "/search")
+                            .param("page", Integer.toString(page))
+                            .param("size", Integer.toString(size))
+                            .param("productName", searchTitle)
+                            .accept(MediaType.APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("카테고리 내 상품 검색 성공")
+        void searchTest02() throws Exception {
+            // given
+            var page = 0;
+            var size = 10;
+
+            var pageRequest = PageRequest.of(page, size);
+            var searchTitle = "title";
+            var categoryId = 1L;
+
+            var productList = getProductList();
+            List<ProductResponse.Read> response = new ArrayList<>();
+            for (Product product : productList) {
+                response.add(ProductResponse.Read.of(product, product.getProductImageList()));
+            }
+
+            given(mockProductRelationService.search(pageRequest, searchTitle, categoryId)).willReturn(response);
+
+            // when
+            final ResultActions perform = mockMvc.perform(
+                    get(PRODUCT_END_POINT + "/search")
+                            .param("page", Integer.toString(page))
+                            .param("size", Integer.toString(size))
+                            .param("productName", searchTitle)
+                            .param("categoryId", Long.toString(categoryId))
+                            .accept(MediaType.APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 상품 이미지")
+        public void retrieveOneTest04() throws Exception {
+            // given
+            var page = 0;
+            var size = 10;
+            var productList = getProductList();
+            var searchTitle = "title";
+
+            var pageRequest = PageRequest.of(page, size);
+            List<ProductResponse.Read> response = new ArrayList<>();
+            for (Product product : productList) {
+                response.add(ProductResponse.Read.of(product, product.getProductImageList()));
+            }
+
+            given(mockProductRelationService.search(pageRequest, searchTitle, null)).willThrow(new EntityNotFoundException());
+
+            // when
+            final ResultActions perform = mockMvc.perform(
+                    get(PRODUCT_END_POINT + "/search")
+                            .param("page", Integer.toString(page))
+                            .param("size", Integer.toString(size))
+                            .param("productName", searchTitle)
+                            .accept(MediaType.APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isOk());
+            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":400"));
+        }
+    }
+
+    @Nested
     @DisplayName("상품 읽기")
     class RetrieveOneTest {
         @Test
@@ -284,11 +402,12 @@ class ProductApiControllerTest {
             var productList = getProductList();
 
             var pageRequest = PageRequest.of(page, size);
-            var productPage = new PageImpl<>(productList, pageRequest, productList.size());
+            List<ProductResponse.Read> response = new ArrayList<>();
+            for (Product product : productList) {
+                response.add(ProductResponse.Read.of(product, product.getProductImageList()));
+            }
 
-            given(mockProductService.read(pageRequest, null)).willReturn(productPage);
-            given(mockProductImageService.readAllByProductId(anyList()))
-                    .willReturn(productList.get(0).getProductImageList());
+            given(mockProductRelationService.read(pageRequest, null)).willReturn(response);
 
             // when
             final ResultActions perform = mockMvc.perform(
@@ -305,23 +424,54 @@ class ProductApiControllerTest {
         @DisplayName("카테고리 별 상품 읽기 성공")
         public void retrieveOneTest02() throws Exception {
             // given
+            var categoryId = 1L;
             var page = 0;
             var size = 10;
             var productList = getProductList();
 
             var pageRequest = PageRequest.of(page, size);
-            var productPage = new PageImpl<>(productList, pageRequest, productList.size());
+            List<ProductResponse.Read> response = new ArrayList<>();
+            for (Product product : productList) {
+                response.add(ProductResponse.Read.of(product, product.getProductImageList()));
+            }
 
-            given(mockProductService.read(pageRequest, 1L)).willReturn(productPage);
-            given(mockProductImageService.readAllByProductId(anyList()))
-                    .willReturn(productList.get(0).getProductImageList());
+            given(mockProductRelationService.read(pageRequest, categoryId)).willReturn(response);
 
             // when
             final ResultActions perform = mockMvc.perform(
                     get(PRODUCT_END_POINT)
                             .param("page", Integer.toString(page))
                             .param("size", Integer.toString(size))
-                            .param("categoryId", "1")
+                            .param("categoryId", Long.toString(categoryId))
+                            .accept(MediaType.APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("카테고리 별 상품 읽기 성공")
+        public void retrieveOneTest03() throws Exception {
+            // given
+            var categoryId = 1L;
+            var page = 0;
+            var size = 10;
+            var productList = getProductList();
+
+            var pageRequest = PageRequest.of(page, size);
+            List<ProductResponse.Read> response = new ArrayList<>();
+            for (Product product : productList) {
+                response.add(ProductResponse.Read.of(product, product.getProductImageList()));
+            }
+
+            given(mockProductRelationService.read(pageRequest, categoryId)).willReturn(response);
+
+            // when
+            final ResultActions perform = mockMvc.perform(
+                    get(PRODUCT_END_POINT)
+                            .param("page", Integer.toString(page))
+                            .param("size", Integer.toString(size))
+                            .param("categoryId", Long.toString(categoryId))
                             .accept(MediaType.APPLICATION_JSON));
 
             // then
