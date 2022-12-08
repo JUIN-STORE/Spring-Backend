@@ -35,7 +35,12 @@ public class ProductApiController {
     public MyResponse<Long> register(@RequestPart ProductRequest.Create request,
                                      @RequestPart(value = "thumbnail") MultipartFile thumbnailImage,
                                      @RequestPart(value = "fileList", required = false) List<MultipartFile> productImageFileList) {
-        log.info("POST /api/products/admin/register request: {}", request);
+        log.info(
+                "[P9][CON][PROD][REGI]: GET /api/products/seller/register request({}), thumbnail({}), fileList({})",
+                request,
+                thumbnailImage,
+                productImageFileList
+        );
 
         try {
             final Long response = productService.add(request, thumbnailImage, productImageFileList);
@@ -56,7 +61,7 @@ public class ProductApiController {
     @ApiOperation(value = "판매자 상품 읽기", notes = "관리자 페이지에서 상품을 읽는다.")
     @GetMapping("/seller/{productId}")
     public MyResponse<ProductResponse.Read> adminRead(@PathVariable Long productId) {
-        log.info("GET /api/products/admin/{productId} productId: {}", productId);
+        log.info("[P9][CON][PROD][AMRD]: GET /api/products/seller/{productId} productId({})", productId);
 
         try {
             final Product product = productService.readByProductId(productId);
@@ -72,7 +77,7 @@ public class ProductApiController {
     @ApiOperation(value = "판매자 상품 삭제", notes = "관리자 페이지에서 상품을 삭제.")
     @DeleteMapping("/seller/{productId}")
     public MyResponse<Long> adminRemove(@PathVariable Long productId) {
-        log.info("DELETE /api/products/admin/{productId} productId: {}", productId);
+        log.info("[P9][CON][PROD][AMRM]: DELETE /api/products/seller/{productId} productId({})", productId);
 
         try {
             final Long response = productService.remove(productId);
@@ -87,7 +92,7 @@ public class ProductApiController {
     @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
     @GetMapping("/{productId}")
     public MyResponse<ProductResponse.Read> retrieveOne(@PathVariable Long productId) {
-        log.info("POST /api/products/{productId} productId: {}", productId);
+        log.info("[P9][CON][PROD][ONE_]: GET /api/products/{productId} productId({})", productId);
 
         try {
             final Product product = productService.readByProductId(productId);
@@ -104,8 +109,7 @@ public class ProductApiController {
     @GetMapping
     public MyResponse<List<ProductResponse.Read>> retrieveAll(@PageableDefault(size = 10) Pageable pageable,
                                                               @RequestParam(required = false) Long categoryId) {
-
-        log.info("GET /api/products pageable: {}", pageable);
+        log.info("[P9][CON][PROD][ALL_]: GET /api/products pageable({}), categoryId({})", pageable, categoryId);
 
         try {
             List<ProductResponse.Read> response = productRelationService.read(pageable, categoryId);
@@ -119,6 +123,7 @@ public class ProductApiController {
     @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
     @GetMapping("/count")
     public Long readCount() {
+        log.info("[P9][CON][PROD][CNT_]: GET /api/products/count");
         return productService.readCount();
     }
 
@@ -128,6 +133,7 @@ public class ProductApiController {
                                                          @RequestParam("productName") String searchTitle,
                                                          @RequestParam(value = "categoryId", required = false) Long categoryId) {
         try {
+            log.info("[P9][CON][PROD][SRCH]: GET /api/products/search pageable({}), searchTitle({}), categoryId({})", pageable, searchTitle, categoryId);
             List<ProductResponse.Read> response = productRelationService.search(pageable, searchTitle, categoryId);
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
@@ -139,6 +145,7 @@ public class ProductApiController {
     @ApiOperation(value = "검색한 상품의 개수", notes = "검색한 상품의 개수를 반환한다.")
     @GetMapping("/search/count")
     public Long readSearchCount(@RequestParam("productName") String searchTitle) {
+        log.info("[P9][CON][PROD][SHCT]: GET /api/products/search/count searchTitle({})", searchTitle);
         return productService.readSearchCount(searchTitle);
     }
 }
