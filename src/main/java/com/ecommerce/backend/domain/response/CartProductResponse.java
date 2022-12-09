@@ -1,16 +1,12 @@
 package com.ecommerce.backend.domain.response;
 
 import com.ecommerce.backend.domain.entity.CartProduct;
-import com.ecommerce.backend.domain.entity.Product;
-import com.ecommerce.backend.domain.entity.ProductImage;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CartProductResponse {
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Read {
         private Long productId;
 
@@ -32,7 +28,8 @@ public class CartProductResponse {
 
     }
 
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Create {
         private Long productId;
 
@@ -45,7 +42,8 @@ public class CartProductResponse {
         }
     }
 
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Delete {
         private Long productId;
 
@@ -58,7 +56,8 @@ public class CartProductResponse {
         }
     }
 
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Buy {
         private Long productId;
 
@@ -70,16 +69,22 @@ public class CartProductResponse {
 
         private String description;             // 제품 설명
 
-        private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
+        private ProductImageResponse.Read productImage;
 
-        public static CartProductResponse.Buy from(Product product, ProductImage productImage, int count) {
+        public static CartProductResponse.Buy from(Read read) {
+            ProductImageResponse.Read productImageResponseRead
+                    = new ProductImageResponse.Read().setImageUrl(read.getImageUrl())
+                    .setImageName(read.getImageName())
+                    .setOriginImageName(read.getOriginImageName())
+                    .setThumbnail(read.getThumbnail());
+
             return new CartProductResponse.Buy()
-                    .setProductId(product.getId())
-                    .setProductName(product.getProductName())
-                    .setPrice(product.getPrice())
-                    .setCount(count)
-                    .setDescription(product.getDescription())
-                    .setProductImageList(List.of(ProductImageResponse.Read.of(productImage)));
+                    .setProductId(read.getProductId())
+                    .setProductName(read.getProductName())
+                    .setPrice(read.getPrice())
+                    .setCount(read.getCount())
+                    .setDescription(read.getDescription())
+                    .setProductImage(productImageResponseRead);
         }
     }
 }

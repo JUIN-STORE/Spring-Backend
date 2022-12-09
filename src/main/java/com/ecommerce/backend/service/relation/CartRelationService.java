@@ -1,6 +1,8 @@
 package com.ecommerce.backend.service.relation;
 
-import com.ecommerce.backend.domain.entity.*;
+import com.ecommerce.backend.domain.entity.Account;
+import com.ecommerce.backend.domain.entity.Cart;
+import com.ecommerce.backend.domain.entity.CartProduct;
 import com.ecommerce.backend.domain.response.CartProductResponse;
 import com.ecommerce.backend.service.CartProductService;
 import com.ecommerce.backend.service.CartService;
@@ -33,23 +35,13 @@ public class CartRelationService {
 
     public List<CartProductResponse.Buy> makeCartProductBuyResponse(Account account, List<Long> productIdList) {
         final Cart cart = cartService.readByAccountId(account.getId());
-
-        final List<Product> productList = productRelationService.getProductList(productIdList);
-        final int size = productList.size();
-
-        final List<CartProduct> cartProductListInCart = cartProductService.readByCartId(cart.getId());
-        final List<ProductImage> productImageList = productRelationService.getThumbnailProductImageList(true);
+        List<CartProductResponse.Read> reads = cartProductService.readAllByCartIdAndProductIdListAndThumbnail(cart.getId(), productIdList, true);
 
         final List<CartProductResponse.Buy> response = new ArrayList<>();
 
-        for (int i = 0; i < size; i++) {
-            response.add(
-                    CartProductResponse.Buy.from(
-                            productList.get(i),
-                            productImageList.get(i),
-                            cartProductListInCart.get(i).getCount()
-                    )
-            );
+        for (CartProductResponse.Read read : reads) {
+            CartProductResponse.Buy buy = CartProductResponse.Buy.from(read);
+            response.add(buy);
         }
 
         return response;
