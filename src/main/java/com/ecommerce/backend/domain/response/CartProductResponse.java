@@ -59,32 +59,28 @@ public class CartProductResponse {
     @Data
     @Accessors(chain = true)
     public static class Buy {
-        private Long productId;
+        private Integer count; // 제품의 총 개수
 
-        private String productName;             // 제품의 이름
+        private ProductResponse.Buy product;
 
-        private Integer price;                  // 제품의 가격
-
-        private Integer count;                  // 제품의 총 개수
-
-        private String description;             // 제품 설명
-
-        private ProductImageResponse.Read productImage;
+        private ProductImageResponse.Buy productImage;
 
         public static CartProductResponse.Buy from(Read read) {
-            ProductImageResponse.Read productImageResponseRead
-                    = new ProductImageResponse.Read().setImageUrl(read.getImageUrl())
+            ProductResponse.Buy productResponse = new ProductResponse.Buy()
+                    .setProductId(read.getProductId())
+                    .setProductName(read.getProductName())
+                    .setPrice(read.getPrice())
+                    .setDescription(read.getDescription());
+
+            ProductImageResponse.Buy productImageResponse
+                    = new ProductImageResponse.Buy().setImageUrl(read.getImageUrl())
                     .setImageName(read.getImageName())
                     .setOriginImageName(read.getOriginImageName())
                     .setThumbnail(read.getThumbnail());
 
             return new CartProductResponse.Buy()
-                    .setProductId(read.getProductId())
-                    .setProductName(read.getProductName())
-                    .setPrice(read.getPrice())
-                    .setCount(read.getCount())
-                    .setDescription(read.getDescription())
-                    .setProductImage(productImageResponseRead);
+                    .setProduct(productResponse)
+                    .setProductImage(productImageResponse);
         }
     }
 }
