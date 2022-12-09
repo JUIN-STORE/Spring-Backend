@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 public class ProductCategoryService {
     private final ProductCategoryRepository productCategoryRepository;
 
-  public void add(Product product, Category category) {
-      final ProductCategory productCategory = new ProductCategory(product, category);
-      productCategoryRepository.save(productCategory);
-  }
+    public void add(Product product, Category category) {
+        final ProductCategory productCategory = new ProductCategory(product, category);
+        productCategoryRepository.save(productCategory);
+    }
 }
