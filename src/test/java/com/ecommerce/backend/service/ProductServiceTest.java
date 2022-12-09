@@ -124,7 +124,7 @@ class ProductServiceTest {
             given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
 
             // when
-            Product actual = sut.readByProductId(productId);
+            Product actual = sut.readById(productId);
 
             // then
             assertEquals(product, actual);
@@ -138,7 +138,7 @@ class ProductServiceTest {
             given(productRepository.findById(anyLong())).willThrow(new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
 
             // when
-            AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.readByProductId(productId));
+            AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.readById(productId));
 
             // then
             actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_NOT_FOUND);

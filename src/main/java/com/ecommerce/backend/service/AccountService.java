@@ -91,17 +91,17 @@ public class AccountService {
         final List<Long> orderIdList = orderList.stream().map(Order::getId).collect(Collectors.toList());
 
         // FK 걸려있는 데이터들 삭제
-        final int orderProductDeletedCount = orderProductService.removeByOrderIdList(orderIdList); // order_product 삭제
+        final int orderProductDeletedCount = orderProductService.removeByOrderIdList(orderIdList);  // order_product 삭제
         final long ordersDeletedCount = orderService.removeByAccountId(accountId);                  // orders 삭제
 
-        final long deliveryDeletedCount = deliveryService.removeByAddressIdList(addressIdList);    // delivery 삭제
+        final long deliveryDeletedCount = deliveryService.removeByAddressIdList(addressIdList);     // delivery 삭제
         final long addressDeletedCount =
-                addressService.removeByAddressIdList(account.getId(), addressIdList);              // address 삭제
+                addressService.removeByAddressIdList(account.getId(), addressIdList);               // address 삭제
 
-        cartProductService.removeByAccount(account);// cart_product 삭제
-        final long cartDeletedCount = cartService.removeByAccountId(account.getId());// cart 삭제
+        final int cartProductDeletedCount = cartProductService.removeByAccountId(account.getId());  // cart_product 삭제
+        final long cartDeletedCount = cartService.removeByAccountId(account.getId());               // cart 삭제
 
-        accountRepository.delete(account);                          // account 삭제
+        accountRepository.delete(account);                                                          // account 삭제
 
         log.info("[P9][SRV][ACNT][REMV]: " +
                         "account 삭제 개수:({}), " +
@@ -109,12 +109,14 @@ public class AccountService {
                         "orders 삭제 개수:({}), " +
                         "delivery 삭제 개수:({}), " +
                         "address 삭제 개수:({}), " +
+                        "cartProduct 삭제 개수:({}), " +
                         "cart 삭제 개수:({})"
                 , account.getEmail()
                 , orderProductDeletedCount
                 , ordersDeletedCount
                 , deliveryDeletedCount
                 , addressDeletedCount
+                , cartProductDeletedCount
                 , cartDeletedCount
         );
 

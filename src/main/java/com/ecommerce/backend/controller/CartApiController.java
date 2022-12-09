@@ -2,7 +2,6 @@ package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.entity.Account;
-import com.ecommerce.backend.domain.entity.CartProduct;
 import com.ecommerce.backend.domain.request.CartProductRequest;
 import com.ecommerce.backend.domain.response.CartProductResponse;
 import com.ecommerce.backend.service.CartProductService;
@@ -42,13 +41,13 @@ class CartApiController {
 
     @ApiOperation(value = "카트에 항목을 추가", notes = "카트에 항목을 추가한다.")
     @PostMapping("/add")
-    public MyResponse<CartProductResponse.Create> newCartItem(final Principal principal,
-                                                              @RequestBody CartProductRequest.Add request) {
+    public MyResponse<Integer> newCartItem(final Principal principal,
+                                           @RequestBody CartProductRequest.Add request) {
+
 
         final Account account = jwtService.readByPrincipal(principal);
-        final CartProduct cartProduct = cartProductService.add(account, request);
+        var response = cartProductService.add(account, request);
 
-        var response = CartProductResponse.Create.of(cartProduct);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 

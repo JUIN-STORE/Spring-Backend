@@ -196,7 +196,7 @@ class ProductApiControllerTest {
         public void adminReadTest01() throws Exception {
             // given
             var product = getProductByInfo(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-            given(mockProductService.readByProductId(1L)).willReturn(product);
+            given(mockProductService.readById(1L)).willReturn(product);
 
             // when
             final ResultActions perform = mockMvc.perform(
@@ -211,7 +211,7 @@ class ProductApiControllerTest {
         @DisplayName("존재하지 않는 상품")
         public void adminReadTest02() throws Exception {
             // given
-            given(mockProductService.readByProductId(1L)).willThrow(new EntityNotFoundException());
+            given(mockProductService.readById(1L)).willThrow(new EntityNotFoundException());
 
             // when
             final ResultActions perform = mockMvc.perform(
@@ -363,7 +363,7 @@ class ProductApiControllerTest {
         public void RetrieveOneTest01() throws Exception {
             // given
             var product = getProductByInfo(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-            given(mockProductService.readByProductId(1L)).willReturn(product);
+            given(mockProductService.readById(1L)).willReturn(product);
 
             // when
             final ResultActions perform = mockMvc.perform(
@@ -377,7 +377,7 @@ class ProductApiControllerTest {
         @Test
         @DisplayName("존재하지 않는 상품 조회 시도로 인한 조회 실패")
         public void RetrieveOneTest02() throws Exception {
-            given(mockProductService.readByProductId(1L)).willThrow(new EntityNotFoundException());
+            given(mockProductService.readById(1L)).willThrow(new EntityNotFoundException());
 
             // when
             final ResultActions perform = mockMvc.perform(

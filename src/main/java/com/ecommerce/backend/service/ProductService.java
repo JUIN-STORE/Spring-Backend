@@ -59,7 +59,7 @@ public class ProductService {
         return product.getId();
     }
 
-    public Product readByProductId(Long productId){
+    public Product readById(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
     }
@@ -72,7 +72,7 @@ public class ProductService {
 
     @Transactional(rollbackFor = Exception.class)
     public Long remove(Long productId){
-        final Product product = this.readByProductId(productId);
+        final Product product = this.readById(productId);
         product.updateStatus(ProductStatus.SOLD_OUT);
 
         return product.getId();
