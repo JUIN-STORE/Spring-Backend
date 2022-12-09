@@ -34,9 +34,7 @@ public class CartProduct extends BaseEntity {
         this.count += count;
     }
 
-    public void dirtyChecking(CartProduct newCartProduct) {
-        this.cart = newCartProduct.getCart();
-        this.product = newCartProduct.getProduct();
-        this.count = newCartProduct.getCount();
+    public void updateCount(int count) {
+        this.count = count;
     }
 }

@@ -46,7 +46,7 @@ public class OrderService {
         }
 
         final List<Long> productIdList = request.getProductIdList();
-        final List<Product> productList = productIdList.stream().map(productService::readByProductId).collect(Collectors.toList());
+        final List<Product> productList = productIdList.stream().map(productService::readById).collect(Collectors.toList());
         final DeliveryReceiver deliveryReceiver = request.getDeliveryReceiver().toDeliveryReceiver();
 
         // 배송 정보 생성

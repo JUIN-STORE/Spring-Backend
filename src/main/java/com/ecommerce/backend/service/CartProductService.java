@@ -27,20 +27,24 @@ public class CartProductService {
     private final ProductService productService;
 
 
-    public CartProduct add(Account account, CartProductRequest.Add request) {
+    @Transactional
+    public int add(Account account, CartProductRequest.Add request) {
         final Cart cart = cartService.readByAccountId(account.getId());
 
-        final Product product = productService.readByProductId(request.getProductId());
+        final Product product = productService.readById(request.getProductId());
 
         CartProduct cartProduct = readByCartIdAndProductId(cart.getId(), product.getId());
 
         if (cartProduct == null) {
+            // 카트에 처음 넣는 제품이라면 새로 생성
             cartProduct = request.toCartProduct(cart, product, request.getCount());
+            cartProductRepository.save(cartProduct);
         } else {
+            // 카트에 이미 있던 제품이라면 count+1
             cartProduct.addCount(request.getCount());
         }
 
-        return cartProductRepository.save(cartProduct);
+        return cartProduct.getCount();
     }
 
 
@@ -59,36 +63,30 @@ public class CartProductService {
                 .orElse(new ArrayList<>());
     }
 
-    // FIXME: 쿼리 너무 많이 날아감. 이게 맞나?
     @Transactional
     public int modifyQuantity(Account account, CartProductRequest.Update request) {
+        final Long productId = request.getProductId();
+        final int count = request.getCount();
+
         final Cart cart = cartService.readByAccountId(account.getId());
 
-        final Product product = productService.readByProductId(request.getProductId());
-        final CartProduct oldCartProduct = readByCartIdAndProductId(cart.getId(), product.getId());
+        final CartProduct oldCartProduct = readByCartIdAndProductId(cart.getId(), productId);
 
-        final CartProduct newCartProduct =
-                request.toCartProduct(oldCartProduct.getId(), cart, product, request.getCount());
+        if (oldCartProduct == null) {
+            throw new EntityNotFoundException(Msg.CART_PRODUCT_NOT_FOUND);
+        }
 
-        oldCartProduct.dirtyChecking(newCartProduct);
-        return newCartProduct.getCount();
+        oldCartProduct.updateCount(count);
+        return oldCartProduct.getCount();
     }
 
 
     public long remove(Account account, CartProductRequest.Clear request) {
         final Cart cart = cartService.readByAccountId(account.getId());
-
-        try {
-            return cartProductRepository.deleteByCartIdAndProductId(cart.getId(), request.getProductId());
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-        }
-
-        // 실패했을 때
-        return -1;
+        return cartProductRepository.deleteByCartIdAndProductId(cart.getId(), request.getProductId());
     }
 
-    public void removeByAccount(Account account) {
-        cartProductRepository.deleteByAccountId(account.getId());
+    public int removeByAccountId(Long accountId) {
+        return cartProductRepository.deleteByAccountId(accountId);
     }
 }

@@ -23,5 +23,5 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Long>,
                     "FROM cart " +
                     "LEFT JOIN cart_product ON cart.cart_id = cart_product.cart_id " +
                     "WHERE cart.account_id=:accountId")
-    void deleteByAccountId(@Param("accountId") Long accountId);
+    int deleteByAccountId(@Param("accountId") Long accountId);
 }

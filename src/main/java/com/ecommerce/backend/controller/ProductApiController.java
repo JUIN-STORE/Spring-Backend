@@ -64,7 +64,7 @@ public class ProductApiController {
         log.info("[P9][CON][PROD][AMRD]: GET /api/products/seller/{productId} productId({})", productId);
 
         try {
-            final Product product = productService.readByProductId(productId);
+            final Product product = productService.readById(productId);
             final ProductResponse.Read response = ProductResponse.Read.from(product);
 
             return new MyResponse<>(HttpStatus.OK, "상품 읽기 성공", response);
@@ -95,7 +95,7 @@ public class ProductApiController {
         log.info("[P9][CON][PROD][ONE_]: GET /api/products/{productId} productId({})", productId);
 
         try {
-            final Product product = productService.readByProductId(productId);
+            final Product product = productService.readById(productId);
             final ProductResponse.Read read = ProductResponse.Read.from(product);
 
             return new MyResponse<>(HttpStatus.OK, read);

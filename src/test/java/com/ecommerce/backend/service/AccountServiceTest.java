@@ -51,6 +51,8 @@ class AccountServiceTest {
     @Mock
     private CartService mockCartService;
     @Mock
+    private CartProductService mockCartProductService;
+    @Mock
     private DeliveryService mockDeliveryService;
     @Mock
     private OrderService mockOrderService;
