@@ -1,16 +1,12 @@
 package com.ecommerce.backend.domain.response;
 
 import com.ecommerce.backend.domain.entity.CartProduct;
-import com.ecommerce.backend.domain.entity.Product;
-import com.ecommerce.backend.domain.entity.ProductImage;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CartProductResponse {
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Read {
         private Long productId;
 
@@ -32,7 +28,8 @@ public class CartProductResponse {
 
     }
 
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Create {
         private Long productId;
 
@@ -45,7 +42,8 @@ public class CartProductResponse {
         }
     }
 
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Delete {
         private Long productId;
 
@@ -58,28 +56,31 @@ public class CartProductResponse {
         }
     }
 
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Buy {
-        private Long productId;
+        private Integer count; // 제품의 총 개수
 
-        private String productName;             // 제품의 이름
+        private ProductResponse.Buy product;
 
-        private Integer price;                  // 제품의 가격
+        private ProductImageResponse.Buy productImage;
 
-        private Integer count;                  // 제품의 총 개수
+        public static CartProductResponse.Buy from(Read read) {
+            ProductResponse.Buy productResponse = new ProductResponse.Buy()
+                    .setProductId(read.getProductId())
+                    .setProductName(read.getProductName())
+                    .setPrice(read.getPrice())
+                    .setDescription(read.getDescription());
 
-        private String description;             // 제품 설명
+            ProductImageResponse.Buy productImageResponse
+                    = new ProductImageResponse.Buy().setImageUrl(read.getImageUrl())
+                    .setImageName(read.getImageName())
+                    .setOriginImageName(read.getOriginImageName())
+                    .setThumbnail(read.getThumbnail());
 
-        private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
-
-        public static CartProductResponse.Buy from(Product product, ProductImage productImage, int count) {
             return new CartProductResponse.Buy()
-                    .setProductId(product.getId())
-                    .setProductName(product.getProductName())
-                    .setPrice(product.getPrice())
-                    .setCount(count)
-                    .setDescription(product.getDescription())
-                    .setProductImageList(List.of(ProductImageResponse.Read.of(productImage)));
+                    .setProduct(productResponse)
+                    .setProductImage(productImageResponse);
         }
     }
 }

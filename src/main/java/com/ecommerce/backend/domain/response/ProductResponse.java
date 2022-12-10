@@ -68,4 +68,17 @@ public class ProductResponse {
             return read;
         }
     }
+
+
+    @Data
+    @Accessors(chain = true)
+    public static class Buy {
+        private Long productId;
+
+        private String productName;             // 제품의 이름
+
+        private Integer price;                  // 제품의 가격
+
+        private String description;             // 제품 설명
+    }
 }
