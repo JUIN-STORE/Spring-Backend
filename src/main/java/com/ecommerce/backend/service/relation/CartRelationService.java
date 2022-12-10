@@ -35,12 +35,12 @@ public class CartRelationService {
 
     public List<CartProductResponse.Buy> makeCartProductBuyResponse(Account account, List<Long> productIdList) {
         final Cart cart = cartService.readByAccountId(account.getId());
-        List<CartProductResponse.Read> reads
+        List<CartProductResponse.Read> readList
                 = cartProductService.readAllByCartIdAndProductIdListAndThumbnail(cart.getId(), productIdList, true);
 
         final List<CartProductResponse.Buy> response = new ArrayList<>();
 
-        for (CartProductResponse.Read read : reads) {
+        for (CartProductResponse.Read read : readList) {
             CartProductResponse.Buy buy = CartProductResponse.Buy.from(read);
             response.add(buy);
         }
