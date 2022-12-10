@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -18,14 +19,19 @@ import java.util.List;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    public List<Category> readByParentId() {
-        // 최상위 카테고리는 null
-        return categoryRepository.findByParentId(null);
-    }
-
     public Category readById(Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.CATEGORY_NOT_FOUND));
+    }
+
+    public List<Category> readAll() {
+        return categoryRepository.findAll();
+    }
+
+    public List<Category> readAllByParentIdIsNull() {
+        // 최상위 카테고리는 null, 최상위 카테고리만 구함.
+        return categoryRepository.findAllByParentIsNull()
+                .orElse(new ArrayList<>());
     }
 
     @Transactional
@@ -34,12 +40,16 @@ public class CategoryService {
 
         Category parent = null;
 
-        // 0일 때 최상위에 추가함.
-        if (parentId > 0) parent = this.readById(parentId);
+        if (parentId > 0) {
+            // 0보다 크면 하위 카테고리, 아니면 최상위 카테고리
+            parent = this.readById(parentId);
+        }
 
         final Category category = request.toCategory(parent);
         final Category save = categoryRepository.save(category);
 
         return save.getId();
     }
+
+    // FIXME: FK 걸려있기 때문에 modify, remove 어떻게 구현할지 고민하기
 }
