@@ -9,7 +9,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 public class OrderResponse {
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Create {
         private Long id;
 
@@ -22,6 +23,19 @@ public class OrderResponse {
             return new Create()
                     .setId(order.getId())
                     .setGrandTotal(order.getGrandTotal());
+        }
+    }
+
+    @Data
+    @Accessors(chain = true)
+    public static class Delete {
+        private long ordersDeletedCount;
+        private long orderProductDeletedCount;
+
+        public static Delete of(long ordersDeleteCount, long orderProductDeleteCount) {
+            return new Delete()
+                    .setOrdersDeletedCount(ordersDeleteCount)
+                    .setOrderProductDeletedCount(orderProductDeleteCount);
         }
     }
 }

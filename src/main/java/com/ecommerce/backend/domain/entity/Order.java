@@ -3,6 +3,7 @@ package com.ecommerce.backend.domain.entity;
 import com.ecommerce.backend.domain.enums.DeliveryStatus;
 import com.ecommerce.backend.domain.enums.OrderStatus;
 import com.ecommerce.backend.exception.AlreadyDeliveryException;
+import com.ecommerce.backend.exception.Msg;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,7 +79,8 @@ public class Order extends BaseEntity {
 
     // 주문 취소
     public void cancel(){
-        if (delivery.getDeliveryStatus() == DeliveryStatus.COMP) throw new AlreadyDeliveryException("이미 배송된 상품은 취소가 불가능합니다");
+        if (delivery.getDeliveryStatus() == DeliveryStatus.COMP)
+            throw new AlreadyDeliveryException(Msg.ORDER_ALREADY_DELIVERY);
 
         this.orderStatus = OrderStatus.CANCEL;
         for(OrderProduct orderItem : orderProductList){

@@ -2,11 +2,12 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
-import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
+import com.ecommerce.backend.domain.response.OrderResponse;
 import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.AccountRepository;
+import com.ecommerce.backend.service.relation.OrderRelationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
-
     private final JwtService jwtService;
     private final AddressService addressService;
     private final CartService cartService;
     private final CartProductService cartProductService;
     private final DeliveryService deliveryService;
-    private final OrderService orderService;
-    private final OrderProductService orderProductService;
+    private final OrderRelationService orderRelationService;
 
     private void checkDuplicatedEmail(AccountRequest.SignUp request) {
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
@@ -87,12 +86,7 @@ public class AccountService {
         final List<Address> addressList = addressService.readByAccountId(account.getId());
         final List<Long> addressIdList = addressList.stream().map(Address::getId).collect(Collectors.toList());
 
-        final List<Order> orderList = orderService.readByAccountId(account.getId());
-        final List<Long> orderIdList = orderList.stream().map(Order::getId).collect(Collectors.toList());
-
-        // FK 걸려있는 데이터들 삭제
-        final int orderProductDeletedCount = orderProductService.removeByOrderIdList(orderIdList);  // order_product 삭제
-        final long ordersDeletedCount = orderService.removeByAccountId(accountId);                  // orders 삭제
+        OrderResponse.Delete deleteResponse = orderRelationService.remove(accountId);
 
         final long deliveryDeletedCount = deliveryService.removeByAddressIdList(addressIdList);     // delivery 삭제
         final long addressDeletedCount =
@@ -112,8 +106,8 @@ public class AccountService {
                         "cartProduct 삭제 개수:({}), " +
                         "cart 삭제 개수:({})"
                 , account.getEmail()
-                , orderProductDeletedCount
-                , ordersDeletedCount
+                , deleteResponse.getOrderProductDeletedCount()
+                , deleteResponse.getOrdersDeletedCount()
                 , deliveryDeletedCount
                 , addressDeletedCount
                 , cartProductDeletedCount

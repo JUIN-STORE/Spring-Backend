@@ -33,10 +33,9 @@ public class ProductService {
     private final ProductCategoryService productCategoryService;
 
     @Transactional
-    public Long add(ProductRequest.Create request
-            , MultipartFile thumbnailImage
-            , List<MultipartFile> productImageFileList) throws IOException {
-
+    public Long add(ProductRequest.Create request,
+                    MultipartFile thumbnailImage,
+                    List<MultipartFile> productImageFileList) throws IOException {
         if (thumbnailImage == null) throw new InvalidParameterException(Msg.PRODUCT_THUMBNAIL_REQUIRED);
 
         // 상품 등록
@@ -66,8 +65,8 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<Product> readByIdList(List<Long> productId) {
-        return productRepository.findByIdIn(productId)
+    public List<Product> readByIdList(List<Long> productIdList){
+        return productRepository.findByIdIn(productIdList)
                 .orElse(new ArrayList<>());
     }
 

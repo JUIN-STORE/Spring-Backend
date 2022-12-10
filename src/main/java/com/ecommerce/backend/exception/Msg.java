@@ -26,4 +26,10 @@ public class Msg {
     public static final String PRODUCT_THUMBNAIL_NOT_FOUND = "썸네일 이미지를 찾을 수 없습니다.";
     public static final String PRODUCT_THUMBNAIL_REQUIRED = "상품 썸네일 이미지는 필수입니다.";
     public static final String PRODUCT_IMAGE_NOT_FOUND = "상품 이미지를 찾을 수 없습니다.";
+
+    public static final String ORDER_DELIVERY_ADDRESS_NOT_FOUND = "배송지는 필수입니다.";
+    public static final String ORDER_DELIVERY_RECEIVER_REQUIRED = "받는 사람은 필수입니다.";
+    public static final String ORDER_NOT_FOUND = "존재하지 않는 주문 정보입니다.";
+
+    public static final String ORDER_ALREADY_DELIVERY = "이미 배송된 상품은 취소가 불가능합니다";
 }
