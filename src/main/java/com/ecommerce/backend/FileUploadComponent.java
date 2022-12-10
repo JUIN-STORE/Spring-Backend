@@ -10,20 +10,19 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Slf4j
-@Component("fileUploadComponent")
+@Component
 public class FileUploadComponent {
-
     private static final String RANDOM_UUID = String.valueOf(UUID.randomUUID()).substring(0, 13);
     private static final String SLASH = "/";
 
-    public void uploadFile(String uploadPath, String fileName, byte[] fileData){
+    public void uploadFile(String uploadPath, String fileName, byte[] fileData) {
         // originFile을 먼저 저장하고
         try(FileOutputStream fos = new FileOutputStream(makeAbsPath(uploadPath, fileName))){
             fos.write(fileData);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("[P1][COM][FILE][UPAD]: 파일을 찾을 수 없습니다. message=({})", e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("[P1][COM][FILE][UPAD]: IOException message=({})", e.getMessage());
         }
     }
 
@@ -45,7 +44,6 @@ public class FileUploadComponent {
 
     // 생성된 copyFileName을 통해 절대 저장 경로를 생성한다.
     public String makeAbsPath(String uploadPath, String fileName){
-        final String fileUploadAbsPath = uploadPath + SLASH + fileName;
-        return fileUploadAbsPath;
+        return uploadPath + SLASH + fileName;
     }
 }

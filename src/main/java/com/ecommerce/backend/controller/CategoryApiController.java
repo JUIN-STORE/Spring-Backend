@@ -28,7 +28,7 @@ public class CategoryApiController {
     @GetMapping
     public MyResponse<List<CategoryResponse.Read>> all() {
         // FIXME: 쿼리 N방 날아감
-        final List<Category> categoryList = categoryService.readByParentId();
+        final List<Category> categoryList = categoryService.readAll();
 
         final List<CategoryResponse.Read> response = new ArrayList<>();
 
@@ -46,4 +46,6 @@ public class CategoryApiController {
         final Long response = categoryService.add(request);
         return new MyResponse<>(HttpStatus.OK, response);
     }
+
+    // FIXME: update, delete 구현해야 됨.
 }

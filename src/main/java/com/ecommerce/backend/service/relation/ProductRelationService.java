@@ -29,7 +29,7 @@ public class ProductRelationService {
     }
 
     public List<ProductImage> getThumbnailProductImageList(boolean isThumbnail) {
-        return productImageService.readByThumbnail(isThumbnail);
+        return productImageService.readAllByThumbnail(isThumbnail);
     }
 
     public List<ProductResponse.Read> read(Pageable pageable, Long categoryId) {

@@ -77,7 +77,7 @@ class ProductServiceTest {
             given(categoryService.readById(anyLong())).willReturn(category);
             willDoNothing().given(productCategoryService).add(any(), any());
             given(productRepository.save(any())).willReturn(product);
-            willDoNothing().given(productImageService).saveProductImage(any(), any(), any());
+            willDoNothing().given(productImageService).add(any(), any(), any());
 
             // when
             sut.add(request,thumbnailFile, multipartFileList);

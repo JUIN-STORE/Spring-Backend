@@ -33,9 +33,10 @@ public class ProductService {
     private final ProductCategoryService productCategoryService;
 
     @Transactional
-    public Long add(ProductRequest.Create request,
-                    MultipartFile thumbnailImage,
-                    List<MultipartFile> productImageFileList) throws IOException {
+    public Long add(ProductRequest.Create request
+            , MultipartFile thumbnailImage
+            , List<MultipartFile> productImageFileList) throws IOException {
+
         if (thumbnailImage == null) throw new InvalidParameterException(Msg.PRODUCT_THUMBNAIL_REQUIRED);
 
         // 상품 등록
@@ -46,32 +47,32 @@ public class ProductService {
         productRepository.save(product);
 
         // 썸네일 등록
-        productImageService.saveProductImage(new ProductImageRequest.Create().setThumbnail(true), thumbnailImage, product);
+        productImageService.add(new ProductImageRequest.Create(true), thumbnailImage, product);
 
         // FIXME: 확인해보고 이상한 부분 있으면 수정하기
         // 썸네일 외 이미지 등록
         if (!Collections.isEmpty(productImageFileList)) {
             for (MultipartFile productImageFile : productImageFileList) {
-                productImageService.saveProductImage(new ProductImageRequest.Create().setThumbnail(false), productImageFile, product);
+                productImageService.add(new ProductImageRequest.Create(false), productImageFile, product);
             }
         }
 
         return product.getId();
     }
 
-    public Product readById(Long productId){
+    public Product readById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
-    public List<Product> readByIdList(List<Long> productId){
+    public List<Product> readByIdList(List<Long> productId) {
         return productRepository.findByIdIn(productId)
                 .orElse(new ArrayList<>());
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Long remove(Long productId){
+    public Long remove(Long productId) {
         final Product product = this.readById(productId);
         product.updateStatus(ProductStatus.SOLD_OUT);
 
@@ -84,7 +85,7 @@ public class ProductService {
         return productRepository.findByCategoryId(pageable, categoryId);
     }
 
-    public Long readCount(){
+    public Long readCount() {
         return productRepository.count();
     }
 
@@ -93,7 +94,7 @@ public class ProductService {
         return productRepository.findByProductNameContainingAndCategoryId(pageable, searchTitle, categoryId);
     }
 
-    public Long readSearchCount(String searchTitle){
+    public Long readSearchCount(String searchTitle) {
         return productRepository.countByProductNameContaining(searchTitle);
     }
 }

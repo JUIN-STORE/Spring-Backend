@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 public class ProductImageRequest {
-    @Data @Accessors(chain = true)
+    @Data
+    @Accessors(chain = true)
     public static class Create {
         private String imageName;           // 이미지 파일명
 
@@ -16,12 +17,16 @@ public class ProductImageRequest {
 
         private Boolean thumbnail;          // 썸네일 여부
 
-        public ProductImage toProductImage(Product product) {
+        public Create(Boolean isThumbnail) {
+            this.thumbnail = isThumbnail;
+        }
+
+        public ProductImage toProductImage(Product product, String imageName, String imageUrl, String originImageName) {
             return ProductImage.builder()
                     .product(product)
-                    .imageName(this.imageName)
-                    .originImageName(this.originImageName)
-                    .imageUrl(this.imageUrl)
+                    .imageName(imageName)
+                    .originImageName(originImageName)
+                    .imageUrl(imageUrl)
                     .thumbnail(this.thumbnail)
                     .build();
         }
