@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslOrderRepository {
     Optional<List<Order>> findByAccountId(Long accountId);
 
+    Optional<Order> findByIdAndAccountId(Long orderId, Long accountId);
+
 //    @Query(nativeQuery = true,
 //            value = "SELECT o.order_date AS orderDate, " +
 //                    "op.order_count AS orderCount, " +

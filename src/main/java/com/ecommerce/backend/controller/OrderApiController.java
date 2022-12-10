@@ -38,7 +38,7 @@ public class OrderApiController {
                                                    @PageableDefault(size = 10) Pageable pageable) {
         final Account account = jwtService.readByPrincipal(principal);
 
-        Page<OrderJoinResponse> response = orderService.join(account, request, pageable);
+        Page<OrderJoinResponse> response = orderService.read(account, request, pageable);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
@@ -54,8 +54,11 @@ public class OrderApiController {
 
     @ApiOperation(value = "주문 취소하기", notes = "주문 취소를 한다.")
     @DeleteMapping("/cancel/{orderId}")
-    public MyResponse<OrderResponse.Create> cancel(@PathVariable Long orderId) {
-        orderService.cancelOrder(orderId);
+    public MyResponse<OrderResponse.Create> cancel(final Principal principal,
+                                                   @PathVariable Long orderId) {
+        final Account account = jwtService.readByPrincipal(principal);
+
+        orderService.cancel(orderId, account.getId());
         return new MyResponse<>(HttpStatus.OK, null);
     }
 }
