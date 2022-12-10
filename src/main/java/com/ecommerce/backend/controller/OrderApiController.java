@@ -58,7 +58,7 @@ public class OrderApiController {
                                                    @PathVariable Long orderId) {
         final Account account = jwtService.readByPrincipal(principal);
 
-        orderService.cancelOrder(orderId, account.getId());
+        orderService.cancel(orderId, account.getId());
         return new MyResponse<>(HttpStatus.OK, null);
     }
 }

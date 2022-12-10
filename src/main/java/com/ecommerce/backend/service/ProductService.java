@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -67,7 +66,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<Product> readByIdList(List<Long> productIdList){
         return productRepository.findByIdIn(productIdList)
-                .orElse(new ArrayList<>());
+                .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
     }
 
     @Transactional(rollbackFor = Exception.class)

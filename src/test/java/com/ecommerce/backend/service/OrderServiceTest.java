@@ -296,7 +296,7 @@ class OrderServiceTest {
             given(mockOrderRepository.findByIdAndAccountId(orderId, accountId)).willReturn(Optional.of(order));
 
             // when
-            sut.cancelOrder(orderId, accountId);
+            sut.cancel(orderId, accountId);
 
             // then
             verify(mockOrderRepository, times(1)).findByIdAndAccountId(orderId, accountId);
@@ -315,7 +315,7 @@ class OrderServiceTest {
 
             // when
             AbstractThrowableAssert<?, ? extends Throwable> actual
-                    = assertThatThrownBy(() -> sut.cancelOrder(orderId, accountId));
+                    = assertThatThrownBy(() -> sut.cancel(orderId, accountId));
 
             // then
             actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ORDER_NOT_FOUND);

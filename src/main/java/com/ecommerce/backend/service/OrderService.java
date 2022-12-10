@@ -83,7 +83,7 @@ public class OrderService {
 
     // 주문 취소
     @Transactional
-    public void cancelOrder(Long orderId, Long accountId) {
+    public void cancel(Long orderId, Long accountId) {
         // 주문 엔티티 조회
         final Order order = readByIdAndAccountId(orderId, accountId);
         order.cancel();
