@@ -25,4 +25,5 @@ public class Msg {
     // productImage
     public static final String PRODUCT_THUMBNAIL_NOT_FOUND = "썸네일 이미지를 찾을 수 없습니다.";
     public static final String PRODUCT_THUMBNAIL_REQUIRED = "상품 썸네일 이미지는 필수입니다.";
+    public static final String PRODUCT_IMAGE_NOT_FOUND = "상품 이미지를 찾을 수 없습니다.";
 }

@@ -5,9 +5,6 @@ import com.ecommerce.backend.repository.querydsl.QuerydslProductImageRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long>, QuerydslProductImageRepository {
-    List<ProductImage> findByProductId(Long productId);
 }

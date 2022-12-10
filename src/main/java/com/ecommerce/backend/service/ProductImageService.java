@@ -10,24 +10,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
-/** Service Naming
- * C -> save
- * R -> findBy~
- * U -> update
- * D -> delete
- */
-
-/** Service Rule
- *  Declare only ONE Repository and pull the others from the Service
- */
 
 @Slf4j
 @Service
@@ -37,43 +26,35 @@ public class ProductImageService {
 
     private final FileUploadComponent fileUploadComponent;
 
-    @Value("${productImageLocation}")
+    @Value("${product-image-location}")
     private String productImageLocation;
 
-    public void saveProductImage(ProductImageRequest.Create request, MultipartFile multipartFile, Product product) throws IOException {
-        final String originalFilename = multipartFile.getOriginalFilename(); // cat.jpg
+    public void add(ProductImageRequest.Create request, MultipartFile multipartFile, Product product) throws IOException {
+        final String originImageName = multipartFile.getOriginalFilename(); // cat.jpg
 
         // 파일 업로드
-        if(StringUtils.hasText(originalFilename)){
-            final String copyFileName = fileUploadComponent.makeCopyFileName(originalFilename);
-            final String fileUploadAbsPath = fileUploadComponent.makeAbsPath(productImageLocation, copyFileName);
+        if(StringUtils.hasText(originImageName)){
+            final String copyImageName = fileUploadComponent.makeCopyFileName(originImageName);
+            final String imageAbsUrl = fileUploadComponent.makeAbsPath(productImageLocation, copyImageName);
 
-            fileUploadComponent.uploadFile(productImageLocation, originalFilename, multipartFile.getBytes()); // 원본
-            fileUploadComponent.uploadFile(productImageLocation, copyFileName, multipartFile.getBytes());     // copy
+            fileUploadComponent.uploadFile(productImageLocation, originImageName, multipartFile.getBytes());   // 원본
+            fileUploadComponent.uploadFile(productImageLocation, copyImageName, multipartFile.getBytes());     // copy
 
-            request.setImageName(copyFileName);
-            request.setImageUrl(fileUploadAbsPath);
-            request.setOriginImageName(originalFilename);
-
-            final ProductImage productImage = request.toProductImage(product);
+            final ProductImage productImage =
+                    request.toProductImage(product, copyImageName, imageAbsUrl, originImageName);
 
             productImageRepository.save(productImage);
         }
     }
 
-    @Transactional(readOnly = true)
-    public List<ProductImage> findById(Long productId){
-        // 상품이미지 조회
-        return productImageRepository.findByProductId(productId);
-    }
 
-    public List<ProductImage> readByThumbnail(boolean isThumbnail) {
+    public List<ProductImage> readAllByThumbnail(boolean isThumbnail) {
         return productImageRepository.findByThumbnail(isThumbnail)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_THUMBNAIL_NOT_FOUND));
     }
 
     public List<ProductImage> readAllByProductId(List<Long> productIdList) {
         return productImageRepository.findAllByProductIdIn(productIdList)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElse(new ArrayList<>());
     }
 }
