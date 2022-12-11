@@ -22,7 +22,6 @@ public class CartProductResponse {
         private String originImageName;         // 원본 이미지 파일명
         private String imageUrl;                // 이미지 조회 경로
         private Boolean thumbnail;              // 썸네일 여부
-        private ProductImageResponse.Read productImageResponse;
     }
 
     @Data
