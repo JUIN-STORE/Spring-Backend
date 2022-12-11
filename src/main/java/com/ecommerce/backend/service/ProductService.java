@@ -47,27 +47,56 @@ public class ProductService {
         // 썸네일 등록
         productImageService.add(new ProductImageRequest.Create(true), thumbnailImage, product);
 
-        // FIXME: 확인해보고 이상한 부분 있으면 수정하기
+        final Long productId = product.getId();
+
+        // 썸네일 외 이미지 없으면 리턴
+        if (Collections.isEmpty(productImageFileList)) return productId;
+
         // 썸네일 외 이미지 등록
-        if (!Collections.isEmpty(productImageFileList)) {
-            for (MultipartFile productImageFile : productImageFileList) {
-                productImageService.add(new ProductImageRequest.Create(false), productImageFile, product);
-            }
+        for (MultipartFile productImageFile : productImageFileList) {
+            productImageService.add(new ProductImageRequest.Create(false), productImageFile, product);
         }
 
-        return product.getId();
+        return productId;
     }
+
 
     public Product readById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
     }
 
-    @Transactional(readOnly = true)
-    public List<Product> readByIdList(List<Long> productIdList){
-        return productRepository.findByIdIn(productIdList)
+    public List<Product> readAllByIdList(List<Long> productIdList) {
+        return productRepository.findAllByIdIn(productIdList)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
     }
+
+    public Page<Product> readAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    public Page<Product> readAllByCategoryId(Pageable pageable, Long categoryId) {
+        return productRepository.findAllByCategoryId(pageable, categoryId);
+    }
+
+    public Page<Product> readAllByProductNameContaining(Pageable pageable, String searchTitle) {
+        return productRepository.findAllByProductNameContaining(pageable, searchTitle);
+    }
+
+    public Page<Product>
+    readAllByProductNameContainingAndCategoryId(Pageable pageable, String searchTitle, Long categoryId) {
+
+        return productRepository.findAllByProductNameContainingAndCategoryId(pageable, searchTitle, categoryId);
+    }
+
+    public long total() {
+        return productRepository.count();
+    }
+
+    public Long totalByProductNameContaining(String searchTitle) {
+        return productRepository.countByProductNameContaining(searchTitle);
+    }
+
 
     @Transactional(rollbackFor = Exception.class)
     public Long remove(Long productId) {
@@ -75,24 +104,5 @@ public class ProductService {
         product.updateStatus(ProductStatus.SOLD_OUT);
 
         return product.getId();
-    }
-
-    public Page<Product> read(Pageable pageable, Long categoryId) {
-        if (categoryId == null) return productRepository.findAll(pageable);
-
-        return productRepository.findByCategoryId(pageable, categoryId);
-    }
-
-    public Long readCount() {
-        return productRepository.count();
-    }
-
-    public Page<Product> search(Pageable pageable, String searchTitle, Long categoryId) {
-        if (categoryId == null) return productRepository.findByProductNameContaining(pageable, searchTitle);
-        return productRepository.findByProductNameContainingAndCategoryId(pageable, searchTitle, categoryId);
-    }
-
-    public Long readSearchCount(String searchTitle) {
-        return productRepository.countByProductNameContaining(searchTitle);
     }
 }

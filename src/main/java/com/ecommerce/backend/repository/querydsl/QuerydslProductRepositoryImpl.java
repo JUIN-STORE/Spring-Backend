@@ -15,7 +15,7 @@ public class QuerydslProductRepositoryImpl implements QuerydslProductRepository 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<List<Product>> findByIdIn(List<Long> productIdList) {
+    public Optional<List<Product>> findAllByIdIn(List<Long> productIdList) {
         return Optional.ofNullable(
                 queryFactory
                         .select(product)

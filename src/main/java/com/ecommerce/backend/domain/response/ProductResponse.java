@@ -31,7 +31,7 @@ public class ProductResponse {
         @Enumerated(EnumType.STRING)
         private ProductStatus productStatus;    // 제품의 상태
 
-        private List<ProductImageResponse.Read> ProductImageList = new ArrayList<>();
+        private List<ProductImageResponse.Read> productImageList = new ArrayList<>();
 
         // 단건
         public static Read from(Product product) {

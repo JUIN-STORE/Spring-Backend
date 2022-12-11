@@ -24,25 +24,32 @@ public class ProductRelationService {
     private final ProductService productService;
     private final ProductImageService productImageService;
 
-    public List<Product> getProductList(List<Long> productIdList) {
-        return productService.readByIdList(productIdList);
-    }
 
-    public List<ProductImage> getThumbnailProductImageList(boolean isThumbnail) {
-        return productImageService.readAllByThumbnail(isThumbnail);
-    }
+    public List<ProductResponse.Read> display(Pageable pageable, Long categoryId) {
+        Page<Product> productList;
 
-    public List<ProductResponse.Read> read(Pageable pageable, Long categoryId) {
-        Page<Product> productList = productService.read(pageable, categoryId);
-        return makeProductReadResponse(productList);
+        if (categoryId == null) {
+            productList = productService.readAll(pageable);
+        } else {
+            productList = productService.readAllByCategoryId(pageable, categoryId);
+        }
+
+        return makeProductReadResponseList(productList);
     }
 
     public List<ProductResponse.Read> search(Pageable pageable, String searchTitle, Long categoryId) {
-        Page<Product> productList = productService.search(pageable, searchTitle, categoryId);
-        return makeProductReadResponse(productList);
+        Page<Product> productList;
+
+        if (categoryId == null) {
+            productList = productService.readAllByProductNameContaining(pageable, searchTitle);
+        } else {
+            productList = productService.readAllByProductNameContainingAndCategoryId(pageable, searchTitle, categoryId);
+        }
+
+        return makeProductReadResponseList(productList);
     }
 
-    private List<ProductResponse.Read> makeProductReadResponse(Page<Product> productList) {
+    private List<ProductResponse.Read> makeProductReadResponseList(Page<Product> productList) {
         final List<Long> productIdList = productList.stream().map(Product::getId).collect(Collectors.toList());
         final List<ProductImage> productImageList = productImageService.readAllByProductId(productIdList);
         final Map<Long, List<ProductImage>> productIdImageMap = new HashMap<>();

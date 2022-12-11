@@ -35,12 +35,11 @@ public class ProductApiController {
     public MyResponse<Long> register(@RequestPart ProductRequest.Create request,
                                      @RequestPart(value = "thumbnail") MultipartFile thumbnailImage,
                                      @RequestPart(value = "fileList", required = false) List<MultipartFile> productImageFileList) {
-        log.info(
-                "[P9][CON][PROD][REGI]: GET /api/products/seller/register request({}), thumbnail({}), fileList({})",
-                request,
-                thumbnailImage,
-                productImageFileList
-        );
+
+        log.info("[P9][CON][PROD][REGI]: GET /api/products/seller/register request({}), thumbnail({}), fileList({})"
+                , request
+                , thumbnailImage
+                , productImageFileList);
 
         try {
             final Long response = productService.add(request, thumbnailImage, productImageFileList);
@@ -112,7 +111,7 @@ public class ProductApiController {
         log.info("[P9][CON][PROD][ALL_]: GET /api/products pageable({}), categoryId({})", pageable, categoryId);
 
         try {
-            List<ProductResponse.Read> response = productRelationService.read(pageable, categoryId);
+            List<ProductResponse.Read> response = productRelationService.display(pageable, categoryId);
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
@@ -122,18 +121,19 @@ public class ProductApiController {
 
     @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
     @GetMapping("/count")
-    public Long readCount() {
+    public long readCount() {
         log.info("[P9][CON][PROD][CNT_]: GET /api/products/count");
-        return productService.readCount();
+        return productService.total();
     }
 
     @ApiOperation(value = "상품 검색하기", notes = "전체 또는 특정 카테고리에서 상품을 상품이름으로 검색해서 찾는다")
     @GetMapping("/search")
     public MyResponse<List<ProductResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
                                                          @RequestParam("productName") String searchTitle,
-                                                         @RequestParam(value = "categoryId", required = false) Long categoryId) {
+                                                         @RequestParam(required = false) Long categoryId) {
         try {
-            log.info("[P9][CON][PROD][SRCH]: GET /api/products/search pageable({}), searchTitle({}), categoryId({})", pageable, searchTitle, categoryId);
+            log.info("[P9][CON][PROD][SRCH]: GET /api/products/search pageable({}), searchTitle({}), categoryId({})",
+                    pageable, searchTitle, categoryId);
             List<ProductResponse.Read> response = productRelationService.search(pageable, searchTitle, categoryId);
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
@@ -146,7 +146,7 @@ public class ProductApiController {
     @GetMapping("/search/count")
     public Long readSearchCount(@RequestParam("productName") String searchTitle) {
         log.info("[P9][CON][PROD][SHCT]: GET /api/products/search/count searchTitle({})", searchTitle);
-        return productService.readSearchCount(searchTitle);
+        return productService.totalByProductNameContaining(searchTitle);
     }
 }
 
