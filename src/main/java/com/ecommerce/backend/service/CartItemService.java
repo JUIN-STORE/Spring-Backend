@@ -50,7 +50,7 @@ public class CartItemService {
 
     public List<CartItem> readByCartId(Long cartId) {
         return cartItemRepository.findByCartId(cartId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND_IN_CART));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_NOT_FOUND_IN_CART));
     }
 
     public CartItem readByCartIdAndItemId(Long cartId, Long itemId) {
@@ -73,7 +73,7 @@ public class CartItemService {
         final CartItem oldCartItem = readByCartIdAndItemId(cart.getId(), itemId);
 
         if (oldCartItem == null) {
-            throw new EntityNotFoundException(Msg.CART_PRODUCT_NOT_FOUND);
+            throw new EntityNotFoundException(Msg.CART_ITEM_NOT_FOUND);
         }
 
         oldCartItem.updateCount(count);

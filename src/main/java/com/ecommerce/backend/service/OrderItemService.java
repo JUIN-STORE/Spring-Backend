@@ -26,6 +26,6 @@ public class OrderItemService {
 
     public OrderItem readByOrderId(Long orderId) {
         return orderItemRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ORDER_PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ORDER_ITEM_NOT_FOUND));
     }
 }

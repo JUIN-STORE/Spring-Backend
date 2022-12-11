@@ -35,7 +35,7 @@ public class ItemService {
     public Long add(ItemRequest.Create request,
                     MultipartFile thumbnailImage,
                     List<MultipartFile> itemImageFileList) throws IOException {
-        if (thumbnailImage == null) throw new InvalidParameterException(Msg.PRODUCT_THUMBNAIL_REQUIRED);
+        if (thumbnailImage == null) throw new InvalidParameterException(Msg.ITEM_THUMBNAIL_REQUIRED);
 
         // 상품 등록
         final Category category = categoryService.readById(request.getCategoryId());
@@ -63,12 +63,12 @@ public class ItemService {
 
     public Item readById(Long itemId) {
         return itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_NOT_FOUND));
     }
 
     public List<Item> readAllByIdList(List<Long> itemIdList) {
         return itemRepository.findAllByIdIn(itemIdList)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_NOT_FOUND));
     }
 
     public Page<Item> readAll(Pageable pageable) {

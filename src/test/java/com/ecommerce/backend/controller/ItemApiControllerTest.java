@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class ItemApiControllerTest {
-    private static final String PRODUCT_END_POINT = "/api/items";
+    private static final String ITEM_END_POINT = "/api/items";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -96,7 +96,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    multipart(PRODUCT_END_POINT + "/seller/register")
+                    multipart(ITEM_END_POINT + "/seller/register")
                             .file(request)
                             .file(thumbnail)
                             .file(file)
@@ -135,7 +135,7 @@ class ItemApiControllerTest {
 
             // whenㅔ
             final ResultActions perform = mockMvc.perform(
-                    multipart(PRODUCT_END_POINT + "/seller/register")
+                    multipart(ITEM_END_POINT + "/seller/register")
                             .file(request)
                             .file(thumbnailFile)
                             .file(file)
@@ -176,7 +176,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    multipart(PRODUCT_END_POINT + "/seller/register")
+                    multipart(ITEM_END_POINT + "/seller/register")
                             .file(request)
                             .file(thumbnailFile)
                             .file(file)
@@ -200,7 +200,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/seller/{itemId}", 1L)
+                    get(ITEM_END_POINT + "/seller/{itemId}", 1L)
                             .accept(MediaType.APPLICATION_JSON));
 
             // then
@@ -215,7 +215,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/seller/{itemId}", 1L)
+                    get(ITEM_END_POINT + "/seller/{itemId}", 1L)
                             .accept(MediaType.APPLICATION_JSON));
 
             // then
@@ -235,7 +235,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    delete(PRODUCT_END_POINT + "/seller/{itemId}", 1L)
+                    delete(ITEM_END_POINT + "/seller/{itemId}", 1L)
                             .accept(MediaType.APPLICATION_JSON));
 
             // then
@@ -250,7 +250,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    delete(PRODUCT_END_POINT + "/seller/{itemId}", 1L)
+                    delete(ITEM_END_POINT + "/seller/{itemId}", 1L)
                             .accept(MediaType.APPLICATION_JSON));
 
             // then
@@ -282,7 +282,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/search")
+                    get(ITEM_END_POINT + "/search")
                             .param("page", Integer.toString(page))
                             .param("size", Integer.toString(size))
                             .param("name", searchTitle)
@@ -313,7 +313,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/search")
+                    get(ITEM_END_POINT + "/search")
                             .param("page", Integer.toString(page))
                             .param("size", Integer.toString(size))
                             .param("name", searchTitle)
@@ -343,7 +343,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/search")
+                    get(ITEM_END_POINT + "/search")
                             .param("page", Integer.toString(page))
                             .param("size", Integer.toString(size))
                             .param("name", searchTitle)
@@ -367,7 +367,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/{itemId}", 1L)
+                    get(ITEM_END_POINT + "/{itemId}", 1L)
                             .accept(MediaType.APPLICATION_JSON));
 
             // then
@@ -381,7 +381,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/{itemId}", 1L)
+                    get(ITEM_END_POINT + "/{itemId}", 1L)
                             .accept(MediaType.APPLICATION_JSON));
 
             // then
@@ -411,7 +411,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT)
+                    get(ITEM_END_POINT)
                             .param("page", Integer.toString(page))
                             .param("size", Integer.toString(size))
                             .accept(MediaType.APPLICATION_JSON));
@@ -439,7 +439,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT)
+                    get(ITEM_END_POINT)
                             .param("page", Integer.toString(page))
                             .param("size", Integer.toString(size))
                             .param("categoryId", Long.toString(categoryId))
@@ -468,7 +468,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT)
+                    get(ITEM_END_POINT)
                             .param("page", Integer.toString(page))
                             .param("size", Integer.toString(size))
                             .param("categoryId", Long.toString(categoryId))
@@ -492,7 +492,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/count"));
+                    get(ITEM_END_POINT + "/count"));
 
             // then
             perform.andExpect(status().isOk());
@@ -519,7 +519,7 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions perform = mockMvc.perform(
-                    get(PRODUCT_END_POINT + "/search/count")
+                    get(ITEM_END_POINT + "/search/count")
                             .param("name", searchTitle));
 
             // then

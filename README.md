@@ -134,7 +134,7 @@
 
 # 2. ADDRESS
 
-# 3. PRODUCT
+# 3. ITEM
 
 # 4. CART
 

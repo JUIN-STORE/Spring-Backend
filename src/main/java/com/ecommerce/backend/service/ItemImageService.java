@@ -50,7 +50,7 @@ public class ItemImageService {
 
     public List<ItemImage> readAllByThumbnail(boolean isThumbnail) {
         return itemImageRepository.findByThumbnail(isThumbnail)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.PRODUCT_THUMBNAIL_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_THUMBNAIL_NOT_FOUND));
     }
 
     public List<ItemImage> readAllByItemId(List<Long> itemIdList) {

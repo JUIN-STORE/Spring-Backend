@@ -118,7 +118,7 @@ class ItemImageServiceTest {
                     assertThatThrownBy(() -> sut.readAllByThumbnail(true));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_THUMBNAIL_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ITEM_THUMBNAIL_NOT_FOUND);
         }
 
 
@@ -133,7 +133,7 @@ class ItemImageServiceTest {
                     assertThatThrownBy(() -> sut.readAllByThumbnail(false));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_THUMBNAIL_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ITEM_THUMBNAIL_NOT_FOUND);
         }
     }
 

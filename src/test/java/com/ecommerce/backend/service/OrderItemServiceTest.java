@@ -93,13 +93,13 @@ class OrderItemServiceTest {
         void readByOrderIdTest02() {
             // given
             var orderId = 3L;
-            given(mockOrderItemRepository.findByOrderId(orderId)).willThrow(new EntityNotFoundException(Msg.ORDER_PRODUCT_NOT_FOUND));
+            given(mockOrderItemRepository.findByOrderId(orderId)).willThrow(new EntityNotFoundException(Msg.ORDER_ITEM_NOT_FOUND));
 
             // when
             AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.readByOrderId(orderId));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ORDER_PRODUCT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ORDER_ITEM_NOT_FOUND);
         }
     }
 }

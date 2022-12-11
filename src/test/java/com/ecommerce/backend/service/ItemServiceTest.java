@@ -126,14 +126,14 @@ class ItemServiceTest {
         void readByIdTest02() {
             // given
             var itemId = 1L;
-            given(itemRepository.findById(anyLong())).willThrow(new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
+            given(itemRepository.findById(anyLong())).willThrow(new EntityNotFoundException(Msg.ITEM_NOT_FOUND));
 
             // when
             final AbstractThrowableAssert<?, ? extends Throwable> actual =
                     assertThatThrownBy(() -> sut.readById(itemId));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ITEM_NOT_FOUND);
         }
     }
 
@@ -169,7 +169,7 @@ class ItemServiceTest {
                     assertThatThrownBy(() -> sut.readAllByIdList(itemIdList));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ITEM_NOT_FOUND);
         }
     }
 
@@ -431,7 +431,7 @@ class ItemServiceTest {
                     assertThatThrownBy(() -> sut.remove(itemId));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ITEM_NOT_FOUND);
         }
     }
 

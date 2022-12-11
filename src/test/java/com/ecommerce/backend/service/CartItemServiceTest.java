@@ -128,7 +128,7 @@ class CartItemServiceTest {
                     assertThatThrownBy(() -> sut.readByCartId(cart.getId()));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_NOT_FOUND_IN_CART);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ITEM_NOT_FOUND_IN_CART);
         }
     }
 
@@ -245,7 +245,7 @@ class CartItemServiceTest {
                     assertThatThrownBy(() -> sut.modifyQuantity(account, request));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.CART_PRODUCT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.CART_ITEM_NOT_FOUND);
         }
     }
 
