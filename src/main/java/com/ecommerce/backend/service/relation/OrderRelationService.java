@@ -2,7 +2,7 @@ package com.ecommerce.backend.service.relation;
 
 import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.response.OrderResponse;
-import com.ecommerce.backend.service.OrderProductService;
+import com.ecommerce.backend.service.OrderItemService;
 import com.ecommerce.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderRelationService {
     private final OrderService orderService;
-    private final OrderProductService orderProductService;
+    private final OrderItemService orderItemService;
 
     public OrderResponse.Delete remove(Long accountId) {
         final List<Order> orderList = orderService.readByAccountId(accountId);
         final List<Long> orderIdList = orderList.stream().map(Order::getId).collect(Collectors.toList());
-        long orderProductDeleteCount = orderProductService.removeByOrderIdList(orderIdList);
+        long orderItemDeleteCount = orderItemService.removeByOrderIdList(orderIdList);
         long ordersDeleteCount = orderService.removeByAccountId(accountId);
 
-        return OrderResponse.Delete.of(ordersDeleteCount, orderProductDeleteCount);
+        return OrderResponse.Delete.of(ordersDeleteCount, orderItemDeleteCount);
     }
 }

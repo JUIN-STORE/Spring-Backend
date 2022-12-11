@@ -51,13 +51,13 @@ class AccountServiceTest {
     @Mock
     private CartService mockCartService;
     @Mock
-    private CartProductService mockCartProductService;
+    private CartItemService mockCartItemService;
     @Mock
     private DeliveryService mockDeliveryService;
     @Mock
     private OrderService mockOrderService;
     @Mock
-    private OrderProductService mockOrderProductService;
+    private OrderItemService mockOrderItemService;
 
     @Nested
     @DisplayName("duplicateEmail 테스트")

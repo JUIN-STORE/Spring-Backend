@@ -2,7 +2,7 @@ package com.ecommerce.backend.service.relation;
 
 import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.response.OrderResponse;
-import com.ecommerce.backend.service.OrderProductService;
+import com.ecommerce.backend.service.OrderItemService;
 import com.ecommerce.backend.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,7 +25,7 @@ class OrderRelationServiceTest {
     private OrderService orderService;
 
     @Mock
-    private OrderProductService orderProductService;
+    private OrderItemService orderItemService;
 
     @InjectMocks
     private OrderRelationService sut;
@@ -43,7 +43,7 @@ class OrderRelationServiceTest {
             orderList.add(new Order());
 
             given(orderService.readByAccountId(accountId)).willReturn(orderList);
-            given(orderProductService.removeByOrderIdList(anyList())).willReturn(expected);
+            given(orderItemService.removeByOrderIdList(anyList())).willReturn(expected);
             given(orderService.removeByAccountId(accountId)).willReturn(expected);
 
             // when
@@ -51,7 +51,7 @@ class OrderRelationServiceTest {
 
             // then
             assertAll(
-                    () -> assertEquals(expected, actual.getOrderProductDeletedCount()),
+                    () -> assertEquals(expected, actual.getOrderItemDeletedCount()),
                     () -> assertEquals(expected, actual.getOrdersDeletedCount())
             );
         }

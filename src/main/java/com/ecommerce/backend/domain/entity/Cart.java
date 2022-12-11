@@ -26,7 +26,7 @@ public class Cart extends BaseEntity{
 //    @Setter
 //    @Builder.Default
 //    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
-//    private List<Product> productList = new ArrayList<>();
+//    private List<Item> itemList = new ArrayList<>();
 
     public void fillAccount(Account account) {
         this.account = account;

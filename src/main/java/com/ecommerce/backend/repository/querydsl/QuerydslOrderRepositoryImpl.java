@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ecommerce.backend.domain.entity.QItem.item;
 import static com.ecommerce.backend.domain.entity.QOrder.order;
-import static com.ecommerce.backend.domain.entity.QOrderProduct.orderProduct;
-import static com.ecommerce.backend.domain.entity.QProduct.product;
+import static com.ecommerce.backend.domain.entity.QOrderItem.orderItem;
 
 
 @RequiredArgsConstructor
@@ -35,28 +35,28 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
     }
 
     @Override
-    public Optional<Page<OrderJoinResponse>> findOrderJoinOrderProductJoinProductByAccountId(Long accountId,
+    public Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemByAccountId(Long accountId,
                                                                                              OrderRequest.Read request,
                                                                                              Pageable pageable) {
         // FIXME: 더 좋은 방법 있으면 변경하기
         List<OrderJoinResponse> orderJoinResponseList = queryFactory
                 .select(Projections.fields(OrderJoinResponse.class
                                 , order.orderDate
-                                , orderProduct.orderCount
-                                , product.id.as("productId")
-                                , product.price
-                                , product.productName
+                                , orderItem.orderCount
+                                , item.id.as("itemId")
+                                , item.price
+                                , item.name
                                 , order.id.as("ordersId")
-                                , orderProduct.product.id.as("orderProductId")
+                                , orderItem.item.id.as("orderItemId")
                                 , order.delivery.id.as("deliveryId")
                                 , order.orderStatus
                         )
                 )
                 .from(order)
-                .join(orderProduct)
-                .on(order.id.eq(orderProduct.order.id))
-                .join(product)
-                .on(product.id.eq(orderProduct.product.id))
+                .join(orderItem)
+                .on(order.id.eq(orderItem.order.id))
+                .join(item)
+                .on(item.id.eq(orderItem.item.id))
                 .where(order.account.id.eq(accountId),
                         orderDateBetween(
                                 request.getStartDate().atStartOfDay(),
@@ -68,14 +68,14 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return Optional.of(new PageImpl<>(orderJoinResponseList, pageable, countOrderProduct(accountId, request)));
+        return Optional.of(new PageImpl<>(orderJoinResponseList, pageable, countOrderItem(accountId, request)));
     }
 
-    private Long countOrderProduct(Long accountId, OrderRequest.Read request) {
+    private Long countOrderItem(Long accountId, OrderRequest.Read request) {
         return queryFactory.select(Wildcard.count)
                 .from(order)
-                .join(orderProduct)
-                .on(order.id.eq(orderProduct.order.id))
+                .join(orderItem)
+                .on(order.id.eq(orderItem.order.id))
                 .where(order.account.id.eq(accountId),
                         orderDateBetween(
                                 request.getStartDate().atStartOfDay(),

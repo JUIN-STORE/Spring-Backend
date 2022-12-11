@@ -39,10 +39,10 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
-    // 읽기 전용 -> addOrderProduct 만들어야 됨.
+    // 읽기 전용 -> addOrderItem 만들어야 됨.
     @Builder.Default
     @OneToMany(mappedBy = "order",  fetch = FetchType.LAZY)
-    private List<OrderProduct> orderProductList = new ArrayList<>();
+    private List<OrderItem> orderItemList = new ArrayList<>();
 
     // 연관관계 주인 -> Account 쓰기 전용
     public void fillAccountRelation(Account account) {
@@ -59,13 +59,13 @@ public class Order extends BaseEntity {
     }
     
     // 읽기 전용
-    public void addOrderProduct(OrderProduct orderProduct) {
-        orderProductList.add(orderProduct);
-        orderProduct.fillOrderRelation(this);
+    public void addOrderItem(OrderItem orderItem) {
+        orderItemList.add(orderItem);
+        orderItem.fillOrderRelation(this);
     }
 
     // 연관관계에 있는 객체들 파라미터로 받기
-    public static Order createOrder(Account account, Delivery delivery, List<OrderProduct> orderProductList) {
+    public static Order createOrder(Account account, Delivery delivery, List<OrderItem> orderItemList) {
         Order order = Order.builder()
                 .account(account)
                 .delivery(delivery)
@@ -73,7 +73,7 @@ public class Order extends BaseEntity {
                 .orderDate(LocalDateTime.now())
                 .build();
 
-        orderProductList.forEach(order::addOrderProduct);
+        orderItemList.forEach(order::addOrderItem);
         return order;
     }
 
@@ -83,7 +83,7 @@ public class Order extends BaseEntity {
             throw new AlreadyDeliveryException(Msg.ORDER_ALREADY_DELIVERY);
 
         this.orderStatus = OrderStatus.CANCEL;
-        for(OrderProduct orderItem : orderProductList){
+        for(OrderItem orderItem : orderItemList){
             orderItem.cancel();
         }
     }
@@ -91,8 +91,8 @@ public class Order extends BaseEntity {
     //  전체 주문 가격 조회
     public int getGrandTotal(){
         int totalPrice  = 0;
-        for(OrderProduct orderProduct : orderProductList){
-            totalPrice += orderProduct.getOrderPrice();
+        for(OrderItem orderItem : orderItemList){
+            totalPrice += orderItem.getOrderPrice();
         }
         return totalPrice;
     }

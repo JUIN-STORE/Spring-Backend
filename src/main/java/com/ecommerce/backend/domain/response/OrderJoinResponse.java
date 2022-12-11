@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 public class OrderJoinResponse {
     private Long ordersId;
 
-    private Long orderProductId;
+    private Long orderItemId;
 
-    private Long productId;
+    private Long itemId;
 
     private Long deliveryId;
 
@@ -19,7 +19,7 @@ public class OrderJoinResponse {
 
     private int price;
 
-    private String productName;
+    private String name;
 
     private LocalDateTime orderDate;
 

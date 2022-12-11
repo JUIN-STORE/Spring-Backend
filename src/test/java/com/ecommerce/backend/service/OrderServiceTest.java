@@ -46,10 +46,10 @@ class OrderServiceTest {
     private AddressService mockAddressService;
 
     @Mock
-    private ProductService mockProductService;
+    private ItemService mockItemService;
 
     @Mock
-    private OrderProductService mockOrderProductService;
+    private OrderItemService mockOrderItemService;
 
     @Mock
     private DeliveryService mockDeliveryService;
@@ -74,7 +74,7 @@ class OrderServiceTest {
             orderJoinResponseList.add(new OrderJoinResponse());
             var responsePage = new PageImpl<>(orderJoinResponseList);
 
-            given(mockOrderRepository.findOrderJoinOrderProductJoinProductByAccountId(account.getId(), request, pageRequest))
+            given(mockOrderRepository.findOrderJoinOrderItemJoinItemByAccountId(account.getId(), request, pageRequest))
                     .willReturn(Optional.of(responsePage));
 
             // when
@@ -93,33 +93,33 @@ class OrderServiceTest {
         void addOrderTest01() {
             // given
             var account = getAccount();
-            var productIdList = new ArrayList<Long>();
-            productIdList.add(1L);
+            var itemIdList = new ArrayList<Long>();
+            itemIdList.add(1L);
 
-            var productList = new ArrayList<Product>();
-            var product = Product.builder()
+            var itemList = new ArrayList<Item>();
+            var item = Item.builder()
                     .id(1L)
-                    .productName("productName")
+                    .name("name")
                     .price(10000)
                     .quantity(1)
                     .soldCount(1)
                     .build();
-            productList.add(product);
+            itemList.add(item);
 
             var request = new OrderRequest.Create()
                     .setCount(1)
                     .setDeliveryAddress(new AddressRequest.Register().setDefaultAddress(true))
                     .setDeliveryReceiver(new DeliveryRequest.Receiver())
                     .setOrderStatus(OrderStatus.ORDER)
-                    .setProductIdList(productIdList);
+                    .setItemIdList(itemIdList);
 
             var address = new Address();
             var order = new Order();
 
             given(mockAddressService.readByAccountIdAndDefaultAddress(account.getId())).willReturn(address);
             willDoNothing().given(mockDeliveryService).add(any());
-            given(mockProductService.readAllByIdList(anyList())).willReturn(productList);
-            willDoNothing().given(mockOrderProductService).add(any());
+            given(mockItemService.readAllByIdList(anyList())).willReturn(itemList);
+            willDoNothing().given(mockOrderItemService).add(any());
             given(mockOrderRepository.save(any())).willReturn(order);
 
             // when
@@ -128,7 +128,7 @@ class OrderServiceTest {
             // then
             verify(mockAddressService, times(1)).readByAccountIdAndDefaultAddress(account.getId());
             verify(mockDeliveryService, times(1)).add(any());
-            verify(mockProductService, times(1)).readAllByIdList(anyList());
+            verify(mockItemService, times(1)).readAllByIdList(anyList());
             verify(mockOrderRepository, times(1)).save(any());
         }
 
@@ -137,33 +137,33 @@ class OrderServiceTest {
         void addOrderTest02() {
             // given
             var account = getAccount();
-            var productIdList = new ArrayList<Long>();
-            productIdList.add(1L);
+            var itemIdList = new ArrayList<Long>();
+            itemIdList.add(1L);
 
-            var productList = new ArrayList<Product>();
-            var product = Product.builder()
+            var itemList = new ArrayList<Item>();
+            var item = Item.builder()
                     .id(1L)
-                    .productName("productName")
+                    .name("name")
                     .price(10000)
                     .quantity(1)
                     .soldCount(1)
                     .build();
-            productList.add(product);
+            itemList.add(item);
 
             var request = new OrderRequest.Create()
                     .setCount(1)
                     .setDeliveryAddress(new AddressRequest.Register().setDefaultAddress(false))
                     .setDeliveryReceiver(new DeliveryRequest.Receiver())
                     .setOrderStatus(OrderStatus.ORDER)
-                    .setProductIdList(productIdList);
+                    .setItemIdList(itemIdList);
 
             var address = new Address();
             var order = new Order();
 
             given(mockAddressService.addIfNull(account, request.getDeliveryAddress())).willReturn(address);
             willDoNothing().given(mockDeliveryService).add(any());
-            given(mockProductService.readAllByIdList(anyList())).willReturn(productList);
-            willDoNothing().given(mockOrderProductService).add(any());
+            given(mockItemService.readAllByIdList(anyList())).willReturn(itemList);
+            willDoNothing().given(mockOrderItemService).add(any());
             given(mockOrderRepository.save(any())).willReturn(order);
 
             // when
@@ -172,7 +172,7 @@ class OrderServiceTest {
             // then
             verify(mockAddressService, times(1)).addIfNull(account, request.getDeliveryAddress());
             verify(mockDeliveryService, times(1)).add(any());
-            verify(mockProductService, times(1)).readAllByIdList(anyList());
+            verify(mockItemService, times(1)).readAllByIdList(anyList());
             verify(mockOrderRepository, times(1)).save(any());
         }
 
@@ -181,15 +181,15 @@ class OrderServiceTest {
         void addOrderTest03() {
             // given
             var account = getAccount();
-            var productIdList = new ArrayList<Long>();
-            productIdList.add(1L);
+            var itemIdList = new ArrayList<Long>();
+            itemIdList.add(1L);
 
             var request = new OrderRequest.Create()
                     .setCount(1)
                     .setDeliveryAddress(null)
                     .setDeliveryReceiver(new DeliveryRequest.Receiver())
                     .setOrderStatus(OrderStatus.ORDER)
-                    .setProductIdList(productIdList);
+                    .setItemIdList(itemIdList);
 
             // when
             AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.addOrder(account, request));
@@ -203,15 +203,15 @@ class OrderServiceTest {
         void addOrderTest04() {
             // given
             var account = getAccount();
-            var productIdList = new ArrayList<Long>();
-            productIdList.add(1L);
+            var itemIdList = new ArrayList<Long>();
+            itemIdList.add(1L);
 
             var request = new OrderRequest.Create()
                     .setCount(1)
                     .setDeliveryAddress(new AddressRequest.Register())
                     .setDeliveryReceiver(null)
                     .setOrderStatus(OrderStatus.ORDER)
-                    .setProductIdList(productIdList);
+                    .setItemIdList(itemIdList);
 
             // when
             AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.addOrder(account, request));
@@ -225,18 +225,18 @@ class OrderServiceTest {
         void addOrderTest05() {
             // given
             var account = getAccount();
-            var productIdList = new ArrayList<Long>();
-            productIdList.add(1L);
+            var itemIdList = new ArrayList<Long>();
+            itemIdList.add(1L);
 
-            var productList = new ArrayList<Product>();
-            var product = Product.builder()
+            var itemList = new ArrayList<Item>();
+            var item = Item.builder()
                     .id(1L)
-                    .productName("productName")
+                    .name("name")
                     .price(10000)
                     .quantity(0)
                     .soldCount(1)
                     .build();
-            productList.add(product);
+            itemList.add(item);
 
 
             var request = new OrderRequest.Create()
@@ -244,14 +244,14 @@ class OrderServiceTest {
                     .setDeliveryAddress(new AddressRequest.Register().setDefaultAddress(true))
                     .setDeliveryReceiver(new DeliveryRequest.Receiver())
                     .setOrderStatus(OrderStatus.ORDER)
-                    .setProductIdList(productIdList);
+                    .setItemIdList(itemIdList);
 
             var address = new Address();
-            var restQuantity = product.getQuantity() - request.getCount();
+            var restQuantity = item.getQuantity() - request.getCount();
 
             given(mockAddressService.readByAccountIdAndDefaultAddress(account.getId())).willReturn(address);
             willDoNothing().given(mockDeliveryService).add(any());
-            given(mockProductService.readAllByIdList(anyList())).willReturn(productList);
+            given(mockItemService.readAllByIdList(anyList())).willReturn(itemList);
 
             // when
             AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.addOrder(account, request));

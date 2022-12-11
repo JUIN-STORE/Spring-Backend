@@ -30,12 +30,12 @@ public class OrderResponse {
     @Accessors(chain = true)
     public static class Delete {
         private long ordersDeletedCount;
-        private long orderProductDeletedCount;
+        private long orderItemDeletedCount;
 
-        public static Delete of(long ordersDeleteCount, long orderProductDeleteCount) {
+        public static Delete of(long ordersDeleteCount, long orderItemDeleteCount) {
             return new Delete()
                     .setOrdersDeletedCount(ordersDeleteCount)
-                    .setOrderProductDeletedCount(orderProductDeleteCount);
+                    .setOrderItemDeletedCount(orderItemDeleteCount);
         }
     }
 }
