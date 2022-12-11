@@ -8,24 +8,20 @@ public class CartProductResponse {
     @Data
     @Accessors(chain = true)
     public static class Read {
+        // cart
         private Long productId;
-
-        private String productName;             // 제품의 이름
-
-        private Integer price;                  // 제품의 가격
-
         private Integer count;                  // 카트 안에 들어 있는 제품의 총 개수
 
+        // product
+        private String productName;             // 제품의 이름
+        private Integer price;                  // 제품의 가격
         private String description;             // 제품 설명
 
+        // productImageResponse
         private String imageName;               // 이미지 파일명
-
         private String originImageName;         // 원본 이미지 파일명
-
         private String imageUrl;                // 이미지 조회 경로
-
         private Boolean thumbnail;              // 썸네일 여부
-
     }
 
     @Data
@@ -65,15 +61,15 @@ public class CartProductResponse {
 
         private ProductImageResponse.Buy productImage;
 
-        public static CartProductResponse.Buy from(Read read) {
-            ProductResponse.Buy productResponse = new ProductResponse.Buy()
+        public static CartProductResponse.Buy from(CartProductResponse.Read read) {
+            var productResponse = new ProductResponse.Buy()
                     .setProductId(read.getProductId())
                     .setProductName(read.getProductName())
                     .setPrice(read.getPrice())
                     .setDescription(read.getDescription());
 
-            ProductImageResponse.Buy productImageResponse
-                    = new ProductImageResponse.Buy().setImageUrl(read.getImageUrl())
+            var productImageResponse = new ProductImageResponse.Buy()
+                    .setImageUrl(read.getImageUrl())
                     .setImageName(read.getImageName())
                     .setOriginImageName(read.getOriginImageName())
                     .setThumbnail(read.getThumbnail());
