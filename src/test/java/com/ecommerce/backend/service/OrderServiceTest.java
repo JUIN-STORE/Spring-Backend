@@ -118,7 +118,7 @@ class OrderServiceTest {
 
             given(mockAddressService.readByAccountIdAndDefaultAddress(account.getId())).willReturn(address);
             willDoNothing().given(mockDeliveryService).add(any());
-            given(mockProductService.readByIdList(anyList())).willReturn(productList);
+            given(mockProductService.readAllByIdList(anyList())).willReturn(productList);
             willDoNothing().given(mockOrderProductService).add(any());
             given(mockOrderRepository.save(any())).willReturn(order);
 
@@ -128,7 +128,7 @@ class OrderServiceTest {
             // then
             verify(mockAddressService, times(1)).readByAccountIdAndDefaultAddress(account.getId());
             verify(mockDeliveryService, times(1)).add(any());
-            verify(mockProductService, times(1)).readByIdList(anyList());
+            verify(mockProductService, times(1)).readAllByIdList(anyList());
             verify(mockOrderRepository, times(1)).save(any());
         }
 
@@ -162,7 +162,7 @@ class OrderServiceTest {
 
             given(mockAddressService.addIfNull(account, request.getDeliveryAddress())).willReturn(address);
             willDoNothing().given(mockDeliveryService).add(any());
-            given(mockProductService.readByIdList(anyList())).willReturn(productList);
+            given(mockProductService.readAllByIdList(anyList())).willReturn(productList);
             willDoNothing().given(mockOrderProductService).add(any());
             given(mockOrderRepository.save(any())).willReturn(order);
 
@@ -172,7 +172,7 @@ class OrderServiceTest {
             // then
             verify(mockAddressService, times(1)).addIfNull(account, request.getDeliveryAddress());
             verify(mockDeliveryService, times(1)).add(any());
-            verify(mockProductService, times(1)).readByIdList(anyList());
+            verify(mockProductService, times(1)).readAllByIdList(anyList());
             verify(mockOrderRepository, times(1)).save(any());
         }
 
@@ -251,7 +251,7 @@ class OrderServiceTest {
 
             given(mockAddressService.readByAccountIdAndDefaultAddress(account.getId())).willReturn(address);
             willDoNothing().given(mockDeliveryService).add(any());
-            given(mockProductService.readByIdList(anyList())).willReturn(productList);
+            given(mockProductService.readAllByIdList(anyList())).willReturn(productList);
 
             // when
             AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.addOrder(account, request));

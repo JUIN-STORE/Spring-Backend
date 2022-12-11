@@ -58,7 +58,7 @@ public class OrderService {
         deliveryService.add(delivery); // update product 쿼리 날아감. (오류)
 
         final List<Long> productIdList = request.getProductIdList();
-        List<Product> productList = productService.readByIdList(productIdList);
+        List<Product> productList = productService.readAllByIdList(productIdList);
 
         final List<OrderProduct> orderProductList = new ArrayList<>();
         for (Product product : productList) {

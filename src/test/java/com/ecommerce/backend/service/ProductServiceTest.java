@@ -23,13 +23,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -53,10 +53,10 @@ class ProductServiceTest {
     private ProductCategoryService productCategoryService;
 
     @Nested
-    @DisplayName("상품 등록 테스트")
+    @DisplayName("add 테스트")
     class AddTest {
         @Test
-        @DisplayName("성공")
+        @DisplayName("상품 추가 성공")
         void addTest01() throws IOException {
             // given
             var multipartFileList = new ArrayList<MultipartFile>();
@@ -65,14 +65,9 @@ class ProductServiceTest {
             multipartFileList.add(new MockMultipartFile("name", new byte[0]));
 
             var category = new Category();
-            var request = new ProductRequest.Create()
-                    .setCategoryId(1L)
-                    .setDescription("description")
-                    .setPrice(10000)
-                    .setProductName("productName")
-                    .setQuantity(1);
+            var request = makeProductRequest(1L);
 
-            var product = getProduct();
+            var product = makeProduct(1L);
 
             given(categoryService.readById(anyLong())).willReturn(category);
             willDoNothing().given(productCategoryService).add(any(), any());
@@ -80,7 +75,7 @@ class ProductServiceTest {
             willDoNothing().given(productImageService).add(any(), any(), any());
 
             // when
-            sut.add(request,thumbnailFile, multipartFileList);
+            sut.add(request, thumbnailFile, multipartFileList);
 
             // then
             verify(productRepository, times(1)).save(any());
@@ -94,17 +89,13 @@ class ProductServiceTest {
             var multipartFileList = new ArrayList<MultipartFile>();
             multipartFileList.add(new MockMultipartFile("name", new byte[0]));
 
-            var request = new ProductRequest.Create()
-                    .setCategoryId(1L)
-                    .setDescription("description")
-                    .setPrice(10000)
-                    .setProductName("productName")
-                    .setQuantity(1);
+            var request = makeProductRequest(2L);
 
-            given(categoryService.readById(1L)).willThrow(new EntityNotFoundException(Msg.CATEGORY_NOT_FOUND));
+            given(categoryService.readById(anyLong())).willThrow(new EntityNotFoundException(Msg.CATEGORY_NOT_FOUND));
 
             // when
-            AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.add(request, thumbnailFile, multipartFileList));
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
+                    assertThatThrownBy(() -> sut.add(request, thumbnailFile, multipartFileList));
 
             // then
             actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.CATEGORY_NOT_FOUND);
@@ -112,14 +103,14 @@ class ProductServiceTest {
     }
 
     @Nested
-    @DisplayName("상품 조회 테스트")
-    class ReadByProductIdTest {
+    @DisplayName("readById 테스트")
+    class ReadByIdTest {
         @Test
-        @DisplayName("성공")
-        public void readByProductIdTest01() {
+        @DisplayName("productId로 읽기 성공")
+        void readByIdTest01() {
             // given
             var productId = 1L;
-            var product = getProduct();
+            var product = makeProduct(productId);
 
             given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
 
@@ -132,13 +123,14 @@ class ProductServiceTest {
 
         @Test
         @DisplayName("존재하지 않는 상품")
-        public void readByProductIdTest02() {
+        void readByIdTest02() {
             // given
             var productId = 1L;
             given(productRepository.findById(anyLong())).willThrow(new EntityNotFoundException(Msg.PRODUCT_NOT_FOUND));
 
             // when
-            AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.readById(productId));
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
+                    assertThatThrownBy(() -> sut.readById(productId));
 
             // then
             actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_NOT_FOUND);
@@ -146,210 +138,321 @@ class ProductServiceTest {
     }
 
     @Nested
-    @DisplayName("상품 아이디 리스트로 상품 리스트 조회")
-    class ReadByIdListTest {
+    @DisplayName("readAllByIdList 테스트")
+    class ReadAllByIdListTest {
         @Test
-        @DisplayName("성공")
-        public void readByIdListTest01() {
+        @DisplayName("상품 리스트가 하나 이상일 때")
+        void ReadAllByIdListTest01() {
             // given
-            var productId = 1L;
-            var productIdList = new ArrayList<Long>();
-            productIdList.add(productId);
+            var productIdList = List.of(1L, 2L);
+            var productList = List.of(makeProduct(1L), makeProduct(2L));
 
-            var product = getProduct();
-
-            var productList = new ArrayList<Product>();
-            productList.add(product);
-
-            given(productRepository.findByIdIn(productIdList)).willReturn(Optional.of(productList));
+            given(productRepository.findAllByIdIn(productIdList)).willReturn(Optional.of(productList));
 
             // when
-            List<Product> actual = sut.readByIdList(productIdList);
+            final List<Product> actual = sut.readAllByIdList(productIdList);
 
             // then
             assertEquals(productList, actual);
         }
-    }
-
-    @Nested
-    @DisplayName("상품 삭제 테스트")
-    class RemoveTest {
-        @Test
-        @DisplayName("성공")
-        public void removeTest01() {
-            // given
-            var productId = 1L;
-            var product = getProduct();
-            given(productRepository.findById(productId)).willReturn(Optional.of(product));
-
-            // when
-            Long actual = sut.remove(productId);
-
-            // then
-            assertEquals(productId, actual);
-            verify(productRepository, times(1)).findById(anyLong());
-            assertEquals(product.getProductStatus(), ProductStatus.SOLD_OUT);
-        }
 
         @Test
-        @DisplayName("존재하지 않는 상품")
-        public void removeTest02() {
+        @DisplayName("상품 리스트가 하나도 없을 때")
+        void ReadAllByIdListTest02() {
             // given
-            var productId = 1L;
-            given(productRepository.findById(productId)).willReturn(Optional.empty());
+            var productIdList = List.of(1L, 2L);
+
+            given(productRepository.findAllByIdIn(anyList())).willReturn(Optional.empty());
 
             // when
-            AbstractThrowableAssert<?, ? extends Throwable> actual = assertThatThrownBy(() -> sut.remove(productId));
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
+                    assertThatThrownBy(() -> sut.readAllByIdList(productIdList));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class)
-                    .hasMessage(Msg.PRODUCT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_NOT_FOUND);
         }
     }
 
     @Nested
-    @DisplayName("상품 목록 조회")
-    class ReadTest {
+    @DisplayName("readAll 테스트")
+    class ReadAllTest {
         @Test
-        @DisplayName("전체 읽기 성공")
-        public void readTest01() {
+        @DisplayName("등록된 모든 상품 읽기 성공")
+        void readAllTest01() {
             // given
             var page = 0;
             var size = 10;
             var pageRequest = PageRequest.of(page, size);
 
-            var productList = new ArrayList<Product>();
-            var product = getProduct();
-            productList.add(product);
+            var productId = 33L;
+            var productList = List.of(makeProduct(productId));
 
             var productPage = new PageImpl<>(productList, pageRequest, productList.size());
 
             given(productRepository.findAll(pageRequest)).willReturn(productPage);
 
             // when
-            Page<Product> actual = sut.read(pageRequest, null);
+            final Page<Product> actual = sut.readAll(pageRequest);
 
             // then
             assertEquals(productPage, actual);
         }
 
         @Test
-        @DisplayName("카테고리 내 상품 읽기 성공")
-        public void readTest02() {
+        @DisplayName("상품이 하나도 없을 때")
+        void readAllTest02() {
+            // given
+            var page = 0;
+            var size = 10;
+            var pageRequest = PageRequest.of(page, size);
+
+            var expected = makeEmptyPageProduct();
+            given(productRepository.findAll(pageRequest)).willReturn(expected);
+
+            // when
+            final Page<Product> actual = sut.readAll(pageRequest);
+
+            // then
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Nested
+    @DisplayName("readAllByCategoryId 테스트")
+    class ReadAllByCategoryIdTest{
+        @Test
+        @DisplayName("카테고리 내에서 전체 상품 읽기 성공")
+        void readAllByCategoryIdTest01() {
             // given
             var categoryId = 1L;
             var page = 0;
             var size = 10;
             var pageRequest = PageRequest.of(page, size);
 
-            var productList = new ArrayList<Product>();
-            var product = getProduct();
-            productList.add(product);
+            var productId = 342L;
+            var productList = List.of(makeProduct(productId));
 
             var productPage = new PageImpl<>(productList, pageRequest, productList.size());
 
-            given(productRepository.findByCategoryId(pageRequest, categoryId)).willReturn(productPage);
+            given(productRepository.findAllByCategoryId(pageRequest, categoryId)).willReturn(productPage);
 
             // when
-            Page<Product> actual = sut.read(pageRequest, categoryId);
+            final Page<Product> actual = sut.readAllByCategoryId(pageRequest, categoryId);
 
             // then
             assertEquals(productPage, actual);
         }
+
+        @Test
+        @DisplayName("카테고리 내에 상품이 하나도 없을 때")
+        void readAllByCategoryIdTest02() {
+            // given
+            var categoryId = 9L;
+            var page = 0;
+            var size = 10;
+            var pageRequest = PageRequest.of(page, size);
+
+            var expected = makeEmptyPageProduct();
+            given(productRepository.findAllByCategoryId(pageRequest, categoryId)).willReturn(expected);
+
+            // when
+            final Page<Product> actual = sut.readAllByCategoryId(pageRequest, categoryId);
+
+            // then
+            assertEquals(expected, actual);
+        }
     }
 
     @Nested
-    @DisplayName("상품 목록 개수 세기")
-    class ReadCountTest {
+    @DisplayName("readAllByProductNameContaining 테스트")
+    class ReadAllByProductNameContainingTest {
         @Test
-        @DisplayName("성공")
-        public void readCountTest() {
+        @DisplayName("카테고리와 무관하게 검색어로 검색 성공")
+        void readAllByProductNameContainingTest01() {
+            // given
+            var page = 0;
+            var size = 10;
+            var pageRequest = PageRequest.of(page, size);
+            var productName = "productName01";
+            var productId = 912L;
+
+            var productList = List.of(makeProduct(productId));
+            var productPage = new PageImpl<>(productList, pageRequest, productList.size());
+
+            given(productRepository.findAllByProductNameContaining(pageRequest, productName)).willReturn(productPage);
+
+            // when
+            final Page<Product> actual = sut.readAllByProductNameContaining(pageRequest, productName);
+
+            // then
+            assertEquals(productPage, actual);
+        }
+
+        @Test
+        @DisplayName("카테고리와 무관하게 검색 실패")
+        void readAllByProductNameContainingTest02() {
+            // given
+            var page = 0;
+            var size = 10;
+            var pageRequest = PageRequest.of(page, size);
+            var productName = "productName01";
+
+            var expected = makeEmptyPageProduct();
+
+            given(productRepository.findAllByProductNameContaining(pageRequest, productName)).willReturn(expected);
+
+            // when
+            final Page<Product> actual = sut.readAllByProductNameContaining(pageRequest, productName);
+
+            // then
+            assertEquals(expected, actual);
+        }
+    }
+
+
+    @Nested
+    @DisplayName("readAllByProductNameContainingAndCategoryId 테스트")
+    class ReadAllByProductNameContainingAndCategoryId {
+        @Test
+        @DisplayName("카테고리 안에서 검색 성공")
+        void readAllByProductNameContainingTest01() {
+            // given
+            var page = 0;
+            var size = 10;
+            var categoryId = 2L;
+            var pageRequest = PageRequest.of(page, size);
+            var productName = "productName07";
+
+            var productList = List.of(makeProduct(33L), makeProduct(44L));
+
+            var productPage = new PageImpl<>(productList, pageRequest, productList.size());
+            given(productRepository.findAllByProductNameContainingAndCategoryId(pageRequest, productName, categoryId))
+                    .willReturn(productPage);
+
+            // when
+            final Page<Product> actual =
+                    sut.readAllByProductNameContainingAndCategoryId(pageRequest, productName, categoryId);
+
+            // then
+            assertEquals(productPage, actual);
+        }
+
+        @Test
+        @DisplayName("카테고리 안에서 검색 실패")
+        void readAllByProductNameContainingTest02() {
+            // given
+            var page = 0;
+            var size = 10;
+            var categoryId = 2L;
+            var pageRequest = PageRequest.of(page, size);
+            var productName = "productName9999";
+
+            var expected = makeEmptyPageProduct();
+
+            given(productRepository.findAllByProductNameContainingAndCategoryId(pageRequest, productName, categoryId))
+                    .willReturn(expected);
+
+            // when
+            final Page<Product> actual =
+                    sut.readAllByProductNameContainingAndCategoryId(pageRequest, productName, categoryId);
+
+            // then
+            assertEquals(expected, actual);
+        }
+    }
+
+
+    @Nested
+    @DisplayName("total 테스트")
+    class TotalTest {
+        @Test
+        @DisplayName("전체 상품 카운팅하기")
+        void totalTest01() {
             // given
             var count = 10L;
             given(productRepository.count()).willReturn(count);
 
             // when
-            Long actual = sut.readCount();
+            final Long actual = sut.total();
 
             // then
             assertEquals(count, actual);
         }
     }
 
-    @Nested
-    @DisplayName("검색")
-    class SearchTest {
-        @Test
-        @DisplayName("검색어로 검색하기 성공")
-        public void searchTest01() {
-            // given
-            var page = 0;
-            var size = 10;
-            var pageRequest = PageRequest.of(page, size);
-            var productName = "productName";
-
-            var productList = new ArrayList<Product>();
-            var product = getProduct();
-            productList.add(product);
-
-            var productPage = new PageImpl<>(productList, pageRequest, productList.size());
-            given(productRepository.findByProductNameContaining(pageRequest, productName)).willReturn(productPage);
-
-            // when
-            Page<Product> actual = sut.search(pageRequest, productName, null);
-
-            // then
-            assertEquals(productPage, actual);
-        }
-
-
-        @Test
-        @DisplayName("카테고리 아이디로 검색하기 성공")
-        public void searchTest02() {
-            // given
-            var page = 0;
-            var size = 10;
-            var categoryId = 1L;
-            var pageRequest = PageRequest.of(page, size);
-            var productName = "productName";
-
-            var productList = new ArrayList<Product>();
-            var product = getProduct();
-            productList.add(product);
-
-            var productPage = new PageImpl<>(productList, pageRequest, productList.size());
-            given(productRepository.findByProductNameContainingAndCategoryId(pageRequest, productName, categoryId)).willReturn(productPage);
-
-            // when
-            Page<Product> actual = sut.search(pageRequest, productName, categoryId);
-
-            // then
-            assertEquals(productPage, actual);
-        }
-    }
 
     @Nested
-    @DisplayName("검색 상품 개수 세기")
-    class ReadSearchCountTest {
+    @DisplayName("totalByProductNameContaining 테스트")
+    class TotalByProductNameContainingTest {
         @Test
-        @DisplayName("카테고리 아이디로 검색 상품 개수 세기")
-        public void readSearchCountTest01() {
+        @DisplayName("카테고리 아이디로 검색한 상품의 개수 세기")
+        void readSearchCountTest01() {
             // given
             var count = 1L;
             var searchTitle = "searchTitle";
             given(productRepository.countByProductNameContaining(searchTitle)).willReturn(count);
 
             // when
-            Long actual = sut.readSearchCount(searchTitle);
+            final Long actual = sut.totalByProductNameContaining(searchTitle);
 
             // then
             assertEquals(count, actual);
         }
     }
 
-    private static Product getProduct() {
+
+    @Nested
+    @DisplayName("remove Test")
+    class RemoveTest {
+        @Test
+        @DisplayName("상품 삭제 성공")
+        void removeTest01() {
+            // given
+            var productId = 11L;
+            var product = makeProduct(productId);
+            given(productRepository.findById(productId)).willReturn(Optional.of(product));
+
+            // when
+            final Long actual = sut.remove(productId);
+
+            // then
+            assertEquals(ProductStatus.SOLD_OUT, product.getProductStatus());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 상품 삭제 실패")
+        void removeTest02() {
+            // given
+            var productId = 1L;
+            given(productRepository.findById(productId)).willReturn(Optional.empty());
+
+            // when
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
+                    assertThatThrownBy(() -> sut.remove(productId));
+
+            // then
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.PRODUCT_NOT_FOUND);
+        }
+    }
+
+    private Page<Product> makeEmptyPageProduct() {
+        return new PageImpl<>(Collections.emptyList());
+    }
+
+    private ProductRequest.Create makeProductRequest(Long categoryId) {
+        var request = new ProductRequest.Create();
+
+        return request
+                .setCategoryId(categoryId)
+                .setDescription("description")
+                .setPrice(10000)
+                .setProductName("productName")
+                .setQuantity(1);
+    }
+
+    private Product makeProduct(Long productId) {
         return Product.builder()
-                .id(1L)
+                .id(productId)
                 .productName("name")
                 .price(10000)
                 .quantity(1)

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface QuerydslProductRepository {
-    Optional<List<Product>> findByIdIn(List<Long> productIdList);
+    Optional<List<Product>> findAllByIdIn(List<Long> productIdList);
 }

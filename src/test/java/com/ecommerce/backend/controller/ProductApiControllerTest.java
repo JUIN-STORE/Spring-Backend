@@ -407,7 +407,7 @@ class ProductApiControllerTest {
                 response.add(ProductResponse.Read.of(product, product.getProductImageList()));
             }
 
-            given(mockProductRelationService.read(pageRequest, null)).willReturn(response);
+            given(mockProductRelationService.display(pageRequest, null)).willReturn(response);
 
             // when
             final ResultActions perform = mockMvc.perform(
@@ -435,7 +435,7 @@ class ProductApiControllerTest {
                 response.add(ProductResponse.Read.of(product, product.getProductImageList()));
             }
 
-            given(mockProductRelationService.read(pageRequest, categoryId)).willReturn(response);
+            given(mockProductRelationService.display(pageRequest, categoryId)).willReturn(response);
 
             // when
             final ResultActions perform = mockMvc.perform(
@@ -464,7 +464,7 @@ class ProductApiControllerTest {
                 response.add(ProductResponse.Read.of(product, product.getProductImageList()));
             }
 
-            given(mockProductRelationService.read(pageRequest, categoryId)).willReturn(response);
+            given(mockProductRelationService.display(pageRequest, categoryId)).willReturn(response);
 
             // when
             final ResultActions perform = mockMvc.perform(
@@ -488,7 +488,7 @@ class ProductApiControllerTest {
         public void readCountTest01() throws Exception {
             // given
             var count = 1L;
-            given(mockProductService.readCount()).willReturn(count);
+            given(mockProductService.total()).willReturn(count);
 
             // when
             final ResultActions perform = mockMvc.perform(
@@ -515,7 +515,7 @@ class ProductApiControllerTest {
             // given
             var count = 1L;
             var searchTitle = "title";
-            given(mockProductService.readSearchCount(searchTitle)).willReturn(count);
+            given(mockProductService.totalByProductNameContaining(searchTitle)).willReturn(count);
 
             // when
             final ResultActions perform = mockMvc.perform(

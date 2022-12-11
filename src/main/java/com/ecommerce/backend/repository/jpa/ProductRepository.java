@@ -11,12 +11,12 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<Product, Long>, QuerydslProductRepository {
     Page<Product> findAll(Pageable pageable);
 
-    Page<Product> findByCategoryId(Pageable pageable, Long category);
+    Page<Product> findAllByCategoryId(Pageable pageable, Long category);
 
     // 참고 https://yonguri.tistory.com/122
-    Page<Product> findByProductNameContaining(Pageable pageable, String productName);
+    Page<Product> findAllByProductNameContaining(Pageable pageable, String productName);
 
-    Page<Product> findByProductNameContainingAndCategoryId(Pageable pageable, String productName, Long categoryId);
+    Page<Product> findAllByProductNameContainingAndCategoryId(Pageable pageable, String productName, Long categoryId);
 
     Long countByProductNameContaining(String productName);
 }
