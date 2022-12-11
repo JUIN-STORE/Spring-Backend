@@ -1,6 +1,7 @@
 package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.OrderProduct;
+import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.OrderProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,6 @@ public class OrderProductService {
 
     public OrderProduct readByOrderId(Long orderId) {
         return orderProductRepository.findByOrderId(orderId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ORDER_PRODUCT_NOT_FOUND));
     }
 }

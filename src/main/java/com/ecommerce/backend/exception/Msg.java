@@ -30,6 +30,7 @@ public class Msg {
     public static final String ORDER_DELIVERY_ADDRESS_NOT_FOUND = "배송지는 필수입니다.";
     public static final String ORDER_DELIVERY_RECEIVER_REQUIRED = "받는 사람은 필수입니다.";
     public static final String ORDER_NOT_FOUND = "존재하지 않는 주문 정보입니다.";
-
     public static final String ORDER_ALREADY_DELIVERY = "이미 배송된 상품은 취소가 불가능합니다";
+
+    public static final String ORDER_PRODUCT_NOT_FOUND = "존재하지 않는 주문 제품입니다.";
 }
