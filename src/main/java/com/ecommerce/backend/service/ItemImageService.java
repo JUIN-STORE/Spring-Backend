@@ -30,18 +30,18 @@ public class ItemImageService {
     private String itemImageLocation;
 
     public void add(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) throws IOException {
-        final String originImageName = multipartFile.getOriginalFilename(); // cat.jpg
+        final String originName = multipartFile.getOriginalFilename(); // cat.jpg
 
         // 파일 업로드
-        if(StringUtils.hasText(originImageName)){
-            final String copyImageName = fileUploadComponent.makeCopyFileName(originImageName);
+        if(StringUtils.hasText(originName)){
+            final String copyImageName = fileUploadComponent.makeCopyFileName(originName);
             final String imageAbsUrl = fileUploadComponent.makeAbsPath(itemImageLocation, copyImageName);
 
-            fileUploadComponent.uploadFile(itemImageLocation, originImageName, multipartFile.getBytes());   // 원본
+            fileUploadComponent.uploadFile(itemImageLocation, originName, multipartFile.getBytes());   // 원본
             fileUploadComponent.uploadFile(itemImageLocation, copyImageName, multipartFile.getBytes());     // copy
 
             final ItemImage itemImage =
-                    request.toItemImage(item, copyImageName, imageAbsUrl, originImageName);
+                    request.toItemImage(item, copyImageName, imageAbsUrl, originName);
 
             itemImageRepository.save(itemImage);
         }

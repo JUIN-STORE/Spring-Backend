@@ -187,16 +187,16 @@ class CartRelationServiceTest {
         }
     }
 
-    private ItemImageResponse.Buy makeItemImageBuyResponse(String imageName
-            , String originImageName
+    private ItemImageResponse.Buy makeItemImageBuyResponse(String name
+            , String originName
             , String imageUrl
             , Boolean thumbnail) {
 
         var request = new ItemImageResponse.Buy();
 
         return request
-                .setImageName(imageName)
-                .setOriginImageName(originImageName)
+                .setName(name)
+                .setOriginName(originName)
                 .setImageUrl(imageUrl)
                 .setThumbnail(thumbnail);
     }
@@ -209,7 +209,7 @@ class CartRelationServiceTest {
 
         return request
                 .setItemId(itemId)
-                .setName(name)
+                .setItemName(name)
                 .setPrice(price)
                 .setDescription(description);
     }
@@ -228,9 +228,9 @@ class CartRelationServiceTest {
 
 
     private CartItemResponse.Read makeCartItemReadResponse(Long itemId
-            , String name
+            , String itemName
             , Integer count
-            , String imageName
+            , String itemImageName
             , Boolean isThumbnail) {
 
         var request = new CartItemResponse.Read();
@@ -238,11 +238,11 @@ class CartRelationServiceTest {
         return request
                 .setItemId(itemId)
                 .setCount(count)
-                .setName(name)
+                .setItemName(itemName)
                 .setPrice(1000)
                 .setDescription("description")
-                .setImageName(imageName)
-                .setOriginImageName("originImageName")
+                .setItemImageName(itemImageName)
+                .setOriginImageName("originName")
                 .setImageUrl("imageUrl")
                 .setThumbnail(isThumbnail);
     }

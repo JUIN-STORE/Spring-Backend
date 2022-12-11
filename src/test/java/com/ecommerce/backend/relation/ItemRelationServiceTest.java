@@ -282,16 +282,16 @@ class ItemRelationServiceTest {
     }
 
     private ItemImage makeItemImage(Long id
-            , String imageName
-            , String originImageName
+            , String name
+            , String originName
             , String imageUrl
             , Boolean isThumbnail
             , Item item) {
 
         return ItemImage.builder()
                 .id(id)
-                .imageName(imageName)
-                .originImageName(originImageName)
+                .name(name)
+                .originName(originName)
                 .imageUrl(imageUrl)
                 .thumbnail(isThumbnail)
                 .item(item)

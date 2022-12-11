@@ -75,7 +75,7 @@ public class ItemResponse {
     public static class Buy {
         private Long itemId;
 
-        private String name;             // 제품의 이름
+        private String itemName;             // 제품의 이름
 
         private Integer price;                  // 제품의 가격
 

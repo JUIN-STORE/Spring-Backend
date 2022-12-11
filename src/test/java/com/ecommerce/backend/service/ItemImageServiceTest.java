@@ -51,7 +51,7 @@ class ItemImageServiceTest {
             // given
             var originFileName = "cat.jpg";
             var request =
-                    makeCreateRequest("imageName_1", "imageAbsUrl_1", "originImageName_1", true);
+                    makeCreateRequest("name_1", "imageAbsUrl_1", "originName_1", true);
             var mockMultipartFile = makeMockMultipartFile("catList", originFileName);
             var item = makeItem();
 
@@ -202,30 +202,30 @@ class ItemImageServiceTest {
                 .build();
     }
 
-    private ItemImageRequest.Create makeCreateRequest(String imageName
-            , String originImageName
+    private ItemImageRequest.Create makeCreateRequest(String name
+            , String originName
             , String imageUrl
             , Boolean isThumbnail) {
 
         var request = new ItemImageRequest.Create(isThumbnail);
 
         return request
-                .setImageName(imageName)
-                .setOriginImageName(originImageName)
+                .setImageName(name)
+                .setOriginImageName(originName)
                 .setImageUrl(imageUrl);
     }
 
 
     private ItemImage makeItemImage(Long id
-            , String imageName
-            , String originImageName
+            , String name
+            , String originName
             , String imageUrl
             , Boolean isThumbnail) {
 
         return ItemImage.builder()
                 .id(id)
-                .imageName(imageName)
-                .originImageName(originImageName)
+                .name(name)
+                .originName(originName)
                 .imageUrl(imageUrl)
                 .thumbnail(isThumbnail)
                 .build();

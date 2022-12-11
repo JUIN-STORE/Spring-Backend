@@ -13,7 +13,7 @@ public class ItemImageResponse {
 
         private String imageName;           // 이미지 파일명
 
-        private String originImageName;     // 원본 이미지 파일명
+        private String originName;     // 원본 이미지 파일명
 
         private String imageUrl;            // 이미지 조회 경로
 
@@ -21,8 +21,8 @@ public class ItemImageResponse {
 
         public static Read of(ItemImage itemImage) {
             return new Read()
-                    .setImageName(itemImage.getImageName())
-                    .setOriginImageName(itemImage.getOriginImageName())
+                    .setImageName(itemImage.getName())
+                    .setOriginName(itemImage.getOriginName())
                     .setImageUrl(itemImage.getImageUrl())
                     .setThumbnail(itemImage.getThumbnail());
         }
@@ -40,9 +40,9 @@ public class ItemImageResponse {
 
     @Data @Accessors(chain = true)
     public static class Buy {
-        private String imageName;           // 이미지 파일명
+        private String name;           // 이미지 파일명
 
-        private String originImageName;     // 원본 이미지 파일명
+        private String originName;     // 원본 이미지 파일명
 
         private String imageUrl;            // 이미지 조회 경로
 

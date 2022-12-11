@@ -17,9 +17,9 @@ public class ItemImage extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imageName;           // 이미지 파일명
+    private String name;                // 이미지 파일명
 
-    private String originImageName;     // 원본 이미지 파일명
+    private String originName;          // 원본 이미지 파일명
 
     private String imageUrl;            // 이미지 조회 경로
 
@@ -30,9 +30,9 @@ public class ItemImage extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    public void updateItemImage(String originImageName, String imageName, String imageUrl){
-        this.originImageName = originImageName;
-        this.imageName = imageName;
+    public void updateItemImage(String originName, String name, String imageUrl){
+        this.originName = originName;
+        this.name = name;
         this.imageUrl = imageUrl;
     }
 

@@ -538,8 +538,8 @@ class ItemApiControllerTest {
         List<ItemImage> itemImageList = new ArrayList<>();
         ItemImage.ItemImageBuilder itemImageBuilder = ItemImage.builder()
                 .id(1L)
-                .imageName("imageName")
-                .originImageName("originImageName")
+                .name("name")
+                .originName("originName")
                 .imageUrl("imageUrl")
                 .thumbnail(true);
 

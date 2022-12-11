@@ -24,8 +24,8 @@ public class ItemImageRequest {
         public ItemImage toItemImage(Item item, String imageName, String imageUrl, String originImageName) {
             return ItemImage.builder()
                     .item(item)
-                    .imageName(imageName)
-                    .originImageName(originImageName)
+                    .name(imageName)
+                    .originName(originImageName)
                     .imageUrl(imageUrl)
                     .thumbnail(this.thumbnail)
                     .build();

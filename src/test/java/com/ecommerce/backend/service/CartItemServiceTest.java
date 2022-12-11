@@ -343,15 +343,15 @@ class CartItemServiceTest {
                 .setCount(count);
     }
 
-    private CartItemResponse.Read makeReadResponse(Long itemId, String name, Integer price) {
+    private CartItemResponse.Read makeReadResponse(Long itemId, String itemName, Integer price) {
         var response = new CartItemResponse.Read();
 
         return response.setItemId(itemId)
-                .setName(name)
+                .setItemName(itemName)
                 .setPrice(price)
                 .setCount(1)
                 .setDescription("상품 설명")
-                .setImageName("copy-이미지 이름")
+                .setItemImageName("copy-이미지 이름")
                 .setOriginImageName("이미지 이름")
                 .setImageUrl("/thumbnail/");
     }

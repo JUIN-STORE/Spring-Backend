@@ -62,12 +62,12 @@ public class QuerydslCartItemRepositoryImpl implements QuerydslCartItemRepositor
                 queryFactory
                         .select(Projections.fields(CartItemResponse.Read.class
                                 , item.id.as("itemId")
-                                , item.name
+                                , item.name.as("itemName")
                                 , item.price
                                 , cartItem.count
                                 , item.description
-                                , itemImage.imageName
-                                , itemImage.originImageName
+                                , itemImage.name.as("itemImageName")
+                                , itemImage.originName.as("originImageName")
                                 , itemImage.imageUrl
                                 , itemImage.thumbnail))
                         .from(cartItem)
