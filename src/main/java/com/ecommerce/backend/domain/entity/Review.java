@@ -30,7 +30,7 @@
 //
 //    @ManyToOne
 //    @JoinColumn(name = "order_item_id")
-//    private OrderProduct orderProduct;
+//    private OrderItem orderItem;
 //
 //    @ManyToOne
 //    @JoinColumn(name = "account_id")

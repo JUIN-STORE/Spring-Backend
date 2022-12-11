@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface QuerydslOrderRepository {
     long deleteByAccountId(Long accountId);
 
-    Optional<Page<OrderJoinResponse>> findOrderJoinOrderProductJoinProductByAccountId(Long accountId,
+    Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemByAccountId(Long accountId,
                                                                                       OrderRequest.Read request,
                                                                                       Pageable pageable);
 }

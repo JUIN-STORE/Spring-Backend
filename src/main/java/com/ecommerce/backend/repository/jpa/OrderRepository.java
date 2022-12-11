@@ -17,17 +17,17 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslOrd
 //    @Query(nativeQuery = true,
 //            value = "SELECT o.order_date AS orderDate, " +
 //                    "op.order_count AS orderCount, " +
-//                    "p.product_id AS productId, " +
+//                    "p.item_id AS itemId, " +
 //                    "p.price AS price, " +
-//                    "p.product_name AS productName, " +
+//                    "p.item_name AS name, " +
 //                    "o.orders_id AS ordersId, " +
-//                    "op.order_product_id AS orderProductId, " +
+//                    "op.order_item_id AS orderItemId, " +
 //                    "o.delivery_id AS deliveryId, " +
 //                    "o.order_status AS orderStatus " +
 //                    "FROM orders AS o " +
-//                    "JOIN order_product AS op ON o.orders_id = op.orders_id " +
-//                    "JOIN product AS p ON p.product_id = op.product_id " +
+//                    "JOIN order_item AS op ON o.orders_id = op.orders_id " +
+//                    "JOIN item AS p ON p.item_id = op.item_id " +
 //                    "WHERE o.account_id=:accountId"
 //    )
-//    List<OrderJoinResult> findOrderJoinOrderProductJoinProductByAccountId(@Param("accountId") Long accountId);
+//    List<OrderJoinResult> findOrderJoinOrderItemJoinItemByAccountId(@Param("accountId") Long accountId);
 }

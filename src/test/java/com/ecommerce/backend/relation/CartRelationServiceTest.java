@@ -2,13 +2,13 @@ package com.ecommerce.backend.relation;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Cart;
-import com.ecommerce.backend.domain.entity.CartProduct;
-import com.ecommerce.backend.domain.entity.Product;
-import com.ecommerce.backend.domain.enums.ProductStatus;
-import com.ecommerce.backend.domain.response.CartProductResponse;
-import com.ecommerce.backend.domain.response.ProductImageResponse;
-import com.ecommerce.backend.domain.response.ProductResponse;
-import com.ecommerce.backend.service.CartProductService;
+import com.ecommerce.backend.domain.entity.CartItem;
+import com.ecommerce.backend.domain.entity.Item;
+import com.ecommerce.backend.domain.enums.ItemStatus;
+import com.ecommerce.backend.domain.response.CartItemResponse;
+import com.ecommerce.backend.domain.response.ItemImageResponse;
+import com.ecommerce.backend.domain.response.ItemResponse;
+import com.ecommerce.backend.service.CartItemService;
 import com.ecommerce.backend.service.CartService;
 import com.ecommerce.backend.service.relation.CartRelationService;
 import org.junit.jupiter.api.DisplayName;
@@ -37,40 +37,40 @@ class CartRelationServiceTest {
     @Mock
     CartService cartService;
     @Mock
-    CartProductService cartProductService;
+    CartItemService cartItemService;
 
     @Nested
-    @DisplayName("makeCartProductReadResponse 테스트")
-    class MakeCartProductReadResponseTest {
+    @DisplayName("makeCartItemReadResponse 테스트")
+    class MakeCartItemReadResponseTest {
         @Test
         @DisplayName("성공적으로 리스폰스를 만듦.")
-        void makeCartProductReadResponseTest01() {
+        void makeCartItemReadResponseTest01() {
             // given
             var account = makeAccount();
 
             var cart = makeCart(account);
             MockedStatic<Cart> mockCart = mockStatic(Cart.class);
 
-            var cartProduct1 = makeCartProduct(cart, makeProduct(2L, "R2"), 1);
-            var cartProduct2 = makeCartProduct(cart, makeProduct(3L, "R3"), 2);
-            var cartProductList = List.of(cartProduct1, cartProduct2);
+            var cartItem1 = makeCartItem(cart, makeItem(2L, "R2"), 1);
+            var cartItem2 = makeCartItem(cart, makeItem(3L, "R3"), 2);
+            var cartItemList = List.of(cartItem1, cartItem2);
 
             var response1 =
-                    makeCartProductReadResponse(2L, "R2", 1, "R2 이미지 네임", true);
+                    makeCartItemReadResponse(2L, "R2", 1, "R2 이미지 네임", true);
             var response2 =
-                    makeCartProductReadResponse(3L, "R3", 1, "R3 이미지 네임", true);
+                    makeCartItemReadResponse(3L, "R3", 1, "R3 이미지 네임", true);
 
             var expected = List.of(response1, response2);
 
             given(Cart.createCart(any())).willReturn(cart);
             given(cartService.readByAccountId(anyLong())).willReturn(cart);
-            given(cartProductService.readByCartId(anyLong())).willReturn(cartProductList);
+            given(cartItemService.readByCartId(anyLong())).willReturn(cartItemList);
 
-            given(cartProductService.readAllByCartIdAndProductIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
+            given(cartItemService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
                     .willReturn(expected);
 
             // when
-            final List<CartProductResponse.Read> actual = sut.makeCartProductReadResponse(account);
+            final List<CartItemResponse.Read> actual = sut.makeCartItemReadResponse(account);
 
             // then
             assertIterableEquals(expected, actual);
@@ -79,8 +79,8 @@ class CartRelationServiceTest {
         }
 
         @Test
-        @DisplayName("productList size가 0")
-        void makeCartProductReadResponseTest02() {
+        @DisplayName("itemList size가 0")
+        void makeCartItemReadResponseTest02() {
             // given
             var account = makeAccount();
 
@@ -89,12 +89,12 @@ class CartRelationServiceTest {
 
             given(Cart.createCart(any())).willReturn(cart);
             given(cartService.readByAccountId(anyLong())).willReturn(cart);
-            given(cartProductService.readByCartId(anyLong())).willReturn(new ArrayList<>());
+            given(cartItemService.readByCartId(anyLong())).willReturn(new ArrayList<>());
 
             var expected = new ArrayList<>();
 
             // when
-            final List<CartProductResponse.Read> actual = sut.makeCartProductReadResponse(account);
+            final List<CartItemResponse.Read> actual = sut.makeCartItemReadResponse(account);
 
             // then
             assertIterableEquals(expected, actual);
@@ -104,68 +104,68 @@ class CartRelationServiceTest {
     }
 
     @Nested
-    @DisplayName("makeCartProductBuyResponse 테스트")
-    class MakeCartProductBuyResponseTest {
+    @DisplayName("makeCartItemBuyResponse 테스트")
+    class MakeCartItemBuyResponseTest {
         @Test
         @DisplayName("성공적으로 리스폰스를 만듦.")
-        void makeCartProductBuyResponseTest01() {
+        void makeCartItemBuyResponseTest01() {
             // given
             var account = makeAccount();
-            var productIdList = List.of(1L, 2L);
+            var itemIdList = List.of(1L, 2L);
 
             var cart = makeCart(account);
             MockedStatic<Cart> mockCart = mockStatic(Cart.class);
             given(Cart.createCart(any())).willReturn(cart);
             given(cartService.readByAccountId(anyLong())).willReturn(cart);
 
-            var cartProductReadResponse1 =
-                    makeCartProductReadResponse(1L, "R1", 1, "R1 이미지", true);
-            var cartProductReadResponse2 =
-                    makeCartProductReadResponse(2L, "R2", 1, "R2 이미지", false);
-            var readList = List.of(cartProductReadResponse1, cartProductReadResponse2);
+            var cartItemReadResponse1 =
+                    makeCartItemReadResponse(1L, "R1", 1, "R1 이미지", true);
+            var cartItemReadResponse2 =
+                    makeCartItemReadResponse(2L, "R2", 1, "R2 이미지", false);
+            var readList = List.of(cartItemReadResponse1, cartItemReadResponse2);
 
             given(Cart.createCart(any())).willReturn(cart);
-            given(cartProductService.readAllByCartIdAndProductIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
+            given(cartItemService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
                     .willReturn(readList);
 
-            var productBuyResponse1 =
-                    makeProductBuyResponse(1L, "R1", 3000000, "R1 설명");
-            var productBuyResponse2 =
-                    makeProductBuyResponse(2L, "R2", 4000000, "R2 설명");
+            var itemBuyResponse1 =
+                    makeItemBuyResponse(1L, "R1", 3000000, "R1 설명");
+            var itemBuyResponse2 =
+                    makeItemBuyResponse(2L, "R2", 4000000, "R2 설명");
 
-            var productImageBuyResponse1 =
-                    makeProductImageBuyResponse("R1", "R1 이미지", "/R1", true);
-            var productImageBuyResponse2 =
-                    makeProductImageBuyResponse("R2", "R2 이미지", "/R2", false);
+            var itemImageBuyResponse1 =
+                    makeItemImageBuyResponse("R1", "R1 이미지", "/R1", true);
+            var itemImageBuyResponse2 =
+                    makeItemImageBuyResponse("R2", "R2 이미지", "/R2", false);
 
-            var cartProductBuyResponse1 =
-                    makeCartProductBuyResponse(1, productBuyResponse1, productImageBuyResponse1);
-            var cartProductBuyResponse2 =
-                    makeCartProductBuyResponse(2, productBuyResponse2, productImageBuyResponse2);
+            var cartItemBuyResponse1 =
+                    makeCartItemBuyResponse(1, itemBuyResponse1, itemImageBuyResponse1);
+            var cartItemBuyResponse2 =
+                    makeCartItemBuyResponse(2, itemBuyResponse2, itemImageBuyResponse2);
 
-            var expected = List.of(cartProductBuyResponse1, cartProductBuyResponse2);
-            MockedStatic<CartProductResponse.Buy> mockCartProductBuyResponse = mockStatic(CartProductResponse.Buy.class);
-            given(CartProductResponse.Buy.from(cartProductReadResponse1)).willReturn(cartProductBuyResponse1);
-            given(CartProductResponse.Buy.from(cartProductReadResponse2)).willReturn(cartProductBuyResponse2);
+            var expected = List.of(cartItemBuyResponse1, cartItemBuyResponse2);
+            MockedStatic<CartItemResponse.Buy> mockCartItemBuyResponse = mockStatic(CartItemResponse.Buy.class);
+            given(CartItemResponse.Buy.from(cartItemReadResponse1)).willReturn(cartItemBuyResponse1);
+            given(CartItemResponse.Buy.from(cartItemReadResponse2)).willReturn(cartItemBuyResponse2);
 
             // when
-            final List<CartProductResponse.Buy> actual = sut.makeCartProductBuyResponse(account, productIdList);
+            final List<CartItemResponse.Buy> actual = sut.makeCartItemBuyResponse(account, itemIdList);
 
             // then
             assertEquals(expected, actual);
 
             mockCart.close();
-            mockCartProductBuyResponse.close();
+            mockCartItemBuyResponse.close();
         }
 
         @Test
         @DisplayName("readList size가 0")
-        void makeCartProductBuyResponseTest02() {
+        void makeCartItemBuyResponseTest02() {
             // given
             var expected = new ArrayList<>();
 
             var account = makeAccount();
-            var productIdList = List.of(1L, 2L);
+            var itemIdList = List.of(1L, 2L);
 
             var cart = makeCart(account);
             MockedStatic<Cart> mockCart = mockStatic(Cart.class);
@@ -174,11 +174,11 @@ class CartRelationServiceTest {
             given(cartService.readByAccountId(anyLong())).willReturn(cart);
 
             given(Cart.createCart(any())).willReturn(cart);
-            given(cartProductService.readAllByCartIdAndProductIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
+            given(cartItemService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
                     .willReturn(new ArrayList<>());
 
             // when
-            final List<CartProductResponse.Buy> actual = sut.makeCartProductBuyResponse(account, productIdList);
+            final List<CartItemResponse.Buy> actual = sut.makeCartItemBuyResponse(account, itemIdList);
 
             // then
             assertEquals(expected, actual);
@@ -187,12 +187,12 @@ class CartRelationServiceTest {
         }
     }
 
-    private ProductImageResponse.Buy makeProductImageBuyResponse(String imageName
+    private ItemImageResponse.Buy makeItemImageBuyResponse(String imageName
             , String originImageName
             , String imageUrl
             , Boolean thumbnail) {
 
-        var request = new ProductImageResponse.Buy();
+        var request = new ItemImageResponse.Buy();
 
         return request
                 .setImageName(imageName)
@@ -201,44 +201,44 @@ class CartRelationServiceTest {
                 .setThumbnail(thumbnail);
     }
 
-    private ProductResponse.Buy makeProductBuyResponse(Long productId
-            , String productName
+    private ItemResponse.Buy makeItemBuyResponse(Long itemId
+            , String name
             , Integer price
             , String description) {
-        var request = new ProductResponse.Buy();
+        var request = new ItemResponse.Buy();
 
         return request
-                .setProductId(productId)
-                .setProductName(productName)
+                .setItemId(itemId)
+                .setName(name)
                 .setPrice(price)
                 .setDescription(description);
     }
 
-    private CartProductResponse.Buy makeCartProductBuyResponse(Integer count
-            , ProductResponse.Buy product
-            , ProductImageResponse.Buy productImage) {
+    private CartItemResponse.Buy makeCartItemBuyResponse(Integer count
+            , ItemResponse.Buy item
+            , ItemImageResponse.Buy itemImage) {
 
-        var request = new CartProductResponse.Buy();
+        var request = new CartItemResponse.Buy();
 
         return request
                 .setCount(count)
-                .setProduct(product)
-                .setProductImage(productImage);
+                .setItem(item)
+                .setItemImage(itemImage);
     }
 
 
-    private CartProductResponse.Read makeCartProductReadResponse(Long productId
-            , String productName
+    private CartItemResponse.Read makeCartItemReadResponse(Long itemId
+            , String name
             , Integer count
             , String imageName
             , Boolean isThumbnail) {
 
-        var request = new CartProductResponse.Read();
+        var request = new CartItemResponse.Read();
 
         return request
-                .setProductId(productId)
+                .setItemId(itemId)
                 .setCount(count)
-                .setProductName(productName)
+                .setName(name)
                 .setPrice(1000)
                 .setDescription("description")
                 .setImageName(imageName)
@@ -247,23 +247,23 @@ class CartRelationServiceTest {
                 .setThumbnail(isThumbnail);
     }
 
-    private Product makeProduct(Long id, String productName) {
-        return Product.builder()
+    private Item makeItem(Long id, String name) {
+        return Item.builder()
                 .id(id)
-                .productName(productName)
+                .name(name)
                 .price(1000)
                 .quantity(100)
                 .soldCount(2)
                 .description("상품1 설명")
-                .productStatus(ProductStatus.SOLD_OUT)
+                .itemStatus(ItemStatus.SOLD_OUT)
                 .category(null)
                 .build();
     }
 
-    private CartProduct makeCartProduct(Cart cart, Product product, int count) {
-        return CartProduct.builder()
+    private CartItem makeCartItem(Cart cart, Item item, int count) {
+        return CartItem.builder()
                 .cart(cart)
-                .product(product)
+                .item(item)
                 .count(count)
                 .build();
     }

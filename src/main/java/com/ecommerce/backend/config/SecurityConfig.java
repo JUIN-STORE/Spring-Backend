@@ -98,11 +98,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         final String[] whitelist = new String[]{
                 "/api/accounts/login",
                 "/api/accounts/sign-up",
-                "/api/products",
-                "/api/products/*/**",
-                "/api/products/count",
-                "/api/products/search/**",
-                "/api/products/search/count",
+                "/api/items",
+                "/api/items/*/**",
+                "/api/items/count",
+                "/api/items/search/**",
+                "/api/items/search/count",
                 "/api/categories",
         };
 

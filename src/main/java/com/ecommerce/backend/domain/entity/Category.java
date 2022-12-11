@@ -32,6 +32,6 @@ public class Category {
     private List<Category> childList = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private List<ProductCategory> productCategoryList = new ArrayList<>();
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<ItemCategory> itemCategoryList = new ArrayList<>();
 }

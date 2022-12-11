@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderRequest {
     @Data @Accessors(chain = true)
     public static class Create {
-        private List<Long> productIdList;
+        private List<Long> itemIdList;
 
         private int count;
 
@@ -50,7 +50,7 @@ public class OrderRequest {
 
     @Data @Accessors(chain = true)
     public static class Cancel {
-        private Long productId;
+        private Long itemId;
 
         private int count;
 

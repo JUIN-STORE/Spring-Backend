@@ -24,13 +24,13 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final AddressService addressService;
-    private final ProductService productService;
-    private final OrderProductService orderProductService;
+    private final ItemService itemService;
+    private final OrderItemService orderItemService;
     private final DeliveryService deliveryService;
 
     public Page<OrderJoinResponse> read(Account account, OrderRequest.Read request, Pageable pageable) {
         return orderRepository
-                .findOrderJoinOrderProductJoinProductByAccountId(account.getId(), request, pageable)
+                .findOrderJoinOrderItemJoinItemByAccountId(account.getId(), request, pageable)
                 .orElse(new PageImpl<>(new ArrayList<>()));
     }
 
@@ -55,21 +55,21 @@ public class OrderService {
 
         // 배송 정보 생성
         final Delivery delivery = Delivery.createDelivery(deliveryReceiver, deliveryAddress);
-        deliveryService.add(delivery); // update product 쿼리 날아감. (오류)
+        deliveryService.add(delivery); // update item 쿼리 날아감. (오류)
 
-        final List<Long> productIdList = request.getProductIdList();
-        List<Product> productList = productService.readAllByIdList(productIdList);
+        final List<Long> itemIdList = request.getItemIdList();
+        List<Item> itemList = itemService.readAllByIdList(itemIdList);
 
-        final List<OrderProduct> orderProductList = new ArrayList<>();
-        for (Product product : productList) {
-            final OrderProduct orderProduct
-                    = OrderProduct.createOrderProduct(product, request.getCount(), product.getPrice() * request.getCount());
-            orderProductList.add(orderProduct);
-            orderProductService.add(orderProduct);
+        final List<OrderItem> orderItemList = new ArrayList<>();
+        for (Item item : itemList) {
+            final OrderItem orderItem
+                    = OrderItem.createOrderItem(item, request.getCount(), item.getPrice() * request.getCount());
+            orderItemList.add(orderItem);
+            orderItemService.add(orderItem);
         }
 
         // 주문 상품 생성
-        final Order order = Order.createOrder(account, delivery, orderProductList);
+        final Order order = Order.createOrder(account, delivery, orderItemList);
         orderRepository.save(order);
 
         return order;

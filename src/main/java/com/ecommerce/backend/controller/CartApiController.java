@@ -2,9 +2,9 @@ package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.entity.Account;
-import com.ecommerce.backend.domain.request.CartProductRequest;
-import com.ecommerce.backend.domain.response.CartProductResponse;
-import com.ecommerce.backend.service.CartProductService;
+import com.ecommerce.backend.domain.request.CartItemRequest;
+import com.ecommerce.backend.domain.response.CartItemResponse;
+import com.ecommerce.backend.service.CartItemService;
 import com.ecommerce.backend.service.JwtService;
 import com.ecommerce.backend.service.relation.CartRelationService;
 import io.swagger.annotations.Api;
@@ -27,26 +27,26 @@ class CartApiController {
 
     private final CartRelationService cartRelationService;
 
-    private final CartProductService cartProductService;
+    private final CartItemService cartItemService;
 
     @ApiOperation(value = "카트에 있는 제품 정보 읽기", notes = "카트에 있는 제품 정보를 읽어온다.")
     @GetMapping
-    public MyResponse<List<CartProductResponse.Read>> one(final Principal principal) {
+    public MyResponse<List<CartItemResponse.Read>> one(final Principal principal) {
 
         final Account account = jwtService.readByPrincipal(principal);
 
-        var response = cartRelationService.makeCartProductReadResponse(account);
+        var response = cartRelationService.makeCartItemReadResponse(account);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
     @ApiOperation(value = "카트에 항목을 추가", notes = "카트에 항목을 추가한다.")
     @PostMapping("/add")
     public MyResponse<Integer> newCartItem(final Principal principal,
-                                           @RequestBody CartProductRequest.Add request) {
+                                           @RequestBody CartItemRequest.Add request) {
 
 
         final Account account = jwtService.readByPrincipal(principal);
-        var response = cartProductService.add(account, request);
+        var response = cartItemService.add(account, request);
 
         return new MyResponse<>(HttpStatus.OK, response);
     }
@@ -54,11 +54,11 @@ class CartApiController {
     @ApiOperation(value = "카트 개수 변경.", notes = "카트에 개수를 변경한다.")
     @PutMapping("/quantity")
     public MyResponse<Integer> updateQuantity(final Principal principal,
-                                              @RequestBody CartProductRequest.Update request) {
+                                              @RequestBody CartItemRequest.Update request) {
 
         final Account account = jwtService.readByPrincipal(principal);
 
-        var response = cartProductService.modifyQuantity(account, request);
+        var response = cartItemService.modifyQuantity(account, request);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
@@ -66,22 +66,22 @@ class CartApiController {
     @ApiOperation(value = "카트에 추가된 상품을 제거", notes = "카트에 추가된 상품을 제거한다.")
     @DeleteMapping("/clear")
     public MyResponse<Long> clearCart(final Principal principal,
-                                      @RequestBody CartProductRequest.Clear request) {
+                                      @RequestBody CartItemRequest.Clear request) {
 
         final Account account = jwtService.readByPrincipal(principal);
 
-        var response = cartProductService.remove(account, request);
+        var response = cartItemService.remove(account, request);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 
     @ApiOperation(value = "카트에셔 buy를 클릭했을 때", notes = "주문 정보 데이터를 읽어온다.")
     @GetMapping("/buy")
-    public MyResponse<List<CartProductResponse.Buy>> buy(final Principal principal,
-                                                         @RequestParam List<Long> productList) {
+    public MyResponse<List<CartItemResponse.Buy>> buy(final Principal principal,
+                                                         @RequestParam List<Long> itemList) {
 
         final Account account = jwtService.readByPrincipal(principal);
 
-        var response = cartRelationService.makeCartProductBuyResponse(account, productList);
+        var response = cartRelationService.makeCartItemBuyResponse(account, itemList);
         return new MyResponse<>(HttpStatus.OK, response);
     }
 }
