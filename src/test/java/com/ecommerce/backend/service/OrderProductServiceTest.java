@@ -37,14 +37,14 @@ class OrderProductServiceTest {
         @DisplayName("성공")
         void removeByOrderIdListTest01() {
             // given
-            var result = 1;
+            var result = 1L;
             var orderIdList = new ArrayList<Long>();
             orderIdList.add(1L);
 
             given(mockOrderProductRepository.deleteByOrderIdList(orderIdList)).willReturn(result);
 
             // when
-            int actual = sut.removeByOrderIdList(orderIdList);
+            long actual = sut.removeByOrderIdList(orderIdList);
 
             // then
             assertEquals(result, actual);

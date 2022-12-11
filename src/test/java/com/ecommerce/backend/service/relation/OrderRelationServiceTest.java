@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -37,20 +38,22 @@ class OrderRelationServiceTest {
         void removeTest01() {
             // given
             var accountId = 1L;
-            var expected = 1;
+            var expected = 1L;
             var orderList = new ArrayList<Order>();
             orderList.add(new Order());
 
             given(orderService.readByAccountId(accountId)).willReturn(orderList);
             given(orderProductService.removeByOrderIdList(anyList())).willReturn(expected);
-            given(orderService.removeByAccountId(accountId)).willReturn((long) expected);
+            given(orderService.removeByAccountId(accountId)).willReturn(expected);
 
             // when
             final OrderResponse.Delete actual = sut.remove(accountId);
 
             // then
-            assertEquals(expected, actual.getOrderProductDeletedCount());
-            assertEquals(expected, actual.getOrdersDeletedCount());
+            assertAll(
+                    () -> assertEquals(expected, actual.getOrderProductDeletedCount()),
+                    () -> assertEquals(expected, actual.getOrdersDeletedCount())
+            );
         }
     }
 }

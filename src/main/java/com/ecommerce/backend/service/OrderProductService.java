@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderProductService {
     private final OrderProductRepository orderProductRepository;
 
-    public int removeByOrderIdList(List<Long> orderIdList) {
+    public long removeByOrderIdList(List<Long> orderIdList) {
         return orderProductRepository.deleteByOrderIdList(orderIdList);
     }
 
