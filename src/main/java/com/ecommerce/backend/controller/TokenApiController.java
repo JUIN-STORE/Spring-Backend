@@ -1,6 +1,6 @@
 package com.ecommerce.backend.controller;
 
-import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.JZResponse;
 import com.ecommerce.backend.domain.request.TokenRequest;
 import com.ecommerce.backend.domain.response.TokenResponse;
 import com.ecommerce.backend.exception.InvalidRefreshTokenException;
@@ -23,14 +23,14 @@ public final class TokenApiController {
     private final TokenService tokenService;
 
     @PostMapping("/re-issue")
-    public MyResponse<TokenResponse> newToken(@RequestBody TokenRequest request) {
+    public JZResponse<TokenResponse> newToken(@RequestBody TokenRequest request) {
         try {
             final String accessToken = tokenService.reIssue(request);
 
             var response = TokenResponse.of(accessToken);
-            return new MyResponse<>(HttpStatus.OK, response);
+            return new JZResponse<>(HttpStatus.OK, response);
         } catch (InvalidRefreshTokenException e) {
-            return new MyResponse<>(HttpStatus.UNAUTHORIZED, "Refresh-Token 만료되었습니다.");
+            return new JZResponse<>(HttpStatus.UNAUTHORIZED, "Refresh-Token 만료되었습니다.");
         }
     }
 }
