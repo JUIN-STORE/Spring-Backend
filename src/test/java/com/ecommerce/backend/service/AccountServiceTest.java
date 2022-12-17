@@ -3,12 +3,14 @@ package com.ecommerce.backend.service;
 import com.ecommerce.backend.config.SecurityConfig;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Address;
-import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.request.AddressRequest;
+import com.ecommerce.backend.domain.response.OrderResponse;
 import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.AccountRepository;
+import com.ecommerce.backend.service.relation.OrderRelationService;
+import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,8 +46,6 @@ class AccountServiceTest {
     @Mock
     private AccountRepository mockAccountRepository;
     @Mock
-    private JwtService mockJwtService;
-    @Mock
     private AddressService mockAddressService;
     @Mock
     private CartService mockCartService;
@@ -55,9 +54,8 @@ class AccountServiceTest {
     @Mock
     private DeliveryService mockDeliveryService;
     @Mock
-    private OrderService mockOrderService;
-    @Mock
-    private OrderItemService mockOrderItemService;
+    private OrderRelationService mockOrderRelationService;
+
 
     @Nested
     @DisplayName("duplicateEmail 테스트")
@@ -66,8 +64,6 @@ class AccountServiceTest {
         @DisplayName("중복된 이메일이 있을 때")
         void duplicateEmailTest01() throws Exception {
             // given
-            String expected = "존재하는 이메일입니다. 다른 이메일을 입력해 주세요.";
-
             var account = makeAccount(AccountRole.USER);
             var request = makeSignUpRequest();
 
@@ -87,7 +83,7 @@ class AccountServiceTest {
             );
 
             // then
-            actual.isInstanceOf(EntityExistsException.class).hasMessage(expected);
+            actual.isInstanceOf(EntityExistsException.class).hasMessage(Msg.DUPLICATED_ACCOUNT);
         }
 
         @Test
@@ -116,8 +112,8 @@ class AccountServiceTest {
             MockedStatic<SecurityConfig> mockSecurityConfig = mockStatic(SecurityConfig.class);
             given(SecurityConfig.makePasswordHash(any())).willReturn("securityPasswordHash");
 
-            final var accountRequest = makeSignUpRequest();
-            final var expected = makeAccount(AccountRole.USER);
+            var accountRequest = makeSignUpRequest();
+            var expected = makeAccount(AccountRole.USER);
 
             // when
             final Account actual = sut.add(accountRequest);
@@ -137,7 +133,7 @@ class AccountServiceTest {
         @DisplayName("정상 케이스")
         void readByIdTest01() {
             // given
-            final var expected = makeAccount(AccountRole.USER);
+            var expected = makeAccount(AccountRole.USER);
             given(mockAccountRepository.findById(any())).willReturn(Optional.of(expected));
 
             // when
@@ -154,7 +150,7 @@ class AccountServiceTest {
             given(mockAccountRepository.findById(any())).willReturn(Optional.empty());
 
             // when
-            var actual =
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
                     assertThatThrownBy(() -> sut.readById(1L));
 
             // then
@@ -169,7 +165,7 @@ class AccountServiceTest {
         @DisplayName("정상 케이스")
         void readByEmailTest01() {
             // given
-            final var expected = makeAccount(AccountRole.USER);
+            var expected = makeAccount(AccountRole.USER);
             given(mockAccountRepository.findByEmail(any())).willReturn(Optional.of(expected));
 
             // when
@@ -186,7 +182,7 @@ class AccountServiceTest {
             given(mockAccountRepository.findByEmail(any())).willReturn(Optional.empty());
 
             // when
-            var actual =
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
                     assertThatThrownBy(() -> sut.readByEmail(EMAIL));
 
             // then
@@ -202,9 +198,9 @@ class AccountServiceTest {
         void modifyTest01() {
             // given
             final Principal mockPrincipal = Mockito.mock(Principal.class);
-            final AccountRequest.Update request = makeUpdateRequest();
+            var request = makeUpdateRequest();
 
-            final Account expected = makeAccount(AccountRole.USER);
+            var expected = makeAccount(AccountRole.USER);
             request.toAccount(expected.getId(), EMAIL);
 
             given(mockPrincipal.getName()).willReturn(EMAIL);
@@ -215,12 +211,14 @@ class AccountServiceTest {
 
             // then
             verify(mockAccountRepository, times(1)).save(any());
-            assertEquals(expected.getEmail(), actual.getEmail());
 
-            assertNotEquals(expected.getPasswordHash(), actual.getPasswordHash());
-            assertNotEquals(expected.getName(), actual.getName());
-            assertNotEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
-            assertNotEquals(expected.getAccountRole(), actual.getAccountRole());
+            assertAll(
+                    () -> assertEquals(expected.getEmail(), actual.getEmail()),
+                    () -> assertNotEquals(expected.getPasswordHash(), actual.getPasswordHash()),
+                    () -> assertNotEquals(expected.getName(), actual.getName()),
+                    () -> assertNotEquals(expected.getPhoneNumber(), actual.getPhoneNumber()),
+                    () -> assertNotEquals(expected.getAccountRole(), actual.getAccountRole())
+            );
         }
 
         @Test
@@ -228,16 +226,16 @@ class AccountServiceTest {
         void modifyTest02() {
             // given
             final Principal mockPrincipal = Mockito.mock(Principal.class);
-            final AccountRequest.Update request = makeUpdateRequest();
+            var request = makeUpdateRequest();
 
-            final Account expected = makeAccount(AccountRole.USER);
+            var expected = makeAccount(AccountRole.USER);
             request.toAccount(expected.getId(), EMAIL);
 
             given(mockPrincipal.getName()).willReturn(EMAIL);
             given(mockAccountRepository.findByEmail(any())).willReturn(Optional.empty());
 
             // when
-            var actual =
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
                     assertThatThrownBy(() -> sut.modify(mockPrincipal, request));
 
             // then
@@ -255,15 +253,17 @@ class AccountServiceTest {
             final Principal mockPrincipal = Mockito.mock(Principal.class);
             given(mockPrincipal.getName()).willReturn(EMAIL);
 
-            final Account account = makeAccount(AccountRole.USER);
+            var account = makeAccount(AccountRole.USER);
 
-            List<Address> addressList =
-                    Arrays.asList(makeAddress(1L, true), makeAddress(3L,false));
+            var addressList =
+                    Arrays.asList(makeAddress(1L, true), makeAddress(3L, false));
             given(mockAccountRepository.findByIdAndEmail(anyLong(), anyString())).willReturn(Optional.of(account));
 
-            List<Order> orderList =
-                    Arrays.asList(makeOrder(1L), makeOrder(10L));
+            var deleteResponse = new OrderResponse.Delete()
+                    .setOrdersDeletedCount(1)
+                    .setOrderItemDeletedCount(1);
             given(mockAddressService.readByAccountId(anyLong())).willReturn(addressList);
+            given(mockOrderRelationService.remove(anyLong())).willReturn(deleteResponse);
 
             // when
             sut.remove(mockPrincipal, account.getId());
@@ -280,11 +280,11 @@ class AccountServiceTest {
         @DisplayName("id와 email을 통해 계정을 찾음")
         void readByIdAndEmailTest01() {
             // given
-            final var expected = makeAccount(AccountRole.USER);
+            var expected = makeAccount(AccountRole.USER);
             given(mockAccountRepository.findByIdAndEmail(anyLong(), anyString())).willReturn(Optional.of(expected));
 
             // when
-            final Account actual = sut.readByIdAndEmail(1L,EMAIL);
+            final Account actual = sut.readByIdAndEmail(1L, EMAIL);
 
             // then
             assertEquals(expected, actual);
@@ -297,7 +297,7 @@ class AccountServiceTest {
             given(mockAccountRepository.findByIdAndEmail(anyLong(), anyString())).willReturn(Optional.empty());
 
             // when
-            var actual =
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
                     assertThatThrownBy(() -> sut.readByIdAndEmail(1L, EMAIL));
 
             // then
@@ -312,11 +312,11 @@ class AccountServiceTest {
         @DisplayName("ADMIN일 떄")
         void checkNotUserTest01() {
             // given
-            final Principal mockPrincipal = Mockito.mock(Principal.class);
-            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(makeAccount(AccountRole.ADMIN));
+            var account = makeAccount(AccountRole.ADMIN);
+            given(mockAccountRepository.findByEmail(anyString())).willReturn(Optional.of(account));
 
             // when
-            final boolean actual = sut.checkNotUser(mockPrincipal);
+            final boolean actual = sut.checkNotUser(account);
 
             // then
             assertTrue(actual);
@@ -326,11 +326,11 @@ class AccountServiceTest {
         @DisplayName("SELLERN일 떄")
         void checkNotUserTest02() {
             // given
-            final Principal mockPrincipal = Mockito.mock(Principal.class);
-            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(makeAccount(AccountRole.SELLER));
+            var account = makeAccount(AccountRole.SELLER);
+            given(mockAccountRepository.findByEmail(anyString())).willReturn(Optional.of(account));
 
             // when
-            final boolean actual = sut.checkNotUser(mockPrincipal);
+            final boolean actual = sut.checkNotUser(account);
 
             // then
             assertTrue(actual);
@@ -340,22 +340,17 @@ class AccountServiceTest {
         @DisplayName("USER일 떄")
         void checkNotUserTest03() {
             // given
-            final Principal mockPrincipal = Mockito.mock(Principal.class);
-            given(mockJwtService.readByPrincipal(mockPrincipal)).willReturn(makeAccount(AccountRole.USER));
+            var account = makeAccount(AccountRole.USER);
+            given(mockAccountRepository.findByEmail(anyString())).willReturn(Optional.of(account));
 
             // when
-            final boolean actual = sut.checkNotUser(mockPrincipal);
+            final boolean actual = sut.checkNotUser(account);
 
             // then
             assertFalse(actual);
         }
     }
 
-    private Order makeOrder(Long id) {
-        return Order.builder()
-                .id(id)
-                .build();
-    }
 
     private AccountRequest.Update makeUpdateRequest() {
         final AccountRequest.Update request = new AccountRequest.Update();

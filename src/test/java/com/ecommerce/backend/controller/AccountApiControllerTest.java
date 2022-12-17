@@ -5,7 +5,8 @@ import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.request.AddressRequest;
-import com.ecommerce.backend.jwt.JwtTokenUtil;
+import com.ecommerce.backend.jwt.TokenMessage;
+import com.ecommerce.backend.jwt.TokenProvider;
 import com.ecommerce.backend.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class AccountApiControllerTest {
 
     @Mock private AccountService mockAccountService;
     @Mock private AuthenticationManager mockAuthenticationManager;
-    @Mock private JwtTokenUtil mockJwtTokenUtil;
+    @Mock private TokenProvider mockTokenProvider;
 
     @BeforeEach
     public void setup() {
@@ -91,7 +92,7 @@ class AccountApiControllerTest {
 
         Authentication authentication= new UsernamePasswordAuthenticationToken(email, password);
         given(mockAuthenticationManager.authenticate(authentication)).willReturn(authentication);
-        given(mockJwtTokenUtil.generateToken(authentication.getName())).willReturn(token);
+        given(mockTokenProvider.createToken(authentication.getName(), TokenMessage.ACCESS_TOKEN_VALIDATION_TIME)).willReturn(token);
 
         // when
         final ResultActions perform = mockMvc.perform(post(ACCOUNT_END_POINT + "/login")

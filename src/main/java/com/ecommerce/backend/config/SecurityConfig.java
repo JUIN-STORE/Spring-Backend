@@ -1,8 +1,8 @@
 package com.ecommerce.backend.config;
 
-import com.ecommerce.backend.jwt.JwtAuthenticationEntryPoint;
-import com.ecommerce.backend.jwt.JwtRequestFilter;
-import com.ecommerce.backend.service.JwtService;
+import com.ecommerce.backend.jwt.TokenAuthenticationEntryPoint;
+import com.ecommerce.backend.jwt.TokenRequestFilter;
+import com.ecommerce.backend.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.session.web.http.HeaderHttpSessionStrategy;
-import org.springframework.session.web.http.HttpSessionStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,9 +28,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final JwtService jwtService;
-    private final JwtRequestFilter jwtRequestFilter;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final PrincipalService principalService;
+    private final TokenRequestFilter tokenRequestFilter;
+    private final TokenAuthenticationEntryPoint tokenAuthenticationEntryPoint;
 
     /**
      * 비밀번호 해시
@@ -44,10 +42,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public HttpSessionStrategy httpSessionStrategy() {
-        return new HeaderHttpSessionStrategy();
-    }
 
     @Bean
     @Override
@@ -63,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(principalService).passwordEncoder(passwordEncoder());
     }
 
     /**
@@ -97,6 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         final String[] whitelist = new String[]{
                 "/api/accounts/login",
+                "/api/accounts/refresh",
                 "/api/accounts/sign-up",
                 "/api/items",
                 "/api/items/*/**",
@@ -108,15 +103,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity
                 .authorizeRequests()
-                .antMatchers(whitelist).permitAll()
-                .anyRequest().authenticated().and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .formLogin().disable()
+
+                .antMatchers(whitelist).permitAll() // whitelist 전체 접근 허용
+                .antMatchers("/main").authenticated() // 인증된 사용자만 접근 허용
+//                .antMatchers("/regist").anonymous() // 인증되지 않은 사용자만 접근 허용
+//                .antMatchers("/mypage").hasRole("ADMIN") // ROLE_ADMIN 권한을 가진 사용자만 접근 허용
+//                .antMatchers("/check").hasAnyRole("ADMIN", "USER") // ROLE_ADMIN 혹은 ROLE_USER 권한을 가진 사용자만 접근 허용
+//                // admin만 허용
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//
+//                // user만 허용
+//                .antMatchers("/user/**").hasRole("USER")
+
+                // 나머지 요청은 모두 인증 필요
+                .anyRequest().authenticated()
+                .and().formLogin().disable()
+
                 .headers().frameOptions().disable()
+
                 .and().cors();
 
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        // JWT 설정
+        httpSecurity
+                // 인증되지 않은 사용자 접근 시
+                .exceptionHandling().authenticationEntryPoint(tokenAuthenticationEntryPoint)
+
+                // 세션을 사용하지 않기 때문에 STATELESS 설정
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                // JWT Filter 적용
+                .and().addFilterBefore(tokenRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     public static String makePasswordHash(String password) {

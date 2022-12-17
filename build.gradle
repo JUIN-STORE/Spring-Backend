@@ -1,17 +1,18 @@
 buildscript {
     ext {
+        springVersion = "2.4.2"
         queryDslVersion = "5.0.0"
+        jwtVersion = "0.11.5"
     }
 }
 
 plugins {
+    id 'java'
     id 'org.springframework.boot' version '2.4.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 
     //querydsl 추가
     id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
-
-    id 'java'
 }
 
 group = 'com.ecommerce'
@@ -35,68 +36,67 @@ ext {
 }
 
 dependencies {
-    /* jpa */
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    /* web */
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    /* junit */
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-
-    /* swagger */
+    // swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
-    /* devtools */
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    // jpa
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}"
 
-    /* MySQL */
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    runtimeOnly 'mysql:mysql-connector-java'
+    // web
+    implementation "org.springframework.boot:spring-boot-starter-web:${springVersion}"
 
-    /* MariaDB */
-//	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-
-    /* lombok */
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-
-    /* url mapping */
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
-    /* security */
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-
-    /* security - session */
+    // security
+    implementation "org.springframework.boot:spring-boot-starter-security:${springVersion}"
     implementation 'org.springframework.session:spring-session:1.3.2.RELEASE'
 
-    /* security - jwt */
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    // MySQL
+    implementation "org.springframework.boot:spring-boot-starter-data-jdbc:${springVersion}"
+    runtimeOnly 'mysql:mysql-connector-java'
 
-    /* security - redis */
-//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
 
-    /* test */
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.mockito', module: 'mockito-core'
-    }
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.mockito:mockito-inline:4.6.1'
-
-
-    /* DTO */
-    implementation 'javax.validation:validation-api'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}"
-
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}", "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+    // JWT
+    implementation "io.jsonwebtoken:jjwt-api:${jwtVersion}"
+    implementation "io.jsonwebtoken:jjwt-impl:${jwtVersion}"
+    implementation "io.jsonwebtoken:jjwt-jackson:${jwtVersion}"
 
     //querydsl 추가
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
     implementation "com.querydsl:querydsl-core:${queryDslVersion}"
 
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1'
+    // p6spy logging
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
+
+    // JUnit
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    // mockito
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.mockito', module: 'mockito-core'
+    }
+    testImplementation 'org.mockito:mockito-inline:4.8.0'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // MariaDB
+//	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    // redis
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//    implementation 'org.springframework.session:spring-session:1.3.5.RELEASE'
+
+    // DTO Mapper
+//    implementation "org.mapstruct:mapstruct:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}"
+//    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}", "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+
+    // thymeleaf
+//    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 test {

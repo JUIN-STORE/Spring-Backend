@@ -23,9 +23,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
-class JwtServiceTest {
+class TokenServiceTest {
     @InjectMocks
-    private JwtService sut;
+    private PrincipalService sut;
 
     @Mock
     private AccountRepository accountRepository;
