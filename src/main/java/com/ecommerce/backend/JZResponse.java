@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @NoArgsConstructor
-public class MyResponse<T> {
+public class JZResponse<T> {
     // api 응답 코드
     private int result;
 
@@ -18,24 +18,28 @@ public class MyResponse<T> {
     // response
     private T data;
 
-    private LocalDateTime timeStamp;
+    private Long timeStamp;
 
-    public MyResponse(HttpStatus result, T data) {
+    public JZResponse(HttpStatus result, T data) {
         this.result = result.value();
         this.data = data;
-        this.timeStamp = LocalDateTime.now();
+        this.timeStamp = now();
     }
 
-    public MyResponse(HttpStatus result, String message) {
+    public JZResponse(HttpStatus result, String message) {
         this.result = result.value();
         this.message = message;
-        this.timeStamp = LocalDateTime.now();
+        this.timeStamp = now();
     }
 
-    public MyResponse(HttpStatus result, String message, T data) {
+    public JZResponse(HttpStatus result, String message, T data) {
         this.result = result.value();
         this.message = message;
         this.data = data;
-        this.timeStamp = LocalDateTime.now();
+        this.timeStamp = now();
+    }
+
+    private Long now() {
+        return ZonedDateTime.now().toInstant().toEpochMilli();
     }
 }

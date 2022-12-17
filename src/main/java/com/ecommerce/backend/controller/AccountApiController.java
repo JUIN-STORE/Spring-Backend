@@ -1,6 +1,6 @@
 package com.ecommerce.backend.controller;
 
-import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.JZResponse;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.response.AccountResponse;
@@ -35,22 +35,22 @@ public class AccountApiController {
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/sign-up")
-    public MyResponse<AccountResponse.SignUp> signUp(@RequestBody AccountRequest.SignUp request) {
+    public JZResponse<AccountResponse.SignUp> signUp(@RequestBody AccountRequest.SignUp request) {
         log.info("POST /api/accounts/sign-up request: {}", request);
 
         try {
             final Account account = accountService.add(request);
             final AccountResponse.SignUp response = AccountResponse.SignUp.from(account);
 
-            return new MyResponse<>(HttpStatus.OK, response);
+            return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @ApiOperation(value = "로그인", notes = "로그인을 한다.")
     @PostMapping("/login")
-    public MyResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request) {
+    public JZResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request) {
         log.info("POST /api/accounts/login request: {}", request);
 
         try {
@@ -65,32 +65,32 @@ public class AccountApiController {
 
             final AccountResponse.Login response = AccountResponse.Login.of(email, accessToken, tokenService.upsertRefreshToken(email));
 
-            return new MyResponse<>(HttpStatus.OK, response);
+            return new JZResponse<>(HttpStatus.OK, response);
         } catch (Exception e) {
             loginException(e);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @ApiOperation(value = "내 정보 읽기", notes = "내 정보를 읽어온다.")
     @GetMapping("/profile")
-    public MyResponse<AccountResponse.Read> profile(Principal principal) {
+    public JZResponse<AccountResponse.Read> profile(Principal principal) {
         log.info("POST /api/accounts/profile principal: {}", principal);
 
         try {
             final Account account = accountService.readByEmail(principal.getName());
             final AccountResponse.Read response = AccountResponse.Read.from(account);
 
-            return new MyResponse<>(HttpStatus.OK, response);
+            return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("EntityNotFoundException - GET /api/accounts/profile principal: {}", principal);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
     @PatchMapping("/update")
-    public MyResponse<AccountResponse.Update> update(final Principal principal,
+    public JZResponse<AccountResponse.Update> update(final Principal principal,
                                                      @RequestBody AccountRequest.Update request) {
         log.debug("Patch /api/accounts/modify request: {}", request);
 
@@ -98,16 +98,16 @@ public class AccountApiController {
             final Account account = accountService.modify(principal, request);
             final AccountResponse.Update response = AccountResponse.Update.from(account);
 
-            return new MyResponse<>(HttpStatus.OK, response);
+            return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("EntityNotFoundException - Patch /api/accounts/modify request: {}", request);
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
     @DeleteMapping("/{accountId}")
-    public MyResponse<AccountResponse.Delete> delete(final Principal principal,
+    public JZResponse<AccountResponse.Delete> delete(final Principal principal,
                                                      @PathVariable Long accountId) {
         log.debug("Delete /api/accounts/{id} principal: {}", principal);
 
@@ -115,9 +115,9 @@ public class AccountApiController {
             final Account account = accountService.remove(principal, accountId);
             final AccountResponse.Delete response = AccountResponse.Delete.from(account);
 
-            return new MyResponse<>(HttpStatus.OK, response);
+            return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            return new MyResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 

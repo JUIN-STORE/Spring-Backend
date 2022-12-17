@@ -1,6 +1,6 @@
 package com.ecommerce.backend.controller;
 
-import com.ecommerce.backend.MyResponse;
+import com.ecommerce.backend.JZResponse;
 import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.request.CategoryRequest;
 import com.ecommerce.backend.domain.response.CategoryResponse;
@@ -26,7 +26,7 @@ public class CategoryApiController {
     // https://bestinu.tistory.com/52
     @ApiOperation(value = "모든 카테고리 읽기", notes = "모든 카테고리를 읽어온다.")
     @GetMapping
-    public MyResponse<List<CategoryResponse.Read>> all() {
+    public JZResponse<List<CategoryResponse.Read>> all() {
         // FIXME: 쿼리 N방 날아감
         final List<Category> categoryList = categoryService.readAll();
 
@@ -37,14 +37,14 @@ public class CategoryApiController {
             response.add(CategoryResponse.Read.from(category, childListResponse));
         }
 
-        return new MyResponse<>(HttpStatus.OK, response);
+        return new JZResponse<>(HttpStatus.OK, response);
     }
 
     @ApiOperation(value = "카테고리 추가", notes = "카테고리를 추가한다.")
     @PostMapping("/admin/new")
-    public MyResponse<Long> createCategory(@RequestBody CategoryRequest.Create request) {
+    public JZResponse<Long> createCategory(@RequestBody CategoryRequest.Create request) {
         final Long response = categoryService.add(request);
-        return new MyResponse<>(HttpStatus.OK, response);
+        return new JZResponse<>(HttpStatus.OK, response);
     }
 
     // FIXME: update, delete 구현해야 됨.
