@@ -6,8 +6,8 @@ import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.domain.response.OrderJoinResponse;
 import com.ecommerce.backend.domain.response.OrderResponse;
-import com.ecommerce.backend.service.JwtService;
 import com.ecommerce.backend.service.OrderService;
+import com.ecommerce.backend.service.PrincipalService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/api/orders")
 public class OrderApiController {
-    private final JwtService jwtService;
+    private final PrincipalService principalService;
 
     private final OrderService orderService;
 
@@ -36,7 +36,7 @@ public class OrderApiController {
     public MyResponse<Page<OrderJoinResponse>> all(Principal principal,
                                                    @Valid @ModelAttribute OrderRequest.Read request,
                                                    @PageableDefault(size = 10) Pageable pageable) {
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         Page<OrderJoinResponse> response = orderService.read(account, request, pageable);
         return new MyResponse<>(HttpStatus.OK, response);
@@ -46,7 +46,7 @@ public class OrderApiController {
     @PostMapping("/new")
     public MyResponse<OrderResponse.Create> newOrder(final Principal principal,
                                                      @RequestBody OrderRequest.Create request) {
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         final Order order = orderService.addOrder(account, request);
         return new MyResponse<>(HttpStatus.OK, OrderResponse.Create.of(order));
@@ -56,7 +56,7 @@ public class OrderApiController {
     @DeleteMapping("/cancel/{orderId}")
     public MyResponse<OrderResponse.Create> cancel(final Principal principal,
                                                    @PathVariable Long orderId) {
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         orderService.cancel(orderId, account.getId());
         return new MyResponse<>(HttpStatus.OK, null);

@@ -79,12 +79,12 @@ public class AccountResponse {
     public static class Login implements Serializable {
         private String email;
 
-        private String token;
+        private TokenResponse token;
 
-        public static Login of(String email, String token) {
+        public static Login of(String email, String accessToken, String refreshToken) {
             return new Login()
                     .setEmail(email)
-                    .setToken("Bearer " + token);
+                    .setToken(TokenResponse.of(accessToken, refreshToken));
         }
     }
 

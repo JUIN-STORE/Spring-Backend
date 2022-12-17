@@ -1,8 +1,12 @@
 package com.ecommerce.backend.exception;
 
 public class Msg {
+    // JWT
+    public static final String INVALID_REFRESH_TOKEN = "Refresh Token 정보가 올바르지 않습니다.";
+
     // account
     public static final String ACCOUNT_NOT_FOUND = "ID, PASSWORD 올바르지 않습니다.";
+    public static final String DUPLICATED_ACCOUNT = "이미 존재하는 계정입니다.";
 
     // address
     public static final String ADDRESS_NOT_FOUND = "주소를 찾을 수 없습니다.";

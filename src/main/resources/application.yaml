@@ -39,7 +39,7 @@ decorator:
 
 jwt:
     header: Authorization
-    secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    secret: SlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNl
     token-validity-in-seconds: 86400
 
 #itemImageLocation: C:/shop/item  # 상품 이미지 업로드 경로

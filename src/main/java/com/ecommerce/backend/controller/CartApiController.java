@@ -5,7 +5,7 @@ import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.request.CartItemRequest;
 import com.ecommerce.backend.domain.response.CartItemResponse;
 import com.ecommerce.backend.service.CartItemService;
-import com.ecommerce.backend.service.JwtService;
+import com.ecommerce.backend.service.PrincipalService;
 import com.ecommerce.backend.service.relation.CartRelationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/carts")
 class CartApiController {
-    private final JwtService jwtService;
+    private final PrincipalService principalService;
 
     private final CartRelationService cartRelationService;
 
@@ -33,7 +33,7 @@ class CartApiController {
     @GetMapping
     public MyResponse<List<CartItemResponse.Read>> one(final Principal principal) {
 
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         var response = cartRelationService.makeCartItemReadResponse(account);
         return new MyResponse<>(HttpStatus.OK, response);
@@ -45,7 +45,7 @@ class CartApiController {
                                            @RequestBody CartItemRequest.Add request) {
 
 
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
         var response = cartItemService.add(account, request);
 
         return new MyResponse<>(HttpStatus.OK, response);
@@ -56,7 +56,7 @@ class CartApiController {
     public MyResponse<Integer> updateQuantity(final Principal principal,
                                               @RequestBody CartItemRequest.Update request) {
 
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         var response = cartItemService.modifyQuantity(account, request);
         return new MyResponse<>(HttpStatus.OK, response);
@@ -68,7 +68,7 @@ class CartApiController {
     public MyResponse<Long> clearCart(final Principal principal,
                                       @RequestBody CartItemRequest.Clear request) {
 
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         var response = cartItemService.remove(account, request);
         return new MyResponse<>(HttpStatus.OK, response);
@@ -79,7 +79,7 @@ class CartApiController {
     public MyResponse<List<CartItemResponse.Buy>> buy(final Principal principal,
                                                          @RequestParam List<Long> itemList) {
 
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         var response = cartRelationService.makeCartItemBuyResponse(account, itemList);
         return new MyResponse<>(HttpStatus.OK, response);

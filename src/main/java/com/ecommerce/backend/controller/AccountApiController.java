@@ -4,8 +4,9 @@ import com.ecommerce.backend.MyResponse;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.response.AccountResponse;
-import com.ecommerce.backend.jwt.JwtTokenUtil;
+import com.ecommerce.backend.jwt.TokenProvider;
 import com.ecommerce.backend.service.AccountService;
+import com.ecommerce.backend.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,8 @@ import java.security.Principal;
 public class AccountApiController {
     private final AccountService accountService;
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final TokenProvider tokenProvider;
+    private final TokenService tokenService;
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/sign-up")
@@ -51,15 +53,17 @@ public class AccountApiController {
     public MyResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request) {
         log.info("POST /api/accounts/login request: {}", request);
 
-        final String email = request.getEmail();
-        final String password = request.getPasswordHash();
-
         try {
             // 이 시점에 １번　쿼리 나감.
             final Authentication authentication =
-                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            final String token = jwtTokenUtil.generateToken(authentication.getName());
-            final AccountResponse.Login response = AccountResponse.Login.of(email, token);
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(request.getEmail(),  request.getPasswordHash())
+                    );
+
+            final String email = authentication.getName();
+            final String accessToken = tokenService.addAccessToken(email);
+
+            final AccountResponse.Login response = AccountResponse.Login.of(email, accessToken, tokenService.upsertRefreshToken(email));
 
             return new MyResponse<>(HttpStatus.OK, response);
         } catch (Exception e) {
@@ -90,7 +94,7 @@ public class AccountApiController {
                                                      @RequestBody AccountRequest.Update request) {
         log.debug("Patch /api/accounts/modify request: {}", request);
 
-        try{
+        try {
             final Account account = accountService.modify(principal, request);
             final AccountResponse.Update response = AccountResponse.Update.from(account);
 
@@ -117,7 +121,7 @@ public class AccountApiController {
         }
     }
 
-    private void loginException(Exception e){
+    private void loginException(Exception e) {
         if (e instanceof DisabledException) log.warn("DisabledException - 스프링 시큐리티 오류");
         if (e instanceof EntityNotFoundException) log.warn("EntityNotFoundException - 디비에 정보 없음.");
         if (e instanceof BadCredentialsException) log.warn("BadCredentialsException - 스프링 시큐리티 오류");

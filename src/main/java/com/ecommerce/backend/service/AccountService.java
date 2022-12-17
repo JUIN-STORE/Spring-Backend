@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
-    private final JwtService jwtService;
     private final AddressService addressService;
     private final CartService cartService;
     private final CartItemService cartItemService;
@@ -35,7 +34,7 @@ public class AccountService {
     private void checkDuplicatedEmail(AccountRequest.SignUp request) {
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
 
-        if (validEmail.isPresent()) throw new EntityExistsException("존재하는 이메일입니다. 다른 이메일을 입력해 주세요.");
+        if (validEmail.isPresent()) throw new EntityExistsException(Msg.DUPLICATED_ACCOUNT);
     }
 
     @Transactional
@@ -122,8 +121,8 @@ public class AccountService {
                 .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
     }
 
-    public boolean checkNotUser(Principal principal) {
-        final AccountRole accountRole = jwtService.readByPrincipal(principal).getAccountRole();
+    public boolean checkNotUser(Account account) {
+        final AccountRole accountRole = readByEmail(account.getEmail()).getAccountRole();
         return accountRole == AccountRole.ADMIN || accountRole == AccountRole.SELLER;
     }
 }

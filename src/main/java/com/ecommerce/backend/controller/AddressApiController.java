@@ -6,7 +6,7 @@ import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.domain.response.AddressResponse;
 import com.ecommerce.backend.service.AddressService;
-import com.ecommerce.backend.service.JwtService;
+import com.ecommerce.backend.service.PrincipalService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/addresses")
 public class AddressApiController {
-    private final JwtService jwtService;
+    private final PrincipalService principalService;
 
     private final AddressService addressService;
 
@@ -33,7 +33,7 @@ public class AddressApiController {
     @PostMapping
     public MyResponse<Void> newAddress(final Principal principal,
                                        @RequestBody AddressRequest.Register request) {
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         try {
             addressService.add(account, request);
@@ -47,7 +47,7 @@ public class AddressApiController {
     @ApiOperation(value = "한 유저의 모든 주소 읽기", notes="한 유저의 모든 주소를 불러온다.")
     @GetMapping("/all")
     public MyResponse<List<AddressResponse.Read>> all(final Principal principal) {
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         try {
             final List<Address> addressList = addressService.readByAccountId(account.getId());
@@ -71,7 +71,7 @@ public class AddressApiController {
                                                 @PathVariable Long addressId) {
         log.info("GET /api/addresses/{addressId} addressId: {}", addressId);
 
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         try {
             final Address address = addressService.readByIdAndAccountId(addressId, account.getId());
@@ -91,7 +91,7 @@ public class AddressApiController {
 
         log.info("PATCH /api/addresses/update -> request: {}", request);
 
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         try {
             addressService.modify(account, request);
@@ -108,7 +108,7 @@ public class AddressApiController {
                                    @PathVariable Long addressId) {
         log.info("DELETE /api/addresses/{addressId} -> addressId: {}", addressId);
 
-        final Account account = jwtService.readByPrincipal(principal);
+        final Account account = principalService.readByPrincipal(principal);
 
         try {
             final long action = addressService.remove(account.getId(), addressId);
