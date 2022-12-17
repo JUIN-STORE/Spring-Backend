@@ -6,7 +6,7 @@ import com.ecommerce.backend.domain.request.CartItemRequest;
 import com.ecommerce.backend.domain.response.CartItemResponse;
 import com.ecommerce.backend.service.CartItemService;
 import com.ecommerce.backend.service.PrincipalService;
-import com.ecommerce.backend.service.relation.CartRelationService;
+import com.ecommerce.backend.relation.CartRelationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;

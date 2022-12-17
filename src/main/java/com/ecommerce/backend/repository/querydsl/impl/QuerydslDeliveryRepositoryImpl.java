@@ -1,6 +1,7 @@
-package com.ecommerce.backend.repository.querydsl;
+package com.ecommerce.backend.repository.querydsl.impl;
 
 import com.ecommerce.backend.domain.entity.Delivery;
+import com.ecommerce.backend.repository.querydsl.QuerydslDeliveryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;

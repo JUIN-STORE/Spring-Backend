@@ -5,7 +5,7 @@ import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.request.ItemRequest;
 import com.ecommerce.backend.domain.response.ItemResponse;
 import com.ecommerce.backend.service.ItemService;
-import com.ecommerce.backend.service.relation.ItemRelationService;
+import com.ecommerce.backend.relation.ItemRelationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;

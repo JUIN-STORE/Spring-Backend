@@ -1,4 +1,4 @@
-package com.ecommerce.backend.service.relation;
+package com.ecommerce.backend.relation;
 
 import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.entity.ItemImage;
