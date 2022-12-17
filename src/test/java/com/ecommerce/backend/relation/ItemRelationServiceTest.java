@@ -7,7 +7,6 @@ import com.ecommerce.backend.domain.enums.ItemStatus;
 import com.ecommerce.backend.domain.response.ItemResponse;
 import com.ecommerce.backend.service.ItemImageService;
 import com.ecommerce.backend.service.ItemService;
-import com.ecommerce.backend.service.relation.ItemRelationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

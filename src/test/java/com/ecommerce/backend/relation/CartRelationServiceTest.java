@@ -10,7 +10,6 @@ import com.ecommerce.backend.domain.response.ItemImageResponse;
 import com.ecommerce.backend.domain.response.ItemResponse;
 import com.ecommerce.backend.service.CartItemService;
 import com.ecommerce.backend.service.CartService;
-import com.ecommerce.backend.service.relation.CartRelationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

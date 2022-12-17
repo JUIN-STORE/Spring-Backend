@@ -1,8 +1,9 @@
-package com.ecommerce.backend.repository.querydsl;
+package com.ecommerce.backend.repository.querydsl.impl;
 
 import com.ecommerce.backend.domain.enums.OrderStatus;
 import com.ecommerce.backend.domain.request.OrderRequest;
 import com.ecommerce.backend.domain.response.OrderJoinResponse;
+import com.ecommerce.backend.repository.querydsl.QuerydslOrderRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;

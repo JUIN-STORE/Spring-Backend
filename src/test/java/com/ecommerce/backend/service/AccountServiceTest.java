@@ -9,7 +9,7 @@ import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.domain.response.OrderResponse;
 import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.AccountRepository;
-import com.ecommerce.backend.service.relation.OrderRelationService;
+import com.ecommerce.backend.relation.OrderRelationService;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

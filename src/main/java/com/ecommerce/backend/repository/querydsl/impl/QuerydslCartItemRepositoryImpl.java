@@ -1,7 +1,8 @@
-package com.ecommerce.backend.repository.querydsl;
+package com.ecommerce.backend.repository.querydsl.impl;
 
 import com.ecommerce.backend.domain.entity.CartItem;
 import com.ecommerce.backend.domain.response.CartItemResponse;
+import com.ecommerce.backend.repository.querydsl.QuerydslCartItemRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
