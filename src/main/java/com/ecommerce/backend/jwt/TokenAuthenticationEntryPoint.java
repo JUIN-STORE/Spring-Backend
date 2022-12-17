@@ -36,7 +36,7 @@ public class TokenAuthenticationEntryPoint implements AuthenticationEntryPoint {
         } else if (e instanceof IllegalArgumentException) {
             log.warn("[P2][COM][ENTY][COME]: JWT claims string is empty. ({})",
                     ((IllegalArgumentException) e).getMessage());
-        } else {
+        } else if (e instanceof Exception){
             log.warn("[P2][COM][ENTY][COME]: Unknown excpetion. ({})", ((Exception) e).getMessage());
         }
         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
