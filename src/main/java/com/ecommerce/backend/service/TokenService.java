@@ -33,11 +33,13 @@ public class TokenService {
     }
 
     public Authentication makeAuthenticationByRefreshToken(String refreshToken) {
-        UserDetails userDetails = principalService.loadUserByUsername(tokenProvider.getEmailFromToken(refreshToken));
+        UserDetails userDetails
+                = principalService.loadUserByUsername(
+                        tokenProvider.getEmailFromToken(refreshToken));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public Token add(String email, String refreshToken) {
+    private Token add(String email, String refreshToken) {
         final Token token = Token.builder()
                 .email(email)
                 .refreshToken(refreshToken)
@@ -76,15 +78,15 @@ public class TokenService {
     }
 
 
-    public Token readByEmail(String email) {
+    private Token readByEmail(String email) {
         return tokenRepository.findByEmail(email);
     }
 
-    public Account readByRefreshToken(String refreshToken) {
+    private Account readByRefreshToken(String refreshToken) {
         return principalService.readByPrincipal(makeAuthenticationByRefreshToken(refreshToken));
     }
 
-    public void modifyRefreshToken(Token token, String refreshToken) {
+    private void modifyRefreshToken(Token token, String refreshToken) {
         token.updateRefreshToken(refreshToken);
     }
 }
