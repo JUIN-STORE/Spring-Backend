@@ -39,7 +39,6 @@ public class TokenRequestFilter extends OncePerRequestFilter {
             if (this.isValidAccessToken(headerAccessToken)) {
                 accessToken = headerAccessToken.substring(7);
                 // accessToken 검증
-                tokenProvider.isValidToken(accessToken);
                 email = tokenProvider.getEmailFromToken(accessToken);
             }
         } catch (Exception e) {

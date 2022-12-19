@@ -1,7 +1,6 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.JZResponse;
-import com.ecommerce.backend.domain.request.TokenRequest;
 import com.ecommerce.backend.domain.response.TokenResponse;
 import com.ecommerce.backend.exception.InvalidRefreshTokenException;
 import com.ecommerce.backend.service.TokenService;
@@ -9,10 +8,7 @@ import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = {"10. Token"})
 @Slf4j
@@ -21,11 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/tokens")
 public final class TokenApiController {
     private final TokenService tokenService;
-
     @PostMapping("/re-issue")
-    public JZResponse<TokenResponse> newToken(@RequestBody TokenRequest request) {
+    public JZResponse<TokenResponse> newToken(@CookieValue(value = "Refresh-Token") String refreshToken) {
         try {
-            final String accessToken = tokenService.reIssue(request);
+            final String accessToken = tokenService.reIssue(refreshToken);
 
             var response = TokenResponse.of(accessToken);
             return new JZResponse<>(HttpStatus.OK, response);

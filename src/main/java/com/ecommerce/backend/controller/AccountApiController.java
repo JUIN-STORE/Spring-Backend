@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -20,7 +21,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Api(tags = {"01. Account"})
 @Slf4j
@@ -50,7 +54,8 @@ public class AccountApiController {
 
     @ApiOperation(value = "로그인", notes = "로그인을 한다.")
     @PostMapping("/login")
-    public JZResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request) {
+    public JZResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request,
+                                                   HttpServletResponse httpServletResponse) {
         log.info("POST /api/accounts/login request: {}", request);
 
         try {
@@ -62,8 +67,18 @@ public class AccountApiController {
 
             final String email = authentication.getName();
             final String accessToken = tokenService.addAccessToken(email);
+            final String refreshToken = tokenService.upsertRefreshToken(email);
 
-            final AccountResponse.Login response = AccountResponse.Login.of(email, accessToken, tokenService.upsertRefreshToken(email));
+            final AccountResponse.Login response = AccountResponse.Login.of(email, accessToken);
+
+            ResponseCookie cookie = ResponseCookie.from("Refresh-Token", refreshToken)
+                    .domain("localhost")
+                    .path("/")
+                    .httpOnly(true)
+                    .secure(true)
+                    .sameSite("None")
+                    .build();
+            httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
 
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (Exception e) {
