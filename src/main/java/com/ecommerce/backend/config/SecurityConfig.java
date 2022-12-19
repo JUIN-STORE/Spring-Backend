@@ -99,6 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/items/search/**",
                 "/api/items/search/count",
                 "/api/categories",
+                "/api/tokens/re-issue",
         };
 
         httpSecurity

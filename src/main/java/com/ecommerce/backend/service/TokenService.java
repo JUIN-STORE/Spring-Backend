@@ -2,7 +2,6 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Token;
-import com.ecommerce.backend.domain.request.TokenRequest;
 import com.ecommerce.backend.exception.InvalidRefreshTokenException;
 import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.jwt.TokenMessage;
@@ -62,22 +61,18 @@ public class TokenService {
     }
 
     @Transactional
-    public String reIssue(TokenRequest request) {
-        if (!tokenProvider.isValidToken(request.getRefreshToken()))
+    public String reIssue(String refreshToken) {
+        if (!tokenProvider.isValidToken(refreshToken))
             throw new InvalidRefreshTokenException(Msg.INVALID_REFRESH_TOKEN);
 
-        final Account account = readByRefreshToken(request.getRefreshToken());
+        final Account account = readByRefreshToken(refreshToken);
         final String email = account.getEmail();
 
         final Token token = readByEmail(email);
-        if (!token.getRefreshToken().equals(request.getRefreshToken()))
+        if (!token.getRefreshToken().equals(refreshToken))
             throw new InvalidRefreshTokenException(Msg.INVALID_REFRESH_TOKEN);
 
-        String accessToken = addAccessToken(email);
-        String refreshToken = addRefreshToken(email);
-
-        modifyRefreshToken(token, refreshToken);
-        return accessToken;
+        return addAccessToken(email);
     }
 
 
