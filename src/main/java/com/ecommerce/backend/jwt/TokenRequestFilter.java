@@ -3,15 +3,12 @@ package com.ecommerce.backend.jwt;
 import com.ecommerce.backend.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,7 +21,7 @@ import static com.ecommerce.backend.jwt.TokenMessage.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TokenRequestFilter extends OncePerRequestFilter implements HandlerInterceptor {
+public class TokenRequestFilter extends OncePerRequestFilter {
     private final PrincipalService principalService;
     private final TokenProvider tokenProvider;
 
@@ -65,18 +62,5 @@ public class TokenRequestFilter extends OncePerRequestFilter implements HandlerI
 
     private boolean isValidAccessToken(String accessToken) {
         return accessToken != null && accessToken.startsWith(BEARER);
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request,
-                                HttpServletResponse response,
-                                Object handler, Exception ex)
-            throws Exception {
-        final ResponseCookie build = ResponseCookie.from("test123141", "test_refreshToken")
-                .httpOnly(true)
-                .path("/")
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, build.toString());
     }
 }

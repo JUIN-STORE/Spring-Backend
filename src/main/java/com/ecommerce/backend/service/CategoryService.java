@@ -24,10 +24,6 @@ public class CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException(Msg.CATEGORY_NOT_FOUND));
     }
 
-    public List<Category> readAll() {
-        return categoryRepository.findAll();
-    }
-
     public List<Category> readAllByParentIdIsNull() {
         // 최상위 카테고리는 null, 최상위 카테고리만 구함.
         return categoryRepository.findAllByParentIsNull()

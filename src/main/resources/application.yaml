@@ -6,6 +6,7 @@ spring:
         url: jdbc:mysql://localhost:3306/jz?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=utf8
         username: root
         password: root
+        initialization-mode: always  # always, embedded, never
     jackson:
         property-naming-strategy: LOWER_CAMEL_CASE
         serialization:
@@ -19,9 +20,11 @@ spring:
         database: MYSQL
         properties:
             hibernate:
+                default_batch_fetch_size: 500
                 hbm2ddl:
                     auto: update      # create, create-drop, update, validate, none
-#            show_sql: true   # 실행되는 쿼리 콘솔 출력
+        open-in-view: true
+    #            show_sql: true   # 실행되는 쿼리 콘솔 출력
 #            use_sql_comments: true # 추가적으로 주석 생성됨
 #            format_sql: true # 쿼리 가독성 좋게 포맷팅
 
