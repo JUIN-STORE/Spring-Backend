@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -78,40 +77,6 @@ class CategoryServiceTest {
 
             // then
             actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.CATEGORY_NOT_FOUND);
-        }
-    }
-
-    @Nested
-    @DisplayName("readAll 테스트")
-    class ReadAllTest {
-        @Test
-        @DisplayName("모든 카테고리 불러오기")
-        void readAllTest01() {
-            // given
-            var parent = makeParent(1L, "BOOK", 0L);
-            var child = makeChild(2L, "BOOK", 1L, parent);
-            var expected = List.of(parent, child);
-
-            given(categoryRepository.findAll()).willReturn(expected);
-
-            // when
-            final List<Category> actual = sut.readAll();
-
-            // then
-            assertEquals(expected, actual);
-        }
-
-        @Test
-        @DisplayName("카테고리가 하나도 없을 때")
-        void readAllTest02() {
-            // given
-            given(categoryRepository.findAll()).willReturn(null);
-
-            // when
-            final List<Category> actual = sut.readAll();
-
-            // then
-            assertNull(actual);
         }
     }
 
