@@ -81,10 +81,10 @@ public class AccountResponse {
 
         private TokenResponse token;
 
-        public static Login of(String email, String accessToken, String refreshToken) {
+        public static Login of(String email, String accessToken) {
             return new Login()
                     .setEmail(email)
-                    .setToken(TokenResponse.of(accessToken, refreshToken));
+                    .setToken(TokenResponse.of(accessToken));
         }
     }
 

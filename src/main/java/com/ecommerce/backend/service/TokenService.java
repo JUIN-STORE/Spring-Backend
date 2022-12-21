@@ -2,7 +2,6 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Token;
-import com.ecommerce.backend.domain.request.TokenRequest;
 import com.ecommerce.backend.exception.InvalidRefreshTokenException;
 import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.jwt.TokenMessage;
@@ -34,11 +33,13 @@ public class TokenService {
     }
 
     public Authentication makeAuthenticationByRefreshToken(String refreshToken) {
-        UserDetails userDetails = principalService.loadUserByUsername(tokenProvider.getEmailFromToken(refreshToken));
+        UserDetails userDetails
+                = principalService.loadUserByUsername(
+                        tokenProvider.getEmailFromToken(refreshToken));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public Token add(String email, String refreshToken) {
+    private Token add(String email, String refreshToken) {
         final Token token = Token.builder()
                 .email(email)
                 .refreshToken(refreshToken)
@@ -62,34 +63,30 @@ public class TokenService {
     }
 
     @Transactional
-    public String reIssue(TokenRequest request) {
-        if (!tokenProvider.isValidToken(request.getRefreshToken()))
+    public String reIssue(String refreshToken) {
+        if (!tokenProvider.isValidToken(refreshToken))
             throw new InvalidRefreshTokenException(Msg.INVALID_REFRESH_TOKEN);
 
-        final Account account = readByRefreshToken(request.getRefreshToken());
+        final Account account = readByRefreshToken(refreshToken);
         final String email = account.getEmail();
 
         final Token token = readByEmail(email);
-        if (!token.getRefreshToken().equals(request.getRefreshToken()))
+        if (!token.getRefreshToken().equals(refreshToken))
             throw new InvalidRefreshTokenException(Msg.INVALID_REFRESH_TOKEN);
 
-        String accessToken = addAccessToken(email);
-        String refreshToken = addRefreshToken(email);
-
-        modifyRefreshToken(token, refreshToken);
-        return accessToken;
+        return addAccessToken(email);
     }
 
 
-    public Token readByEmail(String email) {
+    private Token readByEmail(String email) {
         return tokenRepository.findByEmail(email);
     }
 
-    public Account readByRefreshToken(String refreshToken) {
+    private Account readByRefreshToken(String refreshToken) {
         return principalService.readByPrincipal(makeAuthenticationByRefreshToken(refreshToken));
     }
 
-    public void modifyRefreshToken(Token token, String refreshToken) {
+    private void modifyRefreshToken(Token token, String refreshToken) {
         token.updateRefreshToken(refreshToken);
     }
 }
