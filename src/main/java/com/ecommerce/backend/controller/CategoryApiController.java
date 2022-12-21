@@ -27,13 +27,13 @@ public class CategoryApiController {
     @ApiOperation(value = "모든 카테고리 읽기", notes = "모든 카테고리를 읽어온다.")
     @GetMapping
     public JZResponse<List<CategoryResponse.Read>> all() {
-        // FIXME: 쿼리 N방 날아감
-        final List<Category> categoryList = categoryService.readAll();
+        final List<Category> categoryList = categoryService.readAllByParentIdIsNull();
 
         final List<CategoryResponse.Read> response = new ArrayList<>();
 
         for (Category category : categoryList) {
-            final List<CategoryResponse.ReadChildList> childListResponse = CategoryResponse.ReadChildList.from(category.getChildList());
+            final List<CategoryResponse.ReadChildList> childListResponse =
+                    CategoryResponse.ReadChildList.from(category.getChildList()); // LAZY 로딩 초기화, OSIV 최적화해야 됨.
             response.add(CategoryResponse.Read.from(category, childListResponse));
         }
 
