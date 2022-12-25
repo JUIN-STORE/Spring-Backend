@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -40,14 +39,15 @@ public class AccountApiController {
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/sign-up")
     public JZResponse<AccountResponse.SignUp> signUp(@RequestBody AccountRequest.SignUp request) {
-        log.info("POST /api/accounts/sign-up request: {}", request);
+        log.info("[P9][CON][ACNT][SIGN]: 회원가입 요청, request = ({})", request);
 
         try {
             final Account account = accountService.add(request);
             final AccountResponse.SignUp response = AccountResponse.SignUp.from(account);
 
             return new JZResponse<>(HttpStatus.OK, response);
-        } catch (EntityNotFoundException e) {
+        } catch (Exception e) {
+            log.error("[P1][CON][ACNT][SIGN]: 알 수 없는 예외가 발생했습니다. message=({})", e.getMessage());
             return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -56,13 +56,13 @@ public class AccountApiController {
     @PostMapping("/login")
     public JZResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request,
                                                    HttpServletResponse httpServletResponse) {
-        log.info("POST /api/accounts/login request: {}", request);
+        log.info("[P9][CON][ACNT][LOIN]: 로그인 요청, request=({})", request);
 
         try {
             // 이 시점에 １번　쿼리 나감.
             final Authentication authentication =
                     authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(request.getEmail(),  request.getPasswordHash())
+                            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPasswordHash())
                     );
 
             final String email = authentication.getName();
@@ -81,8 +81,8 @@ public class AccountApiController {
             httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
 
             return new JZResponse<>(HttpStatus.OK, response);
-        } catch (Exception e) {
-            loginException(e);
+        } catch (EntityNotFoundException | BadCredentialsException e) {
+            log.warn("[P5][CON][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
             return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -90,15 +90,17 @@ public class AccountApiController {
     @ApiOperation(value = "내 정보 읽기", notes = "내 정보를 읽어온다.")
     @GetMapping("/profile")
     public JZResponse<AccountResponse.Read> profile(Principal principal) {
-        log.info("POST /api/accounts/profile principal: {}", principal);
+        final String email = principal.getName();
+
+        log.info("[P9][CON][ACNT][PROF]: 내 정보 읽기, email=({})", email);
 
         try {
-            final Account account = accountService.readByEmail(principal.getName());
+            final Account account = accountService.readByEmail(email);
             final AccountResponse.Read response = AccountResponse.Read.from(account);
 
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("EntityNotFoundException - GET /api/accounts/profile principal: {}", principal);
+            log.warn("[P5][CON][ACNT][PROF]: 회원 정보가 없습니다. email=({})", email);
             return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -107,7 +109,7 @@ public class AccountApiController {
     @PatchMapping("/update")
     public JZResponse<AccountResponse.Update> update(final Principal principal,
                                                      @RequestBody AccountRequest.Update request) {
-        log.debug("Patch /api/accounts/modify request: {}", request);
+        log.info("[P9][CON][ACNT][UPDE]: 회원 정보 수정, request=({})", request);
 
         try {
             final Account account = accountService.modify(principal, request);
@@ -115,7 +117,7 @@ public class AccountApiController {
 
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("EntityNotFoundException - Patch /api/accounts/modify request: {}", request);
+            log.warn("[P5][CON][ACNT][UPDE]: 회원 정보가 없습니다. request=({})", request);
             return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -124,7 +126,7 @@ public class AccountApiController {
     @DeleteMapping("/{accountId}")
     public JZResponse<AccountResponse.Delete> delete(final Principal principal,
                                                      @PathVariable Long accountId) {
-        log.debug("Delete /api/accounts/{id} principal: {}", principal);
+        log.info("[P9][CON][ACNT][DELE]: 회원 정보 삭제, accountId=({})", accountId);
 
         try {
             final Account account = accountService.remove(principal, accountId);
@@ -132,13 +134,8 @@ public class AccountApiController {
 
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
+            log.warn("[P5][CON][ACNT][DELE]: 회원 정보가 없습니다. accountId=({})", accountId);
             return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
-    }
-
-    private void loginException(Exception e) {
-        if (e instanceof DisabledException) log.warn("DisabledException - 스프링 시큐리티 오류");
-        if (e instanceof EntityNotFoundException) log.warn("EntityNotFoundException - 디비에 정보 없음.");
-        if (e instanceof BadCredentialsException) log.warn("BadCredentialsException - 스프링 시큐리티 오류");
     }
 }

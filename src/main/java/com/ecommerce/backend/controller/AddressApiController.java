@@ -33,13 +33,16 @@ public class AddressApiController {
     @PostMapping
     public JZResponse<Void> newAddress(final Principal principal,
                                        @RequestBody AddressRequest.Register request) {
+        final String email = principal.getName();
+        log.info("[P9][CON][ADDR][NEW_]: 주소 추가, email=({}), request=({})", email, request);
+
         final Account account = principalService.readByPrincipal(principal);
 
         try {
             addressService.add(account, request);
             return new JZResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
-            log.warn("POST /api/addresses -> request: {} EntityNotFoundException",  request);
+            log.warn("[P5][CON][ADDR][NEW_]: 회원 정보가 없습니다. email=({}), request=({})", email, request);
             return new JZResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
@@ -47,6 +50,8 @@ public class AddressApiController {
     @ApiOperation(value = "한 유저의 모든 주소 읽기", notes="한 유저의 모든 주소를 불러온다.")
     @GetMapping("/all")
     public JZResponse<List<AddressResponse.Read>> all(final Principal principal) {
+        log.info("[P9][CON][ADDR][ALL_]: 한 유저의 모든 주소 읽기, email=({})", principal.getName());
+
         final Account account = principalService.readByPrincipal(principal);
 
         try {
@@ -69,7 +74,7 @@ public class AddressApiController {
     @GetMapping("/{addressId}")
     public JZResponse<AddressResponse.Read> one(final Principal principal,
                                                 @PathVariable Long addressId) {
-        log.info("GET /api/addresses/{addressId} addressId: {}", addressId);
+        log.info("[P9][CON][ADDR][ONE_]: 주소 읽기, email=({}), addressId=({})", principal.getName(), addressId);
 
         final Account account = principalService.readByPrincipal(principal);
 
