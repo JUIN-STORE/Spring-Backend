@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -106,12 +107,12 @@ public class ItemApiController {
 
     @ApiOperation(value = "상품 목록 읽기", notes = "전체 또는 카테고리 별 상품 조회")
     @GetMapping
-    public JZResponse<List<ItemResponse.Read>> retrieveAll(@PageableDefault(size = 10) Pageable pageable,
+    public JZResponse<Page<ItemResponse.Read>> retrieveAll(@PageableDefault(size = 10) Pageable pageable,
                                                            @RequestParam(required = false) Long categoryId) {
         log.info("[P9][CON][ITEM][ALL_]: GET /api/items pageable({}), categoryId({})", pageable, categoryId);
 
         try {
-            List<ItemResponse.Read> response = itemRelationService.display(pageable, categoryId);
+            Page<ItemResponse.Read> response = itemRelationService.display(pageable, categoryId);
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
@@ -119,34 +120,20 @@ public class ItemApiController {
         }
     }
 
-    @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
-    @GetMapping("/count")
-    public long readCount() {
-        log.info("[P9][CON][ITEM][CNT_]: GET /api/items/count");
-        return itemService.total();
-    }
-
     @ApiOperation(value = "상품 검색하기", notes = "전체 또는 특정 카테고리에서 상품을 상품이름으로 검색해서 찾는다")
     @GetMapping("/search")
-    public JZResponse<List<ItemResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
+    public JZResponse<Page<ItemResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
                                                       @RequestParam("name") String searchTitle,
                                                       @RequestParam(required = false) Long categoryId) {
         try {
             log.info("[P9][CON][ITEM][SRCH]: GET /api/items/search pageable({}), searchTitle({}), categoryId({})",
                     pageable, searchTitle, categoryId);
-            List<ItemResponse.Read> response = itemRelationService.search(pageable, searchTitle, categoryId);
+            Page<ItemResponse.Read> response = itemRelationService.search(pageable, searchTitle, categoryId);
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JZResponse<>(HttpStatus.BAD_REQUEST, null);
         }
-    }
-
-    @ApiOperation(value = "검색한 상품의 개수", notes = "검색한 상품의 개수를 반환한다.")
-    @GetMapping("/search/count")
-    public Long readSearchCount(@RequestParam("name") String searchTitle) {
-        log.info("[P9][CON][ITEM][SHCT]: GET /api/items/search/count searchTitle({})", searchTitle);
-        return itemService.totalByNameContaining(searchTitle);
     }
 }
 
