@@ -36,6 +36,7 @@ public class OrderApiController {
     public JZResponse<Page<OrderJoinResponse>> all(Principal principal,
                                                    @Valid @ModelAttribute OrderRequest.Read request,
                                                    @PageableDefault(size = 10) Pageable pageable) {
+        log.info("[P9][CON][ORDR][ALL_]: GET /api/orders pageable({}), request({})", pageable, request);
         final Account account = principalService.readByPrincipal(principal);
 
         Page<OrderJoinResponse> response = orderService.read(account, request, pageable);
@@ -46,6 +47,7 @@ public class OrderApiController {
     @PostMapping("/new")
     public JZResponse<OrderResponse.Create> newOrder(final Principal principal,
                                                      @RequestBody OrderRequest.Create request) {
+        log.info("[P9][CON][ORDR][NEW_]: POST /api/orders/new request({})", request);
         final Account account = principalService.readByPrincipal(principal);
 
         final Order order = orderService.addOrder(account, request);
@@ -56,6 +58,7 @@ public class OrderApiController {
     @DeleteMapping("/cancel/{orderId}")
     public JZResponse<OrderResponse.Create> cancel(final Principal principal,
                                                    @PathVariable Long orderId) {
+        log.info("[P9][CON][ORDR][CNCL]: DELETE /api/orders/cancel orderId({})", orderId);
         final Account account = principalService.readByPrincipal(principal);
 
         orderService.cancel(orderId, account.getId());
