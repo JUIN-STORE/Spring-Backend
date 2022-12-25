@@ -8,7 +8,10 @@ import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = {"10. Token"})
 @Slf4j
@@ -17,8 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tokens")
 public final class TokenApiController {
     private final TokenService tokenService;
+
     @PostMapping("/re-issue")
     public JZResponse<TokenResponse> newToken(@CookieValue(value = "Refresh-Token") String refreshToken) {
+        log.info("[P9][CON][TOKN][NEW_]: accessToken이 만료되어 새로운 토큰을 요청합니다. refreshToken=({})", refreshToken);
+
         try {
             final String accessToken = tokenService.reIssue(refreshToken);
 
