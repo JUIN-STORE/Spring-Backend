@@ -41,8 +41,8 @@ public class ItemService {
         final Category category = categoryService.readById(request.getCategoryId());
         final Item item = request.toItem(category);
 
-        itemCategoryService.add(item, category);
         itemRepository.save(item);
+        itemCategoryService.add(item, category);
 
         // 썸네일 등록
         itemImageService.add(new ItemImageRequest.Create(true), thumbnailImage, item);
