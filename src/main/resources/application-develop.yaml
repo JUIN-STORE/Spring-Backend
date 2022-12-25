@@ -1,0 +1,55 @@
+server:
+    port: 12345
+
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: 'jdbc:mysql://jz-ecommerce.cwrb7q3p0zpb.ap-northeast-2.rds.amazonaws.com:3306/jz'
+        username: jz
+        password: jzecommerce
+        initialization-mode: always  # always, embedded, never
+    jackson:
+        property-naming-strategy: LOWER_CAMEL_CASE
+        serialization:
+            fail-on-empty-beans: false
+    mvc:
+        hiddenmethod:
+            filter:
+                enabled: true
+
+    jpa:
+        database: MYSQL
+        properties:
+            hibernate:
+                default_batch_fetch_size: 500
+                hbm2ddl:
+                    auto: create-drop      # create, create-drop, update, validate, none
+        open-in-view: true
+    #            show_sql: true   # 실행되는 쿼리 콘솔 출력
+    #            use_sql_comments: true # 추가적으로 주석 생성됨
+    #            format_sql: true # 쿼리 가독성 좋게 포맷팅
+
+
+    servlet:
+        multipart:
+            max-file-size: 20MB           # 파일 한 개당 최대 사이즈
+            max-request-size: 100MB       # 요청당 최대 파일 크
+
+decorator:
+    datasource:
+        p6spy:
+            # SQL 로그 찍기
+            enable-logging: true
+
+jwt:
+    header: Authorization
+    secret: SlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNl
+    token-validity-in-seconds: 86400
+
+#itemImageLocation: C:/shop/item  # 상품 이미지 업로드 경로
+#uploadPath: file:///C:/shop/           # 리소스 업로드 경로
+
+item-image-location: ../frontend/src/assets/items/       # 상품 이미지 업로드 경로
+uploadPath: file:///../frontend/src/assets/items/           # 리소스 업로드 경로
+
+personalColorEndPoint: "http://localhost:55555/upload"
