@@ -2,6 +2,7 @@ package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.request.CategoryRequest;
+import com.ecommerce.backend.domain.response.CategoryResponse;
 import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.CategoryRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
@@ -15,10 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -39,7 +40,7 @@ class CategoryServiceTest {
         @DisplayName("최상위 카테고리가 존재할 때")
         void readByIdTest01() {
             // given
-            var expected = makeParent(1L, "BOOK", 0L);
+            var expected = makeParent(1L, "BOOK", 0L, null);
             given(categoryRepository.findById(anyLong())).willReturn(Optional.of(expected));
 
             // when
@@ -53,7 +54,7 @@ class CategoryServiceTest {
         @DisplayName("하위 카테고리가 존재할 때")
         void readByIdTest02() {
             // given
-            var parent = makeParent(1L, "BOOK", 0L);
+            var parent = makeParent(1L, "BOOK", 0L, null);
             var expected = makeChild(20L, "IT-BOOK", 1L, parent);
 
             given(categoryRepository.findById(anyLong())).willReturn(Optional.of(expected));
@@ -82,42 +83,37 @@ class CategoryServiceTest {
 
 
     @Nested
-    @DisplayName("readAllByParentIdIsNull 테스트")
-    class ReadAllByParentIdIsNullTest {
+    @DisplayName("readAllTest 테스트")
+    class ReadAllTest {
         @Test
-        @DisplayName("최상위 카테고리가 하나이상 있을 때")
+        @DisplayName("성공")
         void readAllByParentIdIsNullTest01() {
             // given
-            var expected = List.of(makeParent(1L, "BOOK", 0L));
+            var childCategory = makeChild(2L, "IT-BOOK", 2L, null);
+            var childList = List.of(childCategory);
+            var category = makeParent(1L, "BOOK", 0L, childList);
+            var categoryList = List.of(category);
 
-            given(categoryRepository.findAllByParentIsNull()).willReturn(Optional.of(expected));
-
-            // when
-            final List<Category> actual = sut.readAllByParentIdIsNull();
-
-            // then
-            assertEquals(expected, actual);
-        }
-
-        @Test
-        @DisplayName("최상위 카테고리가 하나도 없을 때")
-        void readAllByParentIdIsNullTest02() {
-            // given
-            var expected = new ArrayList<>();
-            given(categoryRepository.findAllByParentIsNull()).willReturn(Optional.empty());
+            given(categoryRepository.findAllByParentIsNull()).willReturn(Optional.of(categoryList));
 
             // when
-            final List<Category> actual = sut.readAllByParentIdIsNull();
+            final List<CategoryResponse.Read> actual = sut.readAll();
 
             // then
-            assertEquals(expected, actual);
+            assertAll(
+                    () -> assertEquals(categoryList.size(), actual.size()),
+                    () -> assertEquals(category.getCategoryName(), actual.get(0).getCategoryName()),
+                    () -> assertEquals(category.getId(), actual.get(0).getId()),
+                    () -> assertEquals(category.getDepth(), actual.get(0).getDepth()),
+                    () -> assertEquals(category.getChildList().size(), actual.get(0).getChildList().size()));
         }
     }
 
-    private Category makeParent(Long id, String categoryName, Long depth) {
+    private Category makeParent(Long id, String categoryName, Long depth, List<Category> childList) {
         return Category.builder()
                 .id(id)
                 .categoryName(categoryName)
+                .childList(childList)
                 .depth(depth)
                 .build();
     }
@@ -141,7 +137,7 @@ class CategoryServiceTest {
             // given
             var expected = 1L;
             var request = makeCategoryCreateRequest("BOOK", 0L);
-            var parentCategory = makeParent(expected, "BOOK", 0L);
+            var parentCategory = makeParent(expected, "BOOK", 0L, null);
 
             given(categoryRepository.save(any())).willReturn(parentCategory);
 
@@ -158,10 +154,10 @@ class CategoryServiceTest {
             // given
             var expected = 3L;
             var request = makeCategoryCreateRequest("BOOK", 1L);
-            var parentCategory = makeParent(expected, "BOOK", 0L);
+            var parentCategory = makeParent(expected, "BOOK", 0L, null);
             var childCategory = makeChild(expected, "BOOK", 3L, parentCategory);
 
-            given( categoryRepository.findById(any())).willReturn(Optional.of(childCategory));
+            given(categoryRepository.findById(any())).willReturn(Optional.of(childCategory));
             given(categoryRepository.save(any())).willReturn(childCategory);
 
             // when

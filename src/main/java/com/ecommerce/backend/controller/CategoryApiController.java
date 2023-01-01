@@ -1,7 +1,6 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.JZResponse;
-import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.request.CategoryRequest;
 import com.ecommerce.backend.domain.response.CategoryResponse;
 import com.ecommerce.backend.service.CategoryService;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags = {"06. Category"})
@@ -27,16 +25,7 @@ public class CategoryApiController {
     @ApiOperation(value = "모든 카테고리 읽기", notes = "모든 카테고리를 읽어온다.")
     @GetMapping
     public JZResponse<List<CategoryResponse.Read>> all() {
-        final List<Category> categoryList = categoryService.readAllByParentIdIsNull();
-
-        final List<CategoryResponse.Read> response = new ArrayList<>();
-
-        for (Category category : categoryList) {
-            final List<CategoryResponse.ReadChildList> childListResponse =
-                    CategoryResponse.ReadChildList.from(category.getChildList()); // LAZY 로딩 초기화, OSIV 최적화해야 됨.
-            response.add(CategoryResponse.Read.from(category, childListResponse));
-        }
-
+        final List<CategoryResponse.Read> response = categoryService.readAll();
         return new JZResponse<>(HttpStatus.OK, response);
     }
 
