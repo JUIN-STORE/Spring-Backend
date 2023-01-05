@@ -1,6 +1,7 @@
 package com.ecommerce.backend.service;
 
 import com.ecommerce.backend.FileUploadComponent;
+import com.ecommerce.backend.S3FileUploadComponent;
 import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.entity.ItemImage;
 import com.ecommerce.backend.domain.request.ItemImageRequest;
@@ -8,13 +9,14 @@ import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.ItemImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,27 +28,19 @@ public class ItemImageService {
 
     private final FileUploadComponent fileUploadComponent;
 
-    @Value("${item-image-location}")
-    private String itemImageLocation;
+    private final S3FileUploadComponent s3FileUploadComponent;
 
     public void add(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) throws IOException {
-        final String originName = multipartFile.getOriginalFilename(); // cat.jpg
+        final String originalFileName = multipartFile.getOriginalFilename(); // cat.jpg
 
-        // 파일 업로드
-        if(StringUtils.hasText(originName)){
-            final String copyImageName = fileUploadComponent.makeCopyFileName(originName);
-            final String imageAbsUrl = fileUploadComponent.makeAbsPath(itemImageLocation, copyImageName);
+        if (!StringUtils.hasText(originalFileName)) throw new InvalidParameterException();
 
-            fileUploadComponent.uploadFile(itemImageLocation, originName, multipartFile.getBytes());   // 원본
-            fileUploadComponent.uploadFile(itemImageLocation, copyImageName, multipartFile.getBytes());     // copy
+        final String uploadFileUrl = s3FileUploadComponent.uploadFile(multipartFile);
+        final String copyImageName = Paths.get(uploadFileUrl).getFileName().toString();
 
-            final ItemImage itemImage =
-                    request.toItemImage(item, copyImageName, imageAbsUrl, originName);
-
-            itemImageRepository.save(itemImage);
-        }
+        final ItemImage itemImage = request.toItemImage(item, copyImageName, uploadFileUrl, originalFileName);
+        itemImageRepository.save(itemImage);
     }
-
 
     public List<ItemImage> readAllByThumbnail(boolean isThumbnail) {
         return itemImageRepository.findByThumbnail(isThumbnail)
