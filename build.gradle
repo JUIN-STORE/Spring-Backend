@@ -54,7 +54,8 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
 
     // lombok
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    compile "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // JWT
     implementation "io.jsonwebtoken:jjwt-api:${jwtVersion}"
@@ -82,6 +83,9 @@ dependencies {
 
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // s3
+    implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
 
     // MariaDB
 //	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
