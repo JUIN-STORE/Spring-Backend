@@ -1,5 +1,5 @@
 server:
-    port: 12345
+    port: 13579
 
 spring:
     datasource:
@@ -24,10 +24,9 @@ spring:
                 hbm2ddl:
                     auto: update      # create, create-drop, update, validate, none
         open-in-view: true
-    #            show_sql: true   # 실행되는 쿼리 콘솔 출력
+#            show_sql: true   # 실행되는 쿼리 콘솔 출력
 #            use_sql_comments: true # 추가적으로 주석 생성됨
 #            format_sql: true # 쿼리 가독성 좋게 포맷팅
-
 
     servlet:
       multipart:
@@ -37,18 +36,27 @@ spring:
 decorator:
     datasource:
         p6spy:
-            # SQL 로그 찍기
-            enable-logging: true
+            enable-logging: true # SQL 로그 찍기
 
 jwt:
     header: Authorization
     secret: SlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNl
     token-validity-in-seconds: 86400
 
-#itemImageLocation: C:/shop/item  # 상품 이미지 업로드 경로
-#uploadPath: file:///C:/shop/           # 리소스 업로드 경로
+item-image-location: ../Vue-Frontend/src/assets/items/       # 상품 이미지 업로드 경로
+uploadPath: file:///../Vue-Frontend/src/assets/items/           # 리소스 업로드 경로
 
-item-image-location: ../frontend/src/assets/items/       # 상품 이미지 업로드 경로
-uploadPath: file:///../frontend/src/assets/items/           # 리소스 업로드 경로
+cloud:
+    aws:
+        s3:
+            bucket: 'jshwang-ecommerce'
+            directory: item
+        stack:
+            auto: false
+        region:
+            static: 'ap-northeast-2'
+            auto: false
+        credentials:
+            instance-profile: true
 
 personalColorEndPoint: "http://localhost:55555/upload"

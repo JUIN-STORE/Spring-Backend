@@ -1,6 +1,5 @@
 package com.ecommerce.backend.service;
 
-import com.ecommerce.backend.FileUploadComponent;
 import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.entity.ItemImage;
 import com.ecommerce.backend.domain.enums.ItemStatus;
@@ -39,8 +38,6 @@ class ItemImageServiceTest {
     @Mock
     ItemImageRepository itemImageRepository;
 
-    @Mock
-    FileUploadComponent fileUploadComponent;
 
     @Nested
     @DisplayName("add 테스트")
