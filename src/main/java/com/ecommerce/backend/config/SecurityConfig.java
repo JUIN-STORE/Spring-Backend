@@ -4,6 +4,7 @@ import com.ecommerce.backend.jwt.TokenAuthenticationEntryPoint;
 import com.ecommerce.backend.jwt.TokenRequestFilter;
 import com.ecommerce.backend.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PrincipalService principalService;
     private final TokenRequestFilter tokenRequestFilter;
     private final TokenAuthenticationEntryPoint tokenAuthenticationEntryPoint;
+
+    @Value("${front.url}")
+    private String frontUrl;
 
     /**
      * 비밀번호 해시
@@ -145,7 +149,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // front url
-        configuration.addAllowedOrigin("http://localhost:54321");
+        configuration.addAllowedOrigin(frontUrl);
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
