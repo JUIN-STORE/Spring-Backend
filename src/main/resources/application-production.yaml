@@ -46,16 +46,11 @@ jwt:
     secret: SlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNl
     token-validity-in-seconds: 86400
 
-#itemImageLocation: C:/shop/item  # 상품 이미지 업로드 경로
-#uploadPath: file:///C:/shop/           # 리소스 업로드 경로
-
-item-image-location: ../frontend/src/assets/items/       # 상품 이미지 업로드 경로
-uploadPath: file:///../frontend/src/assets/items/           # 리소스 업로드 경로
-
 cloud:
     aws:
         s3:
             bucket: 'jshwang-ecommerce'
+            directory: 'item'
         stack:
             auto: false
         region:
