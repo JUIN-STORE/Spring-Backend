@@ -59,4 +59,7 @@ cloud:
         credentials:
             instance-profile: true
 
+front:
+    url: http://localhost:24680
+
 personalColorEndPoint: "http://localhost:55555/upload"
