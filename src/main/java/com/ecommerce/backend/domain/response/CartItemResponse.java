@@ -75,6 +75,7 @@ public class CartItemResponse {
                     .setThumbnail(read.getThumbnail());
 
             return new CartItemResponse.Buy()
+                    .setCount(read.getCount())
                     .setItem(itemResponse)
                     .setItemImage(itemImageResponse);
         }
