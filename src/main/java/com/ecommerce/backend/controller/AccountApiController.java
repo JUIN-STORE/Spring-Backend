@@ -4,13 +4,15 @@ import com.ecommerce.backend.JZResponse;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.response.AccountResponse;
-import com.ecommerce.backend.jwt.TokenProvider;
+import com.ecommerce.backend.jwt.TokenMessage;
 import com.ecommerce.backend.service.AccountService;
+import com.ecommerce.backend.service.PrincipalService;
 import com.ecommerce.backend.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
@@ -28,13 +31,17 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 @Api(tags = {"01. Account"})
 @Slf4j
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/api/accounts")
 public class AccountApiController {
-    private final AccountService accountService;
     private final AuthenticationManager authenticationManager;
-    private final TokenProvider tokenProvider;
+
+    private final PrincipalService principalService;
+    private final AccountService accountService;
     private final TokenService tokenService;
+
+    @Value("${front.cookie.domain}")
+    private String cookieDomain;
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/sign-up")
@@ -43,9 +50,12 @@ public class AccountApiController {
 
         try {
             final Account account = accountService.add(request);
-            final AccountResponse.SignUp response = AccountResponse.SignUp.from(account);
 
+            var response = AccountResponse.SignUp.from(account);
             return new JZResponse<>(HttpStatus.OK, response);
+        } catch(EntityExistsException e) {
+            log.warn("[P5][CON][ACNT][SIGN]: message=({})", e.getMessage());
+            return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             log.error("[P1][CON][ACNT][SIGN]: 알 수 없는 예외가 발생했습니다. message=({})", e.getMessage());
             return new JZResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
@@ -69,10 +79,9 @@ public class AccountApiController {
             final String accessToken = tokenService.addAccessToken(email);
             final String refreshToken = tokenService.upsertRefreshToken(email);
 
-            final AccountResponse.Login response = AccountResponse.Login.of(email, accessToken);
 
-            ResponseCookie cookie = ResponseCookie.from("Refresh-Token", refreshToken)
-                    .domain("localhost")
+            ResponseCookie cookie = ResponseCookie.from(TokenMessage.REFRESH_TOKEN, refreshToken)
+                    .domain(cookieDomain)
                     .path("/")
                     .httpOnly(true)
                     .secure(true)
@@ -80,6 +89,7 @@ public class AccountApiController {
                     .build();
             httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
 
+            var response = AccountResponse.Login.of(email, accessToken);
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException | BadCredentialsException e) {
             log.warn("[P5][CON][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
@@ -89,15 +99,15 @@ public class AccountApiController {
 
     @ApiOperation(value = "내 정보 읽기", notes = "내 정보를 읽어온다.")
     @GetMapping("/profile")
-    public JZResponse<AccountResponse.Read> profile(Principal principal) {
+    public JZResponse<AccountResponse.Read> profile(final Principal principal) {
         final String email = principal.getName();
 
         log.info("[P9][CON][ACNT][PROF]: 내 정보 읽기, email=({})", email);
 
         try {
             final Account account = accountService.readByEmail(email);
-            final AccountResponse.Read response = AccountResponse.Read.from(account);
 
+            var response = AccountResponse.Read.from(account);
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CON][ACNT][PROF]: 회원 정보가 없습니다. email=({})", email);
@@ -106,15 +116,16 @@ public class AccountApiController {
     }
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
-    @PatchMapping("/update")
+    @PatchMapping
     public JZResponse<AccountResponse.Update> update(final Principal principal,
                                                      @RequestBody AccountRequest.Update request) {
         log.info("[P9][CON][ACNT][UPDE]: 회원 정보 수정, request=({})", request);
 
         try {
-            final Account account = accountService.modify(principal, request);
-            final AccountResponse.Update response = AccountResponse.Update.from(account);
+            final Account account = principalService.readByPrincipal(principal);
+            final Account updateAccount = accountService.modify(account, request);
 
+            var response = AccountResponse.Update.from(updateAccount);
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CON][ACNT][UPDE]: 회원 정보가 없습니다. request=({})", request);
@@ -129,9 +140,10 @@ public class AccountApiController {
         log.info("[P9][CON][ACNT][DELE]: 회원 정보 삭제, accountId=({})", accountId);
 
         try {
-            final Account account = accountService.remove(principal, accountId);
-            final AccountResponse.Delete response = AccountResponse.Delete.from(account);
+            final Account account = principalService.readByPrincipal(principal);
+            final Account deleteAccount = accountService.remove(account, accountId);
 
+            var response = AccountResponse.Delete.from(deleteAccount);
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CON][ACNT][DELE]: 회원 정보가 없습니다. accountId=({})", accountId);

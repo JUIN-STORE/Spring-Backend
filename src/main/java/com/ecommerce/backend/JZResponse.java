@@ -4,42 +4,40 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Getter
 @NoArgsConstructor
 public class JZResponse<T> {
-    // api 응답 코드
-    private int result;
+    // api 비즈니스 로직 상태, HTTP Status랑 다름.
+    private int apiStatus;
 
-    // api 부가 설명
+    // api 비즈니스 로직 상태 설명
     private String message;
 
     // response
     private T data;
 
-    private Long timeStamp;
+    // api 요청 시간
+    private final ZonedDateTime timestamp = ZonedDateTime.now();
 
-    public JZResponse(HttpStatus result, T data) {
-        this.result = result.value();
+    // api 서버 리전
+    private final String region = ZoneId.systemDefault().getId();
+
+    public JZResponse(HttpStatus apiStatus, T data) {
+        this.apiStatus = apiStatus.value();
         this.data = data;
-        this.timeStamp = now();
     }
 
-    public JZResponse(HttpStatus result, String message) {
-        this.result = result.value();
+    public JZResponse(HttpStatus apiStatus, String message) {
+        this.apiStatus = apiStatus.value();
         this.message = message;
-        this.timeStamp = now();
     }
 
-    public JZResponse(HttpStatus result, String message, T data) {
-        this.result = result.value();
+    public JZResponse(HttpStatus apiStatus, String message, T data) {
+        this.apiStatus = apiStatus.value();
         this.message = message;
         this.data = data;
-        this.timeStamp = now();
-    }
-
-    private Long now() {
-        return ZonedDateTime.now().toInstant().toEpochMilli();
     }
 }

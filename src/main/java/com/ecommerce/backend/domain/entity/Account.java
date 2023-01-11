@@ -79,4 +79,11 @@ public class Account extends BaseEntity{
             order.fillAccountRelation(this);
         }
     }
+
+    public void updateAccount(Account newAccount) {
+        this.passwordHash = newAccount.passwordHash;
+        this.name = newAccount.name;
+        this.phoneNumber = newAccount.phoneNumber;
+        this.accountRole = newAccount.accountRole;
+    }
 }

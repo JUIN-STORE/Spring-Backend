@@ -6,8 +6,8 @@ import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.response.OrderResponse;
 import com.ecommerce.backend.exception.Msg;
-import com.ecommerce.backend.repository.jpa.AccountRepository;
 import com.ecommerce.backend.relation.OrderRelationService;
+import com.ecommerce.backend.repository.jpa.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,35 +65,28 @@ public class AccountService {
     }
 
     @Transactional
-    public Account modify(Principal principal, AccountRequest.Update request) {
-        final String email = principal.getName();
-        final Account oldAccount = this.readByEmail(email);
+    public Account modify(Account account, AccountRequest.Update request) {
+        Account newAccount = request.toAccount(account.getId(), account.getEmail());
 
-        Account newAccount = request.toAccount(oldAccount.getId(), email);
-        accountRepository.save(newAccount);
+        account.updateAccount(newAccount);
 
         return newAccount;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Account remove(Principal principal, Long accountId) {
-        final String email = principal.getName();
-        final Account account = this.readByIdAndEmail(accountId, email);
-
+    public Account remove(Account account, Long accountId) {
         // Address 구하기
         final List<Address> addressList = addressService.readByAccountId(account.getId());
         final List<Long> addressIdList = addressList.stream().map(Address::getId).collect(Collectors.toList());
 
         OrderResponse.Delete deleteResponse = orderRelationService.remove(accountId);
 
-        final long deliveryDeletedCount = deliveryService.removeByAddressIdList(addressIdList);     // delivery 삭제
-        final long addressDeletedCount =
-                addressService.removeByAddressIdList(account.getId(), addressIdList);               // address 삭제
+        final long deliveryDeletedCount = deliveryService.removeByAddressIdList(addressIdList);
+        final long addressDeletedCount = addressService.removeByAddressIdList(account.getId(), addressIdList);
+        final int cartItemDeletedCount = cartItemService.removeByAccountId(account.getId());
+        final long cartDeletedCount = cartService.removeByAccountId(account.getId());
 
-        final int cartItemDeletedCount = cartItemService.removeByAccountId(account.getId());  // cart_item 삭제
-        final long cartDeletedCount = cartService.removeByAccountId(account.getId());               // cart 삭제
-
-        accountRepository.delete(account);                                                          // account 삭제
+        accountRepository.delete(account);  // account 삭제
 
         log.info("[P9][SRV][ACNT][REMV]: " +
                         "account 삭제 개수:({}), " +
