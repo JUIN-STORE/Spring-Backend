@@ -61,5 +61,7 @@ cloud:
 
 front:
     url: http://localhost:24680
+    cookie:
+        domain: localhost
 
 personalColorEndPoint: "http://localhost:55555/upload"

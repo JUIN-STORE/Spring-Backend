@@ -8,8 +8,8 @@ import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.domain.response.OrderResponse;
 import com.ecommerce.backend.exception.Msg;
-import com.ecommerce.backend.repository.jpa.AccountRepository;
 import com.ecommerce.backend.relation.OrderRelationService;
+import com.ecommerce.backend.repository.jpa.AccountRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,14 +18,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -197,49 +195,19 @@ class AccountServiceTest {
         @DisplayName("정상적으로 수정 성공")
         void modifyTest01() {
             // given
-            final Principal mockPrincipal = Mockito.mock(Principal.class);
-            var request = makeUpdateRequest();
-
-            var expected = makeAccount(AccountRole.USER);
-            request.toAccount(expected.getId(), EMAIL);
-
-            given(mockPrincipal.getName()).willReturn(EMAIL);
-            given(mockAccountRepository.findByEmail(any())).willReturn(Optional.of(expected));
+            var account = makeAccount(AccountRole.USER);
+            var expected = makeUpdateRequest();
 
             // when
-            final Account actual = sut.modify(mockPrincipal, request);
+            final Account actual = sut.modify(account, expected);
 
             // then
-            verify(mockAccountRepository, times(1)).save(any());
-
             assertAll(
-                    () -> assertEquals(expected.getEmail(), actual.getEmail()),
                     () -> assertNotEquals(expected.getPasswordHash(), actual.getPasswordHash()),
-                    () -> assertNotEquals(expected.getName(), actual.getName()),
-                    () -> assertNotEquals(expected.getPhoneNumber(), actual.getPhoneNumber()),
-                    () -> assertNotEquals(expected.getAccountRole(), actual.getAccountRole())
+                    () -> assertEquals(expected.getName(), actual.getName()),
+                    () -> assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber()),
+                    () -> assertEquals(expected.getAccountRole(), actual.getAccountRole())
             );
-        }
-
-        @Test
-        @DisplayName("account를 못 찾아서 수정 실패")
-        void modifyTest02() {
-            // given
-            final Principal mockPrincipal = Mockito.mock(Principal.class);
-            var request = makeUpdateRequest();
-
-            var expected = makeAccount(AccountRole.USER);
-            request.toAccount(expected.getId(), EMAIL);
-
-            given(mockPrincipal.getName()).willReturn(EMAIL);
-            given(mockAccountRepository.findByEmail(any())).willReturn(Optional.empty());
-
-            // when
-            final AbstractThrowableAssert<?, ? extends Throwable> actual =
-                    assertThatThrownBy(() -> sut.modify(mockPrincipal, request));
-
-            // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
         }
     }
 
@@ -250,14 +218,10 @@ class AccountServiceTest {
         @DisplayName("정상적으로 삭제 성공")
         void removeTest01() {
             // given
-            final Principal mockPrincipal = Mockito.mock(Principal.class);
-            given(mockPrincipal.getName()).willReturn(EMAIL);
-
             var account = makeAccount(AccountRole.USER);
 
             var addressList =
                     Arrays.asList(makeAddress(1L, true), makeAddress(3L, false));
-            given(mockAccountRepository.findByIdAndEmail(anyLong(), anyString())).willReturn(Optional.of(account));
 
             var deleteResponse = new OrderResponse.Delete()
                     .setOrdersDeletedCount(1)
@@ -266,7 +230,7 @@ class AccountServiceTest {
             given(mockOrderRelationService.remove(anyLong())).willReturn(deleteResponse);
 
             // when
-            sut.remove(mockPrincipal, account.getId());
+            sut.remove(account, account.getId());
 
             // then
             verify(mockAccountRepository, times(1)).delete(any());
