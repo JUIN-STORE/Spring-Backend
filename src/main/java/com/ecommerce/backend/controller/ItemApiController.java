@@ -4,8 +4,8 @@ import com.ecommerce.backend.JZResponse;
 import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.request.ItemRequest;
 import com.ecommerce.backend.domain.response.ItemResponse;
-import com.ecommerce.backend.relation.ItemRelationService;
-import com.ecommerce.backend.service.ItemService;
+import com.ecommerce.backend.service.command.ItemCommandService;
+import com.ecommerce.backend.service.query.ItemQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -27,8 +27,8 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/items")
 public class ItemApiController {
-    private final ItemService itemService;
-    private final ItemRelationService itemRelationService;
+    private final ItemQueryService itemQueryService;
+    private final ItemCommandService itemCommandService;
 
     @ApiOperation(value = "판매자 상품 등록", notes = "관리자가 상품을 등록한다.")
     @PostMapping(value = "/seller/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -42,7 +42,7 @@ public class ItemApiController {
                 , itemImageFileList);
 
         try {
-            final Long response = itemService.add(request, thumbnailImage, itemImageFileList);
+            final Long response = itemCommandService.add(request, thumbnailImage, itemImageFileList);
 
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (InvalidParameterException e) {
@@ -63,7 +63,7 @@ public class ItemApiController {
         log.info("[P9][CON][ITEM][AMRD]: GET /api/items/seller/{itemId} itemId({})", itemId);
 
         try {
-            final Item item = itemService.readById(itemId);
+            final Item item = itemQueryService.readById(itemId);
             final ItemResponse.Read response = ItemResponse.Read.from(item);
 
             return new JZResponse<>(HttpStatus.OK, "상품 읽기 성공", response);
@@ -79,7 +79,7 @@ public class ItemApiController {
         log.info("[P9][CON][ITEM][AMRM]: DELETE /api/items/seller/{itemId} itemId({})", itemId);
 
         try {
-            final Long response = itemService.remove(itemId);
+            final Long response = itemCommandService.remove(itemId);
 
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
@@ -94,7 +94,7 @@ public class ItemApiController {
         log.info("[P9][CON][ITEM][ONE_]: GET /api/items/{itemId} itemId({})", itemId);
 
         try {
-            final Item item = itemService.readById(itemId);
+            final Item item = itemQueryService.readById(itemId);
             final ItemResponse.Read read = ItemResponse.Read.from(item);
 
             return new JZResponse<>(HttpStatus.OK, read);
@@ -111,7 +111,7 @@ public class ItemApiController {
         log.info("[P9][CON][ITEM][ALL_]: GET /api/items pageable({}), categoryId({})", pageable, categoryId);
 
         try {
-            List<ItemResponse.Read> response = itemRelationService.display(pageable, categoryId);
+            List<ItemResponse.Read> response = itemQueryService.display(pageable, categoryId);
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
@@ -123,7 +123,7 @@ public class ItemApiController {
     @GetMapping("/count")
     public long readCount() {
         log.info("[P9][CON][ITEM][CNT_]: GET /api/items/count");
-        return itemService.total();
+        return itemQueryService.total();
     }
 
     @ApiOperation(value = "상품 검색하기", notes = "전체 또는 특정 카테고리에서 상품을 상품이름으로 검색해서 찾는다")
@@ -134,7 +134,7 @@ public class ItemApiController {
         try {
             log.info("[P9][CON][ITEM][SRCH]: GET /api/items/search pageable({}), searchTitle({}), categoryId({})",
                     pageable, searchTitle, categoryId);
-            List<ItemResponse.Read> response = itemRelationService.search(pageable, searchTitle, categoryId);
+            List<ItemResponse.Read> response = itemQueryService.search(pageable, searchTitle, categoryId);
             return new JZResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
@@ -146,7 +146,7 @@ public class ItemApiController {
     @GetMapping("/search/count")
     public Long readSearchCount(@RequestParam("name") String searchTitle) {
         log.info("[P9][CON][ITEM][SHCT]: GET /api/items/search/count searchTitle({})", searchTitle);
-        return itemService.totalByNameContaining(searchTitle);
+        return itemQueryService.totalByNameContaining(searchTitle);
     }
 }
 

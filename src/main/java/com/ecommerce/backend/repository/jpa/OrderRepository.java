@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslOrderRepository {
-    Optional<List<Order>> findByAccountId(Long accountId);
+    Optional<List<Order>> findAllByAccountId(Long accountId);
 
     Optional<Order> findByIdAndAccountId(Long orderId, Long accountId);
 

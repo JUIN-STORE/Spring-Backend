@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface QuerydslDeliveryRepository {
     long deleteByAddressIdIn(List<Long> addressIdList);
 
-    Optional<List<Delivery>> findByAddressIdIn(List<Long> addressIdList);
+    Optional<List<Delivery>> findAllByAddressIdIn(List<Long> addressIdList);
 }

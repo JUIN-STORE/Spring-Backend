@@ -5,9 +5,9 @@ import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.response.AccountResponse;
 import com.ecommerce.backend.jwt.TokenMessage;
-import com.ecommerce.backend.service.AccountService;
-import com.ecommerce.backend.service.PrincipalService;
-import com.ecommerce.backend.service.TokenService;
+import com.ecommerce.backend.service.command.AccountCommandService;
+import com.ecommerce.backend.service.command.TokenCommandService;
+import com.ecommerce.backend.service.query.PrincipalQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +36,9 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 public class AccountApiController {
     private final AuthenticationManager authenticationManager;
 
-    private final PrincipalService principalService;
-    private final AccountService accountService;
-    private final TokenService tokenService;
+    private final PrincipalQueryService principalQueryService;
+    private final AccountCommandService accountCommandService;
+    private final TokenCommandService tokenCommandService;
 
     @Value("${front.cookie.domain}")
     private String cookieDomain;
@@ -49,7 +49,7 @@ public class AccountApiController {
         log.info("[P9][CON][ACNT][SIGN]: 회원가입 요청, request = ({})", request);
 
         try {
-            final Account account = accountService.add(request);
+            final Account account = accountCommandService.add(request);
 
             var response = AccountResponse.SignUp.from(account);
             return new JZResponse<>(HttpStatus.OK, response);
@@ -76,9 +76,8 @@ public class AccountApiController {
                     );
 
             final String email = authentication.getName();
-            final String accessToken = tokenService.addAccessToken(email);
-            final String refreshToken = tokenService.upsertRefreshToken(email);
-
+            final String accessToken = tokenCommandService.addAccessToken(email);
+            final String refreshToken = tokenCommandService.upsertRefreshToken(email);
 
             ResponseCookie cookie = ResponseCookie.from(TokenMessage.REFRESH_TOKEN, refreshToken)
                     .domain(cookieDomain)
@@ -105,7 +104,7 @@ public class AccountApiController {
         log.info("[P9][CON][ACNT][PROF]: 내 정보 읽기, email=({})", email);
 
         try {
-            final Account account = accountService.readByEmail(email);
+            final Account account = principalQueryService.readByPrincipal(principal);
 
             var response = AccountResponse.Read.from(account);
             return new JZResponse<>(HttpStatus.OK, response);
@@ -122,8 +121,8 @@ public class AccountApiController {
         log.info("[P9][CON][ACNT][UPDE]: 회원 정보 수정, request=({})", request);
 
         try {
-            final Account account = principalService.readByPrincipal(principal);
-            final Account updateAccount = accountService.modify(account, request);
+            final Account account = principalQueryService.readByPrincipal(principal);
+            final Account updateAccount = accountCommandService.modify(account, request);
 
             var response = AccountResponse.Update.from(updateAccount);
             return new JZResponse<>(HttpStatus.OK, response);
@@ -140,8 +139,8 @@ public class AccountApiController {
         log.info("[P9][CON][ACNT][DELE]: 회원 정보 삭제, accountId=({})", accountId);
 
         try {
-            final Account account = principalService.readByPrincipal(principal);
-            final Account deleteAccount = accountService.remove(account, accountId);
+            final Account account = principalQueryService.readByPrincipal(principal);
+            final Account deleteAccount = accountCommandService.remove(account, accountId);
 
             var response = AccountResponse.Delete.from(deleteAccount);
             return new JZResponse<>(HttpStatus.OK, response);
