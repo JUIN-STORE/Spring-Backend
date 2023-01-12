@@ -2,7 +2,7 @@ package com.ecommerce.backend.config;
 
 import com.ecommerce.backend.jwt.TokenAuthenticationEntryPoint;
 import com.ecommerce.backend.jwt.TokenRequestFilter;
-import com.ecommerce.backend.service.PrincipalService;
+import com.ecommerce.backend.service.query.PrincipalQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final PrincipalService principalService;
+    private final PrincipalQueryService principalQueryService;
     private final TokenRequestFilter tokenRequestFilter;
     private final TokenAuthenticationEntryPoint tokenAuthenticationEntryPoint;
 
@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(principalService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(principalQueryService).passwordEncoder(passwordEncoder());
     }
 
     /**

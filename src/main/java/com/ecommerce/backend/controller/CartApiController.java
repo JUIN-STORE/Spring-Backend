@@ -4,9 +4,9 @@ import com.ecommerce.backend.JZResponse;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.request.CartItemRequest;
 import com.ecommerce.backend.domain.response.CartItemResponse;
-import com.ecommerce.backend.relation.CartRelationService;
-import com.ecommerce.backend.service.CartItemService;
-import com.ecommerce.backend.service.PrincipalService;
+import com.ecommerce.backend.service.command.CartItemCommandService;
+import com.ecommerce.backend.service.query.CartQueryService;
+import com.ecommerce.backend.service.query.PrincipalQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -23,19 +23,18 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/carts")
 class CartApiController {
-    private final PrincipalService principalService;
+    private final PrincipalQueryService principalQueryService;
 
-    private final CartRelationService cartRelationService;
-
-    private final CartItemService cartItemService;
+    private final CartQueryService cartQueryService;
+    private final CartItemCommandService cartItemCommandService;
 
     @ApiOperation(value = "카트에 있는 제품 정보 읽기", notes = "카트에 있는 제품 정보를 읽어온다.")
     @GetMapping
     public JZResponse<List<CartItemResponse.Read>> one(final Principal principal) {
 
-        final Account account = principalService.readByPrincipal(principal);
+        final Account account = principalQueryService.readByPrincipal(principal);
 
-        var response = cartRelationService.makeCartItemReadResponse(account);
+        var response = cartQueryService.makeCartItemReadResponse(account);
         return new JZResponse<>(HttpStatus.OK, response);
     }
 
@@ -45,8 +44,8 @@ class CartApiController {
                                            @RequestBody CartItemRequest.Add request) {
 
 
-        final Account account = principalService.readByPrincipal(principal);
-        var response = cartItemService.add(account, request);
+        final Account account = principalQueryService.readByPrincipal(principal);
+        var response = cartItemCommandService.add(account, request);
 
         return new JZResponse<>(HttpStatus.OK, response);
     }
@@ -56,9 +55,9 @@ class CartApiController {
     public JZResponse<Integer> updateQuantity(final Principal principal,
                                               @RequestBody CartItemRequest.Update request) {
 
-        final Account account = principalService.readByPrincipal(principal);
+        final Account account = principalQueryService.readByPrincipal(principal);
 
-        var response = cartItemService.modifyQuantity(account, request);
+        var response = cartItemCommandService.modifyQuantity(account, request);
         return new JZResponse<>(HttpStatus.OK, response);
     }
 
@@ -68,9 +67,9 @@ class CartApiController {
     public JZResponse<Long> clearCart(final Principal principal,
                                       @RequestBody CartItemRequest.Clear request) {
 
-        final Account account = principalService.readByPrincipal(principal);
+        final Account account = principalQueryService.readByPrincipal(principal);
 
-        var response = cartItemService.remove(account, request);
+        var response = cartItemCommandService.remove(account, request);
         return new JZResponse<>(HttpStatus.OK, response);
     }
 
@@ -79,9 +78,9 @@ class CartApiController {
     public JZResponse<List<CartItemResponse.Buy>> buy(final Principal principal,
                                                       @RequestParam List<Long> itemList) {
 
-        final Account account = principalService.readByPrincipal(principal);
+        final Account account = principalQueryService.readByPrincipal(principal);
 
-        var response = cartRelationService.makeCartItemBuyResponse(account, itemList);
+        var response = cartQueryService.makeCartItemBuyResponse(account, itemList);
         return new JZResponse<>(HttpStatus.OK, response);
     }
 }

@@ -25,7 +25,7 @@ public class QuerydslDeliveryRepositoryImpl implements QuerydslDeliveryRepositor
     }
 
     @Override
-    public Optional<List<Delivery>> findByAddressIdIn(List<Long> addressIdList) {
+    public Optional<List<Delivery>> findAllByAddressIdIn(List<Long> addressIdList) {
         return Optional.ofNullable(
                 queryFactory
                         .select(delivery)

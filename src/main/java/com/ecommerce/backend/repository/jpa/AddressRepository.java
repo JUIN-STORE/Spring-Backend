@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long>, QuerydslAddressRepository {
-    Optional<List<Address>> findByAccountId(Long id);
+    Optional<List<Address>> findAllByAccountId(Long id);
 
     Optional<Address> findByIdAndAccountId(Long addressId, Long accountId);
 }

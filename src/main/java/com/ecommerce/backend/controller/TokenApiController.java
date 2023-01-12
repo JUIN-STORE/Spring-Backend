@@ -3,7 +3,7 @@ package com.ecommerce.backend.controller;
 import com.ecommerce.backend.JZResponse;
 import com.ecommerce.backend.domain.response.TokenResponse;
 import com.ecommerce.backend.exception.InvalidRefreshTokenException;
-import com.ecommerce.backend.service.TokenService;
+import com.ecommerce.backend.service.command.TokenCommandService;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping("/api/tokens")
 public final class TokenApiController {
-    private final TokenService tokenService;
+    private final TokenCommandService tokenCommandService;
 
     @PostMapping("/re-issue")
     public JZResponse<TokenResponse> newToken(@CookieValue(value = "Refresh-Token") String refreshToken) {
         log.info("[P9][CON][TOKN][NEW_]: accessToken이 만료되어 새로운 토큰을 요청합니다. refreshToken=({})", refreshToken);
 
         try {
-            final String accessToken = tokenService.reIssue(refreshToken);
+            final String accessToken = tokenCommandService.reIssue(refreshToken);
 
             var response = TokenResponse.of(accessToken);
             return new JZResponse<>(HttpStatus.OK, response);

@@ -7,7 +7,10 @@ import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.request.AddressRequest;
 import com.ecommerce.backend.jwt.TokenMessage;
 import com.ecommerce.backend.jwt.TokenProvider;
-import com.ecommerce.backend.service.AccountService;
+import com.ecommerce.backend.service.command.AccountCommandService;
+import com.ecommerce.backend.service.command.TokenCommandService;
+import com.ecommerce.backend.service.query.AccountQueryService;
+import com.ecommerce.backend.service.query.PrincipalQueryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,20 +41,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AccountApiControllerTest {
     private static final String ACCOUNT_END_POINT = "/api/accounts";
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private MockMvc mockMvc;
 
     @InjectMocks
-    private AccountApiController mockAccountApiController;
+    private AccountApiController sut;
 
-    @Mock private AccountService mockAccountService;
-    @Mock private AuthenticationManager mockAuthenticationManager;
-    @Mock private TokenProvider mockTokenProvider;
+    @Mock private AuthenticationManager authenticationManager;
+    @Mock private PrincipalQueryService principalQueryService;
+    @Mock private AccountQueryService accountQueryService;
+    @Mock private AccountCommandService accountCommandService;
+    @Mock private TokenCommandService tokenCommandService;
+    @Mock private TokenProvider tokenProvider;
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(mockAccountApiController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(sut).build();
     }
 
     @Test
@@ -64,7 +70,7 @@ class AccountApiControllerTest {
 
         final String json = objectMapper.writeValueAsString(request);
 
-        given(mockAccountService.add(request)).willReturn(account);
+        given(accountCommandService.add(request)).willReturn(account);
 
         // when
         final ResultActions perform = mockMvc.perform(post(ACCOUNT_END_POINT + "/sign-up")
@@ -91,8 +97,8 @@ class AccountApiControllerTest {
         final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ6QHouY29tIiwiZXhwIjoxNjYxNjg4MDQ4LCJpYXQiOjE2NjE2NzAwNDh9.4hSbtRIphryCzkuEtpsFMcxBTiQId3vU2KB_ljSvQkQoIf_6qS7A9cT07fe6BfqCkaBMLznwq2rnM6Y6vZxXzQ";
 
         Authentication authentication= new UsernamePasswordAuthenticationToken(email, password);
-        given(mockAuthenticationManager.authenticate(authentication)).willReturn(authentication);
-        given(mockTokenProvider.createToken(authentication.getName(), TokenMessage.ACCESS_TOKEN_VALIDATION_TIME)).willReturn(token);
+        given(authenticationManager.authenticate(authentication)).willReturn(authentication);
+        given(tokenProvider.createToken(authentication.getName(), TokenMessage.ACCESS_TOKEN_VALIDATION_TIME)).willReturn(token);
 
         // when
         final ResultActions perform = mockMvc.perform(post(ACCOUNT_END_POINT + "/login")
@@ -120,7 +126,7 @@ class AccountApiControllerTest {
         var account = makeAccount(email, password, address);
 
         given(mockPrincipal.getName()).willReturn(email);
-        given(mockAccountService.readByEmail(mockPrincipal.getName())).willReturn(account);
+        given(accountQueryService.readByEmail(mockPrincipal.getName())).willReturn(account);
 
         // when
         final ResultActions perform = mockMvc.perform(get(ACCOUNT_END_POINT + "/profile")
