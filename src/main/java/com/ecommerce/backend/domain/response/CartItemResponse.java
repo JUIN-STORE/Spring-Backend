@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 public class CartItemResponse {
     @Data
     @Accessors(chain = true)
-    public static class Read {
+    public static class Retrieve {
         // cart
         private Long itemId;
         private Integer count;                  // 카트 안에 들어 있는 제품의 총 개수
@@ -61,21 +61,21 @@ public class CartItemResponse {
 
         private ItemImageResponse.Buy itemImage;
 
-        public static CartItemResponse.Buy from(CartItemResponse.Read read) {
+        public static CartItemResponse.Buy from(Retrieve retrieve) {
             var itemResponse = new ItemResponse.Buy()
-                    .setItemId(read.getItemId())
-                    .setItemName(read.getItemName())
-                    .setPrice(read.getPrice())
-                    .setDescription(read.getDescription());
+                    .setItemId(retrieve.getItemId())
+                    .setItemName(retrieve.getItemName())
+                    .setPrice(retrieve.getPrice())
+                    .setDescription(retrieve.getDescription());
 
             var itemImageResponse = new ItemImageResponse.Buy()
-                    .setImageUrl(read.getImageUrl())
-                    .setName(read.getItemName())
-                    .setOriginName(read.getOriginImageName())
-                    .setThumbnail(read.getThumbnail());
+                    .setImageUrl(retrieve.getImageUrl())
+                    .setName(retrieve.getItemName())
+                    .setOriginName(retrieve.getOriginImageName())
+                    .setThumbnail(retrieve.getThumbnail());
 
             return new CartItemResponse.Buy()
-                    .setCount(read.getCount())
+                    .setCount(retrieve.getCount())
                     .setItem(itemResponse)
                     .setItemImage(itemImageResponse);
         }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CartItemRequest {
     @Data @Accessors(chain = true)
-    public static class Read implements Serializable{
+    public static class Retrieve implements Serializable{
         private Long itemId;
 
         private int count;

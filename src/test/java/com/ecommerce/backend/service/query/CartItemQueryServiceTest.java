@@ -37,7 +37,7 @@ class CartItemQueryServiceTest {
 
     @Nested
     @DisplayName("readByCartId 테스트")
-    class ReadByCartIdTest {
+    class RetrieveByCartIdTest {
         @Test
         @DisplayName("정상적으로 불러온 케이스")
         void readByCartIdTest01() {
@@ -77,7 +77,7 @@ class CartItemQueryServiceTest {
 
     @Nested
     @DisplayName("readByCartIdAndItemId 테스트")
-    class ReadByCartIdAndItemIdTest {
+    class RetrieveByCartIdAndItemIdTest {
         @Test
         @DisplayName("정상적으로 불러옴")
         void readByCartIdAndItemIdTest01() {
@@ -109,7 +109,7 @@ class CartItemQueryServiceTest {
 
     @Nested
     @DisplayName("readByCartIdAndItemId 테스트")
-    class ReadAllByCartIdAndItemIdListAndThumbnailTest {
+    class RetrieveAllByCartIdAndItemIdListAndThumbnailTest {
         @Test
         @DisplayName("정상적으로 불러옴")
         void readAllByCartIdAndItemIdListAndThumbnailTest01() {
@@ -122,7 +122,7 @@ class CartItemQueryServiceTest {
                     .willReturn(Optional.of(expected));
 
             // when
-            final List<CartItemResponse.Read> actual =
+            final List<CartItemResponse.Retrieve> actual =
                     sut.readAllByCartIdAndItemIdListAndThumbnail(1L, List.of(1L, 2L), true);
 
             // then
@@ -137,7 +137,7 @@ class CartItemQueryServiceTest {
             given(cartItemRepository.findAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
                     .willReturn(Optional.empty());
             // when
-            final List<CartItemResponse.Read> actual =
+            final List<CartItemResponse.Retrieve> actual =
                     sut.readAllByCartIdAndItemIdListAndThumbnail(1L, List.of(1L, 2L), true);
 
             // then
@@ -145,8 +145,8 @@ class CartItemQueryServiceTest {
         }
     }
 
-    private CartItemResponse.Read makeReadResponse(Long itemId, String itemName, Integer price) {
-        var response = new CartItemResponse.Read();
+    private CartItemResponse.Retrieve makeReadResponse(Long itemId, String itemName, Integer price) {
+        var response = new CartItemResponse.Retrieve();
 
         return response.setItemId(itemId)
                 .setItemName(itemName)

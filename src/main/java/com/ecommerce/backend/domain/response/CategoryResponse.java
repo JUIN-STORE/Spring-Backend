@@ -9,17 +9,17 @@ import java.util.List;
 
 public class CategoryResponse {
     @Data @Accessors(chain = true)
-    public static class Read {
+    public static class Retrieve {
         private Long id;
 
         private String categoryName;
 
         private Long depth;
 
-        private List<CategoryResponse.ReadChildList> childList = new ArrayList<>();
+        private List<RetrieveChildList> childList = new ArrayList<>();
 
-        public static Read from(Category category, List<CategoryResponse.ReadChildList> childList) {
-            return new Read()
+        public static Retrieve from(Category category, List<RetrieveChildList> childList) {
+            return new Retrieve()
                     .setId(category.getId())
                     .setCategoryName(category.getCategoryName())
                     .setDepth(category.getDepth())
@@ -28,21 +28,21 @@ public class CategoryResponse {
     }
 
     @Data @Accessors(chain = true)
-    public static class ReadChildList {
+    public static class RetrieveChildList {
         private Long id;
 
         private String categoryName;
 
         private Long depth;
 
-        private List<CategoryResponse.ReadChildList> childList = new ArrayList<>();
+        private List<RetrieveChildList> childList = new ArrayList<>();
 
-        public static List<ReadChildList> from(List<Category> categoryChildList) {
-            List<ReadChildList> response = new ArrayList<>();
+        public static List<RetrieveChildList> from(List<Category> categoryChildList) {
+            List<RetrieveChildList> response = new ArrayList<>();
 
             for (Category category : categoryChildList) {
                 response.add(
-                        new ReadChildList()
+                        new RetrieveChildList()
                                 .setId(category.getId())
                                 .setCategoryName(category.getCategoryName())
                                 .setDepth(category.getDepth())

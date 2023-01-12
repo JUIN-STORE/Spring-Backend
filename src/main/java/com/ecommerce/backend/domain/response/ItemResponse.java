@@ -31,7 +31,7 @@ public class ItemResponse {
         @Enumerated(EnumType.STRING)
         private ItemStatus itemStatus;    // 제품의 상태
 
-        private List<ItemImageResponse.Read> itemImageList = new ArrayList<>();
+        private List<ItemImageResponse.Retrieve> itemImageList = new ArrayList<>();
 
         // 단건
         public static Read from(Item item) {
@@ -44,7 +44,7 @@ public class ItemResponse {
                     .setDescription(item.getDescription())
                     .setItemStatus(item.getItemStatus())
                     .setItemImageList(item.getItemImageList().stream() // 이 시점에 쿼리 나감
-                            .map(ItemImageResponse.Read::of)
+                            .map(ItemImageResponse.Retrieve::of)
                             .collect(Collectors.toList()));
         }
 
@@ -61,7 +61,7 @@ public class ItemResponse {
 
             if (itemImageList != null) {
                 read.setItemImageList(itemImageList.stream()
-                        .map(ItemImageResponse.Read::of)
+                        .map(ItemImageResponse.Retrieve::of)
                         .collect(Collectors.toList()));
             }
 

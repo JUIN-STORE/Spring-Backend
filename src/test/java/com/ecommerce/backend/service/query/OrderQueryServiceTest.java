@@ -33,7 +33,7 @@ class OrderQueryServiceTest {
 
     @Nested
     @DisplayName("주문 상세 조회")
-    class ReadTest {
+    class RetrieveTest {
         @Test
         @DisplayName("성공")
         void readTest01() {
@@ -41,7 +41,7 @@ class OrderQueryServiceTest {
             var page = 0;
             var size = 10;
             var account = makeAccount();
-            var request = new OrderRequest.Read();
+            var request = new OrderRequest.Retrieve();
             var pageRequest = PageRequest.of(page, size);
 
             var orderJoinResponseList = new ArrayList<OrderJoinResponse>();
@@ -61,7 +61,7 @@ class OrderQueryServiceTest {
 
     @Nested
     @DisplayName("회원 주문 내역 조회")
-    class ReadByAccountIdTest {
+    class RetrieveByAccountIdTest {
         @Test
         @DisplayName("성공")
         void readByAccountIdTest() {

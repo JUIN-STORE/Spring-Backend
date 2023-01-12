@@ -36,7 +36,7 @@ public class OrderRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class Read {
+    public static class Retrieve {
         @NotNull
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;

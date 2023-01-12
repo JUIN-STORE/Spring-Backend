@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 public class AddressResponse {
     @Data @Accessors(chain = true)
-    public static class Read {
+    public static class Retrieve {
         private Long id;
 
         private String city;
@@ -17,8 +17,8 @@ public class AddressResponse {
 
         private boolean defaultAddress;
 
-        public static Read from(Address address) {
-            return new Read()
+        public static Retrieve from(Address address) {
+            return new Retrieve()
                     .setId(address.getId())
                     .setCity(address.getCity())
                     .setStreet(address.getStreet())

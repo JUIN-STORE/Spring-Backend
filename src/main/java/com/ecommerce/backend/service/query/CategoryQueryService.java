@@ -26,14 +26,14 @@ public class CategoryQueryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryResponse.Read> readAll() {
+    public List<CategoryResponse.Retrieve> readAll() {
         final List<Category> categoryList = readAllByParentIdIsNull();
-        final List<CategoryResponse.Read> response = new ArrayList<>();
+        final List<CategoryResponse.Retrieve> response = new ArrayList<>();
 
         for (Category category : categoryList) {
-            final List<CategoryResponse.ReadChildList> childListResponse =
-                    CategoryResponse.ReadChildList.from(category.getChildList());
-            response.add(CategoryResponse.Read.from(category, childListResponse));
+            final List<CategoryResponse.RetrieveChildList> childListResponse =
+                    CategoryResponse.RetrieveChildList.from(category.getChildList());
+            response.add(CategoryResponse.Retrieve.from(category, childListResponse));
         }
 
         return response;

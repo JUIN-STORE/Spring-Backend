@@ -29,7 +29,7 @@ class OrderItemQueryServiceTest {
 
     @Nested
     @DisplayName("주문 아이디로 주문 제품 조회하기")
-    class ReadByOrderIdTest {
+    class RetrieveByOrderIdTest {
         @Test
         @DisplayName("성공")
         void readByOrderIdTest01() {

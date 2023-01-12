@@ -30,7 +30,7 @@ public class AccountResponse {
     }
 
     @Data @Accessors(chain = true)
-    public static class Read {
+    public static class Retrieve {
         private Long id;
 
         private String email;
@@ -42,16 +42,16 @@ public class AccountResponse {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        private AddressResponse.Read address;
+        private AddressResponse.Retrieve address;
 
-        public static Read from(Account account) {
-            return new Read()
+        public static Retrieve from(Account account) {
+            return new Retrieve()
                     .setId(account.getId())
                     .setEmail(account.getEmail())
                     .setName(account.getName())
                     .setPhoneNumber(account.getPhoneNumber())
                     .setAccountRole(account.getAccountRole())
-                    .setAddress(AddressResponse.Read.from(account.getAddressList().get(0)));
+                    .setAddress(AddressResponse.Retrieve.from(account.getAddressList().get(0)));
         }
     }
 

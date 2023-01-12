@@ -32,7 +32,7 @@ class ItemImageQueryServiceTest {
 
     @Nested
     @DisplayName("readAllByThumbnail 테스트")
-    class ReadAllByThumbnail {
+    class RetrieveAllByThumbnail {
         @Test
         @DisplayName("썸네일 데이터를 불러온다.")
         void readAllByThumbnailTest01() {
@@ -103,7 +103,7 @@ class ItemImageQueryServiceTest {
 
     @Nested
     @DisplayName("readAllByItemIdIn 테스트")
-    class ReadAllByItemIdInTest {
+    class RetrieveAllByItemIdInTest {
         @Test
         @DisplayName("데이터가 있다.")
         void readAllByItemIdInTest01() {

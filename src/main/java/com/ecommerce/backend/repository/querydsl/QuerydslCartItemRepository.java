@@ -17,7 +17,7 @@ public interface QuerydslCartItemRepository {
 
     Optional<List<CartItem>> findByCartIdAndItemIdIn(Long cartId, List<Long> itemIdList);
 
-    Optional<List<CartItemResponse.Read>>
+    Optional<List<CartItemResponse.Retrieve>>
     findAllByCartIdAndItemIdListAndThumbnail(Long cartId, List<Long> itemIdList, boolean isThumbnail);
 
 }

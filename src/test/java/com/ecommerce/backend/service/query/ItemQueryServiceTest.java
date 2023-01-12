@@ -47,7 +47,7 @@ class ItemQueryServiceTest {
 
     @Nested
     @DisplayName("readById 테스트")
-    class ReadByIdTest {
+    class RetrieveByIdTest {
         @Test
         @DisplayName("itemId로 읽기 성공")
         void readByIdTest01() {
@@ -82,7 +82,7 @@ class ItemQueryServiceTest {
 
     @Nested
     @DisplayName("readAllByIdList 테스트")
-    class ReadAllByIdListTest {
+    class RetrieveAllByIdListTest {
         @Test
         @DisplayName("상품 리스트가 하나 이상일 때")
         void ReadAllByIdListTest01() {
@@ -118,7 +118,7 @@ class ItemQueryServiceTest {
 
     @Nested
     @DisplayName("readAll 테스트")
-    class ReadAllTest {
+    class RetrieveAllTest {
         @Test
         @DisplayName("등록된 모든 상품 읽기 성공")
         void readAllTest01() {
@@ -162,7 +162,7 @@ class ItemQueryServiceTest {
 
     @Nested
     @DisplayName("readAllByCategoryId 테스트")
-    class ReadAllByCategoryIdTest{
+    class RetrieveAllByCategoryIdTest {
         @Test
         @DisplayName("카테고리 내에서 전체 상품 읽기 성공")
         void readAllByCategoryIdTest01() {
@@ -208,7 +208,7 @@ class ItemQueryServiceTest {
 
     @Nested
     @DisplayName("readAllByNameContaining 테스트")
-    class ReadAllByNameContainingTest {
+    class RetrieveAllByNameContainingTest {
         @Test
         @DisplayName("카테고리와 무관하게 검색어로 검색 성공")
         void readAllByNameContainingTest01() {
@@ -255,7 +255,7 @@ class ItemQueryServiceTest {
 
     @Nested
     @DisplayName("readAllByNameContainingAndCategoryId 테스트")
-    class ReadAllByNameContainingAndCategoryId {
+    class RetrieveAllByNameContainingAndCategoryId {
         @Test
         @DisplayName("카테고리 안에서 검색 성공")
         void readAllByNameContainingTest01() {
@@ -464,7 +464,7 @@ class ItemQueryServiceTest {
 
     @Nested
     @DisplayName("makeItemReadResponse 테스트")
-    class MakeItemReadResponseTest {
+    class MakeItemRetrieveResponseTest {
         @Test
         @DisplayName("상품에 2개 이상의 이미지가 있을 때")
         void makeItemReadResponseTest01() throws Exception {

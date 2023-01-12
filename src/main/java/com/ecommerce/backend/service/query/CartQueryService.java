@@ -31,7 +31,7 @@ public class CartQueryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CartItemResponse.Read> makeCartItemReadResponse(Account account) {
+    public List<CartItemResponse.Retrieve> makeCartItemReadResponse(Account account) {
         final Cart cart = readByAccountId(account.getId());
 
         final List<CartItem> cartItemList = cartItemQueryService.readByCartId(cart.getId());
@@ -44,13 +44,13 @@ public class CartQueryService {
     @Transactional(readOnly = true)
     public List<CartItemResponse.Buy> makeCartItemBuyResponse(Account account, List<Long> itemIdList) {
         final Cart cart = readByAccountId(account.getId());
-        List<CartItemResponse.Read> readList
+        List<CartItemResponse.Retrieve> retrieveList
                 = cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(cart.getId(), itemIdList, true);
 
         final List<CartItemResponse.Buy> response = new ArrayList<>();
 
-        for (CartItemResponse.Read read : readList) {
-            CartItemResponse.Buy buy = CartItemResponse.Buy.from(read);
+        for (CartItemResponse.Retrieve retrieve : retrieveList) {
+            CartItemResponse.Buy buy = CartItemResponse.Buy.from(retrieve);
             response.add(buy);
         }
 
