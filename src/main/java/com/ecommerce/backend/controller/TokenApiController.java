@@ -1,6 +1,6 @@
 package com.ecommerce.backend.controller;
 
-import com.ecommerce.backend.JZResponse;
+import com.ecommerce.backend.JUINResponse;
 import com.ecommerce.backend.domain.response.TokenResponse;
 import com.ecommerce.backend.exception.InvalidRefreshTokenException;
 import com.ecommerce.backend.service.command.TokenCommandService;
@@ -22,16 +22,16 @@ public final class TokenApiController {
     private final TokenCommandService tokenCommandService;
 
     @PostMapping("/re-issue")
-    public JZResponse<TokenResponse> newToken(@CookieValue(value = "Refresh-Token") String refreshToken) {
+    public JUINResponse<TokenResponse> create(@CookieValue(value = "Refresh-Token") String refreshToken) {
         log.info("[P9][CON][TOKN][NEW_]: accessToken이 만료되어 새로운 토큰을 요청합니다. refreshToken=({})", refreshToken);
 
         try {
             final String accessToken = tokenCommandService.reIssue(refreshToken);
 
             var response = TokenResponse.of(accessToken);
-            return new JZResponse<>(HttpStatus.OK, response);
+            return new JUINResponse<>(HttpStatus.OK, response);
         } catch (InvalidRefreshTokenException e) {
-            return new JZResponse<>(HttpStatus.UNAUTHORIZED, "Refresh-Token 만료되었습니다.");
+            return new JUINResponse<>(HttpStatus.UNAUTHORIZED, "Refresh-Token 만료되었습니다.");
         }
     }
 }

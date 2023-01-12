@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 @NoArgsConstructor
-public class JZResponse<T> {
+public class JUINResponse<T> {
     // api 비즈니스 로직 상태, HTTP Status랑 다름.
     private int apiStatus;
 
@@ -25,17 +25,17 @@ public class JZResponse<T> {
     // api 서버 리전
     private final String region = ZoneId.systemDefault().getId();
 
-    public JZResponse(HttpStatus apiStatus, T data) {
+    public JUINResponse(HttpStatus apiStatus, T data) {
         this.apiStatus = apiStatus.value();
         this.data = data;
     }
 
-    public JZResponse(HttpStatus apiStatus, String message) {
+    public JUINResponse(HttpStatus apiStatus, String message) {
         this.apiStatus = apiStatus.value();
         this.message = message;
     }
 
-    public JZResponse(HttpStatus apiStatus, String message, T data) {
+    public JUINResponse(HttpStatus apiStatus, String message, T data) {
         this.apiStatus = apiStatus.value();
         this.message = message;
         this.data = data;

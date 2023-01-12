@@ -1,6 +1,6 @@
 package com.ecommerce.backend.controller;
 
-import com.ecommerce.backend.JZResponse;
+import com.ecommerce.backend.JUINResponse;
 import com.ecommerce.backend.domain.entity.Account;
 import com.ecommerce.backend.domain.entity.Order;
 import com.ecommerce.backend.domain.request.OrderRequest;
@@ -28,44 +28,45 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/api/orders")
 public class OrderApiController {
+    private final OrderQueryService orderQueryService;
     private final PrincipalQueryService principalQueryService;
 
-    private final OrderQueryService orderQueryService;
     private final OrderCommandService orderCommandService;
 
     @ApiOperation(value = "주문 상세보기", notes = "주문 상세 내역을 조회한다.")
     @GetMapping
-    public JZResponse<Page<OrderJoinResponse>> all(Principal principal,
-                                                   @Valid @ModelAttribute OrderRequest.Read request,
-                                                   @PageableDefault(size = 10) Pageable pageable) {
+    public JUINResponse<Page<OrderJoinResponse>> retrieveAll(Principal principal,
+                                                            @Valid @ModelAttribute OrderRequest.Retrieve request,
+                                                            @PageableDefault(size = 10) Pageable pageable) {
         log.info("[P9][CON][ORDR][ALL_]: GET /api/orders pageable({}), request({})", pageable, request);
+
         final Account account = principalQueryService.readByPrincipal(principal);
 
         var response = orderQueryService.readAll(account, request, pageable);
-        return new JZResponse<>(HttpStatus.OK, response);
+        return new JUINResponse<>(HttpStatus.OK, response);
     }
 
     @ApiOperation(value = "주문하기", notes = "주문을 한다.")
     @PostMapping("/new")
-    public JZResponse<OrderResponse.Create> newOrder(final Principal principal,
+    public JUINResponse<OrderResponse.Create> create(final Principal principal,
                                                      @RequestBody OrderRequest.Create request) {
         log.info("[P9][CON][ORDR][NEW_]: POST /api/orders/new request({})", request);
-        final Account account = principalQueryService.readByPrincipal(principal);
 
+        final Account account = principalQueryService.readByPrincipal(principal);
         final Order order = orderCommandService.add(account, request);
 
         var response = OrderResponse.Create.of(order);
-        return new JZResponse<>(HttpStatus.OK, response);
+        return new JUINResponse<>(HttpStatus.OK, response);
     }
 
     @ApiOperation(value = "주문 취소하기", notes = "주문 취소를 한다.")
     @DeleteMapping("/cancel/{orderId}")
-    public JZResponse<OrderResponse.Create> cancel(final Principal principal,
-                                                   @PathVariable Long orderId) {
+    public JUINResponse<OrderResponse.Create> cancel(final Principal principal,
+                                                     @PathVariable Long orderId) {
         log.info("[P9][CON][ORDR][CNCL]: DELETE /api/orders/cancel orderId({})", orderId);
         final Account account = principalQueryService.readByPrincipal(principal);
 
         orderCommandService.cancel(orderId, account.getId());
-        return new JZResponse<>(HttpStatus.OK, null);
+        return new JUINResponse<>(HttpStatus.OK, null);
     }
 }

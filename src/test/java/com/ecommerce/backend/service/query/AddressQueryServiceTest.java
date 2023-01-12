@@ -35,7 +35,7 @@ class AddressQueryServiceTest {
 
     @Nested
     @DisplayName("readById 테스트")
-    class ReadByIdTest {
+    class RetrieveByIdTest {
         @Test
         @DisplayName("정상적으로 address를 불러옴.")
         void readByIdTest01() {
@@ -67,7 +67,7 @@ class AddressQueryServiceTest {
 
     @Nested
     @DisplayName("readByIdAndAccountId 테스트")
-    class ReadByIdAndAccountId {
+    class RetrieveByIdAndAccountId {
         @Test
         @DisplayName("정상적으로 address를 불러옴.")
         void readByIdAndAccountId01() {
@@ -99,7 +99,7 @@ class AddressQueryServiceTest {
 
     @Nested
     @DisplayName("readByAccountId 테스트")
-    class ReadByAccountId {
+    class RetrieveByAccountId {
         @Test
         @DisplayName("정상적으로 address를 불러옴.")
         void readByAccountId01() {
@@ -132,7 +132,7 @@ class AddressQueryServiceTest {
 
     @Nested
     @DisplayName("readByAccountIdAndDefaultAddress 테스트")
-    class ReadByAccountIdAndDefaultAddress {
+    class RetrieveByAccountIdAndDefaultAddress {
         @Test
         @DisplayName("정상적으로 address를 불러옴.")
         void readByAccountIdAndDefaultAddress01() {
@@ -165,7 +165,7 @@ class AddressQueryServiceTest {
 
     @Nested
     @DisplayName("readByAccountIdAndZipCodeAndCityAndStreet 테스트")
-    class ReadByAccountIdAndZipCodeAndCityAndStreet {
+    class RetrieveByAccountIdAndZipCodeAndCityAndStreet {
         @Test
         @DisplayName("정상적으로 address를 불러옴.")
         void readByAccountIdAndZipCodeAndCityAndStreet01() {

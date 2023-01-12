@@ -25,7 +25,7 @@ public class OrderQueryService {
     private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
-    public Page<OrderJoinResponse> readAll(Account account, OrderRequest.Read request, Pageable pageable) {
+    public Page<OrderJoinResponse> readAll(Account account, OrderRequest.Retrieve request, Pageable pageable) {
         return orderRepository
                 .findOrderJoinOrderItemJoinItemByAccountId(account.getId(), request, pageable)
                 .orElse(new PageImpl<>(new ArrayList<>()));

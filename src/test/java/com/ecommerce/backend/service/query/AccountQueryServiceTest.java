@@ -36,7 +36,7 @@ class AccountQueryServiceTest {
 
     @Nested
     @DisplayName("readById 테스트")
-    class ReadByIdTest {
+    class RetrieveByIdTest {
         @Test
         @DisplayName("정상 케이스")
         void readByIdTest01() {
@@ -68,7 +68,7 @@ class AccountQueryServiceTest {
 
     @Nested
     @DisplayName("readByEmail 테스트")
-    class ReadByEmailTest {
+    class RetrieveByEmailTest {
         @Test
         @DisplayName("정상 케이스")
         void readByEmailTest01() {
@@ -101,7 +101,7 @@ class AccountQueryServiceTest {
 
     @Nested
     @DisplayName("readByEmail 테스트")
-    class ReadByIdAndEmailTest {
+    class RetrieveByIdAndEmailTest {
         @Test
         @DisplayName("id와 email을 통해 계정을 찾음")
         void readByIdAndEmailTest01() {

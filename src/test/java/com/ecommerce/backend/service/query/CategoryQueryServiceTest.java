@@ -33,7 +33,7 @@ class CategoryQueryServiceTest {
 
     @Nested
     @DisplayName("readById 테스트")
-    class ReadByIdTest {
+    class RetrieveByIdTest {
         @Test
         @DisplayName("최상위 카테고리가 존재할 때")
         void readByIdTest01() {
@@ -82,7 +82,7 @@ class CategoryQueryServiceTest {
 
     @Nested
     @DisplayName("readAllTest 테스트")
-    class ReadAllTest {
+    class RetrieveAllTest {
         @Test
         @DisplayName("성공")
         void readAllByParentIdIsNullTest01() {
@@ -95,7 +95,7 @@ class CategoryQueryServiceTest {
             given(categoryRepository.findAllByParentIsNull()).willReturn(Optional.of(categoryList));
 
             // when
-            final List<CategoryResponse.Read> actual = sut.readAll();
+            final List<CategoryResponse.Retrieve> actual = sut.readAll();
 
             // then
             assertAll(

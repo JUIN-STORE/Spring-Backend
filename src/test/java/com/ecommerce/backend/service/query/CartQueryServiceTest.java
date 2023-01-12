@@ -45,7 +45,7 @@ class CartQueryServiceTest {
 
     @Nested
     @DisplayName("readByAccountId 테스트")
-    class ReadByAccountIdTest {
+    class RetrieveByAccountIdTest {
         @Test
         @DisplayName("정상 케이스")
         void readByAccountIdTest01() {
@@ -79,7 +79,7 @@ class CartQueryServiceTest {
 
     @Nested
     @DisplayName("makeCartItemReadResponse 테스트")
-    class MakeCartItemReadResponseTest {
+    class MakeCartItemRetrieveResponseTest {
         @Test
         @DisplayName("성공적으로 리스폰스를 만듦.")
         void makeCartItemReadResponseTest01() {
@@ -108,7 +108,7 @@ class CartQueryServiceTest {
                     .willReturn(expected);
 
             // when
-            final List<CartItemResponse.Read> actual = sut.makeCartItemReadResponse(account);
+            final List<CartItemResponse.Retrieve> actual = sut.makeCartItemReadResponse(account);
 
             // then
             assertIterableEquals(expected, actual);
@@ -132,7 +132,7 @@ class CartQueryServiceTest {
             var expected = new ArrayList<>();
 
             // when
-            final List<CartItemResponse.Read> actual = sut.makeCartItemReadResponse(account);
+            final List<CartItemResponse.Retrieve> actual = sut.makeCartItemReadResponse(account);
 
             // then
             assertIterableEquals(expected, actual);
@@ -265,13 +265,13 @@ class CartQueryServiceTest {
     }
 
 
-    private CartItemResponse.Read makeCartItemReadResponse(Long itemId
+    private CartItemResponse.Retrieve makeCartItemReadResponse(Long itemId
             , String itemName
             , Integer count
             , String itemImageName
             , Boolean isThumbnail) {
 
-        var request = new CartItemResponse.Read();
+        var request = new CartItemResponse.Retrieve();
 
         return request
                 .setItemId(itemId)

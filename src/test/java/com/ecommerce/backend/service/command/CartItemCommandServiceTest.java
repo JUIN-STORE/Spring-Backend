@@ -230,8 +230,8 @@ class CartItemCommandServiceTest {
                 .setCount(count);
     }
 
-    private CartItemResponse.Read makeReadResponse(Long itemId, String itemName, Integer price) {
-        var response = new CartItemResponse.Read();
+    private CartItemResponse.Retrieve makeReadResponse(Long itemId, String itemName, Integer price) {
+        var response = new CartItemResponse.Retrieve();
 
         return response.setItemId(itemId)
                 .setItemName(itemName)

@@ -56,12 +56,12 @@ public class QuerydslCartItemRepositoryImpl implements QuerydslCartItemRepositor
     }
 
     @Override
-    public Optional<List<CartItemResponse.Read>>
+    public Optional<List<CartItemResponse.Retrieve>>
     findAllByCartIdAndItemIdListAndThumbnail(Long cartId, List<Long> itemIdList, boolean isThumbnail) {
 
         return Optional.ofNullable(
                 queryFactory
-                        .select(Projections.fields(CartItemResponse.Read.class
+                        .select(Projections.fields(CartItemResponse.Retrieve.class
                                 , item.id.as("itemId")
                                 , item.name.as("itemName")
                                 , item.price

@@ -34,8 +34,8 @@ public class SwaggerConfig {
 
     private ApiInfo swaggerInfo() {
         return new ApiInfoBuilder()
-                .title("eCommerce API Documentation")
-                .description("eCommerce API Documentation")
+                .title("JUIN-STORE API Documentation")
+                .description("JUIN-STORE API Documentation")
                 .version("1")
                 .build();
     }

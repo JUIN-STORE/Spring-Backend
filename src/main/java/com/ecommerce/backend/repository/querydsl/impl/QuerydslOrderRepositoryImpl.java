@@ -37,7 +37,7 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
 
     @Override
     public Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemByAccountId(Long accountId,
-                                                                                             OrderRequest.Read request,
+                                                                                             OrderRequest.Retrieve request,
                                                                                              Pageable pageable) {
         // FIXME: 더 좋은 방법 있으면 변경하기
         List<OrderJoinResponse> orderJoinResponseList = queryFactory
@@ -72,7 +72,7 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
         return Optional.of(new PageImpl<>(orderJoinResponseList, pageable, countOrderItem(accountId, request)));
     }
 
-    private Long countOrderItem(Long accountId, OrderRequest.Read request) {
+    private Long countOrderItem(Long accountId, OrderRequest.Retrieve request) {
         return queryFactory.select(Wildcard.count)
                 .from(order)
                 .join(orderItem)

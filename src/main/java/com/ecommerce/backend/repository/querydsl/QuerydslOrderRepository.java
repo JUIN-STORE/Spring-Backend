@@ -15,6 +15,6 @@ public interface QuerydslOrderRepository {
     long deleteByAccountId(Long accountId);
 
     Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemByAccountId(Long accountId,
-                                                                                      OrderRequest.Read request,
+                                                                                      OrderRequest.Retrieve request,
                                                                                       Pageable pageable);
 }
