@@ -7,7 +7,6 @@ import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.jwt.TokenMessage;
 import com.ecommerce.backend.jwt.TokenProvider;
 import com.ecommerce.backend.repository.jpa.TokenRepository;
-import com.ecommerce.backend.service.query.PrincipalQueryService;
 import com.ecommerce.backend.service.query.TokenQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ public class TokenCommandService {
     private final TokenRepository tokenRepository;
 
     private final TokenQueryService tokenQueryService;
-    private final PrincipalQueryService principalQueryService;
+
     private final TokenProvider tokenProvider;
 
     // expired time 일부러 파라미터로 안 받음.

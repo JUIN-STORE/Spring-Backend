@@ -24,18 +24,13 @@ import java.util.stream.Collectors;
 public class OrderCommandService {
     private final OrderRepository orderRepository;
 
-    private final OrderQueryService orderQueryService;
-
-    private final AddressQueryService addressQueryService;
-    private final AddressCommandService addressCommandService;
-
     private final ItemQueryService itemQueryService;
+    private final OrderQueryService orderQueryService;
+    private final AddressQueryService addressQueryService;
 
-    private final OrderItemCommandService orderItemQueryService;
-    private final OrderItemCommandService orderItemCommandService;
-
+    private final AddressCommandService addressCommandService;
     private final DeliveryCommandService deliveryCommandService;
-
+    private final OrderItemCommandService orderItemCommandService;
 
     @Transactional
     public Order add(Account account, OrderRequest.Create request) {
@@ -94,7 +89,7 @@ public class OrderCommandService {
     public OrderResponse.Delete remove(Long accountId) {
         final List<Order> orderList = orderQueryService.readAllByAccountId(accountId);
         final List<Long> orderIdList = orderList.stream().map(Order::getId).collect(Collectors.toList());
-        long orderItemDeleteCount = orderItemQueryService.removeByOrderIdList(orderIdList);
+        long orderItemDeleteCount = orderItemCommandService.removeByOrderIdList(orderIdList);
         long ordersDeleteCount = removeByAccountId(accountId);
 
         return OrderResponse.Delete.of(ordersDeleteCount, orderItemDeleteCount);

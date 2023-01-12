@@ -23,9 +23,9 @@ import javax.persistence.EntityNotFoundException;
 public class CartItemCommandService {
     private final CartItemRepository cartItemRepository;
 
-    private final CartItemQueryService cartItemQueryService;
     private final CartQueryService cartQueryService;
     private final ItemQueryService itemQueryService;
+    private final CartItemQueryService cartItemQueryService;
 
     @Transactional
     public int add(Account account, CartItemRequest.Add request) {
