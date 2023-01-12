@@ -20,6 +20,8 @@ public class OrderRequest {
 
         private int count;
 
+        private int grandTotal;
+
         @Enumerated(EnumType.STRING)
         private OrderStatus orderStatus; // 주문 상태
 
