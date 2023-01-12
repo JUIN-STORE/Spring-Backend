@@ -35,9 +35,9 @@ class CartItemCommandServiceTest {
 
     @Mock private CartItemRepository cartItemRepository;
 
-    @Mock private CartItemQueryService cartItemQueryService;
     @Mock private CartQueryService cartQueryService;
     @Mock private ItemQueryService itemQueryService;
+    @Mock private CartItemQueryService cartItemQueryService;
 
     @Nested
     @DisplayName("add 테스트")

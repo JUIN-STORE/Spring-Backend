@@ -27,9 +27,9 @@ public class ItemCommandService {
     private final ItemRepository itemRepository;
 
     private final ItemQueryService itemQueryService;
+    private final CategoryQueryService categoryQueryService;
 
     private final ItemImageCommandService itemImageCommandService;
-    private final CategoryQueryService categoryQueryService;
     private final ItemCategoryCommandService itemCategoryCommandService;
 
     @Transactional

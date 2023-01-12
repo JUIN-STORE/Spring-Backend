@@ -24,13 +24,12 @@ public class AccountCommandService {
     private final AccountRepository accountRepository;
 
     private final AddressQueryService addressQueryService;
-    private final AddressCommandService addressCommandService;
 
     private final CartCommandService cartCommandService;
-    private final CartItemCommandService cartItemCommandService;
-
-    private final DeliveryCommandService deliveryCommandService;
     private final OrderCommandService orderCommandService;
+    private final AddressCommandService addressCommandService;
+    private final CartItemCommandService cartItemCommandService;
+    private final DeliveryCommandService deliveryCommandService;
 
     @Transactional
     public Account add(AccountRequest.SignUp request) {

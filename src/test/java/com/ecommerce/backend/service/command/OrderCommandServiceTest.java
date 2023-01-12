@@ -24,12 +24,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -41,13 +41,14 @@ class OrderCommandServiceTest {
     private OrderCommandService sut;
 
     @Mock private OrderRepository orderRepository;
+
+    @Mock private ItemQueryService itemQueryService;
     @Mock private OrderQueryService orderQueryService;
     @Mock private AddressQueryService addressQueryService;
+
     @Mock private AddressCommandService addressCommandService;
-    @Mock private ItemQueryService itemQueryService;
-    @Mock private OrderItemCommandService orderItemQueryService;
-    @Mock private OrderItemCommandService orderItemCommandService;
     @Mock private DeliveryCommandService deliveryCommandService;
+    @Mock private OrderItemCommandService orderItemCommandService;
 
     @Nested
     @DisplayName("주문")
@@ -83,7 +84,7 @@ class OrderCommandServiceTest {
             given(addressQueryService.readByAccountIdAndDefaultAddress(account.getId())).willReturn(address);
             willDoNothing().given(deliveryCommandService).add(any());
             given(itemQueryService.readAllByIdList(anyList())).willReturn(itemList);
-            willDoNothing().given(orderItemQueryService).add(any());
+            willDoNothing().given(orderItemCommandService).add(any());
             given(orderRepository.save(any())).willReturn(order);
 
             // when
@@ -293,17 +294,15 @@ class OrderCommandServiceTest {
         @DisplayName("성공")
         void removeTest01() {
             // given
-            var accountId = 1L;
             var expected = 1L;
-            var orderList = new ArrayList<Order>();
-            orderList.add(new Order());
+            var orderList = List.of(new Order());
 
-            given(orderQueryService.readAllByAccountId(accountId)).willReturn(orderList);
-            given(orderItemQueryService.removeByOrderIdList(anyList())).willReturn(expected);
-            given(orderRepository.deleteByAccountId(accountId)).willReturn(expected);
+            given(orderQueryService.readAllByAccountId(anyLong())).willReturn(orderList);
+            given(orderItemCommandService.removeByOrderIdList(anyList())).willReturn(expected);
+            given(orderRepository.deleteByAccountId(anyLong())).willReturn(expected);
 
             // when
-            final OrderResponse.Delete actual = sut.remove(accountId);
+            final OrderResponse.Delete actual = sut.remove(22L);
 
             // then
             assertAll(

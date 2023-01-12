@@ -37,9 +37,11 @@ class ItemCommandServiceTest {
     private ItemCommandService sut;
 
     @Mock private ItemRepository itemRepository;
+
     @Mock private ItemQueryService itemQueryService;
-    @Mock private ItemImageCommandService itemImageCommandService;
     @Mock private CategoryQueryService categoryQueryService;
+
+    @Mock private ItemImageCommandService itemImageCommandService;
     @Mock private ItemCategoryCommandService itemCategoryCommandService;
 
     @Nested

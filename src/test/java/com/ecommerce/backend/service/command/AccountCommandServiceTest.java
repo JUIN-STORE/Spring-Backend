@@ -40,12 +40,14 @@ class AccountCommandServiceTest {
     private AccountCommandService sut;
 
     @Mock private AccountRepository accountRepository;
+
     @Mock private AddressQueryService addressQueryService;
-    @Mock private AddressCommandService addressCommandService;
+
     @Mock private CartCommandService cartCommandService;
+    @Mock private OrderCommandService orderCommandService;
+    @Mock private AddressCommandService addressCommandService;
     @Mock private CartItemCommandService cartItemCommandService;
     @Mock private DeliveryCommandService deliveryCommandService;
-    @Mock private OrderCommandService orderCommandService;
 
     @Nested
     @DisplayName("duplicateEmail 테스트")
