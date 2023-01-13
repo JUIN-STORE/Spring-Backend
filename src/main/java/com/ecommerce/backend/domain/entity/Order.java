@@ -4,10 +4,11 @@ import com.ecommerce.backend.domain.enums.DeliveryStatus;
 import com.ecommerce.backend.domain.enums.OrderStatus;
 import com.ecommerce.backend.exception.AlreadyDeliveryException;
 import com.ecommerce.backend.exception.Msg;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,10 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 @Entity(name = "orders")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
     @Id @Column(name = "orders_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

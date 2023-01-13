@@ -32,8 +32,8 @@ class ItemCategoryQueryServiceTest {
         @DisplayName("성공")
         void addTest01() {
             // given
-            var item = new Item();
-            var category = new Category();
+            var item = makeItem();
+            var category = makeCategory();
 
             given(mockItemCategoryRepository.save(any())).willReturn(any());
 
@@ -43,5 +43,17 @@ class ItemCategoryQueryServiceTest {
             // then
             verify(mockItemCategoryRepository, times(1)).save(any());
         }
+    }
+
+    private Item makeItem() {
+        return Item.builder()
+                .id(1L)
+                .build();
+    }
+
+    private Category makeCategory() {
+        return Category.builder()
+                .id(1L)
+                .build();
     }
 }

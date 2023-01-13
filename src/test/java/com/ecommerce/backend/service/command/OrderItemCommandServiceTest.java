@@ -54,7 +54,7 @@ class OrderItemCommandServiceTest {
         @DisplayName("주문 성공")
         void addTest01() {
             // given
-            var orderItem = new OrderItem();
+            var orderItem = makeOrderItem();
             given(orderItemRepository.save(orderItem)).willReturn(orderItem);
 
             // when
@@ -63,5 +63,12 @@ class OrderItemCommandServiceTest {
             // then
             verify(orderItemRepository, times(1)).save(orderItem);
         }
+    }
+
+    private OrderItem makeOrderItem() {
+        return OrderItem.builder()
+                .id(1L)
+                .build();
+
     }
 }

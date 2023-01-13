@@ -608,6 +608,12 @@ class ItemQueryServiceTest {
         return new PageImpl<>(Collections.emptyList());
     }
 
+    private Category makeCategory() {
+        return Category.builder()
+                .id(1L)
+                .build();
+    }
+
     private Item makeItem(Long itemId) {
         return Item.builder()
                 .id(itemId)
@@ -617,7 +623,7 @@ class ItemQueryServiceTest {
                 .soldCount(1)
                 .description("description")
                 .itemStatus(ItemStatus.READY)
-                .category(new Category())
+                .category(makeCategory())
                 .build();
     }
 }

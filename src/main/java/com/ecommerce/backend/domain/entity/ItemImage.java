@@ -1,17 +1,16 @@
 package com.ecommerce.backend.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemImage extends BaseEntity {
     @Id @Column(name = "item_image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
