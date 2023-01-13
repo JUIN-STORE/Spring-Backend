@@ -35,7 +35,7 @@ class OrderItemQueryServiceTest {
         void readByOrderIdTest01() {
             // given
             var orderId = 2L;
-            var orderItem = new OrderItem();
+            var orderItem = makeOrderItem();
             given(mockOrderItemRepository.findByOrderId(orderId)).willReturn(Optional.of(orderItem));
 
             // when
@@ -58,5 +58,10 @@ class OrderItemQueryServiceTest {
             // then
             actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ORDER_ITEM_NOT_FOUND);
         }
+    }
+
+    private OrderItem makeOrderItem() {
+        return OrderItem.builder()
+                .build();
     }
 }

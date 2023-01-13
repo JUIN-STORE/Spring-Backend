@@ -1,6 +1,6 @@
 package com.ecommerce.backend.domain.entity;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -10,8 +10,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem extends BaseEntity {
     @Id
     @Column(name = "cart_item_id")

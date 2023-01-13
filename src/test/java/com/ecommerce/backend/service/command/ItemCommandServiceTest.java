@@ -56,7 +56,7 @@ class ItemCommandServiceTest {
             var thumbnailFile = new MockMultipartFile("name", new byte[0]);
             multipartFileList.add(new MockMultipartFile("name", new byte[0]));
 
-            var category = new Category();
+            var category = makeCategory();
             var request = makeItemRequest(1L);
 
             var item = makeItem(1L);
@@ -139,6 +139,11 @@ class ItemCommandServiceTest {
                 .setQuantity(1);
     }
 
+    private Category makeCategory() {
+        return Category.builder().build();
+    }
+
+
     private Item makeItem(Long itemId) {
         return Item.builder()
                 .id(itemId)
@@ -148,7 +153,7 @@ class ItemCommandServiceTest {
                 .soldCount(1)
                 .description("description")
                 .itemStatus(ItemStatus.READY)
-                .category(new Category())
+                .category(makeCategory())
                 .build();
     }
 }

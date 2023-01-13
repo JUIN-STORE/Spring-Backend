@@ -2,10 +2,10 @@ package com.ecommerce.backend.domain.entity;
 
 import com.ecommerce.backend.domain.enums.ItemStatus;
 import com.ecommerce.backend.exception.NotEnoughStockException;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
 
 import javax.persistence.*;
@@ -15,9 +15,8 @@ import java.util.stream.Collectors;
 
 @Getter
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item extends BaseEntity {
     @Id @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -67,8 +67,7 @@ class OrderQueryServiceTest {
         void readByAccountIdTest() {
             // given
             var accountId = 1L;
-            var orderList = new ArrayList<Order>();
-            orderList.add(new Order());
+            var orderList = List.of(makeOrder());
             given(mockOrderRepository.findAllByAccountId(accountId)).willReturn(Optional.of(orderList));
 
             // when
@@ -77,6 +76,12 @@ class OrderQueryServiceTest {
             // then
             assertEquals(orderList, actual);
         }
+    }
+
+    private Order makeOrder() {
+        return Order.builder()
+                .id(22L)
+                .build();
     }
 
     private Account makeAccount() {

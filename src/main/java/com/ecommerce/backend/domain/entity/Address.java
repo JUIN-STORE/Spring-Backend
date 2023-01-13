@@ -1,20 +1,21 @@
 package com.ecommerce.backend.domain.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Getter
+@Entity
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "uk_receiver_address",
                 columnNames = {"city", "street", "zipCode", "account_id"})
 })
-@Entity
-@Builder
-@ToString(exclude = {"account"})
-@NoArgsConstructor
-@AllArgsConstructor
-public class Address {
+public class Address extends BaseEntity {
     @Id @Column(name = "address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

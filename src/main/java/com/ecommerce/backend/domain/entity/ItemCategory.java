@@ -1,5 +1,6 @@
 package com.ecommerce.backend.domain.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,8 +8,8 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@NoArgsConstructor
-public class ItemCategory {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ItemCategory extends BaseEntity {
     @Id @Column(name = "item_category_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

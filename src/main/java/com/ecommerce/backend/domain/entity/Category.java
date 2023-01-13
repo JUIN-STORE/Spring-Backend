@@ -1,9 +1,10 @@
 package com.ecommerce.backend.domain.entity;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,10 +12,9 @@ import java.util.List;
 
 @Getter
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Category {
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Category extends BaseEntity {
     @Id @Column(name = "category_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

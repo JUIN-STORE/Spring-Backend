@@ -1,19 +1,18 @@
 package com.ecommerce.backend.domain.entity;
 
 import com.ecommerce.backend.domain.enums.DeliveryStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Delivery {
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Delivery extends BaseEntity {
     @Id @Column(name = "delivery_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

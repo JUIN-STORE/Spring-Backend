@@ -13,13 +13,12 @@ import java.util.List;
 
 @Getter
 @Entity
-@ToString
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "account", indexes = {
         @Index(name = "account__email", columnList = "email")
 })
-public class Account extends BaseEntity{
+public class Account extends BaseEntity {
     @Id @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

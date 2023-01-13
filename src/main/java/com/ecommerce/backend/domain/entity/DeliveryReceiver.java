@@ -1,5 +1,6 @@
 package com.ecommerce.backend.domain.entity;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,8 @@ import javax.validation.constraints.NotBlank;
 
 @Builder
 @Embeddable
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeliveryReceiver {
     @NotBlank
     private String receiverName;

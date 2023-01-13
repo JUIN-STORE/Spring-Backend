@@ -78,8 +78,8 @@ class OrderCommandServiceTest {
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
 
-            var address = new Address();
-            var order = new Order();
+            var address = makeAddress();
+            var order = makeOrder();
 
             given(addressQueryService.readByAccountIdAndDefaultAddress(account.getId())).willReturn(address);
             willDoNothing().given(deliveryCommandService).add(any());
@@ -122,8 +122,8 @@ class OrderCommandServiceTest {
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
 
-            var address = new Address();
-            var order = new Order();
+            var address = makeAddress();
+            var order = makeOrder();
 
             given(addressCommandService.addIfNull(account, request.getDeliveryAddress())).willReturn(address);
             willDoNothing().given(deliveryCommandService).add(any());
@@ -211,7 +211,7 @@ class OrderCommandServiceTest {
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
 
-            var address = new Address();
+            var address = makeAddress();
             var restQuantity = item.getQuantity() - request.getCount();
 
             given(addressQueryService.readByAccountIdAndDefaultAddress(account.getId())).willReturn(address);
@@ -236,7 +236,7 @@ class OrderCommandServiceTest {
             var orderId = 1L;
             var accountId = 1L;
             Order order = Order.builder()
-                    .delivery(new Delivery())
+                    .delivery(Delivery.builder().build())
                     .orderStatus(OrderStatus.ORDER).build();
 
             given(orderQueryService.readByIdAndAccountId(orderId, accountId)).willReturn(order);
@@ -295,7 +295,7 @@ class OrderCommandServiceTest {
         void removeTest01() {
             // given
             var expected = 1L;
-            var orderList = List.of(new Order());
+            var orderList = List.of(makeOrder());
 
             given(orderQueryService.readAllByAccountId(anyLong())).willReturn(orderList);
             given(orderItemCommandService.removeByOrderIdList(anyList())).willReturn(expected);
@@ -310,6 +310,14 @@ class OrderCommandServiceTest {
                     () -> assertEquals(expected, actual.getOrdersDeletedCount())
             );
         }
+    }
+
+    private Order makeOrder() {
+        return Order.builder().build();
+    }
+
+    private Address makeAddress() {
+        return Address.builder().build();
     }
 
     private Account makeAccount() {
