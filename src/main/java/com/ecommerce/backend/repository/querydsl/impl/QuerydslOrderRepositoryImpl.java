@@ -39,7 +39,7 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
     public Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemByAccountId(Long accountId,
                                                                                              OrderRequest.Retrieve request,
                                                                                              Pageable pageable) {
-        // FIXME: 더 좋은 방법 있으면 변경하기
+        // FIXME: 더 좋은 방법 있으면 변경하기!
         List<OrderJoinResponse> orderJoinResponseList = queryFactory
                 .select(Projections.fields(OrderJoinResponse.class
                                 , order.orderDate
