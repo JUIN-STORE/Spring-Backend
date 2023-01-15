@@ -1,11 +1,11 @@
 package com.ecommerce.backend.jwt;
 
-import com.ecommerce.backend.service.query.PrincipalQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -22,8 +22,8 @@ import static com.ecommerce.backend.jwt.TokenMessage.*;
 @Component
 @RequiredArgsConstructor
 public class TokenRequestFilter extends OncePerRequestFilter {
-    private final PrincipalQueryService principalQueryService;
     private final TokenProvider tokenProvider;
+    private final UserDetailsService UserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -47,7 +47,7 @@ public class TokenRequestFilter extends OncePerRequestFilter {
 
         // 토큰을 가져오면 검증을 한다
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = principalQueryService.loadUserByUsername(email);
+            UserDetails userDetails = UserDetailsService.loadUserByUsername(email);
 
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());

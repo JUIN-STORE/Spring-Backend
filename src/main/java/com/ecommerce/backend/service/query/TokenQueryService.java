@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +18,11 @@ public class TokenQueryService {
     private final TokenRepository tokenRepository;
 
     private final TokenProvider tokenProvider;
+    private final UserDetailsService userDetailsService;
     private final PrincipalQueryService principalQueryService;
-
     public Authentication makeAuthenticationByRefreshToken(String refreshToken) {
         UserDetails userDetails
-                = principalQueryService.loadUserByUsername(
+                = userDetailsService.loadUserByUsername(
                         tokenProvider.getEmailFromToken(refreshToken));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
