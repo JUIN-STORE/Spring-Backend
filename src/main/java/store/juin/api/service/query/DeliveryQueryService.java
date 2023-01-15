@@ -29,12 +29,16 @@ public class DeliveryQueryService {
     public Delivery readById(Long deliveryId, Long accountId) {
         final Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.DELIVERY_NOT_FOUND));
+
+        checkValidDelivery(delivery, accountId);
+        return delivery;
+    }
+
+    private void checkValidDelivery(Delivery delivery, Long accountId) {
         final Order order = delivery.getOrder();
 
         if (order.getAccount() == null || !order.getAccount().getId().equals(accountId)) {
             throw new InvalidParameterException(Msg.DELIVERY_INVALID_REQUEST);
         }
-
-        return delivery;
     }
 }
