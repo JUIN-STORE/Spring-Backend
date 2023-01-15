@@ -5,11 +5,8 @@ import com.ecommerce.backend.domain.entity.Address;
 import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.request.AddressRequest;
-import com.ecommerce.backend.jwt.TokenMessage;
-import com.ecommerce.backend.jwt.TokenProvider;
 import com.ecommerce.backend.service.command.AccountCommandService;
 import com.ecommerce.backend.service.command.TokenCommandService;
-import com.ecommerce.backend.service.query.AccountQueryService;
 import com.ecommerce.backend.service.query.PrincipalQueryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -49,11 +45,11 @@ class AccountApiControllerTest {
     private AccountApiController sut;
 
     @Mock private AuthenticationManager authenticationManager;
+
     @Mock private PrincipalQueryService principalQueryService;
-    @Mock private AccountQueryService accountQueryService;
+
     @Mock private AccountCommandService accountCommandService;
     @Mock private TokenCommandService tokenCommandService;
-    @Mock private TokenProvider tokenProvider;
 
     @BeforeEach
     public void setup() {
@@ -64,78 +60,76 @@ class AccountApiControllerTest {
     @DisplayName("signUp - 정상 케이스")
     void signUpCase01() throws Exception {
         // given
-        AccountRequest.SignUp request = makeSignUpRequest();
-
-        final Account account = request.toAccount();
-
-        final String json = objectMapper.writeValueAsString(request);
+        var request = makeSignUpRequest();
+        var account = request.toAccount();
+        var json = objectMapper.writeValueAsString(request);
 
         given(accountCommandService.add(request)).willReturn(account);
 
         // when
-        final ResultActions perform = mockMvc.perform(post(ACCOUNT_END_POINT + "/sign-up")
+        final ResultActions actual = mockMvc.perform(post(ACCOUNT_END_POINT + "/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json));
 
         // then
-        perform.andExpect(status().isOk());
+        actual
+                .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Login - 정상케이스")
     void loginCase01() throws Exception {
         // given
-        var request = new AccountRequest.Login();
-        request.setEmail("z@z.com");
-        request.setPasswordHash("z");
+        var email = "z@z.com";
+        var password = "z";
+        var request = new AccountRequest.Login()
+                .setEmail(email)
+                .setPasswordHash(password);
 
-        final String json = objectMapper.writeValueAsString(request);
+        var json = objectMapper.writeValueAsString(request);
 
-        final String email = request.getEmail();
-        final String password = request.getPasswordHash();
-        final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ6QHouY29tIiwiZXhwIjoxNjYxNjg4MDQ4LCJpYXQiOjE2NjE2NzAwNDh9.4hSbtRIphryCzkuEtpsFMcxBTiQId3vU2KB_ljSvQkQoIf_6qS7A9cT07fe6BfqCkaBMLznwq2rnM6Y6vZxXzQ";
+        var accessToken = "this is a accessToken";
+        var refreshToken = "this is a refreshToken";
 
-        Authentication authentication= new UsernamePasswordAuthenticationToken(email, password);
+        var authentication= new UsernamePasswordAuthenticationToken(email, password);
         given(authenticationManager.authenticate(authentication)).willReturn(authentication);
-        given(tokenProvider.createToken(authentication.getName(), TokenMessage.ACCESS_TOKEN_VALIDATION_TIME)).willReturn(token);
+        given(tokenCommandService.addAccessToken(email)).willReturn(accessToken);
 
         // when
-        final ResultActions perform = mockMvc.perform(post(ACCOUNT_END_POINT + "/login")
+        final ResultActions actual = mockMvc.perform(post(ACCOUNT_END_POINT + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json));
 
         // then
-        perform.andExpect(status().isOk());
+        actual
+                .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Profile 정상 케이스")
     void profile() throws Exception {
-        // Principal mcoking하기
-        // ref https://stackoverflow.com/questions/45561471/mock-principal-for-spring-rest-controller
-
+        // Principal mcoking하기, https://stackoverflow.com/questions/45561471/mock-principal-for-spring-rest-controller
         // given
-        final Principal mockPrincipal = mock(Principal.class);
+        var mockPrincipal = mock(Principal.class);
 
-        final String email = "js@mail.com";
-        final String password = "$2a$10$JM.sA7K2DQn.JzIYn/GSdeNtcbQmRXw9brm0aGnmohFoEnzwW/M5C";
-
-        var address = makeAddress();
-        var account = makeAccount(email, password, address);
+        var email = "js@mail.com";
+        var password = "$2a$10$JM.sA7K2DQn.JzIYn/GSdeNtcbQmRXw9brm0aGnmohFoEnzwW/M5C";
+        var account = makeAccount(email, password, makeAddress());
 
         given(mockPrincipal.getName()).willReturn(email);
-        given(accountQueryService.readByEmail(mockPrincipal.getName())).willReturn(account);
+        given(principalQueryService.readByPrincipal(mockPrincipal)).willReturn(account);
 
         // when
-        final ResultActions perform = mockMvc.perform(get(ACCOUNT_END_POINT + "/profile")
+        final ResultActions actual = mockMvc.perform(get(ACCOUNT_END_POINT + "/profile")
                 .contentType(MediaType.APPLICATION_JSON)
                 .principal(mockPrincipal)
                 .accept(MediaType.APPLICATION_JSON));
 
         // then
-        perform.andExpect(status().isOk());
+        actual
+                .andExpect(status().isOk());
     }
 
     private Address makeAddress() {
