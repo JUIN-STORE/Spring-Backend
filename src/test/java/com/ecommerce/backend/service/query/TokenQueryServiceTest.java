@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -23,9 +24,10 @@ import static org.mockito.BDDMockito.given;
 class TokenQueryServiceTest {
     @InjectMocks
     private TokenQueryService sut;
+    @Mock private TokenRepository tokenRepository;
 
     @Mock private TokenProvider tokenProvider;
-    @Mock private TokenRepository tokenRepository;
+    @Mock private UserDetailsService userDetailsService;
     @Mock private PrincipalQueryService principalQueryService;
 
     @Nested
@@ -46,7 +48,7 @@ class TokenQueryServiceTest {
                     = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 
             given(tokenProvider.getEmailFromToken(refreshToken)).willReturn(email);
-            given(principalQueryService.loadUserByUsername(email)).willReturn(userDetails);
+            given(userDetailsService.loadUserByUsername(email)).willReturn(userDetails);
 
             // when
             Authentication actual = sut.makeAuthenticationByRefreshToken(refreshToken);
@@ -70,7 +72,7 @@ class TokenQueryServiceTest {
                     = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 
             given(tokenProvider.getEmailFromToken(refreshToken)).willReturn(email);
-            given(principalQueryService.loadUserByUsername(email)).willThrow(new UsernameNotFoundException(""));
+            given(userDetailsService.loadUserByUsername(email)).willThrow(new UsernameNotFoundException(""));
 
             // when
             AbstractThrowableAssert<?, ? extends Throwable> actual =
