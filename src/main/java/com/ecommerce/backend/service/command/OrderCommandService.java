@@ -58,17 +58,17 @@ public class OrderCommandService {
         final List<Long> itemIdList = request.getItemIdList();
         List<Item> itemList = itemQueryService.readAllByIdList(itemIdList);
 
-        final List<OrderItem> orderItemList = new ArrayList<>();
+        // 주문 상품 생성
+        final Order order = Order.createOrder(account, delivery);
+        orderRepository.save(order);
+
         for (Item item : itemList) {
             final OrderItem orderItem
                     = OrderItem.createOrderItem(item, request.getCount(), item.getPrice() * request.getCount());
-            orderItemList.add(orderItem);
+
+            order.addOrderItem(orderItem);
             orderItemCommandService.add(orderItem);
         }
-
-        // 주문 상품 생성
-        final Order order = Order.createOrder(account, delivery, orderItemList);
-        orderRepository.save(order);
 
         return order;
     }
