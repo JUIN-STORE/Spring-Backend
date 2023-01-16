@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -15,11 +16,13 @@ public class ItemCategory extends BaseEntity {
     private Long id;
 
     // item_category 테이블에 item_id 컬럼 생김
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
 
     // item_category 테이블에 category_id 컬럼 생김
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

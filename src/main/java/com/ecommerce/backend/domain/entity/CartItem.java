@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -18,15 +19,18 @@ public class CartItem extends BaseEntity {
     private Long id;
 
     // 연관관계 주인 -> fillCart
+    @NotNull
     @JoinColumn(name = "cart_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Cart cart;
 
     // 연관관계 주인 -> fillItem
+    @NotNull
     @JoinColumn(name = "item_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
+    @NotNull
     private int count;
 
     public void addCount(int count) {

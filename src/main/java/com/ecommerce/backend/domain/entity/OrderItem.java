@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -16,16 +17,20 @@ public class OrderItem extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private int orderPrice;         // 주문 가격
 
+    @NotNull
     private int orderCount;         // 주몬 수량
 
     // 연관관계 주인 -> fillItem 만들어야 됨.
+    @NotNull
     @JoinColumn(name = "item_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
     // 연관관계 주인 -> fillOrderRelation 만들어야 됨.
+    @NotNull
     @JoinColumn(name = "orders_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;

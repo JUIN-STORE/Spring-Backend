@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +25,21 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus; // 주문 상태
 
+    @NotNull
     private LocalDateTime orderDate; // 주문일
 
     // 연관관계 주인 -> fillAccountRelation 만들어야 됨.
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
     
     // 연관관계 주인 -> fillDeliveryRelation 만들어야 됨.
+    @NotNull
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
@@ -65,16 +70,13 @@ public class Order extends BaseEntity {
     }
 
     // 연관관계에 있는 객체들 파라미터로 받기
-    public static Order createOrder(Account account, Delivery delivery, List<OrderItem> orderItemList) {
-        Order order = Order.builder()
+    public static Order createOrder(Account account, Delivery delivery) {
+        return Order.builder()
                 .account(account)
                 .delivery(delivery)
                 .orderStatus(OrderStatus.ORDER)
                 .orderDate(LocalDateTime.now())
                 .build();
-
-        orderItemList.forEach(order::addOrderItem);
-        return order;
     }
 
     // 주문 취소

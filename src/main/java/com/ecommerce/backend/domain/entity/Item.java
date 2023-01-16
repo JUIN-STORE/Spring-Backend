@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,10 +37,12 @@ public class Item extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private ItemStatus itemStatus;
 
     // item 테이블에 category_id 컬럼을 만들어 준다.
+    @NotNull
     @JoinColumn(name = "category_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;

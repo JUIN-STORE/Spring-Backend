@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -16,15 +17,19 @@ public class ItemImage extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;                // 이미지 파일명
 
+    @NotNull
     private String originName;          // 원본 이미지 파일명
 
+    @NotNull
     private String imageUrl;            // 이미지 조회 경로
 
     private Boolean thumbnail;          // 썸네일 여부
 
     // 연관관계 주인
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;

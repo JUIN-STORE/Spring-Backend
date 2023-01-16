@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -20,18 +21,22 @@ public class Address extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private Integer zipCode;          // 우편 번호
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String city;             // 어느 도시에서 거주하는지
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String street;          // 상세주소
 
     private boolean defaultAddress; // 기본 주소로 쓸 건지
 
     // 연관관계 주인
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY) // addressRepository.save(address)만 하고 싶으면 cascade = CascadeType.PERSIST 옵션 설정
     @JoinColumn(name = "account_id")
     private Account account;

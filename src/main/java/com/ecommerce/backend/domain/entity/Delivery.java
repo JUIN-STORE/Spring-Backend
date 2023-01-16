@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -17,12 +18,14 @@ public class Delivery extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
     @Embedded
     private DeliveryReceiver deliveryReceiver;
 
+    @NotNull
     @JoinColumn(name = "address_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Address deliveryAddress;
