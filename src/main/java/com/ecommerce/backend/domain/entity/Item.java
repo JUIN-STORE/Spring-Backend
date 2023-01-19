@@ -23,13 +23,14 @@ public class Item extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @NotNull
+    @Column(length = 50)
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private Integer price;
 
-    @Column(nullable = false)
+    @NotNull
     private Integer quantity;   // 제품의 총 개수
 
     private Integer soldCount;  // 제품의 판매 개수, quantity가 업데이트될 수 있어서 필요

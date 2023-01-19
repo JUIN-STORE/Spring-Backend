@@ -5,21 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotBlank;
 
 @Builder
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeliveryReceiver {
-    @NotBlank
+    @Column(nullable = false)
     private String receiverName;
 
-    @NotBlank
+    @Column(nullable = false)
     private String receiverPhoneNumber;
 
-    @NotBlank
+    @Column(nullable = false)
     private String receiverEmail;
-
 }

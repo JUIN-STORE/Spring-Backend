@@ -1,11 +1,11 @@
 package com.ecommerce.backend.domain.entity;
 
 import com.ecommerce.backend.domain.enums.AccountRole;
-import com.sun.istack.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,20 +19,19 @@ import java.util.List;
         @Index(name = "account__email", columnList = "email")
 })
 public class Account extends BaseEntity {
-    @Id @Column(name = "account_id")
+    @Id
+    @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(length = 100, unique = true)
     private String email;
 
     @NotNull
-    @Column(nullable = false)
     private String passwordHash;
 
     @NotNull
-    @Column(nullable = false)
     private String name;
 
     @NotNull
@@ -64,17 +63,17 @@ public class Account extends BaseEntity {
     private List<Order> orderList = new ArrayList<>();
 
     // 읽기용 매핑, 연관관계 주인 아님
-    public void addAddressList(Address address){
+    public void addAddressList(Address address) {
         this.addressList.add(address);
-        if (address.getAccount() != this){
+        if (address.getAccount() != this) {
             address.fillAccountRelation(this);
         }
     }
 
     // 읽기용 매핑, 연관관계 주인 아님
-    public void addOrderList(Order order){
+    public void addOrderList(Order order) {
         this.orderList.add(order);
-        if (order.getAccount() != this){
+        if (order.getAccount() != this) {
             order.fillAccountRelation(this);
         }
     }
