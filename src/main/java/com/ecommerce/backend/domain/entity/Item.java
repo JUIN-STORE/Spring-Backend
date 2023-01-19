@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,13 +23,14 @@ public class Item extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @NotNull
+    @Column(length = 50)
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private Integer price;
 
-    @Column(nullable = false)
+    @NotNull
     private Integer quantity;   // 제품의 총 개수
 
     private Integer soldCount;  // 제품의 판매 개수, quantity가 업데이트될 수 있어서 필요
@@ -36,10 +38,12 @@ public class Item extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private ItemStatus itemStatus;
 
     // item 테이블에 category_id 컬럼을 만들어 준다.
+    @NotNull
     @JoinColumn(name = "category_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;

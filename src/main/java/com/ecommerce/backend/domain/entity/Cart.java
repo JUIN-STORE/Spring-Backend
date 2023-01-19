@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -17,6 +18,7 @@ public class Cart extends BaseEntity {
     private Long id;
 
     // 연관관계 주인 -> fillAccount 만들어야 됨.
+    @NotNull
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
