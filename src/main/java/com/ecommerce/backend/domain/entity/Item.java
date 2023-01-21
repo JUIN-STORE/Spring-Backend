@@ -42,6 +42,9 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ItemStatus itemStatus;
 
+    @Enumerated(EnumType.STRING)
+    private PersonalColor personalColor;
+
     // item 테이블에 category_id 컬럼을 만들어 준다.
     @NotNull
     @JoinColumn(name = "category_id")
