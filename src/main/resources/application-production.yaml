@@ -60,9 +60,9 @@ cloud:
             instance-profile: true
 
 front:
-    url: http://jz-deploy.s3-website.ap-northeast-2.amazonaws.com
+    url: http://juin.store.s3-website.ap-northeast-2.amazonaws.com
     cookie:
-        domain: jz-deploy.s3-website.ap-northeast-2.amazonaws.com
+        domain: juin.store.s3-website.ap-northeast-2.amazonaws.com
 
 
 personalColorEndPoint: "http://localhost:55555/upload"
