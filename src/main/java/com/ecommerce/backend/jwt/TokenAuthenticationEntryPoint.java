@@ -20,6 +20,12 @@ public class TokenAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
+        if (authException != null) {
+            log.warn("[P2][COM][ENTY][COME]: {}", authException.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         final Object e = request.getAttribute(TokenMessage.EXCEPTION);
 
         if (e instanceof ExpiredJwtException) {

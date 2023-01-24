@@ -47,10 +47,14 @@ public class TokenRequestFilter extends OncePerRequestFilter {
 
         // 토큰을 가져오면 검증을 한다
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = UserDetailsService.loadUserByUsername(email);
+            final UserDetails userDetails = UserDetailsService.loadUserByUsername(email);
 
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(
+                              userDetails
+                            , ""
+                            , userDetails.getAuthorities()
+                    );
 
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

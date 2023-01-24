@@ -11,8 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,6 +22,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         final Account account = accountQueryService.readByEmail(email);
 
-        return new User(account.getEmail(), account.getPasswordHash(), new ArrayList<>());
+        return User.builder()
+                .username(account.getEmail())
+                .password(account.getPasswordHash())
+                .roles(account.getAccountRole().name()) // 401 - 인증
+//                .authorities("ROLE_" + account.getAccountRole().name()) // 403 - 인가
+                .build();
     }
 }
