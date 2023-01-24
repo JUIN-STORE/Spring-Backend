@@ -1,5 +1,6 @@
 package com.ecommerce.backend.config;
 
+import com.ecommerce.backend.domain.enums.AccountRole;
 import com.ecommerce.backend.jwt.TokenAuthenticationEntryPoint;
 import com.ecommerce.backend.jwt.TokenRequestFilter;
 import lombok.RequiredArgsConstructor;
@@ -109,16 +110,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests()
 
+                // role이 admin만 해당 엔드포인트 접근 가능
+                .antMatchers("/api/admin/**").hasRole(AccountRole.ADMIN.name()) // admin만 허용
+
+                // 같은 role일 때 read, write 등등 다르게 권한 줄 때 사용
+                // .antMatchers("/api/admin/**").hasAuthority(AccountRole.ADMIN.name())
+
                 .antMatchers(whitelist).permitAll() // whitelist 전체 접근 허용
-                .antMatchers("/main").authenticated() // 인증된 사용자만 접근 허용
-//                .antMatchers("/regist").anonymous() // 인증되지 않은 사용자만 접근 허용
-//                .antMatchers("/mypage").hasRole("ADMIN") // ROLE_ADMIN 권한을 가진 사용자만 접근 허용
 //                .antMatchers("/check").hasAnyRole("ADMIN", "USER") // ROLE_ADMIN 혹은 ROLE_USER 권한을 가진 사용자만 접근 허용
-//                // admin만 허용
-//                .antMatchers("/admin/**").hasRole("ADMIN")
-//
-//                // user만 허용
-//                .antMatchers("/user/**").hasRole("USER")
 
                 // 나머지 요청은 모두 인증 필요
                 .anyRequest().authenticated()
