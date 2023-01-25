@@ -1,9 +1,11 @@
 package com.ecommerce.backend.config;
 
 import com.ecommerce.backend.domain.enums.AccountRole;
+import com.ecommerce.backend.jwt.ForbiddenHandler;
 import com.ecommerce.backend.jwt.TokenAuthenticationEntryPoint;
 import com.ecommerce.backend.jwt.TokenRequestFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 // https://gaemi606.tistory.com/entry/Spring-Boot-JWT%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-Spring-Security-%EB%A1%9C%EA%B7%B8%EC%9D%B8-REST-API
 
+
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,6 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final TokenRequestFilter tokenRequestFilter;
     private final TokenAuthenticationEntryPoint tokenAuthenticationEntryPoint;
+
+    private final ForbiddenHandler forbiddenHandler;
 
     @Value("${front.url}")
     private String frontUrl;
@@ -130,7 +136,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // JWT 설정
         httpSecurity
                 // 인증되지 않은 사용자 접근 시
-                .exceptionHandling().authenticationEntryPoint(tokenAuthenticationEntryPoint)
+                .exceptionHandling()
+                .authenticationEntryPoint(tokenAuthenticationEntryPoint)
+                .accessDeniedHandler(forbiddenHandler)
 
                 // 세션을 사용하지 않기 때문에 STATELESS 설정
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
