@@ -46,8 +46,6 @@ jwt:
     secret: SlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNl
     token-validity-in-seconds: 86400
 
-item-image-location: ''
-
 cloud:
     aws:
         s3:
