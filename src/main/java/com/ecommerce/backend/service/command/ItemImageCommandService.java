@@ -32,6 +32,7 @@ public class ItemImageCommandService {
         if (!StringUtils.hasText(originalFileName)) throw new InvalidParameterException();
 
         if (StringUtils.hasText(itemImageLocation)) {
+            log.error("ITEM:IMG_:SERV::: {}", itemImageLocation);
             localAdd(request, multipartFile, item, originalFileName);
         } else {
             s3Add(request, multipartFile, item, originalFileName);
