@@ -24,14 +24,14 @@ public class ItemImageCommandService {
 
     private final S3FileUploadComponent s3FileUploadComponent;
 
-    @Value("${item-image-location:#{null}}")
+    @Value("${item-image-location}")
     private String itemImageLocation;
 
     public void add(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
         final String originalFileName = multipartFile.getOriginalFilename(); // cat.jpg
         if (!StringUtils.hasText(originalFileName)) throw new InvalidParameterException();
 
-        if (StringUtils.hasText(itemImageLocation)) {
+        if (itemImageLocation.contains("assets")) {
             localAdd(request, multipartFile, item, originalFileName);
         } else {
             s3Add(request, multipartFile, item, originalFileName);
