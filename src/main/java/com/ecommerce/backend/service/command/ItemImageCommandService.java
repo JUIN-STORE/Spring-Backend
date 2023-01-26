@@ -24,7 +24,7 @@ public class ItemImageCommandService {
 
     private final S3FileUploadComponent s3FileUploadComponent;
 
-    @Value("${item-image-location}")
+    @Value("${item-image-location:#{null}}")
     private String itemImageLocation;
 
     public void add(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
