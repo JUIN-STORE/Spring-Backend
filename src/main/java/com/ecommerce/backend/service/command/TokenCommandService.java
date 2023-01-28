@@ -69,7 +69,8 @@ public class TokenCommandService {
         return tokenRepository.save(token);
     }
 
-    private void modifyRefreshToken(Token token, String refreshToken) {
+    @Transactional
+    public void modifyRefreshToken(Token token, String refreshToken) {
         token.updateRefreshToken(refreshToken);
     }
 }

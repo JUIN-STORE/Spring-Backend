@@ -2,12 +2,14 @@ package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.JUINResponse;
 import com.ecommerce.backend.domain.entity.Account;
+import com.ecommerce.backend.domain.entity.Token;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.response.AccountResponse;
 import com.ecommerce.backend.jwt.TokenMessage;
 import com.ecommerce.backend.service.command.AccountCommandService;
 import com.ecommerce.backend.service.command.TokenCommandService;
 import com.ecommerce.backend.service.query.PrincipalQueryService;
+import com.ecommerce.backend.service.query.TokenQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +21,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
@@ -36,10 +42,11 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 public class AccountApiController {
     private final AuthenticationManager authenticationManager;
 
+    private final TokenQueryService tokenQueryService;
     private final PrincipalQueryService principalQueryService;
 
-    private final AccountCommandService accountCommandService;
     private final TokenCommandService tokenCommandService;
+    private final AccountCommandService accountCommandService;
 
     @Value("${front.cookie.domain}")
     private String cookieDomain;
@@ -54,7 +61,7 @@ public class AccountApiController {
 
             var response = AccountResponse.SignUp.from(account);
             return new JUINResponse<>(HttpStatus.OK, response);
-        } catch(EntityExistsException e) {
+        } catch (EntityExistsException e) {
             log.warn("[P5][CON][ACNT][SIGN]: message=({})", e.getMessage());
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -95,6 +102,37 @@ public class AccountApiController {
             log.warn("[P5][CON][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
+    @GetMapping("/logout")
+    public JUINResponse<String> logout(final Principal principal
+                                    , HttpServletRequest httpServletRequest
+                                    , HttpServletResponse httpServletResponse) {
+
+        final String email = principal.getName();
+        log.info("[P9][CON][ACNT][LOUT]: 로그아웃, email=({})", email);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(httpServletRequest, httpServletResponse, auth);
+        }
+
+        // 쿠키 삭제
+        Cookie[] cookies = httpServletRequest.getCookies();
+        for (Cookie cookie : cookies) {
+            cookie.setDomain(cookieDomain);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setMaxAge(0);
+            httpServletResponse.addCookie(cookie);
+        }
+
+        Token token = tokenQueryService.readByEmail(email);
+        tokenCommandService.modifyRefreshToken(token, "");
+
+        return new JUINResponse<>(HttpStatus.OK, "로그아웃 되었습니다.");
     }
 
     @ApiOperation(value = "내 정보 읽기", notes = "내 정보를 읽어온다.")
