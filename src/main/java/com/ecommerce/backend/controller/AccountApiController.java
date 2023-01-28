@@ -19,10 +19,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
@@ -54,7 +58,7 @@ public class AccountApiController {
 
             var response = AccountResponse.SignUp.from(account);
             return new JUINResponse<>(HttpStatus.OK, response);
-        } catch(EntityExistsException e) {
+        } catch (EntityExistsException e) {
             log.warn("[P5][CON][ACNT][SIGN]: message=({})", e.getMessage());
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -95,6 +99,29 @@ public class AccountApiController {
             log.warn("[P5][CON][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
+    @GetMapping("/logout")
+    public JUINResponse<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        log.info("[P9][CON][ACNT][LOUT]: 로그아웃, request=({})", request);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+
+        // 쿠키 삭제
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            cookie.setDomain(cookieDomain);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+        return new JUINResponse<>(HttpStatus.OK, "로그아웃 되었습니다.");
     }
 
     @ApiOperation(value = "내 정보 읽기", notes = "내 정보를 읽어온다.")
