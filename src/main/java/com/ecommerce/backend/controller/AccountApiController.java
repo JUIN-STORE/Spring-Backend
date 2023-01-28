@@ -2,12 +2,14 @@ package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.JUINResponse;
 import com.ecommerce.backend.domain.entity.Account;
+import com.ecommerce.backend.domain.entity.Token;
 import com.ecommerce.backend.domain.request.AccountRequest;
 import com.ecommerce.backend.domain.response.AccountResponse;
 import com.ecommerce.backend.jwt.TokenMessage;
 import com.ecommerce.backend.service.command.AccountCommandService;
 import com.ecommerce.backend.service.command.TokenCommandService;
 import com.ecommerce.backend.service.query.PrincipalQueryService;
+import com.ecommerce.backend.service.query.TokenQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +42,11 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 public class AccountApiController {
     private final AuthenticationManager authenticationManager;
 
+    private final TokenQueryService tokenQueryService;
     private final PrincipalQueryService principalQueryService;
 
-    private final AccountCommandService accountCommandService;
     private final TokenCommandService tokenCommandService;
+    private final AccountCommandService accountCommandService;
 
     @Value("${front.cookie.domain}")
     private String cookieDomain;
@@ -103,24 +106,32 @@ public class AccountApiController {
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
     @GetMapping("/logout")
-    public JUINResponse<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        log.info("[P9][CON][ACNT][LOUT]: 로그아웃, request=({})", request);
+    public JUINResponse<String> logout(final Principal principal
+                                    , HttpServletRequest httpServletRequest
+                                    , HttpServletResponse httpServletResponse) {
+
+        final String email = principal.getName();
+        log.info("[P9][CON][ACNT][LOUT]: 로그아웃, email=({})", email);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
+            new SecurityContextLogoutHandler().logout(httpServletRequest, httpServletResponse, auth);
         }
 
         // 쿠키 삭제
-        Cookie[] cookies = request.getCookies();
+        Cookie[] cookies = httpServletRequest.getCookies();
         for (Cookie cookie : cookies) {
             cookie.setDomain(cookieDomain);
             cookie.setPath("/");
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
             cookie.setMaxAge(0);
-            response.addCookie(cookie);
+            httpServletResponse.addCookie(cookie);
         }
+
+        Token token = tokenQueryService.readByEmail(email);
+        tokenCommandService.modifyRefreshToken(token, "");
+
         return new JUINResponse<>(HttpStatus.OK, "로그아웃 되었습니다.");
     }
 
