@@ -1,7 +1,6 @@
 package com.ecommerce.backend.service.query;
 
 import com.ecommerce.backend.domain.entity.Item;
-import com.ecommerce.backend.domain.entity.ItemImage;
 import com.ecommerce.backend.domain.response.ItemResponse;
 import com.ecommerce.backend.exception.Msg;
 import com.ecommerce.backend.repository.jpa.ItemRepository;
@@ -13,19 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ItemQueryService {
     private final ItemRepository itemRepository;
-
-    private final ItemImageQueryService itemImageQueryService;
 
     @Transactional(readOnly = true)
     public Item readById(Long itemId) {
@@ -71,7 +64,7 @@ public class ItemQueryService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemResponse.Read> display(Pageable pageable, Long categoryId) {
+    public Page<ItemResponse.Read> display(Pageable pageable, Long categoryId) {
         Page<Item> itemList;
 
         if (categoryId == null) {
@@ -80,11 +73,11 @@ public class ItemQueryService {
             itemList = readAllByCategoryId(pageable, categoryId);
         }
 
-        return makeItemReadResponseList(itemList);
+        return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
     }
 
     @Transactional(readOnly = true)
-    public List<ItemResponse.Read> search(Pageable pageable, String searchTitle, Long categoryId) {
+    public Page<ItemResponse.Read> search(Pageable pageable, String searchTitle, Long categoryId) {
         Page<Item> itemList;
 
         if (categoryId == null) {
@@ -93,26 +86,6 @@ public class ItemQueryService {
             itemList = readAllByNameContainingAndCategoryId(pageable, searchTitle, categoryId);
         }
 
-        return makeItemReadResponseList(itemList);
-    }
-
-    private List<ItemResponse.Read> makeItemReadResponseList(Page<Item> itemList) {
-        final List<Long> itemIdList = itemList.stream().map(Item::getId).collect(Collectors.toList());
-        final List<ItemImage> itemImageList = itemImageQueryService.readAllByItemIdIn(itemIdList);
-        final Map<Long, List<ItemImage>> itemIdImageMap = new HashMap<>();
-
-        for (ItemImage itemImage : itemImageList) {
-            Item item = itemImage.getItem();
-            if (item == null) continue;
-
-            Long itemId = item.getId();
-            List<ItemImage> imageListInItem = itemIdImageMap.getOrDefault(itemId, new ArrayList<>());
-            imageListInItem.add(itemImage);
-            itemIdImageMap.put(itemId, imageListInItem);
-        }
-
-        return itemList.stream()
-                .map(image -> ItemResponse.Read.of(image, itemIdImageMap.get(image.getId())))
-                .collect(Collectors.toList());
+        return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
     }
 }

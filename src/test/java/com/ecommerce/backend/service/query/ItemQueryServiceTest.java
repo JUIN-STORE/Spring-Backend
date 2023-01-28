@@ -20,8 +20,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import javax.persistence.EntityNotFoundException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -42,9 +40,6 @@ class ItemQueryServiceTest {
     @Mock
     private ItemRepository itemRepository;
 
-    @Mock
-    private ItemImageQueryService itemImageQueryService;
-
     @Nested
     @DisplayName("readById 테스트")
     class RetrieveByIdTest {
@@ -53,7 +48,8 @@ class ItemQueryServiceTest {
         void readByIdTest01() {
             // given
             var itemId = 1L;
-            var item = makeItem(itemId);
+            var itemImageList = makeItemImageList(99L);
+            var item = makeItem(itemId, itemImageList);
 
             given(itemRepository.findById(anyLong())).willReturn(Optional.of(item));
 
@@ -88,7 +84,10 @@ class ItemQueryServiceTest {
         void ReadAllByIdListTest01() {
             // given
             var itemIdList = List.of(1L, 2L);
-            var itemList = List.of(makeItem(1L), makeItem(2L));
+            var itemList = List.of(
+                    makeItem(1L, makeItemImageList(1L)),
+                    makeItem(2L, makeItemImageList(2L))
+            );
 
             given(itemRepository.findAllByIdIn(itemIdList)).willReturn(Optional.of(itemList));
 
@@ -128,7 +127,7 @@ class ItemQueryServiceTest {
             var pageRequest = PageRequest.of(page, size);
 
             var itemId = 33L;
-            var itemList = List.of(makeItem(itemId));
+            var itemList = List.of(makeItem(itemId, makeItemImageList(24L)));
 
             var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
 
@@ -173,7 +172,7 @@ class ItemQueryServiceTest {
             var pageRequest = PageRequest.of(page, size);
 
             var itemId = 342L;
-            var itemList = List.of(makeItem(itemId));
+            var itemList = List.of(makeItem(itemId, makeItemImageList(1L)));
 
             var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
 
@@ -219,7 +218,7 @@ class ItemQueryServiceTest {
             var name = "name01";
             var itemId = 912L;
 
-            var itemList = List.of(makeItem(itemId));
+            var itemList = List.of(makeItem(itemId, makeItemImageList(25L)));
             var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
 
             given(itemRepository.findAllByNameContaining(pageRequest, name)).willReturn(itemPage);
@@ -266,7 +265,10 @@ class ItemQueryServiceTest {
             var pageRequest = PageRequest.of(page, size);
             var name = "name07";
 
-            var itemList = List.of(makeItem(33L), makeItem(44L));
+            var itemList = List.of(
+                    makeItem(33L, makeItemImageList(55L)),
+                    makeItem(44L, makeItemImageList(66L))
+            );
 
             var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
             given(itemRepository.findAllByNameContainingAndCategoryId(pageRequest, name, categoryId))
@@ -354,19 +356,19 @@ class ItemQueryServiceTest {
             var size = 10;
             var pageable = PageRequest.of(page, size);
 
-            var item = makeItem(1L);
+            var itemImageList = makeItemImageList(20L);
+
+            var item = makeItem(1L, itemImageList);
+
             var itemList = List.of(item);
 
-            var itemImageList = makeItemImageList(20L, item);
-
-            given(itemImageQueryService.readAllByItemIdIn(List.of(1L))).willReturn(itemImageList);
             given(itemRepository.findAll(pageable))
                     .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
 
             var expected = makeItemReadResponseList(itemList, itemImageList);
 
             // when
-            final List<ItemResponse.Read> actual = sut.display(pageable, null);
+            final Page<ItemResponse.Read> actual = sut.display(pageable, null);
 
             // then
             assertIterableEquals(expected, actual);
@@ -381,19 +383,28 @@ class ItemQueryServiceTest {
             var pageable = PageRequest.of(page, size);
             var categoryId = 10L;
 
-            var item = makeItem(1L);
+            var itemImageList = makeItemImageList(20L);
+
+            var item = Item.builder()
+                    .id(1L)
+                    .name("name")
+                    .price(10000)
+                    .quantity(1)
+                    .soldCount(1)
+                    .description("description")
+                    .itemStatus(ItemStatus.READY)
+                    .category(makeCategory())
+                    .itemImageList(itemImageList)
+                    .build();
             var itemList = List.of(item);
 
-            var itemImageList = makeItemImageList(20L, item);
-
-            given(itemImageQueryService.readAllByItemIdIn(List.of(1L))).willReturn(itemImageList);
             given(itemRepository.findAllByCategoryId(pageable, categoryId))
                     .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
 
             var expected = makeItemReadResponseList(itemList, itemImageList);
 
             // when
-            final List<ItemResponse.Read> actual = sut.display(pageable, categoryId);
+            final Page<ItemResponse.Read> actual = sut.display(pageable, categoryId);
 
             // then
             assertIterableEquals(expected, actual);
@@ -414,19 +425,18 @@ class ItemQueryServiceTest {
             var pageable = PageRequest.of(page, size);
             var searchTitle = "이게 검색어다!";
 
-            var item = makeItem(1L);
+            var itemImageList = makeItemImageList(20L);
+            final Item item = makeItem(1L, itemImageList);
             var itemList = List.of(item);
 
-            var itemImageList = makeItemImageList(20L, item);
-
-            given(itemImageQueryService.readAllByItemIdIn(List.of(1L))).willReturn(itemImageList);
             given(itemRepository.findAllByNameContaining(pageable, searchTitle))
                     .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
 
-            var expected = makeItemReadResponseList(itemList, itemImageList);
+            var itemReadResponseList = makeItemReadResponseList(itemList, itemImageList);
+            final Page<ItemResponse.Read> expected = new PageImpl<>(itemReadResponseList, pageable, 1);
 
             // when
-            final List<ItemResponse.Read> actual = sut.search(pageable, searchTitle, null);
+            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, null);
 
             // then
             assertIterableEquals(expected, actual);
@@ -442,19 +452,27 @@ class ItemQueryServiceTest {
             var searchTitle = "이게 검색어다!";
             var categoryId = 10L;
 
-            var item = makeItem(1L);
+            var itemImageList = makeItemImageList(20L);
+            var item = Item.builder()
+                    .id(1L)
+                    .name("name")
+                    .price(10000)
+                    .quantity(1)
+                    .soldCount(1)
+                    .description("description")
+                    .itemStatus(ItemStatus.READY)
+                    .category(makeCategory())
+                    .itemImageList(itemImageList)
+                    .build();
             var itemList = List.of(item);
 
-            var itemImageList = makeItemImageList(20L, item);
-
-            given(itemImageQueryService.readAllByItemIdIn(List.of(1L))).willReturn(itemImageList);
             given(itemRepository.findAllByNameContainingAndCategoryId(pageable, searchTitle, categoryId))
                     .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
 
             var expected = makeItemReadResponseList(itemList, itemImageList);
 
             // when
-            final List<ItemResponse.Read> actual = sut.search(pageable, searchTitle, categoryId);
+            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, categoryId);
 
             // then
             assertIterableEquals(expected, actual);
@@ -462,110 +480,13 @@ class ItemQueryServiceTest {
 
     }
 
-    @Nested
-    @DisplayName("makeItemReadResponse 테스트")
-    class MakeItemRetrieveResponseTest {
-        @Test
-        @DisplayName("상품에 2개 이상의 이미지가 있을 때")
-        void makeItemReadResponseTest01() throws Exception {
-            // given
-            var page = 0;
-            var size = 10;
-            var pageRequest = PageRequest.of(page, size);
-
-            var itemIdList = List.of(1L);
-            var item = makeItem(1L);
-            var itemList = List.of(item);
-
-            var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
-
-            var itemImageList = makeItemImageList(20L, item);
-            given(itemImageQueryService.readAllByItemIdIn(itemIdList)).willReturn(itemImageList);
-
-            var expected = makeItemReadResponseList(itemList, itemImageList);
-
-            // when
-            Method method = ItemQueryService.class.getDeclaredMethod("makeItemReadResponseList", Page.class);
-            method.setAccessible(true);
-            final List<ItemResponse.Read> actual = (List<ItemResponse.Read>) method.invoke(sut, itemPage);
-
-            // then
-            assertIterableEquals(expected, actual);
-        }
-
-        @Test
-        @DisplayName("상품에 1개 이미지만 있을 때")
-        void makeItemReadResponseTest02() throws Exception {
-            // given
-            var page = 0;
-            var size = 10;
-            var pageRequest = PageRequest.of(page, size);
-
-            var itemIdList = List.of(1L);
-            var item = makeItem(1L);
-            var itemList = List.of(item);
-
-            var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
-
-            var itemImageList = List.of(
-                    makeItemImage(88L
-                            , "cat.jpg"
-                            , "cat.jpg"
-                            , "/cat.jpg"
-                            , true
-                            , item
-                    )
-            );
-            given(itemImageQueryService.readAllByItemIdIn(itemIdList)).willReturn(itemImageList);
-
-            var expected = makeItemReadResponseList(itemList, itemImageList);
-
-            // when
-            Method method = ItemQueryService.class.getDeclaredMethod("makeItemReadResponseList", Page.class);
-            method.setAccessible(true);
-            final List<ItemResponse.Read> actual = (List<ItemResponse.Read>) method.invoke(sut, itemPage);
-
-            // then
-            assertIterableEquals(expected, actual);
-        }
-
-        @Test
-        @DisplayName("상품에 이미지가 하나도 없을 떼")
-        void makeItemReadResponseTest03() throws Exception {
-            // given
-            var page = 0;
-            var size = 10;
-            var pageRequest = PageRequest.of(page, size);
-
-            var itemIdList = List.of(1L);
-            var item = makeItem(1L);
-            var itemList = List.of(item);
-
-            var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
-
-            given(itemImageQueryService.readAllByItemIdIn(itemIdList)).willReturn(new ArrayList<>());
-
-            var expected = makeItemReadResponseList(itemList, new ArrayList<>());
-
-            // when
-            Method method = ItemQueryService.class.getDeclaredMethod("makeItemReadResponseList", Page.class);
-            method.setAccessible(true);
-            final List<ItemResponse.Read> actual = (List<ItemResponse.Read>) method.invoke(sut, itemPage);
-
-            // then
-            assertIterableEquals(expected, actual);
-        }
-    }
-
-
-    private List<ItemImage> makeItemImageList(Long itemImageId, Item item) {
+    private List<ItemImage> makeItemImageList(Long itemImageId) {
         return List.of(
                 makeItemImage(itemImageId
                         , "cat.jpg"
                         , "cat.jpg"
                         , "/cat.jpg"
                         , true
-                        , item
                 ),
 
                 makeItemImage(itemImageId + 10L
@@ -573,13 +494,11 @@ class ItemQueryServiceTest {
                         , "dog.jpg"
                         , "/dog.jpg"
                         , false
-                        , item
                 )
         );
     }
 
-    private List<ItemResponse.Read> makeItemReadResponseList(List<Item> itemList
-            , List<ItemImage> itemImageList) {
+    private List<ItemResponse.Read> makeItemReadResponseList(List<Item> itemList, List<ItemImage> itemImageList) {
 
         return itemList.stream()
                 .map(image -> ItemResponse.Read.of(image, itemImageList))
@@ -590,8 +509,7 @@ class ItemQueryServiceTest {
             , String name
             , String originName
             , String imageUrl
-            , Boolean isThumbnail
-            , Item item) {
+            , Boolean isThumbnail) {
 
         return ItemImage.builder()
                 .id(id)
@@ -599,7 +517,6 @@ class ItemQueryServiceTest {
                 .originName(originName)
                 .imageUrl(imageUrl)
                 .thumbnail(isThumbnail)
-                .item(item)
                 .build();
     }
 
@@ -614,7 +531,7 @@ class ItemQueryServiceTest {
                 .build();
     }
 
-    private Item makeItem(Long itemId) {
+    private Item makeItem(Long itemId, List<ItemImage> itemImageList) {
         return Item.builder()
                 .id(itemId)
                 .name("name")
@@ -624,6 +541,7 @@ class ItemQueryServiceTest {
                 .description("description")
                 .itemStatus(ItemStatus.READY)
                 .category(makeCategory())
+                .itemImageList(itemImageList)
                 .build();
     }
 }
