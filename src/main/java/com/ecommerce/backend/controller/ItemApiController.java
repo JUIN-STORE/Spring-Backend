@@ -8,13 +8,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 
 @Api(tags = {"05. Item"})
 @Slf4j
@@ -42,7 +42,7 @@ public class ItemApiController {
 
     @ApiOperation(value = "상품 목록 읽기", notes = "전체 또는 카테고리 별 상품 조회")
     @GetMapping
-    public JUINResponse<List<ItemResponse.Read>> retrieveAll(@PageableDefault(size = 10) Pageable pageable,
+    public JUINResponse<Page<ItemResponse.Read>> retrieveAll(@PageableDefault(size = 10) Pageable pageable,
                                                              @RequestParam(required = false) Long categoryId) {
         log.info("[P9][CON][ITEM][ALL_]: GET /api/items pageable({}), categoryId({})", pageable, categoryId);
 
@@ -64,7 +64,7 @@ public class ItemApiController {
 
     @ApiOperation(value = "상품 검색하기", notes = "전체 또는 특정 카테고리에서 상품을 상품이름으로 검색해서 찾는다")
     @GetMapping("/search")
-    public JUINResponse<List<ItemResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
+    public JUINResponse<Page<ItemResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
                                                         @RequestParam("name") String searchTitle,
                                                         @RequestParam(required = false) Long categoryId) {
         log.info("[P9][CON][ITEM][SRCH]: GET /api/items/search pageable({}), searchTitle({}), categoryId({})",
