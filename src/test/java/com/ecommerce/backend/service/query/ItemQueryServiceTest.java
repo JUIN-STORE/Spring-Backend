@@ -385,17 +385,7 @@ class ItemQueryServiceTest {
 
             var itemImageList = makeItemImageList(20L);
 
-            var item = Item.builder()
-                    .id(1L)
-                    .name("name")
-                    .price(10000)
-                    .quantity(1)
-                    .soldCount(1)
-                    .description("description")
-                    .itemStatus(ItemStatus.READY)
-                    .category(makeCategory())
-                    .itemImageList(itemImageList)
-                    .build();
+            var item = makeItem(1L, itemImageList);
             var itemList = List.of(item);
 
             given(itemRepository.findAllByCategoryId(pageable, categoryId))
