@@ -19,4 +19,6 @@ public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslItemR
     Page<Item> findAllByNameContainingAndCategoryId(Pageable pageable, String name, Long categoryId);
 
     Long countByNameContaining(String name);
+
+    Page<Item> findAllByPersonalColor(Pageable pageable, String personalColor);
 }
