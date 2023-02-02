@@ -3,6 +3,7 @@ package com.ecommerce.backend.service.query;
 import com.ecommerce.backend.domain.entity.Category;
 import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.entity.ItemImage;
+import com.ecommerce.backend.domain.entity.PersonalColor;
 import com.ecommerce.backend.domain.enums.ItemStatus;
 import com.ecommerce.backend.domain.response.ItemResponse;
 import com.ecommerce.backend.exception.Msg;
@@ -407,8 +408,33 @@ class ItemQueryServiceTest {
     @DisplayName("search 테스트")
     class SearchTest {
         @Test
-        @DisplayName("categoryId가 없을 때")
+        @DisplayName("personalColor가 있을 때")
         void searchTest01() {
+            // given
+            var page = 0;
+            var size = 10;
+            var pageable = PageRequest.of(page, size);
+            var personColor = PersonalColor.SPRING.toString();
+
+            var itemImageList = makeItemImageList(10L);
+            var item = makeItem(1L, itemImageList);
+            var itemList = List.of(item);
+
+            given(itemRepository.findAllByPersonalColor(pageable, personColor))
+                    .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
+
+            var itemReadResponseList = makeItemReadResponseList(itemList, itemImageList);
+            var expected = new PageImpl<>(itemReadResponseList, pageable, 1);
+
+            // when
+            final Page<ItemResponse.Read> actual = sut.search(pageable, null, personColor, null);
+
+            // then
+            assertIterableEquals(expected, actual);
+        }
+        @Test
+        @DisplayName("categoryId가 없을 때")
+        void searchTest02() {
             // given
             var page = 0;
             var size = 10;
@@ -416,17 +442,17 @@ class ItemQueryServiceTest {
             var searchTitle = "이게 검색어다!";
 
             var itemImageList = makeItemImageList(20L);
-            final Item item = makeItem(1L, itemImageList);
+            var item = makeItem(1L, itemImageList);
             var itemList = List.of(item);
 
             given(itemRepository.findAllByNameContaining(pageable, searchTitle))
                     .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
 
             var itemReadResponseList = makeItemReadResponseList(itemList, itemImageList);
-            final Page<ItemResponse.Read> expected = new PageImpl<>(itemReadResponseList, pageable, 1);
+            var expected = new PageImpl<>(itemReadResponseList, pageable, 1);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, null);
+            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, null, null);
 
             // then
             assertIterableEquals(expected, actual);
@@ -434,7 +460,7 @@ class ItemQueryServiceTest {
 
         @Test
         @DisplayName("categoryId가 있을 때")
-        void searchTest02() {
+        void searchTest03() {
             // given
             var page = 0;
             var size = 10;
@@ -462,7 +488,7 @@ class ItemQueryServiceTest {
             var expected = makeItemReadResponseList(itemList, itemImageList);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, categoryId);
+            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, null, categoryId);
 
             // then
             assertIterableEquals(expected, actual);

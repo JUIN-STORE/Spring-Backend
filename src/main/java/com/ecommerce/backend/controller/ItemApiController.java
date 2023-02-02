@@ -66,12 +66,14 @@ public class ItemApiController {
     @GetMapping("/search")
     public JUINResponse<Page<ItemResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable,
                                                         @RequestParam("name") String searchTitle,
+                                                        @RequestParam(required = false) String personalColor,
                                                         @RequestParam(required = false) Long categoryId) {
-        log.info("[P9][CON][ITEM][SRCH]: GET /api/items/search pageable({}), searchTitle({}), categoryId({})",
-                pageable, searchTitle, categoryId);
+        log.info("[P9][CON][ITEM][SRCH]: GET /api/items/search pageable=({}), " +
+                        "searchTitle=({}), personal-color=({}), categoryId=({})",
+                pageable, searchTitle, personalColor, categoryId);
 
         try {
-            var response = itemQueryService.search(pageable, searchTitle, categoryId);
+            var response = itemQueryService.search(pageable, searchTitle, personalColor, categoryId);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);

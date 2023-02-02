@@ -48,6 +48,11 @@ public class ItemQueryService {
     }
 
     @Transactional(readOnly = true)
+    public Page<Item> readAllByPersonalColor(Pageable pageable, String personalColor) {
+        return itemRepository.findAllByPersonalColor(pageable, personalColor);
+    }
+
+    @Transactional(readOnly = true)
     public Page<Item>
     readAllByNameContainingAndCategoryId(Pageable pageable, String searchTitle, Long categoryId) {
         return itemRepository.findAllByNameContainingAndCategoryId(pageable, searchTitle, categoryId);
@@ -77,10 +82,12 @@ public class ItemQueryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ItemResponse.Read> search(Pageable pageable, String searchTitle, Long categoryId) {
+    public Page<ItemResponse.Read> search(Pageable pageable, String searchTitle, String personalColor, Long categoryId) {
         Page<Item> itemList;
 
-        if (categoryId == null) {
+        if (personalColor != null) {
+            itemList = readAllByPersonalColor(pageable, personalColor);
+        } else if (categoryId == null) {
             itemList = readAllByNameContaining(pageable, searchTitle);
         } else {
             itemList = readAllByNameContainingAndCategoryId(pageable, searchTitle, categoryId);
