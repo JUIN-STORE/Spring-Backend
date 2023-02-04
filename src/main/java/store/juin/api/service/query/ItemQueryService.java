@@ -7,11 +7,13 @@ import store.juin.api.repository.jpa.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -51,13 +53,6 @@ public class ItemQueryService {
     public Page<Item> readAllByPersonalColor(Pageable pageable, String personalColor) {
         return itemRepository.findAllByPersonalColor(pageable, personalColor);
     }
-
-    @Transactional(readOnly = true)
-    public Page<Item>
-    readAllByNameContainingAndCategoryId(Pageable pageable, String searchTitle, Long categoryId) {
-        return itemRepository.findAllByNameContainingAndCategoryId(pageable, searchTitle, categoryId);
-    }
-
     @Transactional(readOnly = true)
     public long total() {
         return itemRepository.count();
@@ -69,28 +64,18 @@ public class ItemQueryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ItemResponse.Read> display(Pageable pageable, Long categoryId) {
-        Page<Item> itemList;
-
-        if (categoryId == null) {
-            itemList = readAll(pageable);
-        } else {
-            itemList = readAllByCategoryId(pageable, categoryId);
-        }
-
-        return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ItemResponse.Read> search(Pageable pageable, String searchTitle, String personalColor, Long categoryId) {
+    public Page<ItemResponse.Read> display(Pageable pageable,
+                                           String searchTitle,
+                                           Long categoryId,
+                                           String personalColor) {
         Page<Item> itemList;
 
         if (personalColor != null) {
             itemList = readAllByPersonalColor(pageable, personalColor);
-        } else if (categoryId == null) {
-            itemList = readAllByNameContaining(pageable, searchTitle);
         } else {
-            itemList = readAllByNameContainingAndCategoryId(pageable, searchTitle, categoryId);
+            itemList = itemRepository
+                    .findByNameAndCategoryId(pageable, searchTitle, categoryId)
+                    .orElse(new PageImpl<>(Collections.emptyList()));
         }
 
         return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
