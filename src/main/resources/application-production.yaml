@@ -50,7 +50,7 @@ cloud:
     aws:
         s3:
             bucket: 'jshwang-ecommerce'
-            directory: 'item'
+            directory: items
         stack:
             auto: false
         region:

@@ -31,7 +31,7 @@ public class S3FileUploadComponent {
         objectMetadata.setContentType(file.getContentType());
         objectMetadata.setContentLength(file.getSize());
 
-        String key = directory + CharterUtil.SLASH + FileUpload.makeCopyFileName(file.getOriginalFilename());
+        String key = directory + CharterUtil.SLASH + FileUpload.makeFileNameWithUuid(file.getOriginalFilename());
 
         try (InputStream inputStream = file.getInputStream()) {
             final PutObjectRequest putObjectRequest = new PutObjectRequest(
@@ -48,5 +48,4 @@ public class S3FileUploadComponent {
 
         return s3Client.getUrl(bucket, key).toString();
     }
-
 }

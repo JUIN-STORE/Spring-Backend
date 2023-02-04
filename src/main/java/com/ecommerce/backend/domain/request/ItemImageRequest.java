@@ -9,25 +9,25 @@ public class ItemImageRequest {
     @Data
     @Accessors(chain = true)
     public static class Create {
-        private String imageName;           // 이미지 파일명
+        private String imageName;           // 원본 이미지 파일명을 통해 새롭게 저장될 이미지 파일명
 
         private String originImageName;     // 원본 이미지 파일명
 
         private String imageUrl;            // 이미지 조회 경로
 
-        private Boolean thumbnail;          // 썸네일 여부
+        private boolean thumbnail;          // 썸네일 여부
 
-        public Create(Boolean isThumbnail) {
-            this.thumbnail = isThumbnail;
+        public Create(String originImageName) {
+            this.originImageName = originImageName;
         }
 
-        public ItemImage toItemImage(Item item, String imageName, String imageUrl, String originImageName) {
+        public ItemImage toItemImage(Item item, String imageName, String imageUrl, boolean thumbnail) {
             return ItemImage.builder()
                     .item(item)
                     .name(imageName)
-                    .originName(originImageName)
+                    .originName(this.originImageName)
                     .imageUrl(imageUrl)
-                    .thumbnail(this.thumbnail)
+                    .thumbnail(thumbnail)
                     .build();
         }
     }

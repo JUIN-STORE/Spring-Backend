@@ -64,7 +64,7 @@ class ItemCommandServiceTest {
             given(categoryQueryService.readById(anyLong())).willReturn(category);
             willDoNothing().given(itemCategoryCommandService).add(any(), any());
             given(itemRepository.save(any())).willReturn(item);
-            willDoNothing().given(itemImageCommandService).add(any(), any(), any());
+//            willDoNothing().given(itemImageCommandService).addOriginalImage(any(), any(), any());
 
             // when
             sut.add(request, thumbnailFile, multipartFileList);

@@ -43,14 +43,17 @@ jwt:
     secret: SlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNl
     token-validity-in-seconds: 86400
 
-item-image-location: ../Vue-Frontend/src/assets/items/       # 상품 이미지 업로드 경로
-uploadPath: file:///../Vue-Frontend/src/assets/items/           # 리소스 업로드 경로
+item-image:
+    original-path: ../Vue-Frontend/src/assets/items/original         # 상품 이미지 원본 업로드 경로
+    thumbnail-path: ../Vue-Frontend/src/assets/items/thumbnail       # 상품 이미지 썸네일 업로드 경로
+
+uploadPath: file:///../Vue-Frontend/src/assets/items           # 리소스 업로드 경로
 
 cloud:
     aws:
         s3:
             bucket: 'jshwang-ecommerce'
-            directory: item
+            directory: items
         stack:
             auto: false
         region:

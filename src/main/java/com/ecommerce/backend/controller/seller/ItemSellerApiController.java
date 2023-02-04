@@ -51,7 +51,7 @@ public class ItemSellerApiController {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         } catch (Exception e) {
-            log.warn("파일 등록에 실패하였습니다.");
+            log.warn("파일 등록에 실패하였습니다. message=({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }

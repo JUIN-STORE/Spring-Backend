@@ -31,6 +31,8 @@ public class Msg {
     public static final String ITEM_THUMBNAIL_REQUIRED = "상품 썸네일 이미지는 필수입니다.";
     public static final String ITEM_IMAGE_NOT_FOUND = "상품 이미지를 찾을 수 없습니다.";
 
+    public static final String ILLEGAL_ITEM_IMAGE_FILE_NAME = "파일 이름에 문제가 있습니다.";
+
     public static final String ORDER_DELIVERY_ADDRESS_NOT_FOUND = "배송지는 필수입니다.";
     public static final String ORDER_DELIVERY_RECEIVER_REQUIRED = "받는 사람은 필수입니다.";
     public static final String ORDER_NOT_FOUND = "존재하지 않는 주문 정보입니다.";
