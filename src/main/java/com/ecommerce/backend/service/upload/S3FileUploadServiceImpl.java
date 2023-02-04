@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.entity.ItemImage;
 import com.ecommerce.backend.domain.request.ItemImageRequest;
+import com.ecommerce.backend.exception.JUINIOException;
 import com.ecommerce.backend.utils.CharterUtil;
 import com.ecommerce.backend.utils.FileUploadUtil;
 import com.ecommerce.backend.utils.ThumbnailUtil;
@@ -60,7 +61,7 @@ public class S3FileUploadServiceImpl implements FileUploadService {
             return request.toItemImage(item, multipartFile.getOriginalFilename(), uploadFileUrl, true);
         } catch (IOException e) {
             log.error("[P1][SRV][IICM][THUM]: s3에 썸네일을 저장하는데 실패하였습니다. message=({})", e.getMessage());
-            throw new RuntimeException(e);
+            throw new JUINIOException(e);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.ecommerce.backend.utils;
 
+import com.ecommerce.backend.exception.JUINIOException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,7 @@ public class ThumbnailUtil {
             return outputImage;
         } catch (IOException e) {
             log.error("Error resizing image", e);
-            throw new RuntimeException(e);
+            throw new JUINIOException(e);
         }
     }
 }
