@@ -15,10 +15,13 @@ public class ItemImageRequest {
 
         private String imageUrl;            // 이미지 조회 경로
 
-        private boolean thumbnail;          // 썸네일 여부
+        private boolean thumbnail;          // 썸네일 여부 (리사이징 처리 여부)
 
-        public Create(String originImageName) {
+        private boolean representative;     // 대표 이미지 여부
+
+        public Create(String originImageName, boolean representative) {
             this.originImageName = originImageName;
+            this.representative = representative;
         }
 
         public ItemImage toItemImage(Item item, String imageName, String imageUrl, boolean thumbnail) {
@@ -26,6 +29,7 @@ public class ItemImageRequest {
                     .item(item)
                     .name(imageName)
                     .originName(this.originImageName)
+                    .representative(this.representative)
                     .imageUrl(imageUrl)
                     .thumbnail(thumbnail)
                     .build();

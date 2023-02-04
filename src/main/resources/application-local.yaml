@@ -31,7 +31,7 @@ spring:
     servlet:
       multipart:
           max-file-size: 20MB           # 파일 한 개당 최대 사이즈
-          max-request-size: 100MB       # 요청당 최대 파일 크
+          max-request-size: 100MB       # 요청당 최대 파일 크기
 
 decorator:
     datasource:
@@ -44,6 +44,7 @@ jwt:
     token-validity-in-seconds: 86400
 
 item-image:
+    resize-storage: ../resize-storage
     original-path: ../Vue-Frontend/src/assets/items/original         # 상품 이미지 원본 업로드 경로
     thumbnail-path: ../Vue-Frontend/src/assets/items/thumbnail       # 상품 이미지 썸네일 업로드 경로
 

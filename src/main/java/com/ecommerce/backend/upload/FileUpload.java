@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 @Slf4j
@@ -46,19 +45,19 @@ public final class FileUpload {
         return uuid + CharterUtil.DASH + fileName + CharterUtil.UNDER_BAR + size + CharterUtil.DOT + extension;
     }
 
-    public static void createDirectories(String path) {
+    public static void createDirectoryIfNotExists(String path) {
         try {
-            Files.createDirectories(Paths.get(path));
+            File file = new File(path);
+            if (file.exists()) return;
+            Files.createDirectories(file.toPath());
         } catch (IOException e) {
             log.error("폴더 생성에 실패하였습니다.");
             throw new RuntimeException(e);
         }
     }
-    public void deleteFile(String filePath){
-        final File deleteFile = new File(filePath);
-
-        if (deleteFile.exists()) {
-            deleteFile.delete();
+    public static void deleteFile(File file) {
+        if (file.exists()) {
+            file.delete();
             log.info("파일 삭제 성공");
         } else {
             log.warn("파일 삭제 실패");

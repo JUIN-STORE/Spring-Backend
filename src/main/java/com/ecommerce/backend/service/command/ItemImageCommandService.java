@@ -16,12 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Paths;
 
-import static com.ecommerce.backend.upload.FileUpload.createDirectories;
+import static com.ecommerce.backend.upload.FileUpload.createDirectoryIfNotExists;
+import static com.ecommerce.backend.upload.FileUpload.deleteFile;
 
 // FIXME: 기능 정상화되면 추상화해서 local, s3 분리
 @Slf4j
@@ -35,20 +34,25 @@ public class ItemImageCommandService {
     @Value("${item-image.original-path:#{null}}")
     private String itemImageOriginalPath;
 
-    @Value("${item-image.thumbnail-path:#{null}}")
-    private String itemImageThumbnailPath;
+//    @Value("${item-image.thumbnail-path:#{null}}")
+    private String itemImageThumbnailPath = null;
+
+    @Value("${item-image.resize-storage:#{null}}")
+    private String resizeStorage;
 
     private static final int THUMBNAIL_SIZE = 400;
 
-    public void add(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
-//        addOriginalImage(request, multipartFile, item);
+    public void add(ItemImageRequest.Create request,
+                    MultipartFile multipartFile,
+                    Item item) {
+        addOriginalImage(request, multipartFile, item);
         addThumbnailImage(request, multipartFile, item);
     }
 
     // 원본 파일 저장
     private void addOriginalImage(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
         if (StringUtils.hasText(itemImageOriginalPath)) {
-            createDirectories(itemImageOriginalPath);
+            createDirectoryIfNotExists(itemImageOriginalPath);
             addOriginalImageAtLocal(request, multipartFile, item);
         } else {
             addOriginalImageAtS3(request, multipartFile, item);
@@ -60,7 +64,7 @@ public class ItemImageCommandService {
         final String extension = StringUtils.getFilenameExtension(request.getOriginImageName());
 
         if (StringUtils.hasText(itemImageThumbnailPath)) {
-            createDirectories(itemImageThumbnailPath);
+            createDirectoryIfNotExists(itemImageThumbnailPath);
             addThumbnailImageAtLocal(request, multipartFile, item, extension);
         } else {
             addThumbnailImageAtS3(request, multipartFile, item, extension);
@@ -107,30 +111,61 @@ public class ItemImageCommandService {
 
 
     // S3 업로드
-    private void addThumbnailImageAtS3(ItemImageRequest.Create request, MultipartFile multipartFile, Item item, String extension) {
-        final String uploadFileUrl = s3FileUploadComponent.uploadFile(multipartFile);
-        final String imageName = Paths.get(uploadFileUrl).getFileName().toString();
+    private void addThumbnailImageAtS3(ItemImageRequest.Create request,
+                                       MultipartFile multipartFile,
+                                       Item item,
+                                       String extension) {
         try {
             // 썸네일 생성하기
             final InputStream inputStream = multipartFile.getInputStream();
             final BufferedImage resize = ThumbnailUtil.resize(inputStream, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
-            ImageIO.write(resize, extension, new File(uploadFileUrl));
 
+            createDirectoryIfNotExists(resizeStorage);
+            final String path = FileUpload.makeAbsPath(resizeStorage, multipartFile.getOriginalFilename());
+
+            final File file = new File(path);
+            ImageIO.write(resize, extension, file);
+
+            final String uploadFileUrl = s3FileUploadComponent.uploadFile("thumbnail", file);
+
+            final ItemImage itemImage = request.toItemImage(item, multipartFile.getOriginalFilename(), uploadFileUrl, true);
+            itemImageRepository.save(itemImage);
+            deleteFile(file);
         } catch (IOException e) {
+            log.error("[P1][SRV][IICM][THUM]: s3에 썸네일을 저장하는데 실패하였습니다. message=({})", e.getMessage());
             throw new RuntimeException(e);
         }
-
-        final ItemImage itemImage = request.toItemImage(item, imageName, uploadFileUrl, true);
-
-        itemImageRepository.save(itemImage);
     }
 
-    private void addOriginalImageAtS3(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
-        final String uploadFileUrl = s3FileUploadComponent.uploadFile(multipartFile);
-        final String imageName = Paths.get(uploadFileUrl).getFileName().toString();
+    private void addOriginalImageAtS3(ItemImageRequest.Create request,
+                                      MultipartFile multipartFile,
+                                      Item item) {
+        try {
+            final File file = convertMultipartFileToFile(multipartFile);
 
-        final ItemImage itemImage = request.toItemImage(item, imageName, uploadFileUrl, false);
+            final String subDirectory = "original";
+            final String uploadFileUrl = s3FileUploadComponent.uploadFile(subDirectory, file);
+            final String imageName = Paths.get(uploadFileUrl).getFileName().toString();
 
-        itemImageRepository.save(itemImage);
+            final ItemImage itemImage = request.toItemImage(item, imageName, uploadFileUrl, false);
+
+            itemImageRepository.save(itemImage);
+            deleteFile(file);
+        } catch (IOException e) {
+            log.error("[P1][SRV][IICM][ORIN]: s3에 원본을 저장하는데 실패하였습니다. message=({})", e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
+        final String path = FileUpload.makeAbsPath(resizeStorage, multipartFile.getOriginalFilename());
+        final File file = new File(path);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(multipartFile.getBytes());
+        } catch (IOException e) {
+            throw e;
+        }
+
+        return file;
     }
 }

@@ -35,6 +35,7 @@ public class ItemSellerApiController {
                                        @RequestPart(value = "thumbnail") MultipartFile thumbnailImage,
                                        @RequestPart(value = "fileList", required = false) List<MultipartFile> itemImageFileList) {
 
+        // FIXME: 프론트 작업 하면서 실제 파라미터를 thumbnail -> representative 로 변경
         log.info("[P9][CON][ITEM][REGI]: GET /api/items/seller/register request({}), thumbnail({}), fileList({})"
                 , request
                 , thumbnailImage

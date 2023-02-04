@@ -50,7 +50,7 @@ public class ItemCommandService {
         // 대표 이미지
         final String originFileName = representativeImageFile.getOriginalFilename();
         validOriginalFilename(originFileName);
-        itemImageCommandService.add(new ItemImageRequest.Create(originFileName), representativeImageFile, item);
+        itemImageCommandService.add(new ItemImageRequest.Create(originFileName, true), representativeImageFile, item);
 
         final Long itemId = item.getId();
 
@@ -59,9 +59,14 @@ public class ItemCommandService {
 
         // 썸네일 외 상세 이미지 등록
         for (MultipartFile itemImageFile : itemImageFileList) {
+            if (itemImageFile == null) {
+                log.warn("[P1][SRV][ICM][IIF_]: 요청에 null인 이미지가 포함되어 있습니다. request=({})", request);
+                continue;
+            }
+
             final String originalFilename = itemImageFile.getOriginalFilename();
             validOriginalFilename(originalFilename);
-            itemImageCommandService.add(new ItemImageRequest.Create(originalFilename), itemImageFile, item);
+            itemImageCommandService.add(new ItemImageRequest.Create(originalFilename, false), itemImageFile, item);
         }
 
         return itemId;
