@@ -6,4 +6,6 @@ import lombok.experimental.UtilityClass;
 public final class CharterUtil {
     public static final String DASH = "-";
     public static final String SLASH = "/";
+    public static final String DOT = ".";
+    public static final String UNDER_BAR = "_";
 }

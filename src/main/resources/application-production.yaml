@@ -46,11 +46,14 @@ jwt:
     secret: SlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNl
     token-validity-in-seconds: 86400
 
+item-image:
+    resize-path: ./src/main/resources/resize
+
 cloud:
     aws:
         s3:
             bucket: 'jshwang-ecommerce'
-            directory: 'item'
+            directory: items
         stack:
             auto: false
         region:

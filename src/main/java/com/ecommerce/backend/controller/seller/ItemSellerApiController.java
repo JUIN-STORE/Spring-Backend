@@ -35,6 +35,7 @@ public class ItemSellerApiController {
                                        @RequestPart(value = "thumbnail") MultipartFile thumbnailImage,
                                        @RequestPart(value = "fileList", required = false) List<MultipartFile> itemImageFileList) {
 
+        // FIXME: 프론트 작업 하면서 실제 파라미터를 thumbnail -> representative 로 변경
         log.info("[P9][CON][ITEM][REGI]: GET /api/items/seller/register request({}), thumbnail({}), fileList({})"
                 , request
                 , thumbnailImage
@@ -51,7 +52,7 @@ public class ItemSellerApiController {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         } catch (Exception e) {
-            log.warn("파일 등록에 실패하였습니다.");
+            log.warn("파일 등록에 실패하였습니다. message=({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }

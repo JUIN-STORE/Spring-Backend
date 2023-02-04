@@ -18,7 +18,7 @@ public class ItemImage extends BaseEntity {
     private Long id;
 
     @NotNull
-    private String name;                // 이미지 파일명
+    private String name;                // 원본 이미지 파일명을 통해 새로 만든 이미지 파일명
 
     @NotNull
     private String originName;          // 원본 이미지 파일명
@@ -27,6 +27,8 @@ public class ItemImage extends BaseEntity {
     private String imageUrl;            // 이미지 조회 경로
 
     private Boolean thumbnail;          // 썸네일 여부
+
+    private boolean representative;
 
     // 연관관계 주인
     @NotNull
