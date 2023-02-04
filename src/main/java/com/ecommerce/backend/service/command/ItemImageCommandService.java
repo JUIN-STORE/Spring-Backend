@@ -16,11 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.IOException;
 
 import static com.ecommerce.backend.upload.FileUpload.createDirectoryIfNotExists;
-import static com.ecommerce.backend.upload.FileUpload.deleteFile;
+import static com.ecommerce.backend.upload.FileUpload.deleteIfExists;
 
 // FIXME: 기능 정상화되면 추상화해서 local, s3 분리
 @Slf4j
@@ -34,17 +34,15 @@ public class ItemImageCommandService {
     @Value("${item-image.original-path:#{null}}")
     private String itemImageOriginalPath;
 
-//    @Value("${item-image.thumbnail-path:#{null}}")
-    private String itemImageThumbnailPath = null;
+    @Value("${item-image.thumbnail-path:#{null}}")
+    private String itemImageThumbnailPath;
 
-    @Value("${item-image.resize-storage:#{null}}")
-    private String resizeStorage;
+    @Value("${item-image.resize-path:#{null}}")
+    private String resizePath;
 
     private static final int THUMBNAIL_SIZE = 400;
 
-    public void add(ItemImageRequest.Create request,
-                    MultipartFile multipartFile,
-                    Item item) {
+    public void add(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
         addOriginalImage(request, multipartFile, item);
         addThumbnailImage(request, multipartFile, item);
     }
@@ -79,12 +77,10 @@ public class ItemImageCommandService {
 
         try {
             // 썸네일 생성하기
-            final InputStream inputStream = multipartFile.getInputStream();
-            final BufferedImage resize = ThumbnailUtil.resize(inputStream, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
-
+            final BufferedImage resize = ThumbnailUtil.resize(multipartFile, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
             ImageIO.write(resize, extension, new File(imageAbsUrl));
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("[P1][SRV][IICM][THUM] 로컬에서 썸네일 만드는데 실패하였습니다. message=({})", e.getMessage());
         }
 
@@ -98,11 +94,7 @@ public class ItemImageCommandService {
         final String uuidFileName = FileUpload.makeFileNameWithUuid(originalFileName);
         final String imageAbsUrl = FileUpload.makeAbsPath(itemImageOriginalPath, uuidFileName);
 
-        try {
-            FileUpload.uploadFile(itemImageOriginalPath, originalFileName, multipartFile);   // 원본
-        } catch (Exception e) {
-            log.error("[P1][SRV][IICM][ORIN]: 로컬에서 원본을 저장하는데 실패하였습니다. message=({})", e.getMessage());
-        }
+        FileUpload.uploadFile(itemImageOriginalPath, originalFileName, multipartFile);   // 원본
 
         final ItemImage itemImage = request.toItemImage(item, uuidFileName, imageAbsUrl, false);
 
@@ -117,11 +109,10 @@ public class ItemImageCommandService {
                                        String extension) {
         try {
             // 썸네일 생성하기
-            final InputStream inputStream = multipartFile.getInputStream();
-            final BufferedImage resize = ThumbnailUtil.resize(inputStream, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+            final BufferedImage resize = ThumbnailUtil.resize(multipartFile, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
 
-            createDirectoryIfNotExists(resizeStorage);
-            final String path = FileUpload.makeAbsPath(resizeStorage, multipartFile.getOriginalFilename());
+            createDirectoryIfNotExists(resizePath);
+            final String path = FileUpload.makeAbsPath(resizePath, request.getOriginImageName());
 
             final File file = new File(path);
             ImageIO.write(resize, extension, file);
@@ -130,42 +121,22 @@ public class ItemImageCommandService {
 
             final ItemImage itemImage = request.toItemImage(item, multipartFile.getOriginalFilename(), uploadFileUrl, true);
             itemImageRepository.save(itemImage);
-            deleteFile(file);
+            deleteIfExists(file);
         } catch (IOException e) {
             log.error("[P1][SRV][IICM][THUM]: s3에 썸네일을 저장하는데 실패하였습니다. message=({})", e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    private void addOriginalImageAtS3(ItemImageRequest.Create request,
-                                      MultipartFile multipartFile,
-                                      Item item) {
-        try {
-            final File file = convertMultipartFileToFile(multipartFile);
+    private void addOriginalImageAtS3(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
+        final File file = FileUpload.convertMultipartFileToFile(multipartFile, resizePath);
 
-            final String subDirectory = "original";
-            final String uploadFileUrl = s3FileUploadComponent.uploadFile(subDirectory, file);
-            final String imageName = Paths.get(uploadFileUrl).getFileName().toString();
+        final String uploadFileUrl = s3FileUploadComponent.uploadFile("original", file);
+        final String imageName = FileUpload.makeThumbnailFileName(request.getOriginImageName(), THUMBNAIL_SIZE);
 
-            final ItemImage itemImage = request.toItemImage(item, imageName, uploadFileUrl, false);
+        final ItemImage itemImage = request.toItemImage(item, imageName, uploadFileUrl, false);
 
-            itemImageRepository.save(itemImage);
-            deleteFile(file);
-        } catch (IOException e) {
-            log.error("[P1][SRV][IICM][ORIN]: s3에 원본을 저장하는데 실패하였습니다. message=({})", e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
-
-    private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        final String path = FileUpload.makeAbsPath(resizeStorage, multipartFile.getOriginalFilename());
-        final File file = new File(path);
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(multipartFile.getBytes());
-        } catch (IOException e) {
-            throw e;
-        }
-
-        return file;
+        itemImageRepository.save(itemImage);
+        deleteIfExists(file);
     }
 }

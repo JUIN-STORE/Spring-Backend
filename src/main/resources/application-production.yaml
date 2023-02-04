@@ -47,7 +47,7 @@ jwt:
     token-validity-in-seconds: 86400
 
 item-image:
-    resize-storage: ../resize-storage
+    resize-path: ./src/main/resources/resize
 
 cloud:
     aws:

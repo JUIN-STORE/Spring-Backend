@@ -23,6 +23,8 @@ public class S3FileUploadComponent {
     @Value("${cloud.aws.s3.directory}")
     private String directory;
 
+    private static final int THUMB_SIZE = 400;
+
     public String uploadFile(String subDirectory, File file) {
         String key = makeKey(subDirectory, file.getName());
 
@@ -35,6 +37,10 @@ public class S3FileUploadComponent {
     }
 
     private String makeKey(String subdirectory, String fileName) {
-        return directory + CharterUtil.SLASH + subdirectory + CharterUtil.SLASH + FileUpload.makeFileNameWithUuid(fileName);
+        return directory
+                + CharterUtil.SLASH
+                + subdirectory
+                + CharterUtil.SLASH
+                + FileUpload.makeThumbnailFileName(fileName, THUMB_SIZE);
     }
 }
