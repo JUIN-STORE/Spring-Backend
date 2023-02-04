@@ -1,12 +1,10 @@
-package com.ecommerce.backend.upload;
+package com.ecommerce.backend.utils;
 
-import com.ecommerce.backend.utils.CharterUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,23 +13,12 @@ import java.util.UUID;
 
 @Slf4j
 @UtilityClass
-public final class FileUpload {
-    public static void uploadFile(String uploadPath, String fileName, MultipartFile multipartFile) {
-        // originFile을 먼저 저장하고
-        try(FileOutputStream fos = new FileOutputStream(makeAbsPath(uploadPath, fileName))){
-            fos.write(multipartFile.getBytes());
-        } catch (FileNotFoundException e) {
-            log.error("[P1][UTIL][FILE][UPAD]: 파일을 찾을 수 없습니다. message=({})", e.getMessage());
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.error("[P1][UTIL][FILE][UPAD]: IOException message=({})", e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
+public final class FileUploadUtil {
+    public static final int THUMB_400 = 400;
 
     public static File convertMultipartFileToFile(MultipartFile multipartFile, String resizePath) {
         createDirectoryIfNotExists(resizePath);
-        final String path = FileUpload.makeAbsPath(resizePath, multipartFile.getOriginalFilename());
+        final String path = FileUploadUtil.makeAbsPath(resizePath, multipartFile.getOriginalFilename());
         final File file = new File(path);
 
         try (FileOutputStream fos = new FileOutputStream(file)) {
