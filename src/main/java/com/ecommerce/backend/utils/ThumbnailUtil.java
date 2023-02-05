@@ -24,7 +24,7 @@ public class ThumbnailUtil {
 
             return outputImage;
         } catch (IOException e) {
-            log.error("Error resizing image", e);
+            log.error("[P1][UTIL][THMB][RESZ]: 리사이징 중 에러가 발생했습니다. message=({})", e.getMessage(), e);
             throw new JUINIOException(e);
         }
     }

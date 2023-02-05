@@ -47,16 +47,16 @@ public class ItemSellerApiController {
             var response = itemCommandService.add(request, thumbnailImage, itemImageFileList);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (InvalidParameterException e) {
-            log.warn("상품 썸네일은 필수입니다. message: ({})", e.getMessage(), e);
+            log.warn("[P2][CON][ITEM][REGI]: 상품 썸네일은 필수입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         } catch (EntityNotFoundException e) {
-            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            log.warn("[P2][CON][ITEM][REGI]: 존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         } catch (JUINIOException e) {
-            log.warn("파일 등록에 실패하였습니다. message=({})", e.getMessage(), e);
+            log.warn("[P2][CON][ITEM][REGI]: 파일 등록에 실패하였습니다. message=({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, null);
         } catch (Exception e) {
-            log.warn("알 수 없는 에러가 발생했습니다. message=({})", e.getMessage(), e);
+            log.warn("[P1][CON][ITEM][REGI]: 알 수 없는 에러가 발생했습니다. message=({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
@@ -72,7 +72,7 @@ public class ItemSellerApiController {
             var response = ItemResponse.Read.from(item);
             return new JUINResponse<>(HttpStatus.OK, "상품 읽기 성공", response);
         } catch (EntityNotFoundException e) {
-            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            log.warn("[P2][CON][ITEM][AMRD]: 존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
@@ -87,7 +87,7 @@ public class ItemSellerApiController {
             var response = itemCommandService.remove(itemId);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            log.warn("[P2][CON][ITEM][AMRM]: 존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }

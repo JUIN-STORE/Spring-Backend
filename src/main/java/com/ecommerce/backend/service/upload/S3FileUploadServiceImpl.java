@@ -60,7 +60,7 @@ public class S3FileUploadServiceImpl implements FileUploadService {
             deleteIfExists(file);
             return request.toItemImage(item, multipartFile.getOriginalFilename(), uploadFileUrl, true);
         } catch (IOException e) {
-            log.error("[P1][SRV][IICM][THUM]: s3에 썸네일을 저장하는데 실패하였습니다. message=({})", e.getMessage());
+            log.error("[P1][SERV][IICM][THUM]: s3에 썸네일을 저장하는데 실패하였습니다. message=({})", e.getMessage());
             throw new JUINIOException(e);
         }
     }

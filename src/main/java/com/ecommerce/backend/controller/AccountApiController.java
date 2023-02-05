@@ -54,7 +54,7 @@ public class AccountApiController {
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/sign-up")
     public JUINResponse<AccountResponse.SignUp> signUp(@RequestBody AccountRequest.SignUp request) {
-        log.info("[P9][CON][ACNT][SIGN]: 회원가입 요청, request = ({})", request);
+        log.info("[P9][CTRL][ACNT][SIGN]: POST /api/accounts/sign-up, request = ({})", request);
 
         try {
             final Account account = accountCommandService.add(request);
@@ -62,10 +62,10 @@ public class AccountApiController {
             var response = AccountResponse.SignUp.from(account);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityExistsException e) {
-            log.warn("[P5][CON][ACNT][SIGN]: message=({})", e.getMessage());
+            log.warn("[P5][CTRL][ACNT][SIGN]: message=({})", e.getMessage());
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
-            log.error("[P1][CON][ACNT][SIGN]: 알 수 없는 예외가 발생했습니다. message=({})", e.getMessage());
+            log.error("[P1][CTRL][ACNT][SIGN]: 알 수 없는 예외가 발생했습니다. message=({})", e.getMessage());
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -74,7 +74,7 @@ public class AccountApiController {
     @PostMapping("/login")
     public JUINResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request,
                                                      HttpServletResponse httpServletResponse) {
-        log.info("[P9][CON][ACNT][LOIN]: 로그인 요청, request=({})", request);
+        log.info("[P9][CTRL][ACNT][LOIN]: POST /api/accounts/login, request=({})", request);
 
         try {
             // 이 시점에 １번　쿼리 나감.
@@ -99,7 +99,7 @@ public class AccountApiController {
             var response = AccountResponse.Login.of(email, accessToken);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException | BadCredentialsException e) {
-            log.warn("[P5][CON][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
+            log.warn("[P5][CTRL][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -111,7 +111,7 @@ public class AccountApiController {
                                     , HttpServletResponse httpServletResponse) {
 
         final String email = principal.getName();
-        log.info("[P9][CON][ACNT][LOUT]: 로그아웃, email=({})", email);
+        log.info("[P9][CTRL][ACNT][LOUT]: GET /api/accounts/logout, email=({})", email);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
@@ -140,7 +140,7 @@ public class AccountApiController {
     public JUINResponse<AccountResponse.Retrieve> profile(final Principal principal) {
         final String email = principal.getName();
 
-        log.info("[P9][CON][ACNT][PROF]: 내 정보 읽기, email=({})", email);
+        log.info("[P9][CTRL][ACNT][PROF]: GET /api/accounts/profile, email=({})", email);
 
         try {
             final Account account = principalQueryService.readByPrincipal(principal);
@@ -148,7 +148,7 @@ public class AccountApiController {
             var response = AccountResponse.Retrieve.from(account);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CON][ACNT][PROF]: 회원 정보가 없습니다. email=({})", email);
+            log.warn("[P5][CTRL][ACNT][PROF]: 회원 정보가 없습니다. email=({})", email);
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -157,7 +157,7 @@ public class AccountApiController {
     @PatchMapping
     public JUINResponse<AccountResponse.Update> update(final Principal principal,
                                                        @RequestBody AccountRequest.Update request) {
-        log.info("[P9][CON][ACNT][UPDE]: 회원 정보 수정, request=({})", request);
+        log.info("[P9][CTRL][ACNT][UPDE]: PATCH /api/accounts request=({})", request);
 
         try {
             final Account account = principalQueryService.readByPrincipal(principal);
@@ -166,7 +166,7 @@ public class AccountApiController {
             var response = AccountResponse.Update.from(updateAccount);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CON][ACNT][UPDE]: 회원 정보가 없습니다. request=({})", request);
+            log.warn("[P5][CTRL][ACNT][UPDE]: 회원 정보가 없습니다. request=({})", request);
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -175,7 +175,7 @@ public class AccountApiController {
     @DeleteMapping("/{accountId}")
     public JUINResponse<AccountResponse.Delete> delete(final Principal principal,
                                                        @PathVariable Long accountId) {
-        log.info("[P9][CON][ACNT][DELE]: 회원 정보 삭제, accountId=({})", accountId);
+        log.info("[P9][CTRL][ACNT][DELE]: DELETE /api/accounts/{accountId}, accountId=({})", accountId);
 
         try {
             final Account account = principalQueryService.readByPrincipal(principal);
@@ -184,7 +184,7 @@ public class AccountApiController {
             var response = AccountResponse.Delete.from(deleteAccount);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CON][ACNT][DELE]: 회원 정보가 없습니다. accountId=({})", accountId);
+            log.warn("[P5][CTRL][ACNT][DELE]: 회원 정보가 없습니다. accountId=({})", accountId);
             return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }

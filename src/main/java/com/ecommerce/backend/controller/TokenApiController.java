@@ -23,7 +23,7 @@ public final class TokenApiController {
 
     @PostMapping("/re-issue")
     public JUINResponse<TokenResponse> create(@CookieValue(value = "Refresh-Token") String refreshToken) {
-        log.info("[P9][CON][TOKN][NEW_]: accessToken이 만료되어 새로운 토큰을 요청합니다. refreshToken=({})", refreshToken);
+        log.info("[P9][CON][TOKN][NEW_]: POST /api/tokens/re-issue, accessToken이 만료되어 새로운 토큰을 요청합니다. refreshToken=({})", refreshToken);
 
         try {
             final String accessToken = tokenCommandService.reIssue(refreshToken);
@@ -31,6 +31,7 @@ public final class TokenApiController {
             var response = TokenResponse.of(accessToken);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (InvalidRefreshTokenException e) {
+            log.warn("[P2][CON][TOKN][NEW_]: Refresh-Token이 만료되었습니다. refreshToken=({})", refreshToken);
             return new JUINResponse<>(HttpStatus.UNAUTHORIZED, "Refresh-Token 만료되었습니다.");
         }
     }

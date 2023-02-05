@@ -77,7 +77,7 @@ public class AccountCommandService {
 
         accountRepository.delete(account);  // account 삭제
 
-        log.info("[P9][SRV][ACNT][REMV]: " +
+        log.info("[P9][SERV][ACNT][REMV]: " +
                         "account 삭제 개수:({}), " +
                         "order_item 삭제 개수:({}), " +
                         "orders 삭제 개수:({}), " +

@@ -50,7 +50,7 @@ public class LocalFileUploadServiceImpl implements FileUploadService {
             ImageIO.write(resize, extension, new File(imageAbsUrl));
 
         } catch (IOException e) {
-            log.error("[P1][SRV][IICM][THUM] 로컬에서 썸네일 만드는데 실패하였습니다. message=({})", e.getMessage());
+            log.error("[P1][SERV][IICM][THUM] 로컬에서 썸네일 만드는데 실패하였습니다. message=({})", e.getMessage());
         }
 
         return request.toItemImage(item, thumbnailFileName, imageAbsUrl, true);
