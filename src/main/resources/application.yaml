@@ -1,0 +1,63 @@
+server:
+    port: 13579
+
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/jz?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=utf8
+        username: root
+        password: root
+        initialization-mode: always  # always, embedded, never
+
+    jackson:
+        property-naming-strategy: LOWER_CAMEL_CASE
+        serialization:
+            fail-on-empty-beans: false
+    mvc:
+        hiddenmethod:
+            filter:
+                enabled: true
+
+    jpa:
+        database: MYSQL
+        properties:
+            hibernate:
+                default_batch_fetch_size: 500
+                hbm2ddl:
+                    auto: none      # create, create-drop, update, validate, none
+        open-in-view: true
+    #            show_sql: true   # 실행되는 쿼리 콘솔 출력
+    #            use_sql_comments: true # 추가적으로 주석 생성됨
+    #            format_sql: true # 쿼리 가독성 좋게 포맷팅
+
+    servlet:
+        multipart:
+            max-file-size: 20MB           # 파일 한 개당 최대 사이즈
+            max-request-size: 100MB       # 요청당 최대 파일 크기
+
+item-image:
+    local-path-active: false
+    resize-path: ./src/main/resources/resize # thumbnail-path에 올리기 전에 로컬에 다운 받는 경로
+
+decorator:
+    datasource:
+        p6spy:
+            enable-logging: true # SQL 로그 찍기
+
+jwt:
+    secret: SlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNlSlotZUNvbW1lcmNl
+
+cloud:
+    aws:
+        s3:
+            bucket: jshwang-ecommerce
+            directory: items
+        stack:
+            auto: false
+        region:
+            static: ap-northeast-2
+            auto: false
+
+front:
+    url: http://localhost:24680
+    cookie:
+        domain: localhost

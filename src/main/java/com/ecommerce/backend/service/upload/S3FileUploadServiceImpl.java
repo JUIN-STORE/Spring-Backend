@@ -27,7 +27,7 @@ import static com.ecommerce.backend.utils.FileUploadUtil.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "server.env", havingValue = "production", matchIfMissing = false) // ${server.env} == production이면 빈으로 등록.
+@ConditionalOnProperty(value = "item-image.local-path-active", havingValue = "false", matchIfMissing = false) // ${item-image.local-path-active} == false일 때 빈 등록.
 public class S3FileUploadServiceImpl implements FileUploadService {
     private final AmazonS3Client s3Client;
 
@@ -76,7 +76,7 @@ public class S3FileUploadServiceImpl implements FileUploadService {
         return request.toItemImage(item, imageName, uploadFileUrl, false);
     }
 
-    public String uploadFile(String subDirectory, File file) {
+    private String uploadFile(String subDirectory, File file) {
         String key = makeKey(subDirectory, file.getName());
 
         final PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, key, file);

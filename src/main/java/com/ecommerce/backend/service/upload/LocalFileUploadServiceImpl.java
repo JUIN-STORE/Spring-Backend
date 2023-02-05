@@ -25,7 +25,7 @@ import static com.ecommerce.backend.utils.FileUploadUtil.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "server.env", havingValue = "local", matchIfMissing = false)  // ${server.env} == local이면 빈으로 등록.
+@ConditionalOnProperty(value = "item-image.local-path-active", havingValue = "true", matchIfMissing = false) // ${item-image.local-path-active} == true일 때 빈 등록.
 public class LocalFileUploadServiceImpl implements FileUploadService {
     @Value("${item-image.original-path}")
     private String itemImageOriginalPath;
