@@ -17,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,13 +31,15 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
 class AccountApiControllerTest {
     private static final String ACCOUNT_END_POINT = "/api/accounts";
+    private static final String LOGIN_END_POINT = ACCOUNT_END_POINT + "/login";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,11 +53,16 @@ class AccountApiControllerTest {
     @Mock private PrincipalQueryService principalQueryService;
 
     @Mock private AccountCommandService accountCommandService;
+
     @Mock private TokenCommandService tokenCommandService;
 
+
     @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(sut).build();
+    public void setup(RestDocumentationContextProvider restDocumentationContextProvider) {
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(sut)
+                .apply(documentationConfiguration(restDocumentationContextProvider))
+                .build();
     }
 
     @Test
@@ -97,7 +106,7 @@ class AccountApiControllerTest {
         given(tokenCommandService.addAccessToken(email)).willReturn(accessToken);
 
         // when
-        final ResultActions actual = mockMvc.perform(post(ACCOUNT_END_POINT + "/login")
+        final ResultActions actual = mockMvc.perform(post(LOGIN_END_POINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json));
