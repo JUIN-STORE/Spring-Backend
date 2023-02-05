@@ -30,9 +30,9 @@ spring:
 #            format_sql: true # 쿼리 가독성 좋게 포맷팅
 
     servlet:
-      multipart:
-          max-file-size: 20MB           # 파일 한 개당 최대 사이즈
-          max-request-size: 100MB       # 요청당 최대 파일 크기
+        multipart:
+            max-file-size: 20MB           # 파일 한 개당 최대 사이즈
+            max-request-size: 100MB       # 요청당 최대 파일 크기
 
 decorator:
     datasource:
