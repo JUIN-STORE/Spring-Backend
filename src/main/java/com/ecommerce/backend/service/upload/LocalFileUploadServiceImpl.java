@@ -3,6 +3,7 @@ package com.ecommerce.backend.service.upload;
 import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.entity.ItemImage;
 import com.ecommerce.backend.domain.request.ItemImageRequest;
+import com.ecommerce.backend.exception.JUINIOException;
 import com.ecommerce.backend.utils.FileUploadUtil;
 import com.ecommerce.backend.utils.ThumbnailUtil;
 import lombok.RequiredArgsConstructor;
@@ -74,10 +75,10 @@ public class LocalFileUploadServiceImpl implements FileUploadService {
             fos.write(multipartFile.getBytes());
         } catch (FileNotFoundException e) {
             log.error("[P1][UTIL][FILE][UPAD]: 파일을 찾을 수 없습니다. message=({})", e.getMessage());
-            throw new RuntimeException(e);
+            throw new JUINIOException(e);
         } catch (IOException e) {
             log.error("[P1][UTIL][FILE][UPAD]: IOException message=({})", e.getMessage());
-            throw new RuntimeException(e);
+            throw new JUINIOException(e);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.backend.utils;
 
+import com.ecommerce.backend.exception.JUINIOException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,7 @@ public final class FileUploadUtil {
             fos.write(multipartFile.getBytes());
         } catch (IOException e) {
             log.error("[P1][UTL][FILE][CMTF]: MultipartFile를 File로 바꿀 수 없습니다. message=({})", e.getMessage());
-            throw new RuntimeException(e);
+            throw new JUINIOException(e);
         }
         return file;
     }
@@ -59,7 +60,7 @@ public final class FileUploadUtil {
             log.info("[P9][UTL][UPLD][CRTE]: ({}) 경로 생성 성공", path);
         } catch (IOException e) {
             log.error("[P1][UTL][UPLD][CRTE]: ({}) 경로 생성 실패", path);
-            throw new RuntimeException(e);
+            throw new JUINIOException(e);
         }
     }
     public static void deleteIfExists(File file) {
@@ -70,7 +71,7 @@ public final class FileUploadUtil {
             log.info("[P9][UTL][UPLD][DELE]: ({}) 경로 삭제 성공", path);
         } catch (IOException e) {
             log.error("[P1][UTL][UPLD][DELE]: ({}) 경로 삭제 실패", path);
-            throw new RuntimeException(e);
+            throw new JUINIOException(e);
         }
     }
 }

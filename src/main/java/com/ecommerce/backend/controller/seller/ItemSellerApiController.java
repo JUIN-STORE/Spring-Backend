@@ -4,6 +4,7 @@ import com.ecommerce.backend.JUINResponse;
 import com.ecommerce.backend.domain.entity.Item;
 import com.ecommerce.backend.domain.request.ItemRequest;
 import com.ecommerce.backend.domain.response.ItemResponse;
+import com.ecommerce.backend.exception.JUINIOException;
 import com.ecommerce.backend.service.command.ItemCommandService;
 import com.ecommerce.backend.service.query.ItemQueryService;
 import io.swagger.annotations.Api;
@@ -51,8 +52,11 @@ public class ItemSellerApiController {
         } catch (EntityNotFoundException e) {
             log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
-        } catch (Exception e) {
+        } catch (JUINIOException e) {
             log.warn("파일 등록에 실패하였습니다. message=({})", e.getMessage(), e);
+            return new JUINResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, null);
+        } catch (Exception e) {
+            log.warn("알 수 없는 에러가 발생했습니다. message=({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
