@@ -13,6 +13,9 @@ plugins {
 
     //querydsl 추가
     id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+
+    // rest doc
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.ecommerce'
@@ -23,6 +26,9 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+
+    // rest doc
+    asciidoctorExt
 }
 
 repositories {
@@ -31,8 +37,11 @@ repositories {
 
 ext {
     mapstructVersion = "1.4.2.Final"
-    lombokVersion = "1.18.16"
+    lombokVersion = "1.18.20"
     lombokMapstructBindingVersion = "0.2.0"
+
+    // rest doc
+    snippetsDir = file('build/generated-snippets')
 }
 
 dependencies {
@@ -86,6 +95,10 @@ dependencies {
     // s3
     implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
 
+    // rest doc
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
     // MariaDB
 //	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
@@ -104,6 +117,14 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    outputs.dir snippetsDir // rest doc
+}
+
+// rest doc
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
 }
 
 //querydsl 추가 시작
