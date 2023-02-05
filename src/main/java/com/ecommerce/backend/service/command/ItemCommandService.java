@@ -60,7 +60,7 @@ public class ItemCommandService {
         // 썸네일 외 상세 이미지 등록
         for (MultipartFile itemImageFile : itemImageFileList) {
             if (itemImageFile == null) {
-                log.warn("[P1][SRV][ICM][IIF_]: 요청에 null인 이미지가 포함되어 있습니다. request=({})", request);
+                log.warn("[P1][SERV][ICM][IIF_]: 요청에 null인 이미지가 포함되어 있습니다. request=({})", request);
                 continue;
             }
 

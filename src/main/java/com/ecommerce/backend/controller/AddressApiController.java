@@ -36,7 +36,7 @@ public class AddressApiController {
     public JUINResponse<Void> create(final Principal principal,
                                      @RequestBody AddressRequest.Register request) {
         final String email = principal.getName();
-        log.info("[P9][CON][ADDR][NEW_]: 주소 추가, email=({}), request=({})", email, request);
+        log.info("[P9][CTRL][ADDR][NEW_]: POST /api/addresses, email=({}), request=({})", email, request);
 
         final Account account = principalQueryService.readByPrincipal(principal);
 
@@ -44,7 +44,7 @@ public class AddressApiController {
             addressCommandService.add(account, request);
             return new JUINResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CON][ADDR][NEW_]: 회원 정보가 없습니다. email=({}), request=({})", email, request);
+            log.warn("[P5][CTRL][ADDR][NEW_]: 회원 정보가 없습니다. email=({}), request=({})", email, request);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
@@ -52,7 +52,8 @@ public class AddressApiController {
     @ApiOperation(value = "한 유저의 모든 주소 읽기", notes="한 유저의 모든 주소를 불러온다.")
     @GetMapping("/all")
     public JUINResponse<List<AddressResponse.Retrieve>> retrieveAll(final Principal principal) {
-        log.info("[P9][CON][ADDR][ALL_]: 한 유저의 모든 주소 읽기, email=({})", principal.getName());
+        final String email = principal.getName();
+        log.info("[P9][CTRL][ADDR][ALL_]: GET /api/addresses/all 한 유저의 모든 주소 읽기, email=({})", email);
 
         final Account account = principalQueryService.readByPrincipal(principal);
 
@@ -66,7 +67,7 @@ public class AddressApiController {
 
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("GET /api/addresses EntityNotFoundException");
+            log.warn("[P5][CTRL][ADDR][ALL_]: 존재하지 않는 Entity입니다. email=({}), message=({})", email, e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -76,7 +77,8 @@ public class AddressApiController {
     @GetMapping("/{addressId}")
     public JUINResponse<AddressResponse.Retrieve> retrieveOne(final Principal principal,
                                                               @PathVariable Long addressId) {
-        log.info("[P9][CON][ADDR][ONE_]: 주소 읽기, email=({}), addressId=({})", principal.getName(), addressId);
+        final String email = principal.getName();
+        log.info("[P9][CTRL][ADDR][ONE_]: GET /api/addresses/{addressId} 주소 읽기, email=({}), addressId=({})", email, addressId);
 
         final Account account = principalQueryService.readByPrincipal(principal);
 
@@ -86,7 +88,8 @@ public class AddressApiController {
 
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("GET /api/addresses/{addressId} addressId: {} EntityNotFoundException", addressId);
+            log.info("[P9][CTRL][ADDR][ONE_]: 존재하지 않는 Entity입니다. " +
+                    "email=({}), addressId=({}), message=({})", email, addressId, e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -96,15 +99,14 @@ public class AddressApiController {
     public JUINResponse<Void> update(final Principal principal,
                                      @RequestBody AddressRequest.Update request) {
 
-        log.info("PATCH /api/addresses/update -> request: {}", request);
-
         final Account account = principalQueryService.readByPrincipal(principal);
+        log.info("[P9][CTRL][ADDR][UPDT]: PUT /api/addresses, email=({}), request=({})", account.getEmail(), request);
 
         try {
             addressCommandService.modify(account, request);
             return new JUINResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
-            log.warn("PATCH /api/addresses/{addressId} -> request: {} EntityNotFoundException", request);
+            log.warn("[P9][CTRL][ADDR][UPDT]: 존재하지 않는 Entity입니다. email=({}), message=({})", account.getEmail(), e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -113,15 +115,16 @@ public class AddressApiController {
     @DeleteMapping("/{addressId}")
     public JUINResponse<Long> delete(final Principal principal,
                                      @PathVariable Long addressId) {
-        log.info("DELETE /api/addresses/{addressId} -> addressId: {}", addressId);
 
         final Account account = principalQueryService.readByPrincipal(principal);
+        log.info("[P9][CTRL][ADDR][DEL_]: DELETE /api/addresses/{addressId}, addressId=({}), email=({})", addressId, account.getEmail());
 
         try {
             final long action = addressCommandService.remove(account.getId(), addressId);
 
             return new JUINResponse<>(HttpStatus.OK, action);
         } catch (EntityNotFoundException e) {
+            log.info("[P9][CTRL][ADDR][DEL_]: 주소 삭제, addressId=({}), email=({}), message=({})", addressId, account.getEmail(), e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

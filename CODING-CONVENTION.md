@@ -99,7 +99,7 @@
 ## 2. 형식
 * > **[긴급도][LAYER][CLASS_NAME][METHOD_NAME]**
   > 
-  > **ex) [P1][CON][ACNT][LGIN]**
+  > **ex) [P1][CTRL][ACNT][LGIN]**
 
 * > *긴급도 (낮을수록 중요하다)* \
   > *P1* -> Priority-1
@@ -111,15 +111,15 @@
     > log.error() - 4321 (Back 오류일 때)
 
 * > *LAYER*
-  * > CON -> Controller
+  * > CTRL -> Controller
     > 
-    > SRV -> Service
+    > SERV -> Service
     > 
-    > REP -> Repository
+    > REPO -> Repository
     > 
-    > COM -> Component
+    > COMP -> Component
     > 
-    > UTL -> Utility
+    > UTIL -> Utility
 
 * > *CLASS NAME (임의의 4글자 만들기)* 
   * > AccountController -> ACNT 

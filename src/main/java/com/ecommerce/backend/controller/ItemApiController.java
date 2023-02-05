@@ -27,7 +27,7 @@ public class ItemApiController {
     @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
     @GetMapping("/{itemId}")
     public JUINResponse<ItemResponse.Read> retrieveOne(@PathVariable Long itemId) {
-        log.info("[P9][CON][ITEM][ONE_]: GET /api/items/{itemId} itemId({})", itemId);
+        log.info("[P9][CTRL][ITEM][ONE_]: GET /api/items/{itemId} itemId({})", itemId);
 
         try {
             final Item item = itemQueryService.readById(itemId);
@@ -35,7 +35,7 @@ public class ItemApiController {
             var response = ItemResponse.Read.from(item);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            log.warn("[P9][CTRL][ITEM][ONE_]: 존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
@@ -44,13 +44,13 @@ public class ItemApiController {
     @GetMapping
     public JUINResponse<Page<ItemResponse.Read>> retrieveAll(@PageableDefault(size = 10) Pageable pageable,
                                                              @RequestParam(required = false) Long categoryId) {
-        log.info("[P9][CON][ITEM][ALL_]: GET /api/items pageable({}), categoryId({})", pageable, categoryId);
+        log.info("[P9][CTRL][ITEM][ALL_]: GET /api/items pageable({}), categoryId({})", pageable, categoryId);
 
         try {
             var response = itemQueryService.display(pageable, categoryId);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            log.warn("[P9][CTRL][ITEM][ALL_]: 존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
@@ -58,7 +58,7 @@ public class ItemApiController {
     @ApiOperation(value = "전체 상품의 개수", notes = "전체 상품의 개수를 반환한다.")
     @GetMapping("/count")
     public long retrieveCount() {
-        log.info("[P9][CON][ITEM][CNT_]: GET /api/items/count");
+        log.info("[P9][CTRL][ITEM][CNT_]: GET /api/items/count");
         return itemQueryService.total();
     }
 
@@ -68,7 +68,7 @@ public class ItemApiController {
                                                         @RequestParam("name") String searchTitle,
                                                         @RequestParam(required = false) String personalColor,
                                                         @RequestParam(required = false) Long categoryId) {
-        log.info("[P9][CON][ITEM][SRCH]: GET /api/items/search pageable=({}), " +
+        log.info("[P9][CTRL][ITEM][SRCH]: GET /api/items/search pageable=({}), " +
                         "searchTitle=({}), personal-color=({}), categoryId=({})",
                 pageable, searchTitle, personalColor, categoryId);
 
@@ -76,7 +76,7 @@ public class ItemApiController {
             var response = itemQueryService.search(pageable, searchTitle, personalColor, categoryId);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
+            log.warn("[P9][CTRL][ITEM][SRCH]: 존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
         }
     }
@@ -84,7 +84,7 @@ public class ItemApiController {
     @ApiOperation(value = "검색한 상품의 개수", notes = "검색한 상품의 개수를 반환한다.")
     @GetMapping("/search/count")
     public Long retrieveSearchCount(@RequestParam("name") String searchTitle) {
-        log.info("[P9][CON][ITEM][SHCT]: GET /api/items/search/count searchTitle({})", searchTitle);
+        log.info("[P9][CTRL][ITEM][SHCT]: GET /api/items/search/count searchTitle({})", searchTitle);
 
         return itemQueryService.totalByNameContaining(searchTitle);
     }

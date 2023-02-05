@@ -33,6 +33,7 @@ class CartApiController {
     public JUINResponse<List<CartItemResponse.Retrieve>> retrieveOne(final Principal principal) {
 
         final Account account = principalQueryService.readByPrincipal(principal);
+        log.info("[P9][CTRL][CART][NEW_]: GET /api/carts 카트 내 제품 정보 읽기, email=({})", account.getEmail());
 
         var response = cartQueryService.makeCartItemReadResponse(account);
         return new JUINResponse<>(HttpStatus.OK, response);
@@ -43,17 +44,19 @@ class CartApiController {
     public JUINResponse<Integer> create(final Principal principal,
                                         @RequestBody CartItemRequest.Add request) {
         final Account account = principalQueryService.readByPrincipal(principal);
+        log.info("[P9][CTRL][CART][NEW_]: POST /api/carts/add, email=({}), request=({})", account.getEmail(), request);
 
         var response = cartItemCommandService.add(account, request);
         return new JUINResponse<>(HttpStatus.OK, response);
     }
 
-    @ApiOperation(value = "카트 개수 변경.", notes = "카트에 개수를 변경한다.")
+    @ApiOperation(value = "카트에 담긴 상품 개수 변경.", notes = "카트에 개수를 변경한다.")
     @PutMapping("/quantity")
     public JUINResponse<Integer> updateQuantity(final Principal principal,
                                                 @RequestBody CartItemRequest.Update request) {
 
         final Account account = principalQueryService.readByPrincipal(principal);
+        log.info("[P9][CTRL][CART][UPDT]: PUT /api/carts/quantity, email=({}), request=({})", account.getEmail(), request);
 
         var response = cartItemCommandService.modifyQuantity(account, request);
         return new JUINResponse<>(HttpStatus.OK, response);
@@ -66,6 +69,7 @@ class CartApiController {
                                         @RequestBody CartItemRequest.Clear request) {
 
         final Account account = principalQueryService.readByPrincipal(principal);
+        log.info("[P9][CTRL][CART][DEL_]: DELETE /api/carts/clear, email=({}), request=({})", account.getEmail(), request);
 
         var response = cartItemCommandService.remove(account, request);
         return new JUINResponse<>(HttpStatus.OK, response);
@@ -77,6 +81,7 @@ class CartApiController {
                                                         @RequestParam List<Long> itemList) {
 
         final Account account = principalQueryService.readByPrincipal(principal);
+        log.info("[P9][CTRL][CART][BUY_]: GET /api/carts/buy, email=({}), itemList=({})", account.getEmail(), itemList);
 
         var response = cartQueryService.makeCartItemBuyResponse(account, itemList);
         return new JUINResponse<>(HttpStatus.OK, response);

@@ -28,6 +28,8 @@ public class CategoryApiController {
     @ApiOperation(value = "모든 카테고리 읽기", notes = "모든 카테고리를 읽어온다.")
     @GetMapping
     public JUINResponse<List<CategoryResponse.Retrieve>> retrieveAll() {
+        log.info("[P9][CTRL][CTGR][ALL_]: GET /api/categories");
+
         var response = categoryQueryService.readAll();
         return new JUINResponse<>(HttpStatus.OK, response);
     }
@@ -35,6 +37,8 @@ public class CategoryApiController {
     @ApiOperation(value = "카테고리 추가", notes = "카테고리를 추가한다.")
     @PostMapping("/admin/new")
     public JUINResponse<Long> create(@RequestBody CategoryRequest.Create request) {
+        log.info("[P9][CTRL][CTGR][BUY_]: POST /api/categories/admin/new, request=({})", request);
+
         var response = categoryCommandService.add(request);
         return new JUINResponse<>(HttpStatus.OK, response);
     }
