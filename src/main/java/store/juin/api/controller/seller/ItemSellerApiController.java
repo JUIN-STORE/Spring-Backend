@@ -70,7 +70,7 @@ public class ItemSellerApiController {
             final Item item = itemQueryService.readById(itemId);
 
             var response = ItemResponse.Read.from(item);
-            return new JUINResponse<>(HttpStatus.OK, "상품 읽기 성공", response);
+            return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P2][CON][ITEM][AMRD]: 존재하지 않는 Entity입니다. message: ({})", e.getMessage(), e);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);

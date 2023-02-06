@@ -13,9 +13,6 @@ public class JUINResponse<T> {
     // api 비즈니스 로직 상태, HTTP Status랑 다름.
     private int apiStatus;
 
-    // api 비즈니스 로직 상태 설명
-    private String message;
-
     // response
     private T data;
 
@@ -30,14 +27,7 @@ public class JUINResponse<T> {
         this.data = data;
     }
 
-    public JUINResponse(HttpStatus apiStatus, String message) {
+    public JUINResponse(HttpStatus apiStatus) {
         this.apiStatus = apiStatus.value();
-        this.message = message;
-    }
-
-    public JUINResponse(HttpStatus apiStatus, String message, T data) {
-        this.apiStatus = apiStatus.value();
-        this.message = message;
-        this.data = data;
     }
 }

@@ -32,7 +32,7 @@ public final class TokenApiController {
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (InvalidRefreshTokenException e) {
             log.warn("[P2][CON][TOKN][NEW_]: Refresh-Token이 만료되었습니다. refreshToken=({})", refreshToken);
-            return new JUINResponse<>(HttpStatus.UNAUTHORIZED, "Refresh-Token 만료되었습니다.");
+            return new JUINResponse<>(HttpStatus.UNAUTHORIZED);
         }
     }
 }

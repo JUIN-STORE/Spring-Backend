@@ -63,10 +63,10 @@ public class AccountApiController {
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityExistsException e) {
             log.warn("[P5][CTRL][ACNT][SIGN]: message=({})", e.getMessage());
-            return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JUINResponse<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             log.error("[P1][CTRL][ACNT][SIGN]: 알 수 없는 예외가 발생했습니다. message=({})", e.getMessage());
-            return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JUINResponse<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -100,7 +100,7 @@ public class AccountApiController {
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException | BadCredentialsException e) {
             log.warn("[P5][CTRL][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
-            return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JUINResponse<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -149,7 +149,7 @@ public class AccountApiController {
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CTRL][ACNT][PROF]: 회원 정보가 없습니다. email=({})", email);
-            return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JUINResponse<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -167,7 +167,7 @@ public class AccountApiController {
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CTRL][ACNT][UPDE]: 회원 정보가 없습니다. request=({})", request);
-            return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JUINResponse<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -185,7 +185,7 @@ public class AccountApiController {
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CTRL][ACNT][DELE]: 회원 정보가 없습니다. accountId=({})", accountId);
-            return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JUINResponse<>(HttpStatus.NOT_FOUND);
         }
     }
 }

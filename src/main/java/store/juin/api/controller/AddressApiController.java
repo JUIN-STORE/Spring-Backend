@@ -68,7 +68,7 @@ public class AddressApiController {
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CTRL][ADDR][ALL_]: 존재하지 않는 Entity입니다. email=({}), message=({})", email, e.getMessage(), e);
-            return new JUINResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -90,7 +90,7 @@ public class AddressApiController {
         } catch (EntityNotFoundException e) {
             log.info("[P9][CTRL][ADDR][ONE_]: 존재하지 않는 Entity입니다. " +
                     "email=({}), addressId=({}), message=({})", email, addressId, e.getMessage(), e);
-            return new JUINResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -107,7 +107,7 @@ public class AddressApiController {
             return new JUINResponse<>(HttpStatus.OK, null);
         } catch (EntityNotFoundException e) {
             log.warn("[P9][CTRL][ADDR][UPDT]: 존재하지 않는 Entity입니다. email=({}), message=({})", account.getEmail(), e.getMessage(), e);
-            return new JUINResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -125,7 +125,7 @@ public class AddressApiController {
             return new JUINResponse<>(HttpStatus.OK, action);
         } catch (EntityNotFoundException e) {
             log.info("[P9][CTRL][ADDR][DEL_]: 주소 삭제, addressId=({}), email=({}), message=({})", addressId, account.getEmail(), e.getMessage(), e);
-            return new JUINResponse<>(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
