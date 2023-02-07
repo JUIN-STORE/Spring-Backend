@@ -84,7 +84,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
     // mockito
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-inline:4.8.0'
     testImplementation 'net.bytebuddy:byte-buddy:1.12.10' // java 17 mock 오류 발생해서 추가
     testImplementation 'org.springframework.security:spring-security-test'
@@ -120,11 +120,37 @@ test {
     outputs.dir snippetsDir // rest doc
 }
 
+asciidoctor.doFirst {
+    //asciidoctor 실행전 기존에 생성된 API 문서 삭제
+    delete file('src/main/resources/static/docs')
+}
+
 // rest doc
 asciidoctor {
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
     dependsOn test
+}
+
+// rest doc
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}") {
+        into "BOOT-INF/classes/static/docs"
+    }
+}
+
+
+// rest doc
+tasks.register('copyDocument', Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+// rest doc
+build {
+    dependsOn copyDocument
 }
 
 //querydsl 추가 시작

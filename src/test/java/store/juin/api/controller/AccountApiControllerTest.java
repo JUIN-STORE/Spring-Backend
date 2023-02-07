@@ -1,13 +1,5 @@
 package store.juin.api.controller;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Address;
-import store.juin.api.domain.enums.AccountRole;
-import store.juin.api.domain.request.AccountRequest;
-import store.juin.api.domain.request.AddressRequest;
-import store.juin.api.service.command.AccountCommandService;
-import store.juin.api.service.command.TokenCommandService;
-import store.juin.api.service.query.PrincipalQueryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -24,6 +17,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.entity.Address;
+import store.juin.api.domain.enums.AccountRole;
+import store.juin.api.domain.request.AccountRequest;
+import store.juin.api.domain.request.AddressRequest;
+import store.juin.api.service.command.AccountCommandService;
+import store.juin.api.service.command.TokenCommandService;
+import store.juin.api.service.query.PrincipalQueryService;
+import store.juin.api.service.query.TokenQueryService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -31,12 +33,17 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
+@AutoConfigureRestDocs(uriPort = 13579)
 class AccountApiControllerTest {
     private static final String ACCOUNT_END_POINT = "/api/accounts";
     private static final String LOGIN_END_POINT = ACCOUNT_END_POINT + "/login";
@@ -50,18 +57,21 @@ class AccountApiControllerTest {
 
     @Mock private AuthenticationManager authenticationManager;
 
+    @Mock private TokenQueryService tokenQueryService;
+
     @Mock private PrincipalQueryService principalQueryService;
 
-    @Mock private AccountCommandService accountCommandService;
-
     @Mock private TokenCommandService tokenCommandService;
-
+    @Mock private AccountCommandService accountCommandService;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider restDocumentationContextProvider) {
         mockMvc = MockMvcBuilders
                 .standaloneSetup(sut)
-                .apply(documentationConfiguration(restDocumentationContextProvider))
+                .apply(documentationConfiguration(restDocumentationContextProvider)
+                        .operationPreprocessors()
+                        .withRequestDefaults(prettyPrint())   // request 본문을 예쁘게 출력
+                        .withResponseDefaults(prettyPrint())) // response 본문을 예쁘게 출력
                 .build();
     }
 
@@ -113,7 +123,15 @@ class AccountApiControllerTest {
 
         // then
         actual
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document(
+                        LOGIN_END_POINT
+                        , requestFields(
+                                  fieldWithPath("email").type(String.class).description("이메일")
+                                , fieldWithPath("passwordHash").type(String.class).description("비밀번호")
+                        )
+                      )
+                );
     }
 
     @Test
