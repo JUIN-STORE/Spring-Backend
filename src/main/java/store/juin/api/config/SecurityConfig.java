@@ -1,9 +1,5 @@
 package store.juin.api.config;
 
-import store.juin.api.domain.enums.AccountRole;
-import store.juin.api.jwt.ForbiddenHandler;
-import store.juin.api.jwt.TokenAuthenticationEntryPoint;
-import store.juin.api.jwt.TokenRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import store.juin.api.domain.enums.AccountRole;
+import store.juin.api.jwt.ForbiddenHandler;
+import store.juin.api.jwt.TokenAuthenticationEntryPoint;
+import store.juin.api.jwt.TokenRequestFilter;
 
 // https://gaemi606.tistory.com/entry/Spring-Boot-JWT%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-Spring-Security-%EB%A1%9C%EA%B7%B8%EC%9D%B8-REST-API
 
@@ -86,7 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-resources/**",
                 "/configuration/security",
                 "/swagger-ui/**",
-                "/webjars/**"
+                "/webjars/**",
+                "/docs/**"
         );
     }
 
