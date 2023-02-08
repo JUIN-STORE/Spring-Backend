@@ -1,5 +1,6 @@
 package store.juin.api.domain.entity;
 
+import org.hibernate.annotations.ColumnDefault;
 import store.juin.api.domain.enums.AccountRole;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -54,7 +55,7 @@ public class Account extends BaseEntity {
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
     private Cart cart;
 
-    @NotNull
+    @Column(nullable = false, columnDefinition = "varchar(20) default 'NOT_CONFIRMED'")
     @Enumerated(value = EnumType.STRING)
     private AuthType authType;
 
