@@ -25,6 +25,10 @@ public class Account extends BaseEntity {
     private Long id;
 
     @NotNull
+    @Column(length = 25, unique = true)
+    private String identification;
+
+    @NotNull
     @Column(length = 100, unique = true)
     private String email;
 
@@ -49,6 +53,10 @@ public class Account extends BaseEntity {
     @Setter
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
     private Cart cart;
+
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private AuthType authType;
 
     // 읽기 전용 -> addAddressList 만들어야 됨.
     @Builder.Default
