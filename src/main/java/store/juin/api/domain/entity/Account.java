@@ -1,5 +1,6 @@
 package store.juin.api.domain.entity;
 
+import org.hibernate.annotations.ColumnDefault;
 import store.juin.api.domain.enums.AccountRole;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -23,6 +24,10 @@ public class Account extends BaseEntity {
     @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Column(length = 25, unique = true)
+    private String identification;
 
     @NotNull
     @Column(length = 100, unique = true)
@@ -49,6 +54,10 @@ public class Account extends BaseEntity {
     @Setter
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
     private Cart cart;
+
+    @Column(nullable = false, columnDefinition = "varchar(20) default 'NOT_CONFIRMED'")
+    @Enumerated(value = EnumType.STRING)
+    private AuthType authType;
 
     // 읽기 전용 -> addAddressList 만들어야 됨.
     @Builder.Default
