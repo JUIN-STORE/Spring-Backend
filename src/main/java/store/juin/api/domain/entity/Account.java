@@ -1,9 +1,9 @@
 package store.juin.api.domain.entity;
 
-import org.hibernate.annotations.ColumnDefault;
-import store.juin.api.domain.enums.AccountRole;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
+import store.juin.api.domain.enums.AccountRole;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,10 +14,12 @@ import java.util.List;
 
 @Getter
 @Entity
+@DynamicInsert
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "account", indexes = {
-        @Index(name = "account__email", columnList = "email")
+        @Index(name = "account__identification", columnList = "identification", unique = true),
+        @Index(name = "account__email", columnList = "email", unique = true)
 })
 public class Account extends BaseEntity {
     @Id
@@ -26,11 +28,11 @@ public class Account extends BaseEntity {
     private Long id;
 
     @NotNull
-    @Column(length = 25, unique = true)
+    @Column(length = 25)
     private String identification;
 
     @NotNull
-    @Column(length = 100, unique = true)
+    @Column(length = 100)
     private String email;
 
     @NotNull

@@ -103,7 +103,7 @@ class AccountApiControllerTest {
         var email = "z@z.com";
         var password = "z";
         var request = new AccountRequest.Login()
-                .setEmail(email)
+                .setIdentification(email)
                 .setPasswordHash(password);
 
         var json = objectMapper.writeValueAsString(request);

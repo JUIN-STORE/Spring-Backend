@@ -22,22 +22,22 @@ public class TokenCommandService {
     private final TokenProvider tokenProvider;
 
     // expired time 일부러 파라미터로 안 받음.
-    public String addAccessToken(String email) {
-        return tokenProvider.createToken(email, TokenMessage.ACCESS_TOKEN_VALIDATION_TIME);
+    public String addAccessToken(String identification) {
+        return tokenProvider.createToken(identification, TokenMessage.ACCESS_TOKEN_VALIDATION_TIME);
     }
 
     // expired time 일부러 파라미터로 안 받음.
-    public String addRefreshToken(String email) {
-        return tokenProvider.createToken(email, TokenMessage.REFRESH_TOKEN_VALIDATION_TIME);
+    public String addRefreshToken(String identification) {
+        return tokenProvider.createToken(identification, TokenMessage.REFRESH_TOKEN_VALIDATION_TIME);
     }
 
     @Transactional
-    public String upsertRefreshToken(String email) {
-        String refreshToken = addRefreshToken(email);
-        Token token = tokenQueryService.readByEmail(email);
+    public String upsertRefreshToken(String identification) {
+        String refreshToken = addRefreshToken(identification);
+        Token token = tokenQueryService.readByIdentification(identification);
 
         if (token == null) {
-            token = add(email, refreshToken);
+            token = add(identification, refreshToken);
         } else {
             modifyRefreshToken(token, refreshToken);
         }
@@ -51,18 +51,18 @@ public class TokenCommandService {
             throw new InvalidRefreshTokenException(Msg.INVALID_REFRESH_TOKEN);
 
         final Account account = tokenQueryService.readByRefreshToken(refreshToken);
-        final String email = account.getEmail();
+        final String identification = account.getIdentification();
 
-        final Token token = tokenQueryService.readByEmail(email);
+        final Token token = tokenQueryService.readByIdentification(identification);
         if (!token.getRefreshToken().equals(refreshToken))
             throw new InvalidRefreshTokenException(Msg.INVALID_REFRESH_TOKEN);
 
-        return addAccessToken(email);
+        return addAccessToken(identification);
     }
 
-    private Token add(String email, String refreshToken) {
+    private Token add(String identification, String refreshToken) {
         final Token token = Token.builder()
-                .email(email)
+                .identification(identification)
                 .refreshToken(refreshToken)
                 .build();
 

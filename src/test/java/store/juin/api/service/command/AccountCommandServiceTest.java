@@ -210,6 +210,7 @@ class AccountCommandServiceTest {
     private Account makeAccount(AccountRole accountRole) {
         return Account.builder()
                 .id(1L)
+                .identification("juin")
                 .email(EMAIL)
                 .passwordHash(SecurityConfig.makePasswordHash("passwordHash"))
                 .name("지수")

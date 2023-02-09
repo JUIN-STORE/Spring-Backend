@@ -80,12 +80,12 @@ public class AccountApiController {
             // 이 시점에 １번　쿼리 나감.
             final Authentication authentication =
                     authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPasswordHash())
+                            new UsernamePasswordAuthenticationToken(request.getIdentification(), request.getPasswordHash())
                     );
 
-            final String email = authentication.getName();
-            final String accessToken = tokenCommandService.addAccessToken(email);
-            final String refreshToken = tokenCommandService.upsertRefreshToken(email);
+            final String identification = authentication.getName();
+            final String accessToken = tokenCommandService.addAccessToken(identification);
+            final String refreshToken = tokenCommandService.upsertRefreshToken(identification);
 
             ResponseCookie cookie = ResponseCookie.from(TokenMessage.REFRESH_TOKEN, refreshToken)
                     .domain(cookieDomain)
@@ -96,7 +96,7 @@ public class AccountApiController {
                     .build();
             httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
 
-            var response = AccountResponse.Login.of(email, accessToken);
+            var response = AccountResponse.Login.of(identification, accessToken);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException | BadCredentialsException e) {
             log.warn("[P5][CTRL][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
@@ -110,8 +110,8 @@ public class AccountApiController {
                                     , HttpServletRequest httpServletRequest
                                     , HttpServletResponse httpServletResponse) {
 
-        final String email = principal.getName();
-        log.info("[P9][CTRL][ACNT][LOUT]: GET /api/accounts/logout, email=({})", email);
+        final String identification = principal.getName();
+        log.info("[P9][CTRL][ACNT][LOUT]: GET /api/accounts/logout, identification=({})", identification);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
@@ -129,7 +129,7 @@ public class AccountApiController {
             httpServletResponse.addCookie(cookie);
         }
 
-        Token token = tokenQueryService.readByEmail(email);
+        Token token = tokenQueryService.readByIdentification(identification);
         tokenCommandService.modifyRefreshToken(token, "");
 
         return new JUINResponse<>(HttpStatus.OK, "로그아웃 되었습니다.");

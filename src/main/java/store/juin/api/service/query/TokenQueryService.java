@@ -28,8 +28,8 @@ public class TokenQueryService {
     }
 
     @Transactional(readOnly = true)
-    public Token readByEmail(String email) {
-        return tokenRepository.findByEmail(email);
+    public Token readByIdentification(String identification) {
+        return tokenRepository.findByIdentification(identification);
     }
 
     @Transactional(readOnly = true)

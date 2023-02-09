@@ -18,7 +18,7 @@ public class Token extends BaseEntity {
     private Long id;
 
     @NotNull
-    private String email;
+    private String identification;
 
     @NotNull
     private String refreshToken;

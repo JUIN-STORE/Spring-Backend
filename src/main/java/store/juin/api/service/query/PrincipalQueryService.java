@@ -16,8 +16,8 @@ public class PrincipalQueryService {
 
     @Transactional(readOnly = true)
     public Account readByPrincipal(Principal principal) {
-        final String email = principal.getName();
+        final String identification = principal.getName();
 
-        return accountQueryService.readByEmail(email);
+        return accountQueryService.readByIdentification(identification);
     }
 }
