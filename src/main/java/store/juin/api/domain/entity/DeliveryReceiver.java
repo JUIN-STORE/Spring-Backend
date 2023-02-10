@@ -1,13 +1,11 @@
 package store.juin.api.domain.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+@Getter
 @Builder
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -39,4 +39,8 @@ public class Msg {
     public static final String ORDER_ALREADY_DELIVERY = "이미 배송된 상품은 취소가 불가능합니다";
 
     public static final String ORDER_ITEM_NOT_FOUND = "존재하지 않는 주문 제품입니다.";
+
+    public static final String DELIVERY_NOT_FOUND = "존재하지 않는 배송 정보입니다.";
+
+    public static final String DELIVERY_INVALID_REQUEST = "올바르지 않는 배송 정보 조회 요청입니다.";
 }
