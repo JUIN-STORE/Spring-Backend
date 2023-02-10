@@ -1,11 +1,11 @@
 package store.juin.api.repository.querydsl.impl;
 
-import store.juin.api.domain.entity.Address;
-import store.juin.api.domain.request.AddressRequest;
-import store.juin.api.repository.querydsl.QuerydslAddressRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Address;
+import store.juin.api.domain.request.AddressRequest;
+import store.juin.api.repository.querydsl.QuerydslAddressRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +30,14 @@ public class QuerydslAddressRepositoryImpl implements QuerydslAddressRepository 
     }
 
     @Override
-    public Address findByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressRequest.Register register) {
+    public Address findByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressRequest.Create create) {
         return
                 queryFactory
                         .selectFrom(address)
                         .where(address.account.id.eq(accountId))
-                        .where(address.zipCode.eq(register.getZipCode()))
-                        .where(address.city.eq(register.getCity()))
-                        .where(address.street.eq(register.getStreet()))
+                        .where(address.zipCode.eq(create.getZipCode()))
+                        .where(address.city.eq(create.getCity()))
+                        .where(address.street.eq(create.getStreet()))
                         .fetchOne();
     }
 

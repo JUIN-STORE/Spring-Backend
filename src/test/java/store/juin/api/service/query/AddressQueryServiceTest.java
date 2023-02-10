@@ -1,9 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Address;
-import store.juin.api.domain.request.AddressRequest;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.AddressRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,6 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.domain.entity.Address;
+import store.juin.api.exception.Msg;
+import store.juin.api.repository.jpa.AddressRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static store.juin.api.domain.RequestUtil.makeCreateRequest;
 
 @ExtendWith(MockitoExtension.class)
 class AddressQueryServiceTest {
@@ -171,7 +171,7 @@ class AddressQueryServiceTest {
         void readByAccountIdAndZipCodeAndCityAndStreet01() {
             // given
             var expected = makeAddress(true);
-            var request = makeRegisterRequest(false);
+            var request = makeCreateRequest(false);
 
             given(addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(anyLong(), any())).willReturn(expected);
 
@@ -190,20 +190,10 @@ class AddressQueryServiceTest {
 
             // when
             final Address actual =
-                    sut.readByAccountIdAndZipCodeAndCityAndStreet(1L, makeRegisterRequest(false));
+                    sut.readByAccountIdAndZipCodeAndCityAndStreet(1L, makeCreateRequest(false));
 
             assertNull(actual);
         }
-    }
-
-    private AddressRequest.Register makeRegisterRequest(boolean isDefaultAddress) {
-        final AddressRequest.Register request = new AddressRequest.Register();
-
-        return request
-                .setCity("서울시")
-                .setStreet("강남구")
-                .setZipCode(12345)
-                .setDefaultAddress(isDefaultAddress);
     }
 
     private Address makeAddress(boolean isDefaultAddress) {

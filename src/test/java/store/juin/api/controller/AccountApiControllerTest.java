@@ -191,7 +191,7 @@ class AccountApiControllerTest {
         request.setPhoneNumber("010-1111-2222");
         request.setAccountRole(AccountRole.ADMIN);
 
-        var addressRequest = new AddressRequest.Register();
+        var addressRequest = new AddressRequest.Create();
         addressRequest.setCity("도시");
         addressRequest.setStreet("상세 주소");
         addressRequest.setZipCode(12345);

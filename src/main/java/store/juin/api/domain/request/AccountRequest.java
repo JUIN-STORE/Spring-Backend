@@ -1,10 +1,10 @@
 package store.juin.api.domain.request;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
 import store.juin.api.config.SecurityConfig;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.enums.AccountRole;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -29,7 +29,7 @@ public class AccountRequest {
         @Enumerated(EnumType.STRING)
         private AccountRole accountRole;
 
-        private AddressRequest.Register address;
+        private AddressRequest.Create address;
 
         public Account toAccount(){
             return Account.builder()

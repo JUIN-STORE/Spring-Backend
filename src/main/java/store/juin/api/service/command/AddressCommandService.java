@@ -1,14 +1,14 @@
 package store.juin.api.service.command;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Address;
 import store.juin.api.domain.request.AddressRequest;
 import store.juin.api.repository.jpa.AddressRepository;
 import store.juin.api.service.query.AddressQueryService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,17 +25,17 @@ public class AddressCommandService {
     }
 
     @Transactional
-    public Address add(Account account, AddressRequest.Register request) {
+    public Address add(Account account, AddressRequest.Create request) {
         final Address address = request.toAddress(account);
 
         return add(address);
     }
 
-    public Address addIfNull(Account account, AddressRequest.Register addressRegister) {
-        final Address address = addressQueryService.readByAccountIdAndZipCodeAndCityAndStreet(account.getId(), addressRegister);
+    public Address addIfNull(Account account, AddressRequest.Create request) {
+        final Address address = addressQueryService.readByAccountIdAndZipCodeAndCityAndStreet(account.getId(), request);
 
         if (address == null) {
-            return add(account, addressRegister);
+            return add(account, request);
         } else {
             return address;
         }

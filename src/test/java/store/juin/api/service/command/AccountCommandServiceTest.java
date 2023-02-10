@@ -1,5 +1,14 @@
 package store.juin.api.service.command;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
 import store.juin.api.config.SecurityConfig;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Address;
@@ -10,15 +19,6 @@ import store.juin.api.domain.response.OrderResponse;
 import store.juin.api.exception.Msg;
 import store.juin.api.repository.jpa.AccountRepository;
 import store.juin.api.service.query.AddressQueryService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityExistsException;
 import java.lang.reflect.InvocationTargetException;
@@ -188,7 +188,7 @@ class AccountCommandServiceTest {
         request.setAccountRole(AccountRole.USER);
         request.setPhoneNumber("01011112222");
 
-        final var addressRequest = new AddressRequest.Register();
+        final var addressRequest = new AddressRequest.Create();
         addressRequest.setCity("서울시");
         addressRequest.setStreet("강남구");
         addressRequest.setZipCode(12345);
