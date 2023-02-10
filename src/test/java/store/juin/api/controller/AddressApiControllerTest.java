@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -45,7 +44,6 @@ import static store.juin.api.domain.EntityUtil.makeAddress;
 import static store.juin.api.domain.RequestUtil.makeCreateRequest;
 
 @ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
-@AutoConfigureRestDocs(uriPort = 13579)
 class AddressApiControllerTest {
     private static final String RETRIEVE_ALL = API_ADDRESSES + "/all";
     private static final String PATH_VARIABLE = API_ADDRESSES + "/{addressId}";
