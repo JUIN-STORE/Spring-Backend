@@ -135,6 +135,8 @@ asciidoctor {
 
 // rest doc
 bootJar {
+    duplicatesStrategy = DuplicatesStrategy.INHERIT
+
     dependsOn asciidoctor
     from("${asciidoctor.outputDir}") {
         into "BOOT-INF/classes/static/docs"
