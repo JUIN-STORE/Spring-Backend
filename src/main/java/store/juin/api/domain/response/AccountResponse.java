@@ -80,13 +80,13 @@ public class AccountResponse {
 
     @Data @Accessors(chain = true)
     public static class Login implements Serializable {
-        private String email;
+        private String identification;
 
         private TokenResponse token;
 
         public static Login of(String identification, String accessToken) {
             return new Login()
-                    .setEmail(identification)
+                    .setIdentification(identification)
                     .setToken(TokenResponse.of(accessToken));
         }
     }
