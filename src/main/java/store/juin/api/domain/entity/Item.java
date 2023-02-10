@@ -1,12 +1,13 @@
 package store.juin.api.domain.entity;
 
-import store.juin.api.domain.enums.ItemStatus;
-import store.juin.api.exception.NotEnoughStockException;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
+import store.juin.api.domain.enums.ItemStatus;
+import store.juin.api.exception.NotEnoughStockException;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -53,11 +54,13 @@ public class Item extends BaseEntity {
 
     // 테이블에 아무 것도 안 생김.
     // 읽기 전용, 연관관계 주인 아님
+    @Builder.Default
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<ItemImage> itemImageList = new ArrayList<>();
 
     // 테이블에 아무 것도 안 생김.
     // 읽기 전용, 연관관계 주인 아님
+    @Builder.Default
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderItem> orderItemList = new ArrayList<>();
 
