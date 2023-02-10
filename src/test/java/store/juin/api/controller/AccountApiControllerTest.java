@@ -100,6 +100,7 @@ class AccountApiControllerTest {
     @DisplayName("Login - 정상케이스")
     void loginCase01() throws Exception {
         // given
+        var documentIdentifier = "." + LOGIN_END_POINT;
         var identification = "z@z.com";
         var password = "z";
         var request = new AccountRequest.Login()
@@ -125,7 +126,7 @@ class AccountApiControllerTest {
         actual
                 .andExpect(status().isOk())
                 .andDo(document(
-                        LOGIN_END_POINT
+                        documentIdentifier
                         , requestFields(
                                   fieldWithPath("identification").type(String.class).description("이메일")
                                 , fieldWithPath("passwordHash").type(String.class).description("비밀번호")
