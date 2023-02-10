@@ -33,6 +33,8 @@ public class AccountResponse {
     public static class Retrieve {
         private Long id;
 
+        private String identification;
+
         private String email;
 
         private String name;
@@ -47,6 +49,7 @@ public class AccountResponse {
         public static Retrieve from(Account account) {
             return new Retrieve()
                     .setId(account.getId())
+                    .setIdentification(account.getIdentification())
                     .setEmail(account.getEmail())
                     .setName(account.getName())
                     .setPhoneNumber(account.getPhoneNumber())
@@ -77,13 +80,13 @@ public class AccountResponse {
 
     @Data @Accessors(chain = true)
     public static class Login implements Serializable {
-        private String email;
+        private String identification;
 
         private TokenResponse token;
 
-        public static Login of(String email, String accessToken) {
+        public static Login of(String identification, String accessToken) {
             return new Login()
-                    .setEmail(email)
+                    .setIdentification(identification)
                     .setToken(TokenResponse.of(accessToken));
         }
     }

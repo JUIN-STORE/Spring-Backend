@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 public class AccountRequest {
     @Data @Accessors(chain = true)
     public static class SignUp implements Serializable{
+        private String identification;
+
         private String email;
 
         private String passwordHash;
@@ -31,6 +33,7 @@ public class AccountRequest {
 
         public Account toAccount(){
             return Account.builder()
+                    .identification(this.identification)
                     .email(this.email)
                     .passwordHash(SecurityConfig.makePasswordHash(this.passwordHash))
                     .name(this.name)
@@ -43,7 +46,7 @@ public class AccountRequest {
 
     @Data @Accessors(chain = true)
     public static class Login implements Serializable {
-        private String email;
+        private String identification;
         private String passwordHash;
     }
 

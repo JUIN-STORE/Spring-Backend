@@ -86,7 +86,7 @@ class TokenCommandServiceTest {
                     .build();
             given(tokenProvider.createToken(email, TokenMessage.REFRESH_TOKEN_VALIDATION_TIME))
                     .willReturn(refreshToken);
-            given(tokenRepository.findByEmail(email)).willReturn(null);
+            given(tokenRepository.findByIdentification(email)).willReturn(null);
             given(tokenRepository.save(any())).willReturn(token);
 
             // when
@@ -109,7 +109,7 @@ class TokenCommandServiceTest {
                     .build();
             given(tokenProvider.createToken(email, TokenMessage.REFRESH_TOKEN_VALIDATION_TIME))
                     .willReturn(afterRefreshToken);
-            given(tokenQueryService.readByEmail(email)).willReturn(token);
+            given(tokenQueryService.readByIdentification(email)).willReturn(token);
 
             // when
             String actual = sut.upsertRefreshToken(email);
@@ -140,7 +140,7 @@ class TokenCommandServiceTest {
 
             given(tokenProvider.isValidToken(refreshToken)).willReturn(true);
             given(tokenQueryService.readByRefreshToken(refreshToken)).willReturn(account);
-            given(tokenQueryService.readByEmail(anyString())).willReturn(token);
+            given(tokenQueryService.readByIdentification(anyString())).willReturn(token);
             given(tokenProvider.createToken(email, TokenMessage.ACCESS_TOKEN_VALIDATION_TIME)).willReturn(expected);
 
             // when
@@ -186,7 +186,7 @@ class TokenCommandServiceTest {
 
             given(tokenProvider.isValidToken(refreshToken1)).willReturn(true);
             given(tokenQueryService.readByRefreshToken(refreshToken1)).willReturn(account);
-            given(tokenQueryService.readByEmail(anyString())).willReturn(token);
+            given(tokenQueryService.readByIdentification(anyString())).willReturn(token);
 
             // when
             final AbstractThrowableAssert<?, ? extends Throwable> actual =

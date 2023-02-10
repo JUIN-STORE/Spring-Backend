@@ -100,10 +100,10 @@ class AccountApiControllerTest {
     @DisplayName("Login - 정상케이스")
     void loginCase01() throws Exception {
         // given
-        var email = "z@z.com";
+        var identification = "z@z.com";
         var password = "z";
         var request = new AccountRequest.Login()
-                .setEmail(email)
+                .setIdentification(identification)
                 .setPasswordHash(password);
 
         var json = objectMapper.writeValueAsString(request);
@@ -111,9 +111,9 @@ class AccountApiControllerTest {
         var accessToken = "this is a accessToken";
         var refreshToken = "this is a refreshToken";
 
-        var authentication= new UsernamePasswordAuthenticationToken(email, password);
+        var authentication= new UsernamePasswordAuthenticationToken(identification, password);
         given(authenticationManager.authenticate(authentication)).willReturn(authentication);
-        given(tokenCommandService.addAccessToken(email)).willReturn(accessToken);
+        given(tokenCommandService.addAccessToken(identification)).willReturn(accessToken);
 
         // when
         final ResultActions actual = mockMvc.perform(post(LOGIN_END_POINT)
@@ -127,7 +127,7 @@ class AccountApiControllerTest {
                 .andDo(document(
                         LOGIN_END_POINT
                         , requestFields(
-                                  fieldWithPath("email").type(String.class).description("이메일")
+                                  fieldWithPath("identification").type(String.class).description("이메일")
                                 , fieldWithPath("passwordHash").type(String.class).description("비밀번호")
                         )
                       )

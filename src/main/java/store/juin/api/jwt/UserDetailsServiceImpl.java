@@ -19,11 +19,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        final Account account = accountQueryService.readByEmail(email);
+    public UserDetails loadUserByUsername(String identification) throws UsernameNotFoundException {
+        final Account account = accountQueryService.readByIdentification(identification);
 
         return User.builder()
-                .username(account.getEmail())
+                .username(account.getIdentification())
                 .password(account.getPasswordHash())
                 .roles(account.getAccountRole().name()) // 401 - 인증
 //                .authorities("ROLE_" + account.getAccountRole().name()) // 403 - 인가

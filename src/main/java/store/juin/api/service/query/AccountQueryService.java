@@ -24,6 +24,12 @@ public class AccountQueryService {
     }
 
     @Transactional(readOnly = true)
+    public Account readByIdentification(String identification) {
+        return accountRepository.findByIdentification(identification)
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
     public Account readByEmail(String email) {
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
