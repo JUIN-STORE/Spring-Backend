@@ -43,10 +43,10 @@ public class DeliveryApiController {
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P9][CON][DLVR][ONE_]: 존재하지 않는 배송 상세 정보입니다. deliveryId({})", deliveryId);
-            return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JUINResponse<>(HttpStatus.NOT_FOUND);
         } catch (InvalidParameterException e) {
             log.warn("[P9][CON][DLVR][ONE_]: 배송 상세 조회 권한이 없습니다. accountId({}), deliveryId({})", account.getId(), deliveryId);
-            return new JUINResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
+            return new JUINResponse<>(HttpStatus.NOT_FOUND);
         }
     }
 }
