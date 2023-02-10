@@ -1,0 +1,20 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: addresses
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+REQUEST
+include::{snippets}/api/addresses/all/curl-request.adoc[]
+include::{snippets}/api/addresses/all/http-request.adoc[]
+include::{snippets}/api/addresses/all/request-headers.adoc[]
+---
+RESPONSE
+include::{snippets}/api/addresses/all/http-response.adoc[]
+include::{snippets}/api/addresses/all/response-fields.adoc[]

@@ -1,10 +1,10 @@
 package store.juin.api.domain.request;
 
-import store.juin.api.domain.entity.Order;
-import store.juin.api.domain.enums.OrderStatus;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
+import store.juin.api.domain.entity.Order;
+import store.juin.api.domain.enums.OrderStatus;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -27,7 +27,7 @@ public class OrderRequest {
 
         private DeliveryRequest.Receiver deliveryReceiver;
 
-        private AddressRequest.Register deliveryAddress;
+        private AddressRequest.Create deliveryAddress;
 
         public Order toOrder(){
             return Order.builder()

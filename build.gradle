@@ -122,7 +122,6 @@ test {
 
 asciidoctor.doFirst {
     //asciidoctor 실행전 기존에 생성된 API 문서 삭제
-    delete file('BOOT-INF/classes/static/docs')
     delete file('src/main/resources/static/docs')
 }
 
@@ -135,7 +134,7 @@ asciidoctor {
 
 // rest doc
 bootJar {
-    duplicatesStrategy = DuplicatesStrategy.INHERIT
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     dependsOn asciidoctor
     from("${asciidoctor.outputDir}") {

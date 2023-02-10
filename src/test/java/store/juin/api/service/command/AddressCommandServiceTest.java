@@ -1,12 +1,5 @@
 package store.juin.api.service.command;//package com.ecommerce.backend.service.query;
 
-import store.juin.api.config.SecurityConfig;
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Address;
-import store.juin.api.domain.enums.AccountRole;
-import store.juin.api.domain.request.AddressRequest;
-import store.juin.api.repository.jpa.AddressRepository;
-import store.juin.api.service.query.AddressQueryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,6 +7,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.config.SecurityConfig;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.entity.Address;
+import store.juin.api.domain.enums.AccountRole;
+import store.juin.api.domain.request.AddressRequest;
+import store.juin.api.repository.jpa.AddressRepository;
+import store.juin.api.service.query.AddressQueryService;
 
 import java.util.List;
 
@@ -241,7 +241,7 @@ class AddressCommandServiceTest {
         }
     }
 
-    private AddressRequest.Update makeUpdateRequest(boolean isDefaultAddress) {
+    private AddressRequest.Update makeUpdateRequest(boolean defaultAddress) {
         final AddressRequest.Update request = new AddressRequest.Update();
 
         return request
@@ -249,17 +249,17 @@ class AddressCommandServiceTest {
                 .setCity("update 서울시")
                 .setStreet("update 강남구")
                 .setZipCode(99999)
-                .setDefaultAddress(isDefaultAddress);
+                .setDefaultAddress(defaultAddress);
     }
 
-    private AddressRequest.Register makeRegisterRequest(boolean isDefaultAddress) {
-        final AddressRequest.Register request = new AddressRequest.Register();
+    private AddressRequest.Create makeRegisterRequest(boolean defaultAddress) {
+        final AddressRequest.Create request = new AddressRequest.Create();
 
         return request
                 .setCity("서울시")
                 .setStreet("강남구")
                 .setZipCode(12345)
-                .setDefaultAddress(isDefaultAddress);
+                .setDefaultAddress(defaultAddress);
     }
 
     private Account makeAccount(AccountRole accountRole) {
@@ -273,13 +273,13 @@ class AddressCommandServiceTest {
                 .build();
     }
 
-    private Address makeAddress(boolean isDefaultAddress) {
+    private Address makeAddress(boolean defaultAddress) {
         return Address.builder()
                 .id(3L)
                 .city("서울시")
                 .street("강남구")
                 .zipCode(12345)
-                .defaultAddress(isDefaultAddress)
+                .defaultAddress(defaultAddress)
                 .build();
     }
 }

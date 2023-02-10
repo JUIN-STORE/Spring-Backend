@@ -1,5 +1,14 @@
 package store.juin.api.service.command;
 
+import org.assertj.core.api.AbstractThrowableAssert;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.domain.entity.*;
 import store.juin.api.domain.enums.OrderStatus;
 import store.juin.api.domain.request.AddressRequest;
 import store.juin.api.domain.request.DeliveryRequest;
@@ -11,15 +20,6 @@ import store.juin.api.repository.jpa.OrderRepository;
 import store.juin.api.service.query.AddressQueryService;
 import store.juin.api.service.query.ItemQueryService;
 import store.juin.api.service.query.OrderQueryService;
-import org.assertj.core.api.AbstractThrowableAssert;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import store.juin.api.domain.entity.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.security.InvalidParameterException;
@@ -73,7 +73,7 @@ class OrderCommandServiceTest {
 
             var request = new OrderRequest.Create()
                     .setCount(1)
-                    .setDeliveryAddress(new AddressRequest.Register().setDefaultAddress(true))
+                    .setDeliveryAddress(new AddressRequest.Create().setDefaultAddress(true))
                     .setDeliveryReceiver(new DeliveryRequest.Receiver())
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
@@ -117,7 +117,7 @@ class OrderCommandServiceTest {
 
             var request = new OrderRequest.Create()
                     .setCount(1)
-                    .setDeliveryAddress(new AddressRequest.Register().setDefaultAddress(false))
+                    .setDeliveryAddress(new AddressRequest.Create().setDefaultAddress(false))
                     .setDeliveryReceiver(new DeliveryRequest.Receiver())
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
@@ -173,7 +173,7 @@ class OrderCommandServiceTest {
 
             var request = new OrderRequest.Create()
                     .setCount(1)
-                    .setDeliveryAddress(new AddressRequest.Register())
+                    .setDeliveryAddress(new AddressRequest.Create())
                     .setDeliveryReceiver(null)
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
@@ -206,7 +206,7 @@ class OrderCommandServiceTest {
 
             var request = new OrderRequest.Create()
                     .setCount(1)
-                    .setDeliveryAddress(new AddressRequest.Register().setDefaultAddress(true))
+                    .setDeliveryAddress(new AddressRequest.Create().setDefaultAddress(true))
                     .setDeliveryReceiver(new DeliveryRequest.Receiver())
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);

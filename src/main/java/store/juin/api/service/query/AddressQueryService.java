@@ -1,13 +1,13 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Address;
-import store.juin.api.domain.request.AddressRequest;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Address;
+import store.juin.api.domain.request.AddressRequest;
+import store.juin.api.exception.Msg;
+import store.juin.api.repository.jpa.AddressRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -43,8 +43,8 @@ public class AddressQueryService {
     }
 
     @Transactional(readOnly = true)
-    public Address readByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressRequest.Register addressRegister) {
-        return addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(accountId, addressRegister);
+    public Address readByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressRequest.Create addressCreate) {
+        return addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(accountId, addressCreate);
     }
 }
 

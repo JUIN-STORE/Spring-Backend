@@ -1,16 +1,15 @@
 package store.juin.api.domain.request;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Address;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.entity.Address;
 
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 
 public class AddressRequest {
     @Data @Accessors(chain = true)
-    public static class Register implements Serializable {
+    public static class Create {
         @NotBlank
         private String city;
 
@@ -34,7 +33,7 @@ public class AddressRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class Update implements Serializable {
+    public static class Update {
         private Long addressId;
 
         private String city;
