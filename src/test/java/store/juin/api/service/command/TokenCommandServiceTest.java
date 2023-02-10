@@ -128,10 +128,10 @@ class TokenCommandServiceTest {
             // given
             var expected = TokenMessage.ACCESS_TOKEN;
             var refreshToken = TokenMessage.REFRESH_TOKEN;
-            var email = "email";
+            var identification = "identification";
 
             var account = Account.builder()
-                    .email(email)
+                    .identification(identification)
                     .build();
 
             var token = Token.builder()
@@ -141,7 +141,7 @@ class TokenCommandServiceTest {
             given(tokenProvider.isValidToken(refreshToken)).willReturn(true);
             given(tokenQueryService.readByRefreshToken(refreshToken)).willReturn(account);
             given(tokenQueryService.readByIdentification(anyString())).willReturn(token);
-            given(tokenProvider.createToken(email, TokenMessage.ACCESS_TOKEN_VALIDATION_TIME)).willReturn(expected);
+            given(tokenProvider.createToken(identification, TokenMessage.ACCESS_TOKEN_VALIDATION_TIME)).willReturn(expected);
 
             // when
             final String actual = sut.reIssue(refreshToken);
@@ -174,10 +174,10 @@ class TokenCommandServiceTest {
             var refreshToken1 = "refreshToken1";
             var refreshToken2 = "refreshToken2";
 
-            var email = "email";
+            var identification = "identification";
 
             var account = Account.builder()
-                    .email(email)
+                    .identification(identification)
                     .build();
 
             var token = Token.builder()
