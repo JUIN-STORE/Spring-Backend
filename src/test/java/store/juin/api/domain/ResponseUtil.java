@@ -52,8 +52,8 @@ public class ResponseUtil {
     }
     public static ItemImageResponse.Buy makeItemImageBuyResponse() {
         return new ItemImageResponse.Buy()
-                .setName("hash-item1.jpg")
-                .setOriginName("item1.jpg")
+                .setName("상품명")
+                .setImageName("item1.jpg")
                 .setImageUrl("http://localhost:8080/item/1")
                 .setThumbnail(true);
     }
