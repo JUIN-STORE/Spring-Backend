@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -44,5 +46,10 @@ public class AccountQueryService {
     public boolean checkNotUser(Account account) {
         final AccountRole accountRole = readByEmail(account.getEmail()).getAccountRole();
         return accountRole == AccountRole.ADMIN || accountRole == AccountRole.SELLER;
+    }
+
+    public void checkDuplicatedIdentification(String identification) {
+        Optional<Account> account = accountRepository.findByIdentification(identification);
+        if (account.isPresent()) throw new EntityExistsException(Msg.DUPLICATED_IDENTIFICATION);
     }
 }
