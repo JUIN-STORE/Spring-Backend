@@ -226,7 +226,7 @@ class CartQueryServiceTest {
     }
 
     private ItemImageResponse.Buy makeItemImageBuyResponse(String name
-            , String originName
+            , String imageName
             , String imageUrl
             , Boolean thumbnail) {
 
@@ -234,7 +234,7 @@ class CartQueryServiceTest {
 
         return request
                 .setName(name)
-                .setThumbnailName(originName)
+                .setImageName(imageName)
                 .setImageUrl(imageUrl)
                 .setThumbnail(thumbnail);
     }
