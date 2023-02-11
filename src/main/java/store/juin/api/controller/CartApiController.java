@@ -43,7 +43,7 @@ class CartApiController {
             var response = cartItemCommandService.add(account, request);
             return new JUINResponse<>(HttpStatus.CREATED, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CTRL][CART][CRTE]: {} identification=({}), request=({})", e.getMessage(), identification, request);
+            log.warn("[P5][CTRL][CART][CRTE]: ({}), identification=({}), request=({})", e.getMessage(), identification, request);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -52,7 +52,7 @@ class CartApiController {
     @GetMapping
     public JUINResponse<List<CartItemResponse.Retrieve>> retrieveOne(final Principal principal) {
         final String identification = principal.getName();
-        log.info("[P9][CTRL][CART][RONE]: GET /api/carts 카트 내 제품 정보 읽기, identification=({})", identification);
+        log.info("[P9][CTRL][CART][ONE_]: GET /api/carts 카트 내 제품 정보 읽기, identification=({})", identification);
 
         try {
             final Account account = principalQueryService.readByPrincipal(principal);
@@ -60,7 +60,7 @@ class CartApiController {
             var response = cartQueryService.makeCartItemRetrieveResponseList(account);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CTRL][CART][RONE]: 회원 정보가 없습니다. identification=({})", identification);
+            log.warn("[P5][CTRL][CART][ONE_]: ({}), identification=({})", e.getMessage(), identification);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -79,7 +79,7 @@ class CartApiController {
             var response = cartQueryService.makeCartItemBuyResponseList(account, itemIdList);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CTRL][CART][BUY_]: 회원 정보가 없습니다. identification=({})", identification);
+            log.warn("[P5][CTRL][CART][BUY_]: ({}), identification=({})", e.getMessage(), identification);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -99,7 +99,7 @@ class CartApiController {
             var response = cartItemCommandService.modifyQuantity(account, request);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CTRL][CART][UPDT]: 회원 정보가 없습니다. identification=({}), request=({})", identification, request);
+            log.warn("[P5][CTRL][CART][UPDT]: ({}), identification=({}), request=({})", e.getMessage(), identification, request);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -118,7 +118,7 @@ class CartApiController {
             var response = cartItemCommandService.remove(account, itemIdList);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CTRL][CART][DEL_]: 회원 정보가 없습니다. identification=({}), request=({})", identification, itemIdList);
+            log.warn("[P5][CTRL][CART][DEL_]: ({}), identification=({}), request=({})", e.getMessage(), identification, itemIdList);
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
