@@ -19,12 +19,15 @@ public class ItemImageResponse {
 
         private Boolean thumbnail;          // 썸네일 여부
 
+        private Boolean representative;
+
         public static Retrieve of(ItemImage itemImage) {
             return new Retrieve()
                     .setImageName(itemImage.getName())
                     .setOriginName(itemImage.getOriginName())
                     .setImageUrl(itemImage.getImageUrl())
-                    .setThumbnail(itemImage.getThumbnail());
+                    .setThumbnail(itemImage.getThumbnail())
+                    .setRepresentative(itemImage.getRepresentative());
         }
 
         public static List<Retrieve> of(List<ItemImage> itemImage) {
@@ -47,5 +50,7 @@ public class ItemImageResponse {
         private String imageUrl;            // 이미지 조회 경로
 
         private Boolean thumbnail;          // 썸네일 여부
+
+        private Boolean representative;
     }
 }

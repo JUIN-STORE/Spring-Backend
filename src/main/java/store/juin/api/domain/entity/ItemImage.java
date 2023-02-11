@@ -28,7 +28,7 @@ public class ItemImage extends BaseEntity {
 
     private Boolean thumbnail;          // 썸네일 여부
 
-    private boolean representative;
+    private Boolean representative;
 
     // 연관관계 주인
     @NotNull

@@ -38,14 +38,14 @@ public class CartQueryService {
         final List<Long> itemIdList =
                 cartItemList.stream().map(cp -> cp.getItem().getId()).collect(Collectors.toList());
 
-        return cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(cart.getId(), itemIdList, true);
+        return cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(cart.getId(), itemIdList, true, true);
     }
 
     @Transactional(readOnly = true)
     public List<CartItemResponse.Buy> makeCartItemBuyResponse(Account account, List<Long> itemIdList) {
         final Cart cart = readByAccountId(account.getId());
         List<CartItemResponse.Retrieve> retrieveList
-                = cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(cart.getId(), itemIdList, true);
+                = cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(cart.getId(), itemIdList, true, true);
 
         final List<CartItemResponse.Buy> response = new ArrayList<>();
 
