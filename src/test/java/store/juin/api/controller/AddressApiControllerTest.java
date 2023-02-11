@@ -97,7 +97,7 @@ class AddressApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(DOT + API_ADDRESSES
+                    .andDo(document(DOT + API_ADDRESSES + "/create"
                             , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
                             , requestFields(fieldWithPath("city").type(String.class).description("주소")

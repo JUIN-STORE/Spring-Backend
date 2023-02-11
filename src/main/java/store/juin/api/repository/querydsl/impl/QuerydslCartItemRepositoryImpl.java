@@ -1,12 +1,12 @@
 package store.juin.api.repository.querydsl.impl;
 
-import store.juin.api.domain.entity.CartItem;
-import store.juin.api.domain.response.CartItemResponse;
-import store.juin.api.repository.querydsl.QuerydslCartItemRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.CartItem;
+import store.juin.api.domain.response.CartItemResponse;
+import store.juin.api.repository.querydsl.QuerydslCartItemRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,10 +37,10 @@ public class QuerydslCartItemRepositoryImpl implements QuerydslCartItemRepositor
 
     @Override
     @Transactional
-    public long deleteByCartIdAndItemId(Long cartId, Long itemId) {
+    public long deleteByCartIdAndItemId(Long cartId, List<Long> itemIdList) {
         return queryFactory
                 .delete(cartItem)
-                .where(cartItem.cart.id.eq(cartId).and(cartItem.item.id.eq(itemId)))
+                .where(cartItem.cart.id.eq(cartId).and(cartItem.item.id.in(itemIdList)))
                 .execute();
     }
 

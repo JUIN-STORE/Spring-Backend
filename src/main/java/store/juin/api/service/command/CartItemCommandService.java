@@ -1,5 +1,9 @@
 package store.juin.api.service.command;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Cart;
 import store.juin.api.domain.entity.CartItem;
@@ -10,12 +14,9 @@ import store.juin.api.repository.jpa.CartItemRepository;
 import store.juin.api.service.query.CartItemQueryService;
 import store.juin.api.service.query.CartQueryService;
 import store.juin.api.service.query.ItemQueryService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -65,9 +66,9 @@ public class CartItemCommandService {
     }
 
 
-    public long remove(Account account, CartItemRequest.Clear request) {
+    public long remove(Account account, List<Long> itemIdList) {
         final Cart cart = cartQueryService.readByAccountId(account.getId());
-        return cartItemRepository.deleteByCartIdAndItemId(cart.getId(), request.getItemId());
+        return cartItemRepository.deleteByCartIdAndItemId(cart.getId(), itemIdList);
     }
 
     public int removeByAccountId(Long accountId) {
