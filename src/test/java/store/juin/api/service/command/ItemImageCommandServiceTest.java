@@ -80,9 +80,9 @@
 //    private ItemImageRequest.Create makeCreateRequest(String name
 //            , String originName
 //            , String imageUrl
-//            , Boolean isThumbnail) {
+//            , Boolean thumbnail) {
 //
-//        var request = new ItemImageRequest.Create(isThumbnail);
+//        var request = new ItemImageRequest.Create(thumbnail);
 //
 //        return request
 //                .setImageName(name)

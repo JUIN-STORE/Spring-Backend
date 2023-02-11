@@ -32,8 +32,11 @@ public class CartItemQueryService {
 
     @Transactional(readOnly = true)
     public List<CartItemResponse.Retrieve>
-    readAllByCartIdAndItemIdListAndThumbnail(Long cartId, List<Long> itemIdList, boolean isThumbnail) {
-        return cartItemRepository.findAllByCartIdAndItemIdListAndThumbnail(cartId, itemIdList, isThumbnail)
+    readAllByCartIdAndItemIdListAndThumbnail(Long cartId,
+                                             List<Long> itemIdList,
+                                             boolean thumbnail,
+                                             boolean representative) {
+        return cartItemRepository.findAllByCartIdAndItemIdListAndThumbnail(cartId, itemIdList, thumbnail, representative)
                 .orElse(new ArrayList<>());
     }
 }

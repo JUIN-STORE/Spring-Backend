@@ -22,6 +22,7 @@ public class CartItemResponse {
         private String originImageName;         // 원본 이미지 파일명
         private String imageUrl;                // 이미지 조회 경로
         private Boolean thumbnail;              // 썸네일 여부
+        private Boolean representative;         // 대표 이미지 여부
     }
 
     @Data
@@ -71,8 +72,9 @@ public class CartItemResponse {
             var itemImageResponse = new ItemImageResponse.Buy()
                     .setImageUrl(retrieve.getImageUrl())
                     .setName(retrieve.getItemName())
-                    .setOriginName(retrieve.getOriginImageName())
-                    .setThumbnail(retrieve.getThumbnail());
+                    .setImageName(retrieve.getItemImageName())
+                    .setThumbnail(retrieve.getThumbnail())
+                    .setRepresentative(retrieve.getRepresentative());
 
             return new CartItemResponse.Buy()
                     .setCount(retrieve.getCount())

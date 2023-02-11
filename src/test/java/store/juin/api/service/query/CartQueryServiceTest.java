@@ -104,7 +104,7 @@ class CartQueryServiceTest {
             given(cartRepository.findByAccountId(anyLong())).willReturn(Optional.of(cart));
             given(cartItemQueryService.readByCartId(anyLong())).willReturn(cartItemList);
 
-            given(cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
+            given(cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean(), anyBoolean()))
                     .willReturn(expected);
 
             // when
@@ -163,7 +163,7 @@ class CartQueryServiceTest {
             var readList = List.of(cartItemReadResponse1, cartItemReadResponse2);
 
             given(Cart.createCart(any())).willReturn(cart);
-            given(cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
+            given(cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean(), anyBoolean()))
                     .willReturn(readList);
 
             var itemBuyResponse1 =
@@ -212,7 +212,7 @@ class CartQueryServiceTest {
             given(cartRepository.findByAccountId(anyLong())).willReturn(Optional.of(cart));
 
             given(Cart.createCart(any())).willReturn(cart);
-            given(cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean()))
+            given(cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean(), anyBoolean()))
                     .willReturn(new ArrayList<>());
 
             // when
@@ -234,7 +234,7 @@ class CartQueryServiceTest {
 
         return request
                 .setName(name)
-                .setOriginName(originName)
+                .setThumbnailName(originName)
                 .setImageUrl(imageUrl)
                 .setThumbnail(thumbnail);
     }
@@ -269,7 +269,7 @@ class CartQueryServiceTest {
             , String itemName
             , Integer count
             , String itemImageName
-            , Boolean isThumbnail) {
+            , Boolean thumbnail) {
 
         var request = new CartItemResponse.Retrieve();
 
@@ -282,7 +282,7 @@ class CartQueryServiceTest {
                 .setItemImageName(itemImageName)
                 .setOriginImageName("originName")
                 .setImageUrl("imageUrl")
-                .setThumbnail(isThumbnail);
+                .setThumbnail(thumbnail);
     }
 
     private Item makeItem(Long id, String name) {

@@ -19,8 +19,8 @@ public class ItemImageQueryService {
     private final ItemImageRepository itemImageRepository;
 
     @Transactional(readOnly = true)
-    public List<ItemImage> readAllByThumbnail(boolean isThumbnail) {
-        return itemImageRepository.findAllByThumbnail(isThumbnail)
+    public List<ItemImage> readAllByThumbnail(boolean thumbnail) {
+        return itemImageRepository.findAllByThumbnail(thumbnail)
                 .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_THUMBNAIL_NOT_FOUND));
     }
 

@@ -144,14 +144,14 @@ class ItemImageQueryServiceTest {
             , String name
             , String originName
             , String imageUrl
-            , Boolean isThumbnail) {
+            , Boolean thumbnail) {
 
         return ItemImage.builder()
                 .id(id)
                 .name(name)
                 .originName(originName)
                 .imageUrl(imageUrl)
-                .thumbnail(isThumbnail)
+                .thumbnail(thumbnail)
                 .build();
     }
 }
