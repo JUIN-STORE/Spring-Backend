@@ -1,15 +1,15 @@
 package store.juin.api.service.query;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Cart;
 import store.juin.api.domain.entity.CartItem;
 import store.juin.api.domain.response.CartItemResponse;
 import store.juin.api.exception.Msg;
 import store.juin.api.repository.jpa.CartRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class CartQueryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CartItemResponse.Retrieve> makeCartItemReadResponse(Account account) {
+    public List<CartItemResponse.Retrieve> makeCartItemRetrieveResponseList(Account account) {
         final Cart cart = readByAccountId(account.getId());
 
         final List<CartItem> cartItemList = cartItemQueryService.readByCartId(cart.getId());
@@ -42,7 +42,7 @@ public class CartQueryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CartItemResponse.Buy> makeCartItemBuyResponse(Account account, List<Long> itemIdList) {
+    public List<CartItemResponse.Buy> makeCartItemBuyResponseList(Account account, List<Long> itemIdList) {
         final Cart cart = readByAccountId(account.getId());
         List<CartItemResponse.Retrieve> retrieveList
                 = cartItemQueryService.readAllByCartIdAndItemIdListAndThumbnail(cart.getId(), itemIdList, true, true);

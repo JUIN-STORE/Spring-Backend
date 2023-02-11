@@ -1,5 +1,13 @@
 package store.juin.api.service.command;
 
+import org.assertj.core.api.AbstractThrowableAssert;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Cart;
 import store.juin.api.domain.entity.CartItem;
@@ -12,19 +20,13 @@ import store.juin.api.repository.jpa.CartItemRepository;
 import store.juin.api.service.query.CartItemQueryService;
 import store.juin.api.service.query.CartQueryService;
 import store.juin.api.service.query.ItemQueryService;
-import org.assertj.core.api.AbstractThrowableAssert;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -146,10 +148,10 @@ class CartItemCommandServiceTest {
             var expected = 1L;
             var account = makeAccount();
             var cart = makeCart(account);
-            var request = makeClearRequest(1L);
+            var request = List.of(1L, 2L);
 
             given(cartQueryService.readByAccountId(anyLong())).willReturn(cart);
-            given(cartItemRepository.deleteByCartIdAndItemId(anyLong(), anyLong())).willReturn(expected);
+            given(cartItemRepository.deleteByCartIdAndItemId(anyLong(), anyList())).willReturn(expected);
 
             // when
             final long actual = sut.remove(account, request);
@@ -165,10 +167,10 @@ class CartItemCommandServiceTest {
             var expected = 0L;
             var account = makeAccount();
             var cart = makeCart(account);
-            var request = makeClearRequest(1L);
+            var request = List.of(1L, 2L);
 
             given(cartQueryService.readByAccountId(anyLong())).willReturn(cart);
-            given(cartItemRepository.deleteByCartIdAndItemId(anyLong(), anyLong())).willReturn(expected);
+            given(cartItemRepository.deleteByCartIdAndItemId(anyLong(), anyList())).willReturn(expected);
 
             // when
             final long actual = sut.remove(account, request);

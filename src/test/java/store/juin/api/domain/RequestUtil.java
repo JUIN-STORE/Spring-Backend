@@ -2,6 +2,7 @@ package store.juin.api.domain;
 
 
 import store.juin.api.domain.request.AddressRequest;
+import store.juin.api.domain.request.CartItemRequest;
 
 public class RequestUtil {
 
@@ -20,6 +21,18 @@ public class RequestUtil {
                 .setStreet("강남구")
                 .setZipCode(12345)
                 .setDefaultAddress(defaultAddress);
+    }
+
+    public static CartItemRequest.Add makeCartItemAddRequest() {
+        return new CartItemRequest.Add()
+                .setItemId(1L)
+                .setCount(3);
+    }
+
+    public static CartItemRequest.Update makeCartItemUpdateRequest() {
+        return new CartItemRequest.Update()
+                .setItemId(1L)
+                .setCount(3);
     }
 }
 

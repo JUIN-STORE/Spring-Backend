@@ -1,5 +1,14 @@
 package store.juin.api.service.query;
 
+import org.assertj.core.api.AbstractThrowableAssert;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Cart;
 import store.juin.api.domain.entity.CartItem;
@@ -10,15 +19,6 @@ import store.juin.api.domain.response.ItemImageResponse;
 import store.juin.api.domain.response.ItemResponse;
 import store.juin.api.exception.Msg;
 import store.juin.api.repository.jpa.CartRepository;
-import org.assertj.core.api.AbstractThrowableAssert;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ class CartQueryServiceTest {
                     .willReturn(expected);
 
             // when
-            final List<CartItemResponse.Retrieve> actual = sut.makeCartItemReadResponse(account);
+            final List<CartItemResponse.Retrieve> actual = sut.makeCartItemRetrieveResponseList(account);
 
             // then
             assertIterableEquals(expected, actual);
@@ -132,7 +132,7 @@ class CartQueryServiceTest {
             var expected = new ArrayList<>();
 
             // when
-            final List<CartItemResponse.Retrieve> actual = sut.makeCartItemReadResponse(account);
+            final List<CartItemResponse.Retrieve> actual = sut.makeCartItemRetrieveResponseList(account);
 
             // then
             assertIterableEquals(expected, actual);
@@ -187,7 +187,7 @@ class CartQueryServiceTest {
             given(CartItemResponse.Buy.from(cartItemReadResponse2)).willReturn(cartItemBuyResponse2);
 
             // when
-            final List<CartItemResponse.Buy> actual = sut.makeCartItemBuyResponse(account, itemIdList);
+            final List<CartItemResponse.Buy> actual = sut.makeCartItemBuyResponseList(account, itemIdList);
 
             // then
             assertEquals(expected, actual);
@@ -216,7 +216,7 @@ class CartQueryServiceTest {
                     .willReturn(new ArrayList<>());
 
             // when
-            final List<CartItemResponse.Buy> actual = sut.makeCartItemBuyResponse(account, itemIdList);
+            final List<CartItemResponse.Buy> actual = sut.makeCartItemBuyResponseList(account, itemIdList);
 
             // then
             assertEquals(expected, actual);

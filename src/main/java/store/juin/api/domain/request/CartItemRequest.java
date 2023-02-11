@@ -1,10 +1,10 @@
 package store.juin.api.domain.request;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
 import store.juin.api.domain.entity.Cart;
 import store.juin.api.domain.entity.CartItem;
 import store.juin.api.domain.entity.Item;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,7 +25,7 @@ public class CartItemRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class Add implements Serializable{
+    public static class Add {
         private Long itemId;
 
         private int count;
@@ -40,7 +40,7 @@ public class CartItemRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class Update implements Serializable {
+    public static class Update {
         private Long itemId;
 
         private int count;
@@ -57,7 +57,7 @@ public class CartItemRequest {
 
 
     @Data @Accessors(chain = true)
-    public static class Clear implements Serializable{
+    public static class Clear {
         private Long itemId;
 
         public CartItem toCartItem() {
@@ -69,7 +69,7 @@ public class CartItemRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class Buy implements Serializable {
+    public static class Buy {
         private List<Long> itemIdList;
     }
 }
