@@ -109,8 +109,8 @@ public class AccountApiController {
     @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
     @GetMapping("/logout")
     public JUINResponse<String> logout(final Principal principal
-            , HttpServletRequest httpServletRequest
-            , HttpServletResponse httpServletResponse) {
+                                    , HttpServletRequest httpServletRequest
+                                    , HttpServletResponse httpServletResponse) {
 
         final String identification = principal.getName();
         log.info("[P9][CTRL][ACNT][LOUT]: GET /api/accounts/logout, identification=({})", identification);
@@ -193,7 +193,7 @@ public class AccountApiController {
 
     @ApiOperation(value = "아이디 중복 체크")
     @GetMapping("/duplication/{identification}")
-    public JUINResponse<AccountResponse.Delete> checkIdentification(@PathVariable String identification) {
+    public JUINResponse<Void> checkIdentification(@PathVariable String identification) {
         try {
             log.info("[P9][CTRL][ACNT][DUPL]: GET /api/accounts/{accountId}, identification=({})", identification);
             accountQueryService.checkDuplicatedIdentification(identification);
