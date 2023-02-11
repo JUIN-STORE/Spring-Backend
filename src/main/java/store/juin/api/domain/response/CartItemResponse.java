@@ -72,7 +72,7 @@ public class CartItemResponse {
             var itemImageResponse = new ItemImageResponse.Buy()
                     .setImageUrl(retrieve.getImageUrl())
                     .setName(retrieve.getItemName())
-                    .setOriginName(retrieve.getOriginImageName())
+                    .setImageName(retrieve.getItemImageName())
                     .setThumbnail(retrieve.getThumbnail())
                     .setRepresentative(retrieve.getRepresentative());
 

@@ -43,9 +43,9 @@ public class ItemImageResponse {
 
     @Data @Accessors(chain = true)
     public static class Buy {
-        private String name;           // 이미지 파일명
+        private String name;           // 상품명
 
-        private String originName;     // 원본 이미지 파일명
+        private String imageName;     // 이미지 파일명
 
         private String imageUrl;            // 이미지 조회 경로
 

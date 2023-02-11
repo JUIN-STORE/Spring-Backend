@@ -234,7 +234,7 @@ class CartQueryServiceTest {
 
         return request
                 .setName(name)
-                .setOriginName(originName)
+                .setThumbnailName(originName)
                 .setImageUrl(imageUrl)
                 .setThumbnail(thumbnail);
     }
