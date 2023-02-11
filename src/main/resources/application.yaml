@@ -3,11 +3,10 @@ server:
 
 spring:
     datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://jz-ecommerce.cwrb7q3p0zpb.ap-northeast-2.rds.amazonaws.com:3306/jz
-        username: jz
-        password: jzecommerce
-        initialization-mode: never  # always, embedded, never
+        url: jdbc:mysql://localhost:3306/jz?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=utf8
+        username: root
+        password: root
+        initialization-mode: always  # always, embedded, never
 
     jackson:
         property-naming-strategy: LOWER_CAMEL_CASE

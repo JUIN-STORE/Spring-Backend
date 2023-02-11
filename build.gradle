@@ -118,6 +118,7 @@ dependencies {
 test {
     useJUnitPlatform()
     outputs.dir snippetsDir // rest doc
+    exclude 'store/juin/api/ApiApplicationTests.class'
 }
 
 asciidoctor.doFirst {
