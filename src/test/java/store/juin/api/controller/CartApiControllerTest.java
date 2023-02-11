@@ -155,6 +155,7 @@ class CartApiControllerTest {
                                     , fieldWithPath("data[].originImageName").type(String.class).description("원본 이미지 파일명")
                                     , fieldWithPath("data[].imageUrl").type(String.class).description("이미지 조회 경로")
                                     , fieldWithPath("data[].thumbnail").type(Boolean.class).description("썸네일 여부")
+                                    , fieldWithPath("data[].representative").type(Boolean.class).description("대표 이미지 여부")
 
                                     , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
                                     , fieldWithPath("region").type(String.class).description("리전 정보")
@@ -203,10 +204,11 @@ class CartApiControllerTest {
                                     , fieldWithPath("data[].item.itemName").type(String.class).description("상품 이름")
                                     , fieldWithPath("data[].item.price").type(Integer.class).description("상품 가격")
                                     , fieldWithPath("data[].item.description").type(Integer.class).description("상품 설명")
-                                    , fieldWithPath("data[].itemImage.name").type(String.class).description("이미지 사본 파일명")
-                                    , fieldWithPath("data[].itemImage.originName").type(String.class).description("이미지 원본 파일명")
+                                    , fieldWithPath("data[].itemImage.name").type(String.class).description("uuid-파일명")
+                                    , fieldWithPath("data[].itemImage.imageName").type(String.class).description("이미지 원본 파일명")
                                     , fieldWithPath("data[].itemImage.imageUrl").type(String.class).description("이미지 저장 경로")
                                     , fieldWithPath("data[].itemImage.thumbnail").type(Boolean.class).description("썸네일 여부")
+                                    , fieldWithPath("data[].itemImage.representative").type(Boolean.class).description("대표 이미지 여부")
 
                                     , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
                                     , fieldWithPath("region").type(String.class).description("리전 정보")
