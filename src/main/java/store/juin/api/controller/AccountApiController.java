@@ -8,6 +8,7 @@ import store.juin.api.domain.response.AccountResponse;
 import store.juin.api.jwt.TokenMessage;
 import store.juin.api.service.command.AccountCommandService;
 import store.juin.api.service.command.TokenCommandService;
+import store.juin.api.service.query.AccountQueryService;
 import store.juin.api.service.query.PrincipalQueryService;
 import store.juin.api.service.query.TokenQueryService;
 import io.swagger.annotations.Api;
@@ -47,6 +48,7 @@ public class AccountApiController {
 
     private final TokenCommandService tokenCommandService;
     private final AccountCommandService accountCommandService;
+    private final AccountQueryService accountQueryService;
 
     @Value("${front.cookie.domain}")
     private String cookieDomain;
@@ -107,8 +109,8 @@ public class AccountApiController {
     @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
     @GetMapping("/logout")
     public JUINResponse<String> logout(final Principal principal
-                                    , HttpServletRequest httpServletRequest
-                                    , HttpServletResponse httpServletResponse) {
+            , HttpServletRequest httpServletRequest
+            , HttpServletResponse httpServletResponse) {
 
         final String identification = principal.getName();
         log.info("[P9][CTRL][ACNT][LOUT]: GET /api/accounts/logout, identification=({})", identification);
@@ -186,6 +188,19 @@ public class AccountApiController {
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CTRL][ACNT][DELE]: 회원 정보가 없습니다. accountId=({})", accountId);
             return new JUINResponse<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation(value = "아이디 중복 체크")
+    @GetMapping("/duplication/{identification}")
+    public JUINResponse<AccountResponse.Delete> checkIdentification(@PathVariable String identification) {
+        try {
+            log.info("[P9][CTRL][ACNT][DUPL]: GET /api/accounts/{accountId}, identification=({})", identification);
+            accountQueryService.checkDuplicatedIdentification(identification);
+            return new JUINResponse<>(HttpStatus.OK);
+        } catch (EntityExistsException e) {
+            log.warn("[P5][CTRL][ACNT][DUPL]: 이미 존재하는 아이디입니다. identification=({})", identification);
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
 }

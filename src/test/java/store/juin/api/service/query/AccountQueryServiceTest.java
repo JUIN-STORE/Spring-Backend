@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AccountQueryServiceTest {
@@ -149,7 +150,7 @@ class AccountQueryServiceTest {
         }
 
         @Test
-        @DisplayName("SELLERN일 떄")
+        @DisplayName("SELLER일 떄")
         void checkNotUserTest02() {
             // given
             var account = makeAccount(AccountRole.SELLER);
@@ -174,6 +175,41 @@ class AccountQueryServiceTest {
 
             // then
             assertFalse(actual);
+        }
+    }
+
+    @Nested
+    @DisplayName("checkDuplicatedIdentification 테스트")
+    class CheckDuplicatedIdentificationTest {
+        @Test
+        @DisplayName("중복된 아이디일 때")
+        void checkDuplicatedIdentificationTest01() {
+            // given
+            var identification = "juin";
+            final Account account = makeAccount(AccountRole.USER);
+            given(accountRepository.findByIdentification(identification)).willReturn(Optional.of(account));
+
+            // when
+            final AbstractThrowableAssert<?, ? extends Throwable> actual =
+                    assertThatThrownBy(() -> sut.checkDuplicatedIdentification(identification));
+
+            // then
+            actual.isInstanceOf(EntityExistsException.class).hasMessage(Msg.DUPLICATED_IDENTIFICATION);
+        }
+
+        @Test
+        @DisplayName("중복된 아이디가 아닐 때")
+        void checkDuplicatedIdentificationTest02() {
+            // given
+            var identification = "juin";
+            given(accountRepository.findByIdentification(identification)).willReturn(Optional.empty());
+
+            // when
+            sut.checkDuplicatedIdentification(identification);
+
+            // then
+            verify(accountRepository, times(1)).findByIdentification(identification);
+
         }
     }
 

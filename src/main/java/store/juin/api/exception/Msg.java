@@ -8,6 +8,8 @@ public class Msg {
     public static final String ACCOUNT_NOT_FOUND = "ID, PASSWORD 올바르지 않습니다.";
     public static final String DUPLICATED_ACCOUNT = "이미 존재하는 계정입니다.";
 
+    public static final String DUPLICATED_IDENTIFICATION = "이미 사용 중인 아이디입니다.";
+
     // address
     public static final String ADDRESS_NOT_FOUND = "주소를 찾을 수 없습니다.";
 
