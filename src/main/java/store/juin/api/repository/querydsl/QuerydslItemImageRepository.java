@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface QuerydslItemImageRepository {
-    Optional<List<ItemImage>> findAllByThumbnail(boolean isThumbnail);
+    Optional<List<ItemImage>> findAllByThumbnail(boolean thumbnail);
 
     Optional<List<ItemImage>> findAllByItemIdIn(List<Long> itemIdList);
 }

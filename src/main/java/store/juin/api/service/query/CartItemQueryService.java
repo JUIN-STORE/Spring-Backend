@@ -34,9 +34,9 @@ public class CartItemQueryService {
     public List<CartItemResponse.Retrieve>
     readAllByCartIdAndItemIdListAndThumbnail(Long cartId,
                                              List<Long> itemIdList,
-                                             boolean isThumbnail,
-                                             boolean isRepresentative) {
-        return cartItemRepository.findAllByCartIdAndItemIdListAndThumbnail(cartId, itemIdList, isThumbnail, isRepresentative)
+                                             boolean thumbnail,
+                                             boolean representative) {
+        return cartItemRepository.findAllByCartIdAndItemIdListAndThumbnail(cartId, itemIdList, thumbnail, representative)
                 .orElse(new ArrayList<>());
     }
 }

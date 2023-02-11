@@ -59,8 +59,8 @@ public class QuerydslCartItemRepositoryImpl implements QuerydslCartItemRepositor
     public Optional<List<CartItemResponse.Retrieve>>
     findAllByCartIdAndItemIdListAndThumbnail(Long cartId,
                                              List<Long> itemIdList,
-                                             boolean isThumbnail,
-                                             boolean isRepresentative) {
+                                             boolean thumbnail,
+                                             boolean representative) {
 
         return Optional.ofNullable(
                 queryFactory
@@ -82,8 +82,8 @@ public class QuerydslCartItemRepositoryImpl implements QuerydslCartItemRepositor
                         .on(itemImage.item.id.eq(item.id))
                         .where(cartItem.cart.id.eq(cartId))
                         .where(item.id.in(itemIdList))
-                        .where(itemImage.thumbnail.eq(isThumbnail))
-                        .where(itemImage.representative.eq(isRepresentative))
+                        .where(itemImage.thumbnail.eq(thumbnail))
+                        .where(itemImage.representative.eq(representative))
                         .fetch()
         );
     }

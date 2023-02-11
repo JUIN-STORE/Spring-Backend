@@ -118,13 +118,13 @@ class CartItemQueryServiceTest {
             var response2 = makeReadResponse(2L, "firstName", 200);
             var expected = List.of(response1, response2);
 
-            boolean isRepresentative = true;
+            boolean representative = true;
             given(cartItemRepository.findAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean(), anyBoolean()))
                     .willReturn(Optional.of(expected));
 
             // when
             final List<CartItemResponse.Retrieve> actual =
-                    sut.readAllByCartIdAndItemIdListAndThumbnail(1L, List.of(1L, 2L), true, isRepresentative);
+                    sut.readAllByCartIdAndItemIdListAndThumbnail(1L, List.of(1L, 2L), true, representative);
 
             // then
             assertIterableEquals(expected, actual);
@@ -135,12 +135,12 @@ class CartItemQueryServiceTest {
         void readAllByCartIdAndItemIdListAndThumbnailTest02() {
             // given
             var expected = new ArrayList<>();
-            boolean isRepresentative = true;
+            boolean representative = true;
             given(cartItemRepository.findAllByCartIdAndItemIdListAndThumbnail(anyLong(), anyList(), anyBoolean(), anyBoolean()))
                     .willReturn(Optional.empty());
             // when
             final List<CartItemResponse.Retrieve> actual =
-                    sut.readAllByCartIdAndItemIdListAndThumbnail(1L, List.of(1L, 2L), true, isRepresentative);
+                    sut.readAllByCartIdAndItemIdListAndThumbnail(1L, List.of(1L, 2L), true, representative);
 
             // then
             assertIterableEquals(expected, actual);

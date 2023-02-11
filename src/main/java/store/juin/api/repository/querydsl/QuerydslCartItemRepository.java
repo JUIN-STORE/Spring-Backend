@@ -20,7 +20,7 @@ public interface QuerydslCartItemRepository {
     Optional<List<CartItemResponse.Retrieve>>
     findAllByCartIdAndItemIdListAndThumbnail(Long cartId,
                                              List<Long> itemIdList,
-                                             boolean isThumbnail,
-                                             boolean isRepresentative);
+                                             boolean thumbnail,
+                                             boolean representative);
 
 }

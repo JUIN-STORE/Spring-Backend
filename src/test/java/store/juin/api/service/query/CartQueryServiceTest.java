@@ -269,7 +269,7 @@ class CartQueryServiceTest {
             , String itemName
             , Integer count
             , String itemImageName
-            , Boolean isThumbnail) {
+            , Boolean thumbnail) {
 
         var request = new CartItemResponse.Retrieve();
 
@@ -282,7 +282,7 @@ class CartQueryServiceTest {
                 .setItemImageName(itemImageName)
                 .setOriginImageName("originName")
                 .setImageUrl("imageUrl")
-                .setThumbnail(isThumbnail);
+                .setThumbnail(thumbnail);
     }
 
     private Item makeItem(Long id, String name) {

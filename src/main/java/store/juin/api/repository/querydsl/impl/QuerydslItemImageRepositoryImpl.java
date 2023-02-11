@@ -15,10 +15,10 @@ public class QuerydslItemImageRepositoryImpl implements QuerydslItemImageReposit
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<List<ItemImage>> findAllByThumbnail(boolean isThumbnail) {
+    public Optional<List<ItemImage>> findAllByThumbnail(boolean thumbnail) {
         return Optional.ofNullable(
                 queryFactory.selectFrom(itemImage)
-                        .where(itemImage.thumbnail.eq(isThumbnail))
+                        .where(itemImage.thumbnail.eq(thumbnail))
                         .fetch()
         );
     }
