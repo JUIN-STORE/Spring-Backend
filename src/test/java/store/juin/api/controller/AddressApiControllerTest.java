@@ -47,6 +47,7 @@ import static store.juin.api.domain.RequestUtil.makeCreateRequest;
 class AddressApiControllerTest {
     private static final String RETRIEVE_ALL = API_ADDRESSES + "/all";
     private static final String PATH_VARIABLE = API_ADDRESSES + "/{addressId}";
+    private static final String DOT = ".";
 
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -96,19 +97,19 @@ class AddressApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(API_ADDRESSES
+                    .andDo(document(DOT + API_ADDRESSES
                             , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
                             , requestFields(fieldWithPath("city").type(String.class).description("주소")
-                                            , fieldWithPath("street").type(String.class).description("상세 주소")
-                                            , fieldWithPath("zipCode").type(Integer.class).description("우편 번호")
-                                            , fieldWithPath("defaultAddress").type(boolean.class).description("기본 주소"))
+                                    , fieldWithPath("street").type(String.class).description("상세 주소")
+                                    , fieldWithPath("zipCode").type(Integer.class).description("우편 번호")
+                                    , fieldWithPath("defaultAddress").type(boolean.class).description("기본 주소"))
 
                             , responseFields(fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
-                                            , fieldWithPath("data").type(Void.class).description("데이터")
-                                            , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
-                                            , fieldWithPath("region").type(String.class).description("상세 주소"))
-                        ));
+                                    , fieldWithPath("data").type(Void.class).description("데이터")
+                                    , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
+                                    , fieldWithPath("region").type(String.class).description("상세 주소"))
+                    ));
         }
     }
 
@@ -135,17 +136,17 @@ class AddressApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(RETRIEVE_ALL
-                                    , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
+                    .andDo(document(DOT + RETRIEVE_ALL
+                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
-                                    , responseFields(fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
-                                            , fieldWithPath("data[].id").type(Integer.class).description("address id")
-                                            , fieldWithPath("data[].city").type(String.class).description("주소")
-                                            , fieldWithPath("data[].street").type(String.class).description("상세 주소")
-                                            , fieldWithPath("data[].zipCode").type(Integer.class).description("우편 번호")
-                                            , fieldWithPath("data[].defaultAddress").type(boolean.class).description("기본 주소")
-                                            , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
-                                            , fieldWithPath("region").type(String.class).description("상세 주소"))
+                            , responseFields(fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
+                                    , fieldWithPath("data[].id").type(Integer.class).description("address id")
+                                    , fieldWithPath("data[].city").type(String.class).description("주소")
+                                    , fieldWithPath("data[].street").type(String.class).description("상세 주소")
+                                    , fieldWithPath("data[].zipCode").type(Integer.class).description("우편 번호")
+                                    , fieldWithPath("data[].defaultAddress").type(boolean.class).description("기본 주소")
+                                    , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
+                                    , fieldWithPath("region").type(String.class).description("상세 주소"))
                     ));
         }
     }
@@ -174,9 +175,9 @@ class AddressApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(PATH_VARIABLE
+                    .andDo(document(DOT + PATH_VARIABLE
                             , pathParameters(
-                                parameterWithName("addressId").description("주소 아이디")
+                                    parameterWithName("addressId").description("주소 아이디")
                             )
 
                             , responseFields(fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
@@ -214,7 +215,7 @@ class AddressApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(API_ADDRESSES
+                    .andDo(document(DOT + API_ADDRESSES
                             , responseFields(fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
                                     , fieldWithPath("data").type(null).description("null")
                                     , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
@@ -247,7 +248,7 @@ class AddressApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(PATH_VARIABLE
+                    .andDo(document(DOT + PATH_VARIABLE
                             , pathParameters(
                                     parameterWithName("addressId").description("삭제할 주소 아이디")
                             )
