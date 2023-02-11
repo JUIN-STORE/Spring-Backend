@@ -64,7 +64,7 @@ public class LocalFileUploadServiceImpl implements FileUploadService {
         final String uuidFileName = FileUploadUtil.makeFileNameWithUuid(originalFileName);
         final String imageAbsUrl = FileUploadUtil.makeAbsPath(itemImageOriginalPath, uuidFileName);
 
-        uploadFile(itemImageOriginalPath, originalFileName, multipartFile);   // 원본
+        uploadFile(itemImageOriginalPath, uuidFileName, multipartFile);   // 원본
 
         return request.toItemImage(item, uuidFileName, imageAbsUrl, false);
     }
