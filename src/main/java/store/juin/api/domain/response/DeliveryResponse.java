@@ -30,6 +30,7 @@ public class DeliveryResponse {
                     .setDeliveryStatus(delivery.getDeliveryStatus())
                     .setAddressId(delivery.getDeliveryAddress().getId())
                     .setCity(delivery.getDeliveryAddress().getCity())
+                    .setStreet(delivery.getDeliveryAddress().getStreet())
                     .setZipCode(delivery.getDeliveryAddress().getZipCode());
         }
     }
