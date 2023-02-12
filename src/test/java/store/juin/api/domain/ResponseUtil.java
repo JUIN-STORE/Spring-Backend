@@ -1,6 +1,7 @@
 package store.juin.api.domain;
 
 import store.juin.api.domain.response.CartItemResponse;
+import store.juin.api.domain.response.CategoryResponse;
 import store.juin.api.domain.response.ItemImageResponse;
 import store.juin.api.domain.response.ItemResponse;
 
@@ -56,5 +57,29 @@ public class ResponseUtil {
                 .setImageName("item1.jpg")
                 .setImageUrl("http://localhost:8080/item/1")
                 .setThumbnail(true);
+    }
+
+
+    // categories
+    public static List<CategoryResponse.Retrieve> makeCategoryRetrieveResponseList() {
+        return List.of(
+                makeCategoryRetrieveResponse(1L, "category1"),
+                makeCategoryRetrieveResponse(2L, "category2")
+        );
+    }
+
+    public static CategoryResponse.Retrieve makeCategoryRetrieveResponse(Long id, String categoryName) {
+        return new CategoryResponse.Retrieve()
+                .setId(id)
+                .setCategoryName(categoryName)
+                .setDepth(1L)
+                .setChildList(List.of(makeCategoryRetrieveChildListResponse(id+1L, categoryName)));
+    }
+
+    public static CategoryResponse.RetrieveChildList makeCategoryRetrieveChildListResponse(Long id, String categoryName) {
+        return new CategoryResponse.RetrieveChildList()
+                .setId(id)
+                .setCategoryName(categoryName + "_child")
+                .setDepth(2L);
     }
 }
