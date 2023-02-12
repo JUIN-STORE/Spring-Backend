@@ -3,6 +3,7 @@ package store.juin.api.domain;
 
 import store.juin.api.domain.request.AddressRequest;
 import store.juin.api.domain.request.CartItemRequest;
+import store.juin.api.domain.request.CategoryRequest;
 
 public class RequestUtil {
 
@@ -33,6 +34,12 @@ public class RequestUtil {
         return new CartItemRequest.Update()
                 .setItemId(1L)
                 .setCount(3);
+    }
+
+    public static CategoryRequest.Create makeCategoryCreateRequest() {
+        return new CategoryRequest.Create()
+                .setCategoryName("카테고리")
+                .setParentId(1L);
     }
 }
 

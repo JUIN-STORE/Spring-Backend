@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import store.juin.api.JUINResponse;
 import store.juin.api.domain.request.CategoryRequest;
 import store.juin.api.service.command.CategoryCommandService;
+import store.juin.api.service.query.PrincipalQueryService;
 
 import java.security.Principal;
 
@@ -21,15 +22,27 @@ import java.security.Principal;
 @RequestMapping("/api/admin/categories")
 @RequiredArgsConstructor
 public class CategoryAdminApiController {
+    private final PrincipalQueryService principalQueryService;
+
     private final CategoryCommandService categoryCommandService;
 
     @ApiOperation(value = "카테고리 추가", notes = "카테고리를 추가한다.")
     @PostMapping
     public JUINResponse<Long> create(final Principal principal
                                     , @RequestBody CategoryRequest.Create request) {
+        final String identification = principal.getName();
+        log.info("[P9][CTRL][CATG][CRTE]: POST /api/admin/categories, identification=({}), request=({})", identification, request);
 
-        var response = categoryCommandService.add(request);
-        return new JUINResponse<>(HttpStatus.OK, response);
+        try {
+            // FIXME: creatorId 컬럼이 필요하다.
+            principalQueryService.readByPrincipal(principal);
+
+            var response = categoryCommandService.add(request);
+            return new JUINResponse<>(HttpStatus.OK, response);
+        } catch (Exception e) {
+            log.warn("[P5][CTRL][CATG][CRTE]: 카테고리 추가 실패, message=({}), identification=({}), request=({})", e.getMessage(), identification, request);
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST, null);
+        }
     }
 
     // FIXME: update, delete 구현해야 됨.
