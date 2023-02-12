@@ -1,0 +1,33 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: categories
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= @PostMapping("/api/admin/categories")
+
+[[overview]]
+== REQUEST
+=== curl
+include::{snippets}/api/admin/categories/create/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/api/admin/categories/create/http-request.adoc[]
+
+=== request fields
+include::{snippets}/api/admin/categories/create/request-fields.adoc[]
+
+== RESPONSE
+
+=== http-response
+include::{snippets}/api/admin/categories/create/http-response.adoc[]
+
+=== response fields
+include::{snippets}/api/admin/categories/create/response-fields.adoc[]
