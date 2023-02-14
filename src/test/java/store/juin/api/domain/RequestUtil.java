@@ -1,9 +1,13 @@
 package store.juin.api.domain;
 
 
-import store.juin.api.domain.request.AddressRequest;
-import store.juin.api.domain.request.CartItemRequest;
-import store.juin.api.domain.request.CategoryRequest;
+import store.juin.api.domain.enums.OrderStatus;
+import store.juin.api.domain.request.*;
+import store.juin.api.domain.response.OrderJoinResponse;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class RequestUtil {
 
@@ -41,5 +45,50 @@ public class RequestUtil {
                 .setCategoryName("카테고리")
                 .setParentId(1L);
     }
-}
 
+    public static AddressRequest.Create makeAddressCreateRequest(boolean defaultAddress) {
+        return new AddressRequest.Create()
+                .setCity("서울시")
+                .setStreet("강남구")
+                .setZipCode(12345)
+                .setDefaultAddress(defaultAddress);
+    }
+
+    public static DeliveryRequest.Receiver makeDeliveryReceiver() {
+        return new DeliveryRequest.Receiver()
+                .setReceiverName("홍길동")
+                .setReceiverPhoneNumber("010-1234-5678")
+                .setReceiverEmail("junsu0325@naver.com");
+    }
+
+    public static OrderRequest.Create makeOrderCreateRequest() {
+        return new OrderRequest.Create()
+                .setItemIdList(List.of(1L, 2L))
+                .setCount(3)
+                .setGrandTotal(30000)
+                .setOrderStatus(OrderStatus.ORDER)
+                .setDeliveryReceiver(makeDeliveryReceiver())
+                .setDeliveryAddress(makeAddressCreateRequest(true));
+    }
+
+
+    public static OrderRequest.Retrieve makeOrderRetrieveRequest() {
+        return new OrderRequest.Retrieve()
+                .setStartDate(LocalDate.of(2022, 2, 22))
+                .setEndDate(LocalDate.of(2022, 3, 25))
+                .setOrderStatus(OrderStatus.ORDER);
+    }
+
+    public static OrderJoinResponse makeOrderJoinResponse() {
+        return new OrderJoinResponse()
+                .setOrdersId(1L)
+                .setOrderItemId(2L)
+                .setItemId(15L)
+                .setDeliveryId(222L)
+                .setOrderCount(300)
+                .setPrice(1000_000)
+                .setName("리얼포스 R3")
+                .setOrderDate(LocalDateTime.now())
+                .setOrderStatus(OrderStatus.ORDER);
+    }
+}

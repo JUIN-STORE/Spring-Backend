@@ -8,7 +8,6 @@ import store.juin.api.domain.enums.OrderStatus;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,11 +38,9 @@ public class OrderRequest {
 
     @Data @Accessors(chain = true)
     public static class Retrieve {
-        @NotNull
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;
 
-        @NotNull
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate endDate;
 
@@ -52,18 +49,6 @@ public class OrderRequest {
 
     @Data @Accessors(chain = true)
     public static class Cancel {
-        private Long itemId;
-
-        private int count;
-
-        @Enumerated(EnumType.STRING)
-        private OrderStatus orderStatus; // 주문 상태
-
-        public Order toOrder(){
-            return Order.builder()
-                    .orderStatus(this.orderStatus)
-                    .orderDate(LocalDateTime.now())
-                    .build();
-        }
+        private Long orderId;
     }
 }
