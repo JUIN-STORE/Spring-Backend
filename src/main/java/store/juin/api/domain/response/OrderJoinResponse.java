@@ -1,11 +1,12 @@
 package store.juin.api.domain.response;
 
-import store.juin.api.domain.enums.OrderStatus;
 import lombok.Data;
+import lombok.experimental.Accessors;
+import store.juin.api.domain.enums.OrderStatus;
 
 import java.time.LocalDateTime;
 
-@Data
+@Data @Accessors(chain = true)
 public class OrderJoinResponse {
     private Long ordersId;
 

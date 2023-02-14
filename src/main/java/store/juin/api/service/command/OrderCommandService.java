@@ -1,5 +1,9 @@
 package store.juin.api.service.command;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.juin.api.domain.entity.*;
 import store.juin.api.domain.request.OrderRequest;
 import store.juin.api.domain.response.OrderResponse;
@@ -8,10 +12,6 @@ import store.juin.api.repository.jpa.OrderRepository;
 import store.juin.api.service.query.AddressQueryService;
 import store.juin.api.service.query.ItemQueryService;
 import store.juin.api.service.query.OrderQueryService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -32,7 +32,7 @@ public class OrderCommandService {
     private final OrderItemCommandService orderItemCommandService;
 
     @Transactional
-    public Order add(Account account, OrderRequest.Create request) {
+    public Long add(Account account, OrderRequest.Create request) {
         // 엔티티 조회
         Address deliveryAddress;
 
@@ -69,15 +69,17 @@ public class OrderCommandService {
             orderItemCommandService.add(orderItem);
         }
 
-        return order;
+        return order.getId();
     }
 
     // 주문 취소
     @Transactional
-    public void cancel(Long orderId, Long accountId) {
+    public Long cancel(Long orderId, Long accountId) {
         // 주문 엔티티 조회
         final Order order = orderQueryService.readByIdAndAccountId(orderId, accountId);
         order.cancel();
+
+        return order.getId();
     }
 
     public long removeByAccountId(Long accountId) {

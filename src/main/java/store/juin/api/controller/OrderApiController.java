@@ -1,14 +1,5 @@
 package store.juin.api.controller;
 
-import store.juin.api.JUINResponse;
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Order;
-import store.juin.api.domain.request.OrderRequest;
-import store.juin.api.domain.response.OrderJoinResponse;
-import store.juin.api.domain.response.OrderResponse;
-import store.juin.api.service.command.OrderCommandService;
-import store.juin.api.service.query.OrderQueryService;
-import store.juin.api.service.query.PrincipalQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -18,55 +9,80 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import store.juin.api.JUINResponse;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.request.OrderRequest;
+import store.juin.api.domain.response.OrderJoinResponse;
+import store.juin.api.service.command.OrderCommandService;
+import store.juin.api.service.query.OrderQueryService;
+import store.juin.api.service.query.PrincipalQueryService;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
 @Api(tags = {"04. Order"})
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/orders")
+@RequiredArgsConstructor
 public class OrderApiController {
     private final OrderQueryService orderQueryService;
     private final PrincipalQueryService principalQueryService;
 
     private final OrderCommandService orderCommandService;
 
-    @ApiOperation(value = "주문 상세보기", notes = "주문 상세 내역을 조회한다.")
-    @GetMapping
-    public JUINResponse<Page<OrderJoinResponse>> retrieveAll(Principal principal,
-                                                            @Valid @ModelAttribute OrderRequest.Retrieve request,
-                                                            @PageableDefault(size = 10) Pageable pageable) {
-        log.info("[P9][CON][ORDR][ALL_]: GET /api/orders pageable({}), request({})", pageable, request);
+    @ApiOperation(value = "주문하기", notes = "주문을 한다.")
+    @PostMapping
+    public JUINResponse<Long> create(final Principal principal
+                                    , @RequestBody OrderRequest.Create request) {
+        final String identification = principal.getName();
+        log.info("[P9][CON][ORDR][CRTE]: POST /api/orders identification({}), request({})", identification, request);
 
-        final Account account = principalQueryService.readByPrincipal(principal);
+        try {
+            final Account account = principalQueryService.readByPrincipal(principal);
 
-        var response = orderQueryService.readAll(account, request, pageable);
-        return new JUINResponse<>(HttpStatus.OK, response);
+            var response = orderCommandService.add(account, request);
+            return new JUINResponse<>(HttpStatus.CREATED, response);
+        } catch (Exception e) {
+            log.error("[P9][CON][ORDR][CRTE]: message=({}), identification({}), request({})", e.getMessage(), identification, request);
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @ApiOperation(value = "주문하기", notes = "주문을 한다.")
-    @PostMapping("/new")
-    public JUINResponse<OrderResponse.Create> create(final Principal principal,
-                                                     @RequestBody OrderRequest.Create request) {
-        log.info("[P9][CON][ORDR][NEW_]: POST /api/orders/new request({})", request);
+    // FIXME: 검색으로 봐야 될까?
+    @ApiOperation(value = "주문 상세보기", notes = "주문 상세 내역을 조회한다.")
+    @GetMapping
+    public JUINResponse<Page<OrderJoinResponse>> retrieveAll(final Principal principal
+                                                            , @ModelAttribute OrderRequest.Retrieve request
+                                                            , @PageableDefault(size = 10) Pageable pageable) {
+        final String identification = principal.getName();
+        log.info("[P9][CON][ORDR][ALL_]: GET /api/orders identification({}), pageable({}), request({})", identification, pageable, request);
 
-        final Account account = principalQueryService.readByPrincipal(principal);
-        final Order order = orderCommandService.add(account, request);
+        try {
+            final Account account = principalQueryService.readByPrincipal(principal);
 
-        var response = OrderResponse.Create.of(order);
-        return new JUINResponse<>(HttpStatus.OK, response);
+            var response = orderQueryService.readAll(account, request, pageable);
+            return new JUINResponse<>(HttpStatus.OK, response);
+        } catch (Exception e) {
+            log.error("[P9][CON][ORDR][ALL_]: message=({}), identification({}), pageable({}), request({})", e.getMessage(), identification, pageable, request);
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @ApiOperation(value = "주문 취소하기", notes = "주문 취소를 한다.")
-    @DeleteMapping("/cancel/{orderId}")
-    public JUINResponse<OrderResponse.Create> cancel(final Principal principal,
-                                                     @PathVariable Long orderId) {
-        log.info("[P9][CON][ORDR][CNCL]: DELETE /api/orders/cancel orderId({})", orderId);
-        final Account account = principalQueryService.readByPrincipal(principal);
+    @PostMapping("/cancel")
+    public JUINResponse<Long> cancel(final Principal principal
+                                , @RequestBody OrderRequest.Cancel request) {
+        final String identification = principal.getName();
 
-        orderCommandService.cancel(orderId, account.getId());
-        return new JUINResponse<>(HttpStatus.OK, null);
+        log.info("[P9][CON][ORDR][CNCL]: POST /api/orders/ identification=({}), request=({})", identification, request);
+        try {
+            final Account account = principalQueryService.readByPrincipal(principal);
+
+            var response = orderCommandService.cancel(request.getOrderId(), account.getId());
+            return new JUINResponse<>(HttpStatus.OK, response);
+        } catch (Exception e) {
+            log.error("[P9][CON][ORDR][CNCL]: message=({}), identification({}), request=({})", e.getMessage(), identification, request);
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }
