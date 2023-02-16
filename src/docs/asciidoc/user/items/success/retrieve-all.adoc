@@ -21,9 +21,6 @@ include::{snippets}/user/items/success/retrieveAll/curl-request.adoc[]
 === http-request
 include::{snippets}/user/items/success/retrieveAll/http-request.adoc[]
 
-=== request headers
-include::{snippets}/user/items/success/retrieveAll/request-headers.adoc[]
-
 == RESPONSE
 
 === http-response

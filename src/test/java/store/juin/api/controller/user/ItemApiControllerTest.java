@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -25,18 +24,13 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import store.juin.api.domain.enums.ItemStatus;
 import store.juin.api.domain.response.ItemResponse;
 import store.juin.api.service.query.ItemQueryService;
-import store.juin.api.service.query.PrincipalQueryService;
 
-import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -46,7 +40,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static store.juin.api.domain.EndPoint.PORT;
-import static store.juin.api.domain.EntityUtil.makeAccount;
 import static store.juin.api.domain.EntityUtil.makeItem;
 import static store.juin.api.utils.CharterUtil.DOT;
 
@@ -61,9 +54,6 @@ class ItemApiControllerTest {
 
     @Mock
     private ItemQueryService itemQueryService;
-
-    @Mock
-    private PrincipalQueryService principalQueryService;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -92,10 +82,6 @@ class ItemApiControllerTest {
         @DisplayName("(성공) 상품 하나를 읽어온다.")
         void retrieveOneTest01() throws Exception {
             // given
-            var principal = mock(Principal.class);
-            var account = makeAccount();
-            given(principalQueryService.readByPrincipal(principal)).willReturn(account);
-
             var itemId = 1L;
             var item = makeItem(itemId, "이게 제품이다!!!");
 
@@ -103,15 +89,12 @@ class ItemApiControllerTest {
 
             // when
             final ResultActions actual = mockMvc.perform(get("/api/items/{itemId}", itemId)
-                    .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer dXNlcjpzZWNyZXQ=")
-                    .principal(principal));
+                    .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON));
 
             // then
             actual
                     .andExpect(status().isOk())
                     .andDo(document(DOT + "/user/items/success/retrieveOne"
-                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
                             , pathParameters(
                                     parameterWithName("itemId").description("아이템 아이디")
@@ -162,10 +145,6 @@ class ItemApiControllerTest {
         @DisplayName("(성공) 전체 상품 목록 읽기")
         void retrieveAllTest01() throws Exception {
             // given
-            var principal = mock(Principal.class);
-            var account = makeAccount();
-            given(principalQueryService.readByPrincipal(principal)).willReturn(account);
-
             var itemId = 1L;
             var itemList = List.of(makeItem(itemId, "이게 제품이다!!!"), makeItem(itemId + 1, "이것도 제품이다!!!"));
 
@@ -182,8 +161,6 @@ class ItemApiControllerTest {
             // when
             final ResultActions actual = mockMvc.perform(get("/api/items")
                     .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer dXNlcjpzZWNyZXQ=")
-                    .principal(principal)
                     .param("page", String.valueOf(page))
                     .param("size", String.valueOf(size)));
 
@@ -191,8 +168,6 @@ class ItemApiControllerTest {
             actual
                     .andExpect(status().isOk())
                     .andDo(document(DOT + "/user/items/success/retrieveAll"
-                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
-
                             , requestParameters(
                                         parameterWithName("page").description("페이지 번호")
                                     , parameterWithName("size").description("몇 개의 페이지를 가져올 것인지")

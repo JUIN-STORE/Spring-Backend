@@ -21,9 +21,6 @@ include::{snippets}/user/items/success/retrieveOne/curl-request.adoc[]
 === http-request
 include::{snippets}/user/items/success/retrieveOne/http-request.adoc[]
 
-=== request headers
-include::{snippets}/user/items/success/retrieveOne/request-headers.adoc[]
-
 === request parameters
 include::{snippets}/user/items/success/retrieveOne/path-parameters.adoc[]
 
