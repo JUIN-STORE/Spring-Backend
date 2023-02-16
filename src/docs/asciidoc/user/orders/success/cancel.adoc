@@ -1,0 +1,33 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: orders
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= @PostMapping("/user/orders/cancel")
+
+[[overview]]
+== REQUEST
+=== curl
+include::{snippets}/user/orders/success/cancel/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/orders/success/cancel/http-request.adoc[]
+
+=== request fields
+include::{snippets}/user/orders/success/cancel/request-fields.adoc[]
+
+== RESPONSE
+
+=== http-response
+include::{snippets}/user/orders/success/cancel/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/orders/success/cancel/response-fields.adoc[]

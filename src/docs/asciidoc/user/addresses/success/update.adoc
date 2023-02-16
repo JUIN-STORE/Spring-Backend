@@ -1,0 +1,33 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: addresses
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= PUT /api/addresses
+
+[[overview]]
+== REQUEST
+
+=== curl
+include::{snippets}/user/addresses/success/update/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/addresses/success/update/http-request.adoc[]
+
+=== request headers
+include::{snippets}/user/addresses/success/update/request-headers.adoc[]
+
+== RESPONSE
+=== http-response
+include::{snippets}/user/addresses/success/update/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/addresses/success/update/response-fields.adoc[]

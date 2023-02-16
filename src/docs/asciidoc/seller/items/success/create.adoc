@@ -11,26 +11,26 @@ endif::[]
 :operation-http-response-title: Response
 
 [[introduction]]
-= @PostMapping("/api/seller/items")
+= @PostMapping("/seller/items")
 
 [[overview]]
 == REQUEST
 === curl
-include::{snippets}/api/seller/items/success/create/curl-request.adoc[]
+include::{snippets}/seller/items/success/create/curl-request.adoc[]
 
 === http-request
-include::{snippets}/api/seller/items/success/create/http-request.adoc[]
+include::{snippets}/seller/items/success/create/http-request.adoc[]
 
 === request-parts
-include::{snippets}/api/seller/items/success/create/request-parts.adoc[]
+include::{snippets}/seller/items/success/create/request-parts.adoc[]
 
 === request 상품 등록 요청 정보
-include::{snippets}/api/seller/items/success/create/request-part-request-fields.adoc[]
+include::{snippets}/seller/items/success/create/request-part-request-fields.adoc[]
 
 == RESPONSE
 
 === http-response
-include::{snippets}/api/seller/items/success/create/http-response.adoc[]
+include::{snippets}/seller/items/success/create/http-response.adoc[]
 
 === response fields
-include::{snippets}/api/seller/items/success/create/response-fields.adoc[]
+include::{snippets}/seller/items/success/create/response-fields.adoc[]
