@@ -14,9 +14,6 @@ public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslItemR
     Page<Item> findAllByCategoryId(Pageable pageable, Long category);
 
     // 참고 https://yonguri.tistory.com/122
-    Page<Item> findAllByNameContaining(Pageable pageable, String name);
-
-    Page<Item> findAllByNameContainingAndCategoryId(Pageable pageable, String name, Long categoryId);
 
     Long countByNameContaining(String name);
 

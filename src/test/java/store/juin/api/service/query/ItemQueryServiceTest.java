@@ -207,204 +207,6 @@ class ItemQueryServiceTest {
     }
 
     @Nested
-    @DisplayName("readAllByNameContaining 테스트")
-    class RetrieveAllByNameContainingTest {
-        @Test
-        @DisplayName("카테고리와 무관하게 검색어로 검색 성공")
-        void readAllByNameContainingTest01() {
-            // given
-            var page = 0;
-            var size = 10;
-            var pageRequest = PageRequest.of(page, size);
-            var name = "name01";
-            var itemId = 912L;
-
-            var itemList = List.of(makeItem(itemId, makeItemImageList(25L)));
-            var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
-
-            given(itemRepository.findAllByNameContaining(pageRequest, name)).willReturn(itemPage);
-
-            // when
-            final Page<Item> actual = sut.readAllByNameContaining(pageRequest, name);
-
-            // then
-            assertEquals(itemPage, actual);
-        }
-
-        @Test
-        @DisplayName("카테고리와 무관하게 검색 실패")
-        void readAllByNameContainingTest02() {
-            // given
-            var page = 0;
-            var size = 10;
-            var pageRequest = PageRequest.of(page, size);
-            var name = "name01";
-
-            var expected = makeEmptyPageItem();
-
-            given(itemRepository.findAllByNameContaining(pageRequest, name)).willReturn(expected);
-
-            // when
-            final Page<Item> actual = sut.readAllByNameContaining(pageRequest, name);
-
-            // then
-            assertEquals(expected, actual);
-        }
-    }
-
-
-    @Nested
-    @DisplayName("readAllByNameContainingAndCategoryId 테스트")
-    class RetrieveAllByNameContainingAndCategoryId {
-        @Test
-        @DisplayName("카테고리 안에서 검색 성공")
-        void readAllByNameContainingTest01() {
-            // given
-            var page = 0;
-            var size = 10;
-            var categoryId = 2L;
-            var pageRequest = PageRequest.of(page, size);
-            var name = "name07";
-
-            var itemList = List.of(
-                    makeItem(33L, makeItemImageList(55L)),
-                    makeItem(44L, makeItemImageList(66L))
-            );
-
-            var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
-            given(itemRepository.findAllByNameContainingAndCategoryId(pageRequest, name, categoryId))
-                    .willReturn(itemPage);
-
-            // when
-            final Page<Item> actual =
-                    sut.readAllByNameContainingAndCategoryId(pageRequest, name, categoryId);
-
-            // then
-            assertEquals(itemPage, actual);
-        }
-
-        @Test
-        @DisplayName("카테고리 안에서 검색 실패")
-        void readAllByNameContainingTest02() {
-            // given
-            var page = 0;
-            var size = 10;
-            var categoryId = 2L;
-            var pageRequest = PageRequest.of(page, size);
-            var name = "name9999";
-
-            var expected = makeEmptyPageItem();
-
-            given(itemRepository.findAllByNameContainingAndCategoryId(pageRequest, name, categoryId))
-                    .willReturn(expected);
-
-            // when
-            final Page<Item> actual =
-                    sut.readAllByNameContainingAndCategoryId(pageRequest, name, categoryId);
-
-            // then
-            assertEquals(expected, actual);
-        }
-    }
-
-
-    @Nested
-    @DisplayName("total 테스트")
-    class TotalTest {
-        @Test
-        @DisplayName("전체 상품 카운팅하기")
-        void totalTest01() {
-            // given
-            var count = 10L;
-            given(itemRepository.count()).willReturn(count);
-
-            // when
-            final Long actual = sut.total();
-
-            // then
-            assertEquals(count, actual);
-        }
-    }
-
-
-    @Nested
-    @DisplayName("totalByNameContaining 테스트")
-    class TotalByNameContainingTest {
-        @Test
-        @DisplayName("카테고리 아이디로 검색한 상품의 개수 세기")
-        void readSearchCountTest01() {
-            // given
-            var count = 1L;
-            var searchTitle = "searchTitle";
-            given(itemRepository.countByNameContaining(searchTitle)).willReturn(count);
-
-            // when
-            final Long actual = sut.totalByNameContaining(searchTitle);
-
-            // then
-            assertEquals(count, actual);
-        }
-    }
-
-    @Nested
-    @DisplayName("display 테스트")
-    class DisplayTest {
-        @Test
-        @DisplayName("categoryId가 없을 때")
-        void displayTest01() {
-            // given
-            var page = 0;
-            var size = 10;
-            var pageable = PageRequest.of(page, size);
-
-            var itemImageList = makeItemImageList(20L);
-
-            var item = makeItem(1L, itemImageList);
-
-            var itemList = List.of(item);
-
-            given(itemRepository.findAll(pageable))
-                    .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
-
-            var expected = makeItemReadResponseList(itemList, itemImageList);
-
-            // when
-            final Page<ItemResponse.Read> actual = sut.display(pageable, null);
-
-            // then
-            assertIterableEquals(expected, actual);
-        }
-
-        @Test
-        @DisplayName("categoryId가 있을 때")
-        void displayTest02() {
-            // given
-            var page = 0;
-            var size = 10;
-            var pageable = PageRequest.of(page, size);
-            var categoryId = 10L;
-
-            var itemImageList = makeItemImageList(20L);
-
-            var item = makeItem(1L, itemImageList);
-            var itemList = List.of(item);
-
-            given(itemRepository.findAllByCategoryId(pageable, categoryId))
-                    .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
-
-            var expected = makeItemReadResponseList(itemList, itemImageList);
-
-            // when
-            final Page<ItemResponse.Read> actual = sut.display(pageable, categoryId);
-
-            // then
-            assertIterableEquals(expected, actual);
-        }
-
-    }
-
-
-    @Nested
     @DisplayName("search 테스트")
     class SearchTest {
         @Test
@@ -427,13 +229,13 @@ class ItemQueryServiceTest {
             var expected = new PageImpl<>(itemReadResponseList, pageable, 1);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, null, personColor, null);
+            final Page<ItemResponse.Read> actual = sut.search(pageable, null, null, personColor);
 
             // then
             assertIterableEquals(expected, actual);
         }
         @Test
-        @DisplayName("categoryId가 없을 때")
+        @DisplayName("검색어가 있을 때")
         void searchTest02() {
             // given
             var page = 0;
@@ -445,8 +247,8 @@ class ItemQueryServiceTest {
             var item = makeItem(1L, itemImageList);
             var itemList = List.of(item);
 
-            given(itemRepository.findAllByNameContaining(pageable, searchTitle))
-                    .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
+            given(itemRepository.findByNameContainingAndCategoryId(pageable, searchTitle, null))
+                    .willReturn(Optional.of(new PageImpl<>(itemList, pageable, itemList.size())));
 
             var itemReadResponseList = makeItemReadResponseList(itemList, itemImageList);
             var expected = new PageImpl<>(itemReadResponseList, pageable, 1);
@@ -461,6 +263,42 @@ class ItemQueryServiceTest {
         @Test
         @DisplayName("categoryId가 있을 때")
         void searchTest03() {
+            // given
+            var page = 0;
+            var size = 10;
+            var pageable = PageRequest.of(page, size);
+            var categoryId = 10L;
+
+            var itemImageList = makeItemImageList(20L);
+            var item = Item.builder()
+                    .id(1L)
+                    .name("name")
+                    .price(10000)
+                    .quantity(1)
+                    .soldCount(1)
+                    .description("description")
+                    .itemStatus(ItemStatus.READY)
+                    .category(makeCategory())
+                    .itemImageList(itemImageList)
+                    .build();
+            var itemList = List.of(item);
+
+            given(itemRepository.findByNameContainingAndCategoryId(pageable, null, categoryId))
+                    .willReturn(Optional.of(new PageImpl<>(itemList, pageable, itemList.size())));
+
+            var expected = makeItemReadResponseList(itemList, itemImageList);
+
+            // when
+            final Page<ItemResponse.Read> actual = sut.search(pageable, null,  categoryId, null);
+
+            // then
+            assertIterableEquals(expected, actual);
+        }
+
+
+        @Test
+        @DisplayName("특정 카테고리에서 상품 검색할 때")
+        void searchTest04() {
             // given
             var page = 0;
             var size = 10;
@@ -482,13 +320,42 @@ class ItemQueryServiceTest {
                     .build();
             var itemList = List.of(item);
 
-            given(itemRepository.findAllByNameContainingAndCategoryId(pageable, searchTitle, categoryId))
-                    .willReturn(new PageImpl<>(itemList, pageable, itemList.size()));
+            given(itemRepository.findByNameContainingAndCategoryId(pageable, searchTitle, categoryId))
+                    .willReturn(Optional.of(new PageImpl<>(itemList, pageable, itemList.size())));
 
             var expected = makeItemReadResponseList(itemList, itemImageList);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, null, categoryId);
+            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, categoryId, null);
+
+            // then
+            assertIterableEquals(expected, actual);
+        }
+    }
+
+    @Nested
+    @DisplayName("display 테스트")
+    class DisplayTest {
+        @Test
+        @DisplayName("item 전체 조회")
+        void test() {
+            // given
+            var page = 0;
+            var size = 10;
+            var pageRequest = PageRequest.of(page, size);
+
+            var itemId = 33L;
+            var itemList = List.of(makeItem(itemId, makeItemImageList(24L)));
+            var itemImageList = makeItemImageList(20L);
+
+            var itemPage = new PageImpl<>(itemList, pageRequest, itemList.size());
+            var expected = makeItemReadResponseList(itemList, itemImageList);
+
+
+            given(itemRepository.findAll(pageRequest)).willReturn(itemPage);
+
+            // when
+            final Page<ItemResponse.Read> actual = sut.display(pageRequest);
 
             // then
             assertIterableEquals(expected, actual);
@@ -514,7 +381,8 @@ class ItemQueryServiceTest {
         );
     }
 
-    private List<ItemResponse.Read> makeItemReadResponseList(List<Item> itemList, List<ItemImage> itemImageList) {
+    private List<ItemResponse.Read> makeItemReadResponseList(List<Item> itemList,
+                                                             List<ItemImage> itemImageList) {
 
         return itemList.stream()
                 .map(image -> ItemResponse.Read.of(image, itemImageList))
