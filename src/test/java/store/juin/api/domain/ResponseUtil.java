@@ -1,10 +1,9 @@
 package store.juin.api.domain;
 
-import store.juin.api.domain.response.CartItemResponse;
-import store.juin.api.domain.response.CategoryResponse;
-import store.juin.api.domain.response.ItemImageResponse;
-import store.juin.api.domain.response.ItemResponse;
+import store.juin.api.domain.enums.OrderStatus;
+import store.juin.api.domain.response.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ResponseUtil {
@@ -81,5 +80,18 @@ public class ResponseUtil {
                 .setId(id)
                 .setCategoryName(categoryName + "_child")
                 .setDepth(2L);
+    }
+
+    public static OrderJoinResponse makeOrderJoinResponse() {
+        return new OrderJoinResponse()
+                .setOrdersId(1L)
+                .setOrderItemId(2L)
+                .setItemId(15L)
+                .setDeliveryId(222L)
+                .setOrderCount(300)
+                .setPrice(1000_000)
+                .setName("리얼포스 R3")
+                .setOrderDate(LocalDateTime.now())
+                .setOrderStatus(OrderStatus.ORDER);
     }
 }

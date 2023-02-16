@@ -3,10 +3,8 @@ package store.juin.api.domain;
 
 import store.juin.api.domain.enums.OrderStatus;
 import store.juin.api.domain.request.*;
-import store.juin.api.domain.response.OrderJoinResponse;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class RequestUtil {
@@ -79,16 +77,12 @@ public class RequestUtil {
                 .setOrderStatus(OrderStatus.ORDER);
     }
 
-    public static OrderJoinResponse makeOrderJoinResponse() {
-        return new OrderJoinResponse()
-                .setOrdersId(1L)
-                .setOrderItemId(2L)
-                .setItemId(15L)
-                .setDeliveryId(222L)
-                .setOrderCount(300)
+    public static ItemRequest.Create makeItemCreateRequest() {
+        return new ItemRequest.Create()
+                .setCategoryId(1L)
+                .setName("REAL FORCE R3")
                 .setPrice(1000_000)
-                .setName("리얼포스 R3")
-                .setOrderDate(LocalDateTime.now())
-                .setOrderStatus(OrderStatus.ORDER);
+                .setQuantity(300)
+                .setDescription("REAL REAL REAL FORCE R3");
     }
 }

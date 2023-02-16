@@ -49,7 +49,9 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static store.juin.api.controller.EndPoint.PORT;
 import static store.juin.api.domain.EntityUtil.makeAccount;
-import static store.juin.api.domain.RequestUtil.*;
+import static store.juin.api.domain.RequestUtil.makeOrderCreateRequest;
+import static store.juin.api.domain.RequestUtil.makeOrderRetrieveRequest;
+import static store.juin.api.domain.ResponseUtil.makeOrderJoinResponse;
 import static store.juin.api.utils.CharterUtil.DOT;
 
 @ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
@@ -273,23 +275,4 @@ class OrderApiControllerTest {
                     ));
         }
     }
-
-
-//    @ApiOperation(value = "주문 취소하기", notes = "주문 취소를 한다.")
-//    @PostMapping("/{orderId}")
-//    public JUINResponse<OrderResponse.Create> cancel(final Principal principal
-//            , @PathVariable Long orderId) {
-//        final String identification = principal.getName();
-//
-//        log.info("[P9][CON][ORDR][CNCL]: POST /api/orders/{} identification=({})", orderId, identification);
-//        try {
-//            final Account account = principalQueryService.readByPrincipal(principal);
-//
-//            orderCommandService.cancel(orderId, account.getId());
-//            return new JUINResponse<>(HttpStatus.OK, null);
-//        } catch (Exception e) {
-//            log.error("[P9][CON][ORDR][CNCL]: message=({}), identification({}), orderId({})", e.getMessage(), identification, orderId);
-//            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
 }

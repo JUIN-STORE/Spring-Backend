@@ -1,5 +1,13 @@
 package store.juin.api.service.command;
 
+import io.jsonwebtoken.lang.Collections;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import store.juin.api.domain.entity.Category;
 import store.juin.api.domain.entity.Item;
 import store.juin.api.domain.enums.ItemStatus;
@@ -9,14 +17,6 @@ import store.juin.api.exception.Msg;
 import store.juin.api.repository.jpa.ItemRepository;
 import store.juin.api.service.query.CategoryQueryService;
 import store.juin.api.service.query.ItemQueryService;
-import io.jsonwebtoken.lang.Collections;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -35,10 +35,10 @@ public class ItemCommandService {
     private final ItemCategoryCommandService itemCategoryCommandService;
 
     @Transactional
-    public Long add(ItemRequest.Create request,
-                    MultipartFile representativeImageFile,
+    public Long add(ItemRequest.Create request
+            , MultipartFile representativeFile,
                     List<MultipartFile> itemImageFileList) throws IOException {
-        if (representativeImageFile == null) throw new InvalidParameterException(Msg.ITEM_THUMBNAIL_REQUIRED);
+        if (representativeFile == null) throw new InvalidParameterException(Msg.ITEM_THUMBNAIL_REQUIRED);
 
         // 상품 등록
         final Category category = categoryQueryService.readById(request.getCategoryId());
@@ -48,9 +48,9 @@ public class ItemCommandService {
         itemCategoryCommandService.add(item, category);
 
         // 대표 이미지
-        final String originFileName = representativeImageFile.getOriginalFilename();
+        final String originFileName = representativeFile.getOriginalFilename();
         validOriginalFilename(originFileName);
-        itemImageCommandService.add(new ItemImageRequest.Create(originFileName, true), representativeImageFile, item);
+        itemImageCommandService.add(new ItemImageRequest.Create(originFileName, true), representativeFile, item);
 
         final Long itemId = item.getId();
 

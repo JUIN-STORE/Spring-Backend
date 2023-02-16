@@ -1,0 +1,36 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: orders
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= @PostMapping("/api/seller/items")
+
+[[overview]]
+== REQUEST
+=== curl
+include::{snippets}/api/seller/items/success/create/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/api/seller/items/success/create/http-request.adoc[]
+
+=== request-parts
+include::{snippets}/api/seller/items/success/create/request-parts.adoc[]
+
+=== request 상품 등록 요청 정보
+include::{snippets}/api/seller/items/success/create/request-part-request-fields.adoc[]
+
+== RESPONSE
+
+=== http-response
+include::{snippets}/api/seller/items/success/create/http-response.adoc[]
+
+=== response fields
+include::{snippets}/api/seller/items/success/create/response-fields.adoc[]
