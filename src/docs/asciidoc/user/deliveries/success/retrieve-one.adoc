@@ -11,7 +11,7 @@ endif::[]
 :operation-http-response-title: Response
 
 [[introduction]]
-= @GetMapping("/user/deliveries/success/{deliveryId}")
+= GET /user/deliveries/success/{deliveryId}
 
 [[overview]]
 == REQUEST

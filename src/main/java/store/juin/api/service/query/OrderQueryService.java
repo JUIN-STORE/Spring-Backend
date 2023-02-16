@@ -1,11 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Order;
-import store.juin.api.domain.request.OrderRequest;
-import store.juin.api.domain.response.OrderJoinResponse;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,6 +7,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.entity.Order;
+import store.juin.api.domain.request.OrderRequest;
+import store.juin.api.domain.response.OrderJoinResponse;
+import store.juin.api.exception.Msg;
+import store.juin.api.repository.jpa.OrderRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class OrderQueryService {
     public Page<OrderJoinResponse> readAll(Account account, OrderRequest.Retrieve request, Pageable pageable) {
         return orderRepository
                 .findOrderJoinOrderItemJoinItemByAccountId(account.getId(), request, pageable)
-                .orElse(new PageImpl<>(new ArrayList<>()));
+                .orElse(new PageImpl<>(new ArrayList<>(), pageable, 0));
     }
 
     @Transactional(readOnly = true)
