@@ -1,0 +1,33 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: addresses
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= GET /api/carts
+
+[[overview]]
+== REQUEST
+=== curl
+include::{snippets}/user/addresses/success/retrieveOne/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/addresses/success/retrieveOne/http-request.adoc[]
+
+=== request headers
+include::{snippets}/user/addresses/success/retrieveOne/request-headers.adoc[]
+
+== RESPONSE
+
+=== http-response
+include::{snippets}/user/addresses/success/retrieveOne/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/addresses/success/retrieveOne/response-fields.adoc[]

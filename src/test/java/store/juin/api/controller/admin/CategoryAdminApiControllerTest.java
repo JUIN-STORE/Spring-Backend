@@ -32,15 +32,13 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static store.juin.api.controller.EndPoint.PORT;
+import static store.juin.api.domain.EndPoint.PORT;
 import static store.juin.api.domain.EntityUtil.makeAccount;
 import static store.juin.api.domain.RequestUtil.makeCategoryCreateRequest;
 import static store.juin.api.utils.CharterUtil.DOT;
 
 @ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
 class CategoryAdminApiControllerTest {
-    private static final String ADMIN_CATEGORY = "/api/admin/categories";
-
     private MockMvc mockMvc;
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -68,7 +66,7 @@ class CategoryAdminApiControllerTest {
     }
 
    @Nested
-   @DisplayName("@PostMapping(" + ADMIN_CATEGORY + ")")
+   @DisplayName("@PostMapping(\"/api/admin/categories\")")
    class CreateTest {
         @Test
         @DisplayName("(성공) 카테고리를 추가한다.")
@@ -84,7 +82,7 @@ class CategoryAdminApiControllerTest {
             given(categoryCommandService.add(request)).willReturn(response);
 
             // when
-            final ResultActions actual = mockMvc.perform(post(ADMIN_CATEGORY)
+            final ResultActions actual = mockMvc.perform(post("/api/admin/categories")
                     .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer dXNlcjpzZWNyZXQ=")
                     .principal(principal)
@@ -93,7 +91,7 @@ class CategoryAdminApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(DOT + ADMIN_CATEGORY + "/create"
+                    .andDo(document(DOT + "/admin/categories/success/create"
                             , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
                             , requestFields(fieldWithPath("categoryName").type(String.class).description("카테고리 이름")

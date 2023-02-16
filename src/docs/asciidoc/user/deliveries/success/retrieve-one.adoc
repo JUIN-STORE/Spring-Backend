@@ -1,0 +1,36 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: deliveries
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= @GetMapping("/user/deliveries/success/{deliveryId}")
+
+[[overview]]
+== REQUEST
+=== curl
+include::{snippets}/user/deliveries/success/retrieveOne/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/deliveries/success/retrieveOne/http-request.adoc[]
+
+=== request headers
+include::{snippets}/user/deliveries/success/retrieveOne/request-headers.adoc[]
+
+=== request parameters
+include::{snippets}/user/deliveries/success/retrieveOne/path-parameters.adoc[]
+
+== RESPONSE
+
+=== http-response
+include::{snippets}/user/deliveries/success/retrieveOne/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/deliveries/success/retrieveOne/response-fields.adoc[]

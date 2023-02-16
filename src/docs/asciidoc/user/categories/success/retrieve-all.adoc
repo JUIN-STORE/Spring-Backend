@@ -1,0 +1,30 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: categories
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= @GetMapping("/api/categories")
+
+[[overview]]
+== REQUEST
+=== curl
+include::{snippets}/user/categories/success/retrieveAll/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/categories/success/retrieveAll/http-request.adoc[]
+
+== RESPONSE
+
+=== http-response
+include::{snippets}/user/categories/success/retrieveAll/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/categories/success/retrieveAll/response-fields.adoc[]

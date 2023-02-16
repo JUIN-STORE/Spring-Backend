@@ -37,17 +37,15 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static store.juin.api.controller.EndPoint.PORT;
+import static store.juin.api.domain.EndPoint.PORT;
 import static store.juin.api.domain.EntityUtil.makeAccount;
 import static store.juin.api.utils.CharterUtil.DOT;
 
 // https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/#introduction
 @ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
 class ItemSellerApiControllerTest {
-    private static final String API_SELLER_ITEM = "/api/seller/items";
     private MockMvc mockMvc;
     private ObjectMapper objectMapper = new ObjectMapper();
-
 
     @InjectMocks
     private ItemSellerApiController sut;
@@ -74,7 +72,7 @@ class ItemSellerApiControllerTest {
     }
 
     @Nested
-    @DisplayName("")
+    @DisplayName("@PostMapping(\"/api/seller/items\")")
     class CreateTest {
         @Test
         @DisplayName("(성공) 관리자가 상품을 등록한다.")
@@ -95,7 +93,7 @@ class ItemSellerApiControllerTest {
             );
 
             // when
-            final ResultActions actual = mockMvc.perform(multipart(API_SELLER_ITEM)
+            final ResultActions actual = mockMvc.perform(multipart("/api/seller/items")
                     .file(request)
                     .file(representativeFile)
                     .file(detailFileList.get(0))
@@ -106,7 +104,7 @@ class ItemSellerApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(DOT + API_SELLER_ITEM + "/success/create"
+                    .andDo(document(DOT + "/seller/items/success/create"
                             , requestParts(
                                     partWithName("request").description("상품 등록 요청 정보")
                                     , partWithName("representativeFile").description("대표 이미지 MultiPartFile")

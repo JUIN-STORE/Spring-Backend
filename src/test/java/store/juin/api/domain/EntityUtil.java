@@ -25,6 +25,25 @@ public class EntityUtil {
                 .build();
     }
 
+    public static List<Address> makeAddressList() {
+        return List.of(
+                Address.builder()
+                        .id(1L)
+                        .city("서울시")
+                        .street("동작구")
+                        .zipCode(18297)
+                        .defaultAddress(true)
+                        .build(),
+                Address.builder()
+                        .id(2L)
+                        .city("서울시")
+                        .street("강남구")
+                        .zipCode(12345)
+                        .defaultAddress(false)
+                        .build()
+        );
+    }
+
     public static Item makeItem(Long itemId, String name) {
         return Item.builder()
                 .id(itemId)
