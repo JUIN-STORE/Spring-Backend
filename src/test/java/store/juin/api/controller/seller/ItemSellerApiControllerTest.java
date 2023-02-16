@@ -134,4 +134,200 @@ class ItemSellerApiControllerTest {
     private MockMultipartFile makeMultipartFile(String fileName, String originalFileName, String contentType, byte[] content) {
         return new MockMultipartFile(fileName, originalFileName, contentType, content);
     }
+
+//
+//    @Nested
+//    @DisplayName("상품 등록")
+//    class RegisterTest {
+//        @Test
+//        @DisplayName("판매자 상품 등록 성공")
+//        void registerTest01() throws Exception {
+//            // given
+//            var createRequest = makeCreateRequest();
+//
+//            var thumbnail = new MockMultipartFile(
+//                    "thumbnail",
+//                    "thumbnail.jpg",
+//                    MediaType.MULTIPART_FORM_DATA_VALUE,
+//                    new byte[0]);
+//
+//            var file = new MockMultipartFile(
+//                    "fileList",
+//                    "test.jpg",
+//                    MediaType.MULTIPART_FORM_DATA_VALUE,
+//                    new byte[0]);
+//
+//            var json = objectMapper.writeValueAsString(createRequest);
+//            var request = new MockMultipartFile(
+//                    "request",
+//                    "",
+//                    MediaType.APPLICATION_JSON_VALUE,
+//                    json.getBytes());
+//
+//            given(itemQueryService.add(any(), any(), any())).willReturn(1L);
+//
+//            // when
+//            final ResultActions perform = mockMvc.perform(
+//                    multipart(ITEM_END_POINT + "/seller/register")
+//                            .file(request)
+//                            .file(thumbnail)
+//                            .file(file)
+//            );
+//
+//            // then
+//            perform.andExpect(status().isOk());
+//        }
+//
+//        @Test
+//        @DisplayName("존재하지 않는 카테고리")
+//        public void registerTest02() throws Exception {
+//            // given
+//            var createRequest = makeCreateRequest();
+//
+//            var thumbnailFile = new MockMultipartFile(
+//                    "thumbnail",
+//                    "test.jpg",
+//                    MediaType.MULTIPART_FORM_DATA_VALUE,
+//                    new byte[0]);
+//
+//            var file = new MockMultipartFile(
+//                    "fileList",
+//                    "test.jpg",
+//                    MediaType.MULTIPART_FORM_DATA_VALUE,
+//                    new byte[0]);
+//
+//            var json = objectMapper.writeValueAsString(createRequest);
+//            var request = new MockMultipartFile(
+//                    "request",
+//                    "",
+//                    MediaType.APPLICATION_JSON_VALUE,
+//                    json.getBytes());
+//
+//            given(mockItemQueryService.add(any(), any(), any())).willThrow(new EntityNotFoundException());
+//
+//            // whenㅔ
+//            final ResultActions perform = mockMvc.perform(
+//                    multipart(ITEM_END_POINT + "/seller/register")
+//                            .file(request)
+//                            .file(thumbnailFile)
+//                            .file(file)
+//            );
+//
+//            // then
+//            perform.andExpect(status().isOk());
+//            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":400"));
+//        }
+//
+//        @Test
+//        @DisplayName("파일 등록 실패")
+//        public void registerTest03() throws Exception {
+//            // given
+//            var createRequest = makeCreateRequest();
+//
+//            var thumbnailFile = new MockMultipartFile(
+//                    "thumbnail",
+//                    "test.jpg",
+//                    MediaType.MULTIPART_FORM_DATA_VALUE,
+//                    new byte[0]);
+//
+//            var file = new MockMultipartFile(
+//                    "fileList",
+//                    "test.jpg",
+//                    MediaType.MULTIPART_FORM_DATA_VALUE,
+//                    new byte[0]);
+//
+//            var json = objectMapper.writeValueAsString(createRequest);
+//            var request = new MockMultipartFile(
+//                    "request",
+//                    "",
+//                    MediaType.APPLICATION_JSON_VALUE,
+//                    json.getBytes());
+//
+//            given(mockItemQueryService.add(any(), any(), any()))
+//                    .willThrow(new FileNotFoundException());
+//
+//            // when
+//            final ResultActions perform = mockMvc.perform(
+//                    multipart(ITEM_END_POINT + "/seller/register")
+//                            .file(request)
+//                            .file(thumbnailFile)
+//                            .file(file)
+//            );
+//
+//            // then
+//            perform.andExpect(status().isOk());
+//            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":500"));
+//        }
+//
+//    }
+//    @Nested
+//    @DisplayName("판매자 상품 읽기")
+//    class AdminReadTest {
+//        @Test
+//        @DisplayName("판매자 상품 읽기 성공")
+//        public void adminReadTest01() throws Exception {
+//            // given
+//            var item = getItemByInfo(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+//            given(mockItemQueryService.readById(1L)).willReturn(item);
+//
+//            // when
+//            final ResultActions perform = mockMvc.perform(
+//                    get(ITEM_END_POINT + "/seller/{itemId}", 1L)
+//                            .accept(MediaType.APPLICATION_JSON));
+//
+//            // then
+//            perform.andExpect(status().isOk());
+//        }
+//
+//        @Test
+//        @DisplayName("존재하지 않는 상품")
+//        public void adminReadTest02() throws Exception {
+//            // given
+//            given(mockItemQueryService.readById(1L)).willThrow(new EntityNotFoundException());
+//
+//            // when
+//            final ResultActions perform = mockMvc.perform(
+//                    get(ITEM_END_POINT + "/seller/{itemId}", 1L)
+//                            .accept(MediaType.APPLICATION_JSON));
+//
+//            // then
+//            perform.andExpect(status().isOk());
+//            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":400"));
+//        }
+//    }
+//
+//    @Nested
+//    @DisplayName("판매자 상품 삭제")
+//    class AdminRemoveTest {
+//        @Test
+//        @DisplayName("판매자 상품 삭제 성공")
+//        public void adminRemoveTest01() throws Exception {
+//            // given
+//            given(mockItemQueryService.remove(1L)).willReturn(anyLong());
+//
+//            // when
+//            final ResultActions perform = mockMvc.perform(
+//                    delete(ITEM_END_POINT + "/seller/{itemId}", 1L)
+//                            .accept(MediaType.APPLICATION_JSON));
+//
+//            // then
+//            perform.andExpect(status().isOk());
+//        }
+//
+//        @Test
+//        @DisplayName("존재하지 않는 상품 삭제 시도로 인한 삭제 실패")
+//        public void adminRemoveTest02() throws Exception {
+//            // given
+//            given(mockItemQueryService.remove(1L)).willThrow(new EntityNotFoundException());
+//
+//            // when
+//            final ResultActions perform = mockMvc.perform(
+//                    delete(ITEM_END_POINT + "/seller/{itemId}", 1L)
+//                            .accept(MediaType.APPLICATION_JSON));
+//
+//            // then
+//            perform.andExpect(status().isOk());
+//            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":400"));
+//        }
+//    }
 }

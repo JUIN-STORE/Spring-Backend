@@ -98,7 +98,7 @@ class CartApiControllerTest {
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(DOT + "/user/carts/add/success/create"
+                    .andDo(document(DOT + "/user/carts/success/create"
                             , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
                             , requestFields(

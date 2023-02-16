@@ -1,316 +1,245 @@
-//package store.juin.api.controller.user;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Nested;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import org.springframework.http.MediaType;
-//import org.springframework.restdocs.RestDocumentationContextProvider;
-//import org.springframework.restdocs.RestDocumentationExtension;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.ResultActions;
-//import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-//import store.juin.api.controller.user.ItemApiController;
-//import store.juin.api.domain.enums.ItemStatus;
-//import store.juin.api.domain.request.ItemRequest;
-//import store.juin.api.service.query.ItemQueryService;
-//
-//import java.time.ZonedDateTime;
-//
-//import static org.mockito.BDDMockito.given;
-//import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-//import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-//import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-//import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-//import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-//import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-//import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-//import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-//import static store.juin.api.domain.EndPoint.PORT;
-//import static store.juin.api.domain.EntityUtil.makeItem;
-//
-//@ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
-//class ItemApiControllerTest {
-//    private static final String API_ITEM = "/api/items";
-//
-//    private static final String ITEM_ID = API_ITEM + "/{itemId}";
-//    private MockMvc mockMvc;
-//
-//    private final ObjectMapper objectMapper = new ObjectMapper();
-//
-//    @InjectMocks
-//    private ItemApiController sut;
-//
-//    @Mock
-//    private ItemQueryService itemQueryService;
-//
-//    @BeforeEach
-//    void setup(RestDocumentationContextProvider restDocumentationContextProvider) {
-//        mockMvc = MockMvcBuilders
-//                .standaloneSetup(sut)
-//                .apply(documentationConfiguration(restDocumentationContextProvider)
-//                        .operationPreprocessors()
-//                        .and().uris().withPort(PORT)         // 포트 설정
-//                        .and().operationPreprocessors()
-//                        .withRequestDefaults(prettyPrint())   // request 본문을 예쁘게 출력
-//                        .withResponseDefaults(prettyPrint())) // response 본문을 예쁘게 출력
-//                .build();
-//    }
-//
-//    @Nested
-//    @DisplayName("@GetMapping(" + ")")
-//    class RetrieveOneTest {
+package store.juin.api.controller.user;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import store.juin.api.domain.enums.ItemStatus;
+import store.juin.api.domain.response.ItemResponse;
+import store.juin.api.service.query.ItemQueryService;
+import store.juin.api.service.query.PrincipalQueryService;
+
+import java.security.Principal;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static store.juin.api.domain.EndPoint.PORT;
+import static store.juin.api.domain.EntityUtil.makeAccount;
+import static store.juin.api.domain.EntityUtil.makeItem;
+import static store.juin.api.utils.CharterUtil.DOT;
+
+@ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
+class ItemApiControllerTest {
+    private MockMvc mockMvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @InjectMocks
+    private ItemApiController sut;
+
+    @Mock
+    private ItemQueryService itemQueryService;
+
+    @Mock
+    private PrincipalQueryService principalQueryService;
+
+    @BeforeEach
+    void setup(RestDocumentationContextProvider restDocumentationContextProvider) {
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(sut)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .setViewResolvers(new ViewResolver() {
+                    @Override
+                    public View resolveViewName(String viewName, Locale locale) throws Exception {
+                        return new MappingJackson2JsonView();
+                    }
+                })
+                .apply(documentationConfiguration(restDocumentationContextProvider)
+                        .operationPreprocessors()
+                        .and().uris().withPort(PORT)         // 포트 설정
+                        .and().operationPreprocessors()
+                        .withRequestDefaults(prettyPrint())   // request 본문을 예쁘게 출력
+                        .withResponseDefaults(prettyPrint())) // response 본문을 예쁘게 출력
+                .build();
+    }
+
+    @Nested
+    @DisplayName("@GetMapping(\"/api/items/{itemId}\")")
+    class RetrieveOneTest {
+        @Test
+        @DisplayName("(성공) 상품 하나를 읽어온다.")
+        void retrieveOneTest01() throws Exception {
+            // given
+            var principal = mock(Principal.class);
+            var account = makeAccount();
+            given(principalQueryService.readByPrincipal(principal)).willReturn(account);
+
+            var itemId = 1L;
+            var item = makeItem(itemId, "이게 제품이다!!!");
+
+            given(itemQueryService.readById(itemId)).willReturn(item);
+
+            // when
+            final ResultActions actual = mockMvc.perform(get("/api/items/{itemId}", itemId)
+                    .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer dXNlcjpzZWNyZXQ=")
+                    .principal(principal));
+
+            // then
+            actual
+                    .andExpect(status().isOk())
+                    .andDo(document(DOT + "/user/items/success/retrieveOne"
+                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
+
+                            , pathParameters(
+                                    parameterWithName("itemId").description("아이템 아이디")
+                            )
+
+                            , responseFields(
+                                    fieldWithPath("apiStatus").type(Integer.class).description("api 요청에 대한 상태")
+
+                                    , fieldWithPath("data.id").type(Integer.class).description("상품 id")
+                                    , fieldWithPath("data.name").type(String.class).description("상품 이름")
+                                    , fieldWithPath("data.price").type(Integer.class).description("상품 가격")
+                                    , fieldWithPath("data.quantity").type(Integer.class).description("남아있는 상품 개수")
+                                    , fieldWithPath("data.soldCount").type(Integer.class).description("여태 판매된 상품 개수")
+                                    , fieldWithPath("data.description").type(String.class).description("상품 설명")
+                                    , fieldWithPath("data.itemStatus").type(ItemStatus.class).description("아이템 상태")
+                                    , fieldWithPath("data.itemImageList[].imageName").type(String.class).description("원본 이미지 파일명을 통해 새로 만든 이미지 파일명")
+                                    , fieldWithPath("data.itemImageList[].originName").type(String.class).description("원본 오리지날 이름")
+                                    , fieldWithPath("data.itemImageList[].imageUrl").type(String.class).description("이미지 업로드 경로")
+                                    , fieldWithPath("data.itemImageList[].thumbnail").type(boolean.class).description("해당 이미지는 썸네일인가?")
+                                    , fieldWithPath("data.itemImageList[].representative").type(boolean.class).description("해당 이미지는 대표 썸네일인가?")
+
+                                    , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
+                                    , fieldWithPath("region").type(String.class).description("리전 정보"))
+                    ));
+        }
+
 //        @Test
-//        @DisplayName("상품 읽기 성공")
-//        void retrieveOneTest01() throws Exception {
-//            // given
-//            var itemId = 1L;
-//            var item = makeItem(itemId, "이게 제품이다!!!");
-//
-//            given(itemQueryService.readById(itemId)).willReturn(item);
-//
-//            // when
-//            final ResultActions actual = mockMvc.perform(get(ITEM_ID, itemId)
-//                    .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON));
-//
-//            // then
-//            actual
-//                    .andExpect(status().isOk())
-//                    .andDo(document(ITEM_ID
-//                            , pathParameters(
-//                                    parameterWithName("itemId").description("아이템 아이디")
-//                            )
-//
-//                            , responseFields(fieldWithPath("apiStatus").type(Integer.class).description("api 요청에 대한 상태")
-//                                    , fieldWithPath("data[].id").type(Integer.class).description("상품 id")
-//                                    , fieldWithPath("data[].name").type(String.class).description("상품 이름")
-//                                    , fieldWithPath("data[].price").type(Integer.class).description("상품 가격")
-//                                    , fieldWithPath("data[].quantity").type(Integer.class).description("남아있는 상품 개수")
-//                                    , fieldWithPath("data[].soldCount").type(Integer.class).description("여태 판매된 상품 개수")
-//                                    , fieldWithPath("data[].description").type(String.class).description("상품 설명")
-//                                    , fieldWithPath("data[].itemStatus").type(ItemStatus.class).description("아이템 상태")
-//                                    , fieldWithPath("data[].itemImageList[].imageName").type(String.class).description("원본 이미지 파일명을 통해 새로 만든 이미지 파일명")
-//                                    , fieldWithPath("data[].itemImageList[].originName").type(String.class).description("원본 오리지날 이름")
-//                                    , fieldWithPath("data[].itemImageList[].imageUrl").type(String.class).description("이미지 업로드 경로")
-//                                    , fieldWithPath("data[].itemImageList[].thumbnail").type(boolean.class).description("해당 이미지는 대표 썸네일인가?")
-//                                    , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
-//                                    , fieldWithPath("region").type(String.class).description("상세 주소"))
-//                    ));
-//        }
-//
-//
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/{itemId}", itemId)
-//            );
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//    }
-//
-//
-//
-//    @Nested
-//    @DisplayName("상품 등록")
-//    class RegisterTest {
-//        @Test
-//        @DisplayName("판매자 상품 등록 성공")
-//        void registerTest01() throws Exception {
-//            // given
-//            var createRequest = makeCreateRequest();
-//
-//            var thumbnail = new MockMultipartFile(
-//                    "thumbnail",
-//                    "thumbnail.jpg",
-//                    MediaType.MULTIPART_FORM_DATA_VALUE,
-//                    new byte[0]);
-//
-//            var file = new MockMultipartFile(
-//                    "fileList",
-//                    "test.jpg",
-//                    MediaType.MULTIPART_FORM_DATA_VALUE,
-//                    new byte[0]);
-//
-//            var json = objectMapper.writeValueAsString(createRequest);
-//            var request = new MockMultipartFile(
-//                    "request",
-//                    "",
-//                    MediaType.APPLICATION_JSON_VALUE,
-//                    json.getBytes());
-//
-//            given(itemQueryService.add(any(), any(), any())).willReturn(1L);
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    multipart(ITEM_END_POINT + "/seller/register")
-//                            .file(request)
-//                            .file(thumbnail)
-//                            .file(file)
-//            );
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//        }
-//
-//        @Test
-//        @DisplayName("존재하지 않는 카테고리")
-//        public void registerTest02() throws Exception {
-//            // given
-//            var createRequest = makeCreateRequest();
-//
-//            var thumbnailFile = new MockMultipartFile(
-//                    "thumbnail",
-//                    "test.jpg",
-//                    MediaType.MULTIPART_FORM_DATA_VALUE,
-//                    new byte[0]);
-//
-//            var file = new MockMultipartFile(
-//                    "fileList",
-//                    "test.jpg",
-//                    MediaType.MULTIPART_FORM_DATA_VALUE,
-//                    new byte[0]);
-//
-//            var json = objectMapper.writeValueAsString(createRequest);
-//            var request = new MockMultipartFile(
-//                    "request",
-//                    "",
-//                    MediaType.APPLICATION_JSON_VALUE,
-//                    json.getBytes());
-//
-//            given(mockItemQueryService.add(any(), any(), any())).willThrow(new EntityNotFoundException());
-//
-//            // whenㅔ
-//            final ResultActions perform = mockMvc.perform(
-//                    multipart(ITEM_END_POINT + "/seller/register")
-//                            .file(request)
-//                            .file(thumbnailFile)
-//                            .file(file)
-//            );
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":400"));
-//        }
-//
-//        @Test
-//        @DisplayName("파일 등록 실패")
-//        public void registerTest03() throws Exception {
-//            // given
-//            var createRequest = makeCreateRequest();
-//
-//            var thumbnailFile = new MockMultipartFile(
-//                    "thumbnail",
-//                    "test.jpg",
-//                    MediaType.MULTIPART_FORM_DATA_VALUE,
-//                    new byte[0]);
-//
-//            var file = new MockMultipartFile(
-//                    "fileList",
-//                    "test.jpg",
-//                    MediaType.MULTIPART_FORM_DATA_VALUE,
-//                    new byte[0]);
-//
-//            var json = objectMapper.writeValueAsString(createRequest);
-//            var request = new MockMultipartFile(
-//                    "request",
-//                    "",
-//                    MediaType.APPLICATION_JSON_VALUE,
-//                    json.getBytes());
-//
-//            given(mockItemQueryService.add(any(), any(), any()))
-//                    .willThrow(new FileNotFoundException());
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    multipart(ITEM_END_POINT + "/seller/register")
-//                            .file(request)
-//                            .file(thumbnailFile)
-//                            .file(file)
-//            );
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":500"));
-//        }
-//
-//    }
-//    @Nested
-//    @DisplayName("판매자 상품 읽기")
-//    class AdminReadTest {
-//        @Test
-//        @DisplayName("판매자 상품 읽기 성공")
-//        public void adminReadTest01() throws Exception {
-//            // given
-//            var item = getItemByInfo(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-//            given(mockItemQueryService.readById(1L)).willReturn(item);
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/seller/{itemId}", 1L)
-//                            .accept(MediaType.APPLICATION_JSON));
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//        }
-//
-//        @Test
-//        @DisplayName("존재하지 않는 상품")
-//        public void adminReadTest02() throws Exception {
-//            // given
+//        @DisplayName("존재하지 않는 상품 조회 시도로 인한 조회 실패")
+//        public void RetrieveOneTest02() throws Exception {
 //            given(mockItemQueryService.readById(1L)).willThrow(new EntityNotFoundException());
 //
 //            // when
 //            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/seller/{itemId}", 1L)
+//                    get("/api/items/{itemId}", 1L)
 //                            .accept(MediaType.APPLICATION_JSON));
 //
 //            // then
 //            perform.andExpect(status().isOk());
 //            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":400"));
 //        }
-//    }
-//
-//    @Nested
-//    @DisplayName("판매자 상품 삭제")
-//    class AdminRemoveTest {
-//        @Test
-//        @DisplayName("판매자 상품 삭제 성공")
-//        public void adminRemoveTest01() throws Exception {
-//            // given
-//            given(mockItemQueryService.remove(1L)).willReturn(anyLong());
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    delete(ITEM_END_POINT + "/seller/{itemId}", 1L)
-//                            .accept(MediaType.APPLICATION_JSON));
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//        }
-//
-//        @Test
-//        @DisplayName("존재하지 않는 상품 삭제 시도로 인한 삭제 실패")
-//        public void adminRemoveTest02() throws Exception {
-//            // given
-//            given(mockItemQueryService.remove(1L)).willThrow(new EntityNotFoundException());
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    delete(ITEM_END_POINT + "/seller/{itemId}", 1L)
-//                            .accept(MediaType.APPLICATION_JSON));
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":400"));
-//        }
-//    }
+
+    }
+
+    @Nested
+    @DisplayName("@GetMapping(\"/api/items\")")
+    class RetrieveAllTest {
+        @Test
+        @DisplayName("(성공) 전체 상품 목록 읽기")
+        void retrieveAllTest01() throws Exception {
+            // given
+            var principal = mock(Principal.class);
+            var account = makeAccount();
+            given(principalQueryService.readByPrincipal(principal)).willReturn(account);
+
+            var itemId = 1L;
+            var itemList = List.of(makeItem(itemId, "이게 제품이다!!!"), makeItem(itemId + 1, "이것도 제품이다!!!"));
+
+            var page = 0;
+            var size = 10;
+            final PageRequest pageable = PageRequest.of(page, size);
+            var read = itemList.stream()
+                    .map(item -> ItemResponse.Read.of(item, item.getItemImageList()))
+                    .collect(Collectors.toList());
+
+            var response = new PageImpl<>(read, pageable, read.size());
+            given(itemQueryService.display(pageable)).willReturn(response);
+
+            // when
+            final ResultActions actual = mockMvc.perform(get("/api/items")
+                    .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer dXNlcjpzZWNyZXQ=")
+                    .principal(principal)
+                    .param("page", String.valueOf(page))
+                    .param("size", String.valueOf(size)));
+
+            // then
+            actual
+                    .andExpect(status().isOk())
+                    .andDo(document(DOT + "/user/items/success/retrieveAll"
+                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
+
+                            , requestParameters(
+                                        parameterWithName("page").description("페이지 번호")
+                                    , parameterWithName("size").description("몇 개의 페이지를 가져올 것인지")
+                            )
+
+                            , responseFields(
+                                    fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
+
+                                    , fieldWithPath("data.content[].id").type(Long.class).description("상품 id")
+                                    , fieldWithPath("data.content[].name").type(String.class).description("상품명")
+                                    , fieldWithPath("data.content[].price").type(Integer.class).description("상품 가격")
+                                    , fieldWithPath("data.content[].quantity").type(Integer.class).description("상품 개수")
+                                    , fieldWithPath("data.content[].soldCount").type(Integer.class).description("여태까지 판매된 상품 개수")
+                                    , fieldWithPath("data.content[].description").type(String.class).description("상품 설명")
+                                    , fieldWithPath("data.content[].itemStatus").type(ItemStatus.class).description("상품 상태")
+                                    , fieldWithPath("data.content[].itemImageList[].imageName").type(String.class).description("상품 이미지 이름")
+                                    , fieldWithPath("data.content[].itemImageList[].originName").type(String.class).description("상품 파일 이름")
+                                    , fieldWithPath("data.content[].itemImageList[].imageUrl").type(String.class).description("상품 이미지 경로")
+                                    , fieldWithPath("data.content[].itemImageList[].thumbnail").type(Boolean.class).description("상품 썸네일 여부")
+                                    , fieldWithPath("data.content[].itemImageList[].representative").type(Boolean.class).description("상품 대표 이미지인가?")
+
+                                    , fieldWithPath("data.pageable.sort.sorted").type(boolean.class).description("정렬 여부")
+                                    , fieldWithPath("data.pageable.sort.unsorted").type(boolean.class).description("정렬 여부")
+                                    , fieldWithPath("data.pageable.sort.empty").type(boolean.class).description("정렬 여부")
+                                    , fieldWithPath("data.pageable.offset").type(int.class).description("페이지 시작 번호")
+                                    , fieldWithPath("data.pageable.pageSize").type(int.class).description("페이지 사이즈")
+                                    , fieldWithPath("data.pageable.pageNumber").type(int.class).description("페이지 번호")
+                                    , fieldWithPath("data.pageable.paged").type(boolean.class).description("페이지 여부")
+                                    , fieldWithPath("data.pageable.unpaged").type(boolean.class).description("페이지 여부")
+                                    , fieldWithPath("data.totalElements").type(int.class).description("총 요소 개수")
+                                    , fieldWithPath("data.totalPages").type(int.class).description("총 페이지 개수")
+                                    , fieldWithPath("data.last").type(boolean.class).description("마지막 페이지 여부")
+                                    , fieldWithPath("data.first").type(boolean.class).description("첫 페이지 여부")
+                                    , fieldWithPath("data.sort.sorted").type(boolean.class).description("정렬 여부")
+                                    , fieldWithPath("data.sort.unsorted").type(boolean.class).description("정렬 여부")
+                                    , fieldWithPath("data.sort.empty").type(boolean.class).description("정렬 여부")
+                                    , fieldWithPath("data.numberOfElements").type(int.class).description("요소 개수")
+                                    , fieldWithPath("data.size").type(int.class).description("페이지 사이즈")
+                                    , fieldWithPath("data.number").type(int.class).description("페이지 번호")
+                                    , fieldWithPath("data.empty").type(boolean.class).description("빈 페이지 여부")
+
+                                    , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
+                                    , fieldWithPath("region").type(String.class).description("라전 정보"))
+
+                    ));
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("상품 검색하기")
@@ -335,7 +264,7 @@
 //
 //            // when
 //            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/search")
+//                    get("/api/items/search")
 //                            .param("page", Integer.toString(page))
 //                            .param("size", Integer.toString(size))
 //                            .param("name", searchTitle)
@@ -366,7 +295,7 @@
 //
 //            // when
 //            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/search")
+//                    get("/api/items/search")
 //                            .param("page", Integer.toString(page))
 //                            .param("size", Integer.toString(size))
 //                            .param("name", searchTitle)
@@ -396,7 +325,7 @@
 //
 //            // when
 //            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/search")
+//                    get("/api/items/search")
 //                            .param("page", Integer.toString(page))
 //                            .param("size", Integer.toString(size))
 //                            .param("name", searchTitle)
@@ -408,70 +337,6 @@
 //        }
 //    }
 //
-//    @Nested
-//    @DisplayName("상품 읽기")
-//    class RetrieveOneTest {
-//        @Test
-//        @DisplayName("상품 읽기 성공")
-//        public void RetrieveOneTest01() throws Exception {
-//            // given
-//            var item = getItemByInfo(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-//            given(mockItemQueryService.readById(1L)).willReturn(item);
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/{itemId}", 1L)
-//                            .accept(MediaType.APPLICATION_JSON));
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//        }
-//
-//        @Test
-//        @DisplayName("존재하지 않는 상품 조회 시도로 인한 조회 실패")
-//        public void RetrieveOneTest02() throws Exception {
-//            given(mockItemQueryService.readById(1L)).willThrow(new EntityNotFoundException());
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/{itemId}", 1L)
-//                            .accept(MediaType.APPLICATION_JSON));
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//            assertTrue(perform.andReturn().getResponse().getContentAsString().contains("\"result\":400"));
-//        }
-//    }
-//
-//    @Nested
-//    @DisplayName("상품 목록 읽기")
-//    class RetrieveAllTest {
-//        @Test
-//        @DisplayName("전체 상품 목록 읽기 성공")
-//        public void retrieveOneTest01() throws Exception {
-//            // given
-//            var page = 0;
-//            var size = 10;
-//            var itemList = getItemList();
-//
-//            var pageRequest = PageRequest.of(page, size);
-//            List<ItemResponse.Read> response = new ArrayList<>();
-//            for (Item item : itemList) {
-//                response.add(ItemResponse.Read.of(item, item.getItemImageList()));
-//            }
-//
-//            given(mockItemRelationService.display(pageRequest, null)).willReturn(response);
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT)
-//                            .param("page", Integer.toString(page))
-//                            .param("size", Integer.toString(size))
-//                            .accept(MediaType.APPLICATION_JSON));
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//        }
 //
 //        @Test
 //        @DisplayName("카테고리 별 상품 읽기 성공")
@@ -533,60 +398,6 @@
 //    }
 //
 //
-//    @Nested
-//    @DisplayName("전체 상품 개수 읽기")
-//    class ReadCountTest {
-//        @Test
-//        @DisplayName("성공")
-//        public void readCountTest01() throws Exception {
-//            // given
-//            var count = 1L;
-//            given(mockItemQueryService.total()).willReturn(count);
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/count"));
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//            assertTrue(
-//                    perform.andReturn()
-//                            .getResponse()
-//                            .getContentAsString()
-//                            .contentEquals(Long.toString(count)
-//                            )
-//            );
-//        }
-//    }
-//
-//    @Nested
-//    @DisplayName("검색한 상품 개수 읽기")
-//    class SearchCountTest {
-//        @Test
-//        @DisplayName("성공")
-//        public void searchCountTest01() throws Exception {
-//            // given
-//            var count = 1L;
-//            var searchTitle = "title";
-//            given(mockItemQueryService.totalByNameContaining(searchTitle)).willReturn(count);
-//
-//            // when
-//            final ResultActions perform = mockMvc.perform(
-//                    get(ITEM_END_POINT + "/search/count")
-//                            .param("name", searchTitle));
-//
-//            // then
-//            perform.andExpect(status().isOk());
-//            assertTrue(
-//                    perform.andReturn()
-//                            .getResponse()
-//                            .getContentAsString()
-//                            .contentEquals(Long.toString(count)
-//                            )
-//            );
-//        }
-//    }
-//
 //    private List<Item> getItemList() {
 //        List<ItemImage> itemImageList = new ArrayList<>();
 //        ItemImage.ItemImageBuilder itemImageBuilder = ItemImage.builder()
@@ -610,28 +421,4 @@
 //        return itemList;
 //    }
 //
-//    private static Item getItemByInfo(List<ItemImage> itemImageList,
-//                                         List<OrderItem> orderItemList) {
-//        Item item = new Item(
-//                1L,
-//                "item",
-//                10000,
-//                1,
-//                0,
-//                "description",
-//                ItemStatus.SELL,
-//                new Category(),
-//                itemImageList,
-//                orderItemList);
-//        return item;
-//    }
-//
-//    private ItemRequest.Create makeCreateRequest(Long categoryId) {
-//        return new ItemRequest.Create()
-//                .setCategoryId(categoryId)
-//                .setName("item")
-//                .setPrice(10000)
-//                .setQuantity(1)
-//                .setDescription("description");
-//    }
-//}
+}

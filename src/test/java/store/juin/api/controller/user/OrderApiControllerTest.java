@@ -154,27 +154,25 @@ class OrderApiControllerTest {
             var account = makeAccount();
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
+            var page = 0;
+            var size = 10;
             var request = makeOrderRetrieveRequest();
-            var pageable = PageRequest.of(0, 10);
+            var pageable = PageRequest.of(page, size);
             var joinResponse = makeOrderJoinResponse();
 
             var response = new PageImpl<>(List.of(joinResponse), pageable, List.of(joinResponse).size());
             given(orderQueryService.readAll(account, request, pageable)).willReturn(response);
 
             // when
-            final ResultActions actual = mockMvc.perform(
-                    get("/api/orders" + "?startDate={startDate}&endDate={endDate}" +
-                                    "&orderStatus={orderStatus}&size={size}&page={page}"
-                                , request.getStartDate(), request.getEndDate()
-                                , request.getOrderStatus(), pageable.getPageSize(), pageable.getPageNumber())
+            final ResultActions actual = mockMvc.perform(get("/api/orders")
                             .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer dXNlcjpzZWNyZXQ=")
                             .principal(principal)
-                            .param("startDate", "2022-02-22")
-                            .param("endDate", "2023-03-25")
-                            .param("orderStatus", "ORDER")
-                            .param("page", "0")
-                            .param("size", "10"));
+                            .param("startDate", request.getStartDate().toString())
+                            .param("endDate", request.getEndDate().toString())
+                            .param("orderStatus", OrderStatus.ORDER.name())
+                            .param("page", String.valueOf(page))
+                            .param("size", String.valueOf(size)));
 
             // then
             actual

@@ -1,7 +1,7 @@
 ifndef::snippets[]
 :snippets: ../../../build/generated-snippets
 endif::[]
-:doctype: addresses
+:doctype: carts
 :icons: font
 :source-highlighter: highlightjs
 :toc: left

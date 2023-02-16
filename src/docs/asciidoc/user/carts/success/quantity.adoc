@@ -1,7 +1,7 @@
 ifndef::snippets[]
 :snippets: ../../../build/generated-snippets
 endif::[]
-:doctype: addresses
+:doctype: carts
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
@@ -17,17 +17,17 @@ endif::[]
 == REQUEST
 
 === curl
-include::{snippets}/api/carts/quantity/curl-request.adoc[]
+include::{snippets}/user/carts/success/quantity/curl-request.adoc[]
 
 === http-request
-include::{snippets}/api/carts/quantity/http-request.adoc[]
+include::{snippets}/user/carts/success/quantity/http-request.adoc[]
 
 === request headers
-include::{snippets}/api/carts/quantity/request-headers.adoc[]
+include::{snippets}/user/carts/success/quantity/request-headers.adoc[]
 
 == RESPONSE
 === http-response
-include::{snippets}/api/carts/quantity/http-response.adoc[]
+include::{snippets}/user/carts/success/quantity/http-response.adoc[]
 
 === response fields
-include::{snippets}/api/carts/quantity/response-fields.adoc[]
+include::{snippets}/user/carts/success/quantity/response-fields.adoc[]

@@ -11,23 +11,23 @@ endif::[]
 :operation-http-response-title: Response
 
 [[introduction]]
-= @GetMapping("/api/orders?")
+= GET /api/orders?
 
 [[overview]]
 == REQUEST
 === curl
-include::{snippets}/api/orders/success/retrieveAll/curl-request.adoc[]
+include::{snippets}/user/orders/success/retrieveAll/curl-request.adoc[]
 
 === http-request
-include::{snippets}/api/orders/success/retrieveAll/http-request.adoc[]
+include::{snippets}/user/orders/success/retrieveAll/http-request.adoc[]
 
 === request headers
-include::{snippets}/api/orders/success/retrieveAll/request-headers.adoc[]
+include::{snippets}/user/orders/success/retrieveAll/request-headers.adoc[]
 
 == RESPONSE
 
 === http-response
-include::{snippets}/api/orders/success/retrieveAll/http-response.adoc[]
+include::{snippets}/user/orders/success/retrieveAll/http-response.adoc[]
 
 === response fields
-include::{snippets}/api/orders/success/retrieveAll/response-fields.adoc[]
+include::{snippets}/user/orders/success/retrieveAll/response-fields.adoc[]

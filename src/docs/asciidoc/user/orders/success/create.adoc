@@ -11,23 +11,23 @@ endif::[]
 :operation-http-response-title: Response
 
 [[introduction]]
-= @PostMapping("/api/orders")
+= POST /api/orders
 
 [[overview]]
 == REQUEST
 === curl
-include::{snippets}/api/orders/success/create/curl-request.adoc[]
+include::{snippets}/user/orders/success/create/curl-request.adoc[]
 
 === http-request
-include::{snippets}/api/orders/success/create/http-request.adoc[]
+include::{snippets}/user/orders/success/create/http-request.adoc[]
 
 === request fields
-include::{snippets}/api/orders/success/create/request-fields.adoc[]
+include::{snippets}/user/orders/success/create/request-fields.adoc[]
 
 == RESPONSE
 
 === http-response
-include::{snippets}/api/orders/success/create/http-response.adoc[]
+include::{snippets}/user/orders/success/create/http-response.adoc[]
 
 === response fields
-include::{snippets}/api/orders/success/create/response-fields.adoc[]
+include::{snippets}/user/orders/success/create/response-fields.adoc[]
