@@ -11,7 +11,7 @@ JUIN인 이유는 팀원의 이름을 합쳤다.
 (공개)   Vue-Frontend => STORE 프론트엔드
 ```
 
-# 1. 개발 환경
+# 0. 개발 환경
 ```text
 JAVA corretto-17.0.5
 MYSQL 8.0.26
@@ -19,7 +19,7 @@ Spring Boot 2.4.2
 ```
 
 # 1. 코딩 컨벤션
-![CODING CONVENTION](C:\Users\junsu\Desktop\JZ-eCommerce\Spring-Backend\CODING-CONVENTION.md)
+[CODING CONVENTION](https://github.com/JUIN-STORE/Spring-Backend/blob/main/CODING-CONVENTION.md)
 
 # 2. API Swagger
 ```text
