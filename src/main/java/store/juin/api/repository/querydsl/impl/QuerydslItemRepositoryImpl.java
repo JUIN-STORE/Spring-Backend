@@ -33,7 +33,9 @@ public class QuerydslItemRepositoryImpl implements QuerydslItemRepository {
     }
 
     @Override
-    public Optional<Page<Item>> findByNameAndCategoryId(Pageable pageable, String name, Long categoryId) {
+    public Optional<Page<Item>> findByNameContainingAndCategoryId(Pageable pageable,
+                                                                  String name,
+                                                                  Long categoryId) {
         final List<Item> itemList =
                 queryFactory
                         .select(item)

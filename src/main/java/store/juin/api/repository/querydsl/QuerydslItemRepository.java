@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface QuerydslItemRepository {
     Optional<List<Item>> findAllByIdIn(List<Long> itemIdList);
 
-    Optional<Page<Item>> findByNameAndCategoryId(Pageable pageable, String name, Long categoryId);
+    Optional<Page<Item>> findByNameContainingAndCategoryId(Pageable pageable, String name, Long categoryId);
 }

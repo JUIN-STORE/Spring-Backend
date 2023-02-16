@@ -45,38 +45,31 @@ public class ItemQueryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Item> readAllByNameContaining(Pageable pageable, String searchTitle) {
-        return itemRepository.findAllByNameContaining(pageable, searchTitle);
-    }
-
-    @Transactional(readOnly = true)
     public Page<Item> readAllByPersonalColor(Pageable pageable, String personalColor) {
         return itemRepository.findAllByPersonalColor(pageable, personalColor);
     }
-    @Transactional(readOnly = true)
-    public long total() {
-        return itemRepository.count();
-    }
 
     @Transactional(readOnly = true)
-    public Long totalByNameContaining(String searchTitle) {
-        return itemRepository.countByNameContaining(searchTitle);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ItemResponse.Read> display(Pageable pageable,
-                                           String searchTitle,
-                                           Long categoryId,
-                                           String personalColor) {
+    public Page<ItemResponse.Read> search(Pageable pageable,
+                                          String searchTitle,
+                                          Long categoryId,
+                                          String personalColor) {
         Page<Item> itemList;
 
         if (personalColor != null) {
             itemList = readAllByPersonalColor(pageable, personalColor);
         } else {
             itemList = itemRepository
-                    .findByNameAndCategoryId(pageable, searchTitle, categoryId)
+                    .findByNameContainingAndCategoryId(pageable, searchTitle, categoryId)
                     .orElse(new PageImpl<>(Collections.emptyList()));
         }
+
+        return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ItemResponse.Read> display(Pageable pageable) {
+        final Page<Item> itemList = readAll(pageable);
 
         return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
     }
