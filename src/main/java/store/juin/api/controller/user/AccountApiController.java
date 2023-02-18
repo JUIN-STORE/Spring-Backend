@@ -109,8 +109,8 @@ public class AccountApiController {
     @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
     @GetMapping("/logout")
     public JUINResponse<String> logout(final Principal principal
-                                    , HttpServletRequest httpServletRequest
-                                    , HttpServletResponse httpServletResponse) {
+            , HttpServletRequest httpServletRequest
+            , HttpServletResponse httpServletResponse) {
 
         final String identification = principal.getName();
         log.info("[P9][CTRL][ACNT][LOUT]: GET /api/accounts/logout, identification=({})", identification);
@@ -122,13 +122,16 @@ public class AccountApiController {
 
         // 쿠키 삭제
         Cookie[] cookies = httpServletRequest.getCookies();
-        for (Cookie cookie : cookies) {
-            cookie.setDomain(cookieDomain);
-            cookie.setPath("/");
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setMaxAge(0);
-            httpServletResponse.addCookie(cookie);
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setDomain(cookieDomain);
+                cookie.setPath("/");
+                cookie.setHttpOnly(true);
+                cookie.setSecure(true);
+                cookie.setMaxAge(0);
+                httpServletResponse.addCookie(cookie);
+            }
         }
 
         Token token = tokenQueryService.readByIdentification(identification);
