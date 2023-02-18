@@ -95,6 +95,9 @@ dependencies {
     // s3
     implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
 
+    // ses
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-ses', version: '1.12.399'
+
     // rest doc
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
