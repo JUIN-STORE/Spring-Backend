@@ -82,7 +82,7 @@ class CartApiControllerTest {
             var principal = mock(Principal.class);
             var request = makeCartItemAddRequest();
 
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var transaction = 1;
@@ -127,7 +127,7 @@ class CartApiControllerTest {
         void retrieveOneTest() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             given(cartQueryService.makeCartItemRetrieveResponseList(account)).willReturn(makeCartItemRetrieveResponseList());
@@ -175,7 +175,7 @@ class CartApiControllerTest {
             var principal = mock(Principal.class);
             var itemIdList = List.of(1L, 2L);
 
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             given(cartQueryService.makeCartItemBuyResponseList(account, itemIdList))
@@ -227,7 +227,7 @@ class CartApiControllerTest {
         void updateQuantityTest01() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var request = makeCartItemUpdateRequest();
@@ -268,7 +268,7 @@ class CartApiControllerTest {
             var principal = mock(Principal.class);
             var itemIdList = List.of(1L, 2L);
 
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             given(cartItemCommandService.remove(account, itemIdList)).willReturn(2L);

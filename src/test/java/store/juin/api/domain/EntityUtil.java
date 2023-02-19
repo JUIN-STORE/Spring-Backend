@@ -1,17 +1,28 @@
 package store.juin.api.domain;
 
 import store.juin.api.domain.entity.*;
+import store.juin.api.domain.enums.AccountRole;
 import store.juin.api.domain.enums.DeliveryStatus;
 import store.juin.api.domain.enums.ItemStatus;
 
 import java.util.List;
 
 public class EntityUtil {
-    public static Account makeAccount() {
+    public static Token makeToken() {
+        return Token.builder().build();
+    }
+
+    public static Account makeAccount(String passwordHash) {
         return Account.builder()
                 .id(9L)
-                .email("js@gmail.com")
-                .passwordHash("this is a password")
+                .identification("junsu0325")
+                .email("junsu0325@naver.com")
+                .passwordHash(passwordHash)
+//                .passwordHash("asdq13@#13$")
+                .name("준수")
+                .phoneNumber("010-1111-2222")
+                .accountRole(AccountRole.ADMIN)
+                .addressList(List.of(makeAddress(true)))
                 .build();
     }
 

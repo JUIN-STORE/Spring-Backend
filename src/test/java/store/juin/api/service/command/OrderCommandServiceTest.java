@@ -8,7 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import store.juin.api.domain.entity.*;
+import store.juin.api.domain.entity.Address;
+import store.juin.api.domain.entity.Delivery;
+import store.juin.api.domain.entity.Item;
+import store.juin.api.domain.entity.Order;
 import store.juin.api.domain.enums.OrderStatus;
 import store.juin.api.domain.request.AddressRequest;
 import store.juin.api.domain.request.DeliveryRequest;
@@ -34,6 +37,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static store.juin.api.domain.EntityUtil.makeAccount;
 
 @ExtendWith(MockitoExtension.class)
 class OrderCommandServiceTest {
@@ -57,7 +61,7 @@ class OrderCommandServiceTest {
         @DisplayName("성공 (기본 주소일 때)")
         void addTest01() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var itemIdList = new ArrayList<Long>();
             itemIdList.add(1L);
 
@@ -101,7 +105,7 @@ class OrderCommandServiceTest {
         @DisplayName("성공 (기본 주소가 아닐 때)")
         void addTest02() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var itemIdList = new ArrayList<Long>();
             itemIdList.add(1L);
 
@@ -145,7 +149,7 @@ class OrderCommandServiceTest {
         @DisplayName("배송지 누락으로 주문 실패")
         void addTest03() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var itemIdList = new ArrayList<Long>();
             itemIdList.add(1L);
 
@@ -167,7 +171,7 @@ class OrderCommandServiceTest {
         @DisplayName("받는 사람 정보 누락으로 주문 실패")
         void addTest04() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var itemIdList = new ArrayList<Long>();
             itemIdList.add(1L);
 
@@ -189,7 +193,7 @@ class OrderCommandServiceTest {
         @DisplayName("재고가 없을 경우")
         void addTest05() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var itemIdList = new ArrayList<Long>();
             itemIdList.add(1L);
 
@@ -320,7 +324,4 @@ class OrderCommandServiceTest {
         return Address.builder().build();
     }
 
-    private Account makeAccount() {
-        return Account.builder().id(1L).build();
-    }
 }

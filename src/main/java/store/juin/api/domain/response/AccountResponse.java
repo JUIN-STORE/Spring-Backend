@@ -1,19 +1,24 @@
 package store.juin.api.domain.response;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.enums.AccountRole;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.LastModifiedDate;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.enums.AccountRole;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountResponse {
     @Data @Accessors(chain = true)
     public static class SignUp {
+        private String identification;
+
         private String email;
 
         private String name;
@@ -23,6 +28,7 @@ public class AccountResponse {
 
         public static SignUp from(Account account) {
             return new SignUp()
+                    .setIdentification(account.getIdentification())
                     .setEmail(account.getEmail())
                     .setName(account.getName())
                     .setAccountRole(account.getAccountRole());
@@ -61,6 +67,8 @@ public class AccountResponse {
     @Data @Accessors(chain = true)
     public static class Delete {
         private Long id;
+
+        private String identification;
 
         private String email;
 

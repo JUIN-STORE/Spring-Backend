@@ -1,0 +1,33 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: accounts
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= POST /api/accounts/sign-up
+
+[[overview]]
+== REQUEST
+
+=== curl
+include::{snippets}/user/accounts/success/signUp/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/accounts/success/signUp/http-request.adoc[]
+
+=== request parameters
+include::{snippets}/user/accounts/success/signUp/request-fields.adoc[]
+
+== RESPONSE
+=== http-response
+include::{snippets}/user/accounts/success/signUp/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/accounts/success/signUp/response-fields.adoc[]

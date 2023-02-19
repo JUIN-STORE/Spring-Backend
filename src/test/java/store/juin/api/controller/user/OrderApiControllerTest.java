@@ -98,7 +98,7 @@ class OrderApiControllerTest {
         void createTest01() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var request = makeOrderCreateRequest();
@@ -151,7 +151,7 @@ class OrderApiControllerTest {
         void retrieveAllTest01() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var page = 0;
@@ -236,7 +236,7 @@ class OrderApiControllerTest {
         void cancelTest01() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var orderId = 3L;

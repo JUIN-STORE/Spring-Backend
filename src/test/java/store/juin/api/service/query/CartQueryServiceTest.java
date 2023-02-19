@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mockStatic;
+import static store.juin.api.domain.EntityUtil.makeAccount;
 
 @ExtendWith(SpringExtension.class)
 class CartQueryServiceTest {
@@ -50,7 +51,7 @@ class CartQueryServiceTest {
         @DisplayName("정상 케이스")
         void readByAccountIdTest01() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var expected = makeCart(account);
             given(cartRepository.findByAccountId(any())).willReturn(Optional.of(expected));
 
@@ -84,7 +85,7 @@ class CartQueryServiceTest {
         @DisplayName("성공적으로 리스폰스를 만듦.")
         void makeCartItemReadResponseTest01() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
 
             var cart = makeCart(account);
             MockedStatic<Cart> mockCart = mockStatic(Cart.class);
@@ -120,7 +121,7 @@ class CartQueryServiceTest {
         @DisplayName("itemList size가 0")
         void makeCartItemReadResponseTest02() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
 
             var cart = makeCart(account);
             MockedStatic<Cart> mockCart = mockStatic(Cart.class);
@@ -148,7 +149,7 @@ class CartQueryServiceTest {
         @DisplayName("성공적으로 리스폰스를 만듦.")
         void makeCartItemBuyResponseTest01() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var itemIdList = List.of(1L, 2L);
 
             var cart = makeCart(account);
@@ -202,7 +203,7 @@ class CartQueryServiceTest {
             // given
             var expected = new ArrayList<>();
 
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var itemIdList = List.of(1L, 2L);
 
             var cart = makeCart(account);
@@ -303,12 +304,6 @@ class CartQueryServiceTest {
                 .cart(cart)
                 .item(item)
                 .count(count)
-                .build();
-    }
-
-    private Account makeAccount() {
-        return Account.builder()
-                .id(1L)
                 .build();
     }
 

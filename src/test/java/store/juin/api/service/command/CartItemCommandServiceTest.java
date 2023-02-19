@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static store.juin.api.domain.EntityUtil.makeAccount;
 
 @ExtendWith(SpringExtension.class)
 class CartItemCommandServiceTest {
@@ -49,7 +50,7 @@ class CartItemCommandServiceTest {
         void addTest01() {
             // given
             var expected = 30;
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var request = makeAddRequest();
 
             var cart = makeCart(account);
@@ -70,7 +71,7 @@ class CartItemCommandServiceTest {
         void addTest02() {
             // given
             var expected = 2 + 30;
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var request = makeAddRequest();
 
             var cart = makeCart(account);
@@ -100,7 +101,7 @@ class CartItemCommandServiceTest {
         void modifyQuantityTest01() {
             // given
             var expected = 3;
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var request = makeUpdateRequest(1L, expected);
 
             var cart = makeCart(account);
@@ -121,7 +122,7 @@ class CartItemCommandServiceTest {
         void modifyQuantityTest02() {
             // given
             var expected = 3;
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var request = makeUpdateRequest(1L, expected);
 
             var cart = makeCart(account);
@@ -146,7 +147,7 @@ class CartItemCommandServiceTest {
         void removeTest01() {
             // given
             var expected = 1L;
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var cart = makeCart(account);
             var request = List.of(1L, 2L);
 
@@ -165,7 +166,7 @@ class CartItemCommandServiceTest {
         void removeTest02() {
             // given
             var expected = 0L;
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var cart = makeCart(account);
             var request = List.of(1L, 2L);
 
@@ -251,12 +252,6 @@ class CartItemCommandServiceTest {
                 .cart(cart)
                 .item(item)
                 .count(count)
-                .build();
-    }
-
-    private Account makeAccount() {
-        return Account.builder()
-                .id(1L)
                 .build();
     }
 

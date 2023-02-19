@@ -35,11 +35,11 @@ import java.security.Principal;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
-@Api(tags = {"01. Account"})
+@Api(tags = {"Account"})
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/accounts")
+@RequiredArgsConstructor
 public class AccountApiController {
     private final AuthenticationManager authenticationManager;
 
@@ -74,8 +74,8 @@ public class AccountApiController {
 
     @ApiOperation(value = "로그인", notes = "로그인을 한다.")
     @PostMapping("/login")
-    public JUINResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request,
-                                                     HttpServletResponse httpServletResponse) {
+    public JUINResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request
+                                                   , HttpServletResponse httpServletResponse) {
         log.info("[P9][CTRL][ACNT][LOIN]: POST /api/accounts/login, request=({})", request);
 
         try {
@@ -109,9 +109,8 @@ public class AccountApiController {
     @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
     @GetMapping("/logout")
     public JUINResponse<String> logout(final Principal principal
-            , HttpServletRequest httpServletRequest
-            , HttpServletResponse httpServletResponse) {
-
+                                     , HttpServletRequest httpServletRequest
+                                     , HttpServletResponse httpServletResponse) {
         final String identification = principal.getName();
         log.info("[P9][CTRL][ACNT][LOUT]: GET /api/accounts/logout, identification=({})", identification);
 
@@ -143,9 +142,8 @@ public class AccountApiController {
     @ApiOperation(value = "내 정보 읽기", notes = "내 정보를 읽어온다.")
     @GetMapping("/profile")
     public JUINResponse<AccountResponse.Retrieve> profile(final Principal principal) {
-        final String email = principal.getName();
-
-        log.info("[P9][CTRL][ACNT][PROF]: GET /api/accounts/profile, email=({})", email);
+        final String identification = principal.getName();
+        log.info("[P9][CTRL][ACNT][PROF]: GET /api/accounts/profile, identification=({})", identification);
 
         try {
             final Account account = principalQueryService.readByPrincipal(principal);
@@ -153,16 +151,17 @@ public class AccountApiController {
             var response = AccountResponse.Retrieve.from(account);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CTRL][ACNT][PROF]: 회원 정보가 없습니다. email=({})", email);
+            log.warn("[P5][CTRL][ACNT][PROF]: 회원 정보가 없습니다. identification=({})", identification);
             return new JUINResponse<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
     @PatchMapping
-    public JUINResponse<AccountResponse.Update> update(final Principal principal,
-                                                       @RequestBody AccountRequest.Update request) {
-        log.info("[P9][CTRL][ACNT][UPDE]: PATCH /api/accounts request=({})", request);
+    public JUINResponse<AccountResponse.Update> update(final Principal principal
+                                                     , @RequestBody AccountRequest.Update request) {
+        final String identification = principal.getName();
+        log.info("[P9][CTRL][ACNT][UPDE]: PATCH /api/accounts, identification=({}), request=({})", identification, request);
 
         try {
             final Account account = principalQueryService.readByPrincipal(principal);
@@ -171,16 +170,17 @@ public class AccountApiController {
             var response = AccountResponse.Update.from(updateAccount);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
-            log.warn("[P5][CTRL][ACNT][UPDE]: 회원 정보가 없습니다. request=({})", request);
+            log.warn("[P5][CTRL][ACNT][UPDE]: ({}) request=({})", e.getMessage(), request);
             return new JUINResponse<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
     @DeleteMapping("/{accountId}")
-    public JUINResponse<AccountResponse.Delete> delete(final Principal principal,
-                                                       @PathVariable Long accountId) {
-        log.info("[P9][CTRL][ACNT][DELE]: DELETE /api/accounts/{accountId}, accountId=({})", accountId);
+    public JUINResponse<AccountResponse.Delete> delete(final Principal principal
+                                                     , @PathVariable Long accountId) {
+        final String identification = principal.getName();
+        log.info("[P9][CTRL][ACNT][DELE]: DELETE /api/accounts/{}, identification=({})", accountId, identification);
 
         try {
             final Account account = principalQueryService.readByPrincipal(principal);
@@ -197,9 +197,11 @@ public class AccountApiController {
     @ApiOperation(value = "아이디 중복 체크")
     @GetMapping("/duplication/{identification}")
     public JUINResponse<Void> checkIdentification(@PathVariable String identification) {
+        log.info("[P9][CTRL][ACNT][DUPL]: GET /api/accounts/{accountId}, identification=({})", identification);
+
         try {
-            log.info("[P9][CTRL][ACNT][DUPL]: GET /api/accounts/{accountId}, identification=({})", identification);
             accountQueryService.checkDuplicatedIdentification(identification);
+
             return new JUINResponse<>(HttpStatus.OK);
         } catch (EntityExistsException e) {
             log.warn("[P5][CTRL][ACNT][DUPL]: 이미 존재하는 아이디입니다. identification=({})", identification);

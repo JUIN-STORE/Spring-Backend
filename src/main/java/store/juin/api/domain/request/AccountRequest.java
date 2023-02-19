@@ -1,6 +1,7 @@
 package store.juin.api.domain.request;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import store.juin.api.config.SecurityConfig;
 import store.juin.api.domain.entity.Account;
@@ -12,9 +13,10 @@ import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class AccountRequest {
     @Data @Accessors(chain = true)
-    public static class SignUp implements Serializable{
+    public static class SignUp {
         private String identification;
 
         private String email;
@@ -23,7 +25,7 @@ public class AccountRequest {
 
         private String name;
 
-        @Pattern(regexp = "[0-9]{10,11}", message = "10~11자리의 숫자만 입력가능합니다")
+        @Pattern(regexp = "\\d{10,11}", message = "10~11자리의 숫자만 입력가능합니다")
         private String phoneNumber;
 
         @Enumerated(EnumType.STRING)
