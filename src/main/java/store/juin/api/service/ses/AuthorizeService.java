@@ -11,7 +11,7 @@ import store.juin.api.domain.request.AuthorizeRequest;
 @Service
 @RequiredArgsConstructor
 public class AuthorizeService {
-    private final AmazonSimpleEmailService amazonSES;
+    private final AmazonSimpleEmailService amazonSimpleEmailService;
 
     public String sendEmail(AuthorizeRequest request) {
         String mailTitle = "[JUIN.STORE] 회원가입 인증 메일";
@@ -22,9 +22,8 @@ public class AuthorizeService {
                 .withMessage(new Message().withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(mailContent)))
                         .withSubject(new Content().withCharset("UTF-8").withData(mailTitle)))
                 .withSource(request.getFromEmail());
-        final SendEmailResult sendEmailResult = amazonSES.sendEmail(sendEmailRequest);
 
-        final String requestId = sendEmailResult.getSdkResponseMetadata().getRequestId();
-        return requestId;
+        final SendEmailResult sendEmailResult = amazonSimpleEmailService.sendEmail(sendEmailRequest);
+        return sendEmailResult.getSdkResponseMetadata().getRequestId();
     }
 }
