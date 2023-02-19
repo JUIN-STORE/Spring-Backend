@@ -38,7 +38,7 @@ public class AuthorizeService {
 
 
     public void authorize(AuthorizeRequest.Check request) {
-        final String hashNumber = authorizeCacheService.findAuthorizeNumber(request.getEmail());
+        final String hashNumber = authorizeCacheService.getAuthorizeNumber(request.getEmail());
 
         if (hashNumber == null) {
             throw new AuthorizeException("이메일 인증번호 전송 요청이 필요합니다.");

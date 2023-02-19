@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthorizeCacheService {
     @Cacheable(value = "AuthNumber", key = "#email", unless = "#result == null")
-    public String findAuthorizeNumber(String email) {
+    public String getAuthorizeNumber(String email) {
         return null;
     }
 
