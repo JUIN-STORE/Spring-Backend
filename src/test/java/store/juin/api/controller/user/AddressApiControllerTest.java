@@ -80,7 +80,7 @@ class AddressApiControllerTest {
             var principal = mock(Principal.class);
             var request = makeCreateRequest(false);
 
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             // when
@@ -121,7 +121,7 @@ class AddressApiControllerTest {
         void retrieveAllTest01() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var addressList = makeAddressList();
@@ -162,7 +162,7 @@ class AddressApiControllerTest {
         void retrieveOneTest() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var addressId = 330L;
@@ -208,7 +208,7 @@ class AddressApiControllerTest {
         void updateTest01() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var request = RequestUtil.makeAddressUpdateRequest(false);
@@ -245,7 +245,7 @@ class AddressApiControllerTest {
         void deleteTest01() throws Exception {
             // given
             var principal = mock(Principal.class);
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var addressId = 330L;

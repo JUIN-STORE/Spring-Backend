@@ -1,0 +1,32 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: accounts
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= GET /api/accounts/duplication/{identification}
+
+[[overview]]
+== REQUEST
+=== curl
+include::{snippets}/user/accounts/success/check-identification/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/accounts/success/check-identification/http-request.adoc[]
+
+=== path parameters
+include::{snippets}/user/accounts/success/check-identification/path-parameters.adoc[]
+
+== RESPONSE
+=== http-response
+include::{snippets}/user/accounts/success/check-identification/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/accounts/success/check-identification/response-fields.adoc[]

@@ -1,0 +1,36 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: accounts
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= DELETE /api/accounts/{accountId}
+
+[[overview]]
+== REQUEST
+
+=== curl
+include::{snippets}/user/accounts/success/delete/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/accounts/success/delete/http-request.adoc[]
+
+=== request headers
+include::{snippets}/user/accounts/success/delete/request-headers.adoc[]
+
+=== path parameters
+include::{snippets}/user/accounts/success/delete/path-parameters.adoc[]
+
+== RESPONSE
+=== http-response
+include::{snippets}/user/accounts/success/delete/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/accounts/success/delete/response-fields.adoc[]

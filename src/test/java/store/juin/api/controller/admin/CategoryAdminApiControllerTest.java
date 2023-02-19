@@ -75,7 +75,7 @@ class CategoryAdminApiControllerTest {
             var principal = mock(Principal.class);
             var request = makeCategoryCreateRequest();
 
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             given(principalQueryService.readByPrincipal(principal)).willReturn(account);
 
             var response = 32L;

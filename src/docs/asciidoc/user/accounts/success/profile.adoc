@@ -1,0 +1,32 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: accounts
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= GET "/api/accounts/profile"
+
+[[overview]]
+== REQUEST
+=== curl
+include::{snippets}/user/accounts/success/profile/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/accounts/success/profile/http-request.adoc[]
+
+=== request headers
+include::{snippets}/user/accounts/success/delete/request-headers.adoc[]
+
+== RESPONSE
+=== http-response
+include::{snippets}/user/accounts/success/profile/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/accounts/success/profile/response-fields.adoc[]

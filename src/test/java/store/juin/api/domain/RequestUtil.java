@@ -1,6 +1,7 @@
 package store.juin.api.domain;
 
 
+import store.juin.api.domain.enums.AccountRole;
 import store.juin.api.domain.enums.OrderStatus;
 import store.juin.api.domain.request.*;
 
@@ -84,5 +85,37 @@ public class RequestUtil {
                 .setPrice(1000_000)
                 .setQuantity(300)
                 .setDescription("REAL REAL REAL FORCE R3");
+    }
+
+    public static AccountRequest.SignUp makeSignUpRequest() {
+        var request = new AccountRequest.SignUp();
+        request.setEmail("js@gmail.com");
+        request.setPasswordHash("asdq13@#13$");
+        request.setName("준수");
+        request.setPhoneNumber("010-1111-2222");
+        request.setAccountRole(AccountRole.ADMIN);
+
+        var addressRequest = new AddressRequest.Create();
+        addressRequest.setCity("도시");
+        addressRequest.setStreet("상세 주소");
+        addressRequest.setZipCode(12345);
+
+        request.setAddress(addressRequest);
+        return request;
+    }
+
+    public static AccountRequest.Login makeLoginRequest(String identification, String passwordHash) {
+        return new AccountRequest.Login()
+                .setIdentification(identification)
+                .setPasswordHash(passwordHash);
+    }
+
+    public static AccountRequest.Update makeAccountUpdateRequest(String passwordHash, String name
+                                                               , String phoneNumber, AccountRole accountRole) {
+        return new AccountRequest.Update()
+                .setPasswordHash(passwordHash)
+                .setName(name)
+                .setPhoneNumber(phoneNumber)
+                .setAccountRole(accountRole);
     }
 }

@@ -1,13 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Cart;
-import store.juin.api.domain.entity.CartItem;
-import store.juin.api.domain.entity.Item;
-import store.juin.api.domain.enums.ItemStatus;
-import store.juin.api.domain.response.CartItemResponse;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.CartItemRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +8,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.entity.Cart;
+import store.juin.api.domain.entity.CartItem;
+import store.juin.api.domain.entity.Item;
+import store.juin.api.domain.enums.ItemStatus;
+import store.juin.api.domain.response.CartItemResponse;
+import store.juin.api.exception.Msg;
+import store.juin.api.repository.jpa.CartItemRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static store.juin.api.domain.EntityUtil.makeAccount;
 
 @ExtendWith(SpringExtension.class)
 class CartItemQueryServiceTest {
@@ -42,7 +43,7 @@ class CartItemQueryServiceTest {
         @DisplayName("정상적으로 불러온 케이스")
         void readByCartIdTest01() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var cart = makeCart(account);
             var cartItem1 = makeCartItem(cart, makeItem(), 1);
             var cartItem2 = makeCartItem(cart, makeItem(), 2);
@@ -61,7 +62,7 @@ class CartItemQueryServiceTest {
         @DisplayName("아무 것도 못 불러온 케이스")
         void readByCartIdTest02() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var cart = makeCart(account);
 
             given(cartItemRepository.findByCartId(anyLong())).willReturn(Optional.empty());
@@ -82,7 +83,7 @@ class CartItemQueryServiceTest {
         @DisplayName("정상적으로 불러옴")
         void readByCartIdAndItemIdTest01() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var cart = makeCart(account);
             var expected = makeCartItem(cart, makeItem(), 1);
 
@@ -166,12 +167,6 @@ class CartItemQueryServiceTest {
                 .cart(cart)
                 .item(item)
                 .count(count)
-                .build();
-    }
-
-    private Account makeAccount() {
-        return Account.builder()
-                .id(1L)
                 .build();
     }
 

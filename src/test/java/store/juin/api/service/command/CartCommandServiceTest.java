@@ -1,8 +1,5 @@
 package store.juin.api.service.command;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Cart;
-import store.juin.api.repository.jpa.CartRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,11 +8,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.entity.Cart;
+import store.juin.api.repository.jpa.CartRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+import static store.juin.api.domain.EntityUtil.makeAccount;
 
 @ExtendWith(SpringExtension.class)
 class CartCommandServiceTest {
@@ -32,7 +33,7 @@ class CartCommandServiceTest {
         @DisplayName("생성 정상")
         void addTest01() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var cart = makeCart(account);
 
             MockedStatic<Cart> mockCart = mockStatic(Cart.class);
@@ -51,7 +52,7 @@ class CartCommandServiceTest {
         @DisplayName("생성 실패")
         void addTest02() {
             // given
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var cart = makeCart(account);
 
             MockedStatic<Cart> mockCart = mockStatic(Cart.class);
@@ -98,13 +99,6 @@ class CartCommandServiceTest {
             // then
             assertEquals(expected, actual);
         }
-    }
-
-
-    private Account makeAccount() {
-        return Account.builder()
-                .id(1L)
-                .build();
     }
 
     private Cart makeCart(Account account) {

@@ -1,10 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Order;
-import store.juin.api.domain.request.OrderRequest;
-import store.juin.api.domain.response.OrderJoinResponse;
-import store.juin.api.repository.jpa.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,6 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import store.juin.api.domain.entity.Order;
+import store.juin.api.domain.request.OrderRequest;
+import store.juin.api.domain.response.OrderJoinResponse;
+import store.juin.api.repository.jpa.OrderRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static store.juin.api.domain.EntityUtil.makeAccount;
 
 @ExtendWith(MockitoExtension.class)
 class OrderQueryServiceTest {
@@ -40,7 +40,7 @@ class OrderQueryServiceTest {
             // given
             var page = 0;
             var size = 10;
-            var account = makeAccount();
+            var account = makeAccount("asdq13@#13$");
             var request = new OrderRequest.Retrieve();
             var pageRequest = PageRequest.of(page, size);
 
@@ -82,9 +82,5 @@ class OrderQueryServiceTest {
         return Order.builder()
                 .id(22L)
                 .build();
-    }
-
-    private Account makeAccount() {
-        return Account.builder().id(1L).build();
     }
 }
