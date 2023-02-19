@@ -1,18 +1,21 @@
 package store.juin.api.service.command;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Address;
-import store.juin.api.domain.request.AccountRequest;
-import store.juin.api.domain.response.OrderResponse;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.AccountRepository;
-import store.juin.api.service.query.AddressQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.entity.Address;
+import store.juin.api.domain.request.AccountRequest;
+import store.juin.api.domain.request.EmailRequest;
+import store.juin.api.domain.response.OrderResponse;
+import store.juin.api.exception.Msg;
+import store.juin.api.repository.jpa.AccountRepository;
+import store.juin.api.service.query.AddressQueryService;
+import store.juin.api.service.ses.EmailService;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ public class AccountCommandService {
     private final AddressCommandService addressCommandService;
     private final CartItemCommandService cartItemCommandService;
     private final DeliveryCommandService deliveryCommandService;
+    private final EmailService emailService;
 
     @Transactional
     public Account add(AccountRequest.SignUp request) {
@@ -95,5 +99,46 @@ public class AccountCommandService {
         );
 
         return account;
+    }
+
+    public String sendEmail(AccountRequest.SendEmail request) {
+        final Account account = accountRepository.findByIdentificationAndEmail(request.getIdentification(), request.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
+
+        final EmailRequest emailRequest
+                = EmailRequest.builder()
+                .toEmail(account.getEmail())
+                .title("[JUIN.STORE] 비밀번호 변경 메일")
+                .content(makeMailContent(account.getName()))
+                .build();
+        return emailService.send(emailRequest);
+    }
+
+    @Transactional
+    public Account changePassword(AccountRequest.ChangePassword request) {
+        final Account account = accountRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
+        account.updatePasswordHash(request.makeEncryptedPassword());
+
+        return account;
+    }
+
+    private String makeMailContent(String toName) {
+        return String.format("<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Document</title>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    안녕하세요, %s님, JUIN.STORE입니다.\n" +
+                "    <br />\n" +
+                "    아래 링크를 통해 비밀번호를 변경해 주시기 바랍니다.\n" +
+                "    <br />\n" +
+                "    <a href=\"http://juin.store\">비밀번호 변경</a>\n" +
+                "</body>\n" +
+                "</html>", toName);
     }
 }

@@ -63,7 +63,7 @@ class AccountQueryServiceTest {
                     assertThatThrownBy(() -> sut.readById(1L));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.WRONG_ID_PASSWORD);
         }
     }
 
@@ -95,7 +95,7 @@ class AccountQueryServiceTest {
                     assertThatThrownBy(() -> sut.readByEmail(EMAIL));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.WRONG_ID_PASSWORD);
         }
     }
 
@@ -128,7 +128,7 @@ class AccountQueryServiceTest {
                     assertThatThrownBy(() -> sut.readByIdAndEmail(1L, EMAIL));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.WRONG_ID_PASSWORD);
         }
     }
 

@@ -208,4 +208,23 @@ public class AccountApiController {
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @ApiOperation(value = "비밀번호 변경 이메일 전송")
+    @GetMapping(value = "/mail")
+    public JUINResponse<String> sendEmail(@ModelAttribute AccountRequest.SendEmail request) {
+        accountCommandService.sendEmail(request);
+        return new JUINResponse<>(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "비밀번호 변경")
+    @PutMapping("/password")
+    public JUINResponse<Void> changePassword(@RequestBody AccountRequest.ChangePassword request) {
+        try {
+            accountCommandService.changePassword(request);
+            return new JUINResponse<>(HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            log.warn("[P5][CTRL][ACNT][DUPL]: ");
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

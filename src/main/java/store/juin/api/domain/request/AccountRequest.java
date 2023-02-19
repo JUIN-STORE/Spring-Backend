@@ -74,4 +74,20 @@ public class AccountRequest {
                     .build();
         }
     }
+
+    @Data @Accessors(chain = true)
+    public static class SendEmail {
+        private String identification;
+        private String email;
+    }
+
+    @Data @Accessors(chain = true)
+    public static class ChangePassword {
+        private String email;
+        private String passwordHash;
+
+        public String makeEncryptedPassword() {
+            return SecurityConfig.makePasswordHash(this.passwordHash);
+        }
+    }
 }

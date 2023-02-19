@@ -95,4 +95,8 @@ public class Account extends BaseEntity {
         this.phoneNumber = newAccount.phoneNumber;
         this.accountRole = newAccount.accountRole;
     }
+
+    public void updatePasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
 }

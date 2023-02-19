@@ -1,11 +1,10 @@
 package store.juin.api.service.ses;
 
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
-import com.amazonaws.services.simpleemail.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import store.juin.api.domain.request.AuthorizeRequest;
+import store.juin.api.domain.request.EmailRequest;
 import store.juin.api.exception.AuthorizeException;
 
 import java.util.Random;
@@ -15,25 +14,21 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class AuthorizeService {
     private static final Random random = new Random();
-    private final AmazonSimpleEmailService amazonSimpleEmailService;
+    private final EmailService emailService;
 
     private final AuthorizeCacheService authorizeCacheService;
 
     public String sendEmail(AuthorizeRequest.Send request) {
         final String authNumber = makeAuthNumber();
-        String mailTitle = "[JUIN.STORE] 회원가입 인증 메일";
-        String mailContent = makeMailContent(request.getToName(), authNumber);
-
         authorizeCacheService.putAuthorizeNumber(request.getToEmail(), authNumber);
 
-        SendEmailRequest sendEmailRequest = new SendEmailRequest()
-                .withDestination(new Destination().withToAddresses(request.getToEmail()))
-                .withMessage(new Message().withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(mailContent)))
-                        .withSubject(new Content().withCharset("UTF-8").withData(mailTitle)))
-                .withSource(request.getFromEmail());
-        final SendEmailResult sendEmailResult = amazonSimpleEmailService.sendEmail(sendEmailRequest);
+        final EmailRequest emailRequest = EmailRequest.builder()
+                .toEmail(request.getToEmail())
+                .title("[JUIN.STORE] 회원가입 인증 메일")
+                .content(makeMailContent(request.getToName(), authNumber))
+                .build();
 
-        return sendEmailResult.getSdkResponseMetadata().getRequestId();
+        return emailService.send(emailRequest);
     }
 
 
