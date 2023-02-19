@@ -3,10 +3,19 @@ package store.juin.api.domain.request;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@Data
-@Accessors(chain = true)
 public class AuthorizeRequest {
-    private String fromEmail;
-    private String toEmail;
-    private String toName;
+    @Data
+    @Accessors(chain = true)
+    public static class Send {
+        private String fromEmail;
+        private String toEmail;
+        private String toName;
+    }
+
+    @Data
+    @Accessors(chain = true)
+    public static class Check {
+        private String email;
+        private String hash;
+    }
 }
