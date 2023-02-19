@@ -1,11 +1,9 @@
 package store.juin.api.jwt;
 
-public class TokenMessage {
-    private static final long ONE_SECOND = 1000L;
-    private static final long ONE_MINUTE = 60 * ONE_SECOND;
-    private static final long ONE_HOUR = 60 * ONE_MINUTE;
-    private static final long ONE_DAY = 24 * ONE_HOUR;
+import static store.juin.api.utils.TimeUtil.ONE_DAY;
+import static store.juin.api.utils.TimeUtil.ONE_HOUR;
 
+public class TokenMessage {
     public static final long ACCESS_TOKEN_VALIDATION_TIME = 2 * ONE_HOUR;    // 2시간
     public static final long REFRESH_TOKEN_VALIDATION_TIME = 3 * ONE_DAY;    // 3일
 
