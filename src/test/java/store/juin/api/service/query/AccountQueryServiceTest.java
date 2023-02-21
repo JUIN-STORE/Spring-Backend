@@ -96,7 +96,7 @@ class AccountQueryServiceTest {
                     assertThatThrownBy(() -> sut.readByEmail(EMAIL));
 
             // then
-            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.WRONG_ID_PASSWORD);
+            actual.isInstanceOf(EntityNotFoundException.class).hasMessage(Msg.ACCOUNT_NOT_FOUND);
         }
     }
 
