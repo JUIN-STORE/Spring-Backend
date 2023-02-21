@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import store.juin.api.config.SecurityConfig;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Address;
 import store.juin.api.domain.enums.AccountRole;
@@ -103,7 +102,7 @@ class AccountCommandServiceTest {
         @DisplayName("정상 케이스")
         void addTest01() {
             // given
-            MockedStatic<SecurityConfig> mockSecurityConfig = mockStatic(SecurityConfig.class);
+            MockedStatic<PasswordUtil> mockPasswordUtil = mockStatic(PasswordUtil.class);
             given(PasswordUtil.makePasswordHash(any())).willReturn("securityPasswordHash");
 
             var accountRequest = makeSignUpRequest();
@@ -116,7 +115,7 @@ class AccountCommandServiceTest {
             assertEquals(expected.getEmail(), actual.getEmail());
             assertEquals(expected.getPasswordHash(), actual.getPasswordHash());
 
-            mockSecurityConfig.close();
+            mockPasswordUtil.close();
         }
     }
 
