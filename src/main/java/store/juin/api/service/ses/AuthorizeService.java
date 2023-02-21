@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import store.juin.api.domain.request.AuthorizeRequest;
 import store.juin.api.domain.request.EmailRequest;
 import store.juin.api.exception.AuthorizeException;
+import store.juin.api.service.query.AccountQueryService;
 
 import java.util.Random;
 
@@ -16,16 +17,20 @@ public class AuthorizeService {
     private static final Random random = new Random();
     private final EmailService emailService;
 
+    private final AccountQueryService accountQueryService;
     private final AuthorizeCacheService authorizeCacheService;
 
     public String sendEmail(AuthorizeRequest.Send request) {
+        final String toEmail = request.getToEmail();
+        accountQueryService.checkDuplicateEmail(toEmail);
+
         final String authNumber = makeAuthNumber();
-        authorizeCacheService.putAuthorizeNumber(request.getToEmail(), authNumber);
+        authorizeCacheService.putAuthorizeNumber(toEmail, authNumber);
 
         final EmailRequest emailRequest = EmailRequest.builder()
-                .toEmail(request.getToEmail())
+                .toEmail(toEmail)
                 .title("[JUIN.STORE] 회원가입 인증 메일")
-                .content(makeMailContent(request.getToName(), authNumber))
+                .content(makeMailContent(authNumber))
                 .build();
 
         return emailService.send(emailRequest);
@@ -56,7 +61,7 @@ public class AuthorizeService {
                 .toString();
     }
 
-    private String makeMailContent(String toName, String authNumber) {
+    private String makeMailContent(String authNumber) {
         return String.format("<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -66,13 +71,13 @@ public class AuthorizeService {
                 "    <title>Document</title>\n" +
                 "</head>\n" +
                 "<body>\n" +
-                "    안녕하세요, %s님, JUIN.STORE입니다.\n" +
+                "    안녕하세요, JUIN.STORE입니다.\n" +
                 "    <br />\n" +
                 "    아래의 번호를 회원가입 이메일 인증란에 작성해주세요.\n" +
                 "    <br />\n" +
                 "    <br />\n" +
                 "    %s\n" +
                 "</body>\n" +
-                "</html>", toName, authNumber);
+                "</html>", authNumber);
     }
 }

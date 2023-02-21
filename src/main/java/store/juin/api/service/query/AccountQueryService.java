@@ -34,7 +34,7 @@ public class AccountQueryService {
     @Transactional(readOnly = true)
     public Account readByEmail(String email) {
         return accountRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.WRONG_ID_PASSWORD));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
@@ -50,6 +50,11 @@ public class AccountQueryService {
 
     public void checkDuplicatedIdentification(String identification) {
         Optional<Account> account = accountRepository.findByIdentification(identification);
+        if (account.isPresent()) throw new EntityExistsException(Msg.DUPLICATED_IDENTIFICATION);
+    }
+
+    public void checkDuplicateEmail(String email) {
+        final Optional<Account> account = accountRepository.findByEmail(email);
         if (account.isPresent()) throw new EntityExistsException(Msg.DUPLICATED_IDENTIFICATION);
     }
 }
