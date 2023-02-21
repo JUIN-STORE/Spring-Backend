@@ -19,6 +19,7 @@ import store.juin.api.domain.response.OrderResponse;
 import store.juin.api.exception.Msg;
 import store.juin.api.repository.jpa.AccountRepository;
 import store.juin.api.service.query.AddressQueryService;
+import store.juin.api.utils.PasswordUtil;
 
 import javax.persistence.EntityExistsException;
 import java.lang.reflect.InvocationTargetException;
@@ -103,7 +104,7 @@ class AccountCommandServiceTest {
         void addTest01() {
             // given
             MockedStatic<SecurityConfig> mockSecurityConfig = mockStatic(SecurityConfig.class);
-            given(SecurityConfig.makePasswordHash(any())).willReturn("securityPasswordHash");
+            given(PasswordUtil.makePasswordHash(any())).willReturn("securityPasswordHash");
 
             var accountRequest = makeSignUpRequest();
             var expected = makeAccount(AccountRole.USER);
@@ -212,7 +213,7 @@ class AccountCommandServiceTest {
                 .id(1L)
                 .identification("juin")
                 .email(EMAIL)
-                .passwordHash(SecurityConfig.makePasswordHash("passwordHash"))
+                .passwordHash(PasswordUtil.makePasswordHash("passwordHash"))
                 .name("지수")
                 .accountRole(accountRole)
                 .phoneNumber("01011112222")

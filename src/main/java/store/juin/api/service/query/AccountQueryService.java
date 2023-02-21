@@ -22,13 +22,13 @@ public class AccountQueryService {
     @Transactional(readOnly = true)
     public Account readById(Long id) {
         return accountRepository.findById(id) // select * from cart where account_id = ? 쿼리도 나감
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.WRONG_ID_PASSWORD));
     }
 
     @Transactional(readOnly = true)
     public Account readByIdentification(String identification) {
         return accountRepository.findByIdentification(identification)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.WRONG_ID_PASSWORD));
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +40,7 @@ public class AccountQueryService {
     @Transactional(readOnly = true)
     public Account readByIdAndEmail(Long accountId, String email) {
         return accountRepository.findByIdAndEmail(accountId, email)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Msg.WRONG_ID_PASSWORD));
     }
 
     public boolean checkNotUser(Account account) {
@@ -50,6 +50,11 @@ public class AccountQueryService {
 
     public void checkDuplicatedIdentification(String identification) {
         Optional<Account> account = accountRepository.findByIdentification(identification);
+        if (account.isPresent()) throw new EntityExistsException(Msg.DUPLICATED_IDENTIFICATION);
+    }
+
+    public void checkDuplicateEmail(String email) {
+        final Optional<Account> account = accountRepository.findByEmail(email);
         if (account.isPresent()) throw new EntityExistsException(Msg.DUPLICATED_IDENTIFICATION);
     }
 }

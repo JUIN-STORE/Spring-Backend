@@ -7,9 +7,7 @@ public class AuthorizeRequest {
     @Data
     @Accessors(chain = true)
     public static class Send {
-        private String fromEmail;
         private String toEmail;
-        private String toName;
     }
 
     @Data

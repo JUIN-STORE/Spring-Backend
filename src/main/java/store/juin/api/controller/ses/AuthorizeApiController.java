@@ -12,6 +12,8 @@ import store.juin.api.domain.request.AuthorizeRequest;
 import store.juin.api.exception.AuthorizeException;
 import store.juin.api.service.ses.AuthorizeService;
 
+import javax.persistence.EntityExistsException;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/authorizes")
@@ -21,9 +23,13 @@ public class AuthorizeApiController {
 
     @GetMapping("/send")
     public JUINResponse<String> sendEmail(@ModelAttribute AuthorizeRequest.Send request) {
-        log.info("[P9][CTRL][AUTH][SEND]: /api/authorizes request=({})", request);
-        final String result = authorizeService.sendEmail(request);
-        return new JUINResponse<>(HttpStatus.OK, result);
+        try {
+            log.info("[P9][CTRL][AUTH][SEND]: /api/authorizes request=({})", request);
+            final String result = authorizeService.sendEmail(request);
+            return new JUINResponse<>(HttpStatus.OK, result);
+        } catch (EntityExistsException e) {
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/check")

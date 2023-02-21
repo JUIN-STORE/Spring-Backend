@@ -7,13 +7,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import store.juin.api.config.SecurityConfig;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Address;
 import store.juin.api.domain.enums.AccountRole;
 import store.juin.api.domain.request.AddressRequest;
 import store.juin.api.repository.jpa.AddressRepository;
 import store.juin.api.service.query.AddressQueryService;
+import store.juin.api.utils.PasswordUtil;
 
 import java.util.List;
 
@@ -266,7 +266,7 @@ class AddressCommandServiceTest {
         return Account.builder()
                 .id(1L)
                 .email(EMAIL)
-                .passwordHash(SecurityConfig.makePasswordHash("passwordHash"))
+                .passwordHash(PasswordUtil.makePasswordHash("passwordHash"))
                 .name("지수")
                 .accountRole(accountRole)
                 .phoneNumber("01011112222")
