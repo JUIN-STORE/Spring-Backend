@@ -3,9 +3,9 @@ package store.juin.api.domain.request;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import store.juin.api.config.SecurityConfig;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.enums.AccountRole;
+import store.juin.api.utils.PasswordUtil;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -37,7 +37,7 @@ public class AccountRequest {
             return Account.builder()
                     .identification(this.identification)
                     .email(this.email)
-                    .passwordHash(SecurityConfig.makePasswordHash(this.passwordHash))
+                    .passwordHash(PasswordUtil.makePasswordHash(this.passwordHash))
                     .name(this.name)
                     .phoneNumber(this.phoneNumber)
                     .accountRole(this.accountRole)
@@ -69,7 +69,7 @@ public class AccountRequest {
                     .email(email)
                     .name(this.name)
                     .phoneNumber(this.phoneNumber)
-                    .passwordHash(SecurityConfig.makePasswordHash(this.passwordHash))
+                    .passwordHash(PasswordUtil.makePasswordHash(this.passwordHash))
                     .accountRole(this.accountRole)
                     .build();
         }
@@ -87,7 +87,7 @@ public class AccountRequest {
         private String passwordHash;
 
         public String makeEncryptedPassword() {
-            return SecurityConfig.makePasswordHash(this.passwordHash);
+            return PasswordUtil.makePasswordHash(this.passwordHash);
         }
     }
 }

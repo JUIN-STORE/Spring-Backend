@@ -27,11 +27,10 @@ public class AuthorizeService {
         final String authNumber = makeAuthNumber();
         authorizeCacheService.putAuthorizeNumber(toEmail, authNumber);
 
-        final EmailRequest emailRequest = EmailRequest.builder()
-                .toEmail(toEmail)
-                .title("[JUIN.STORE] 회원가입 인증 메일")
-                .content(makeMailContent(authNumber))
-                .build();
+        final EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setToEmail(toEmail);
+        emailRequest.setTitle("[JUIN.STORE] 회원가입 인증 메일");
+        emailRequest.setContent(makeMailContent(authNumber));
 
         return emailService.send(emailRequest);
     }

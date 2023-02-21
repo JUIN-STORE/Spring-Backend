@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.utils.PasswordUtil;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -217,7 +218,7 @@ class AccountQueryServiceTest {
         return Account.builder()
                 .id(1L)
                 .email(EMAIL)
-                .passwordHash(SecurityConfig.makePasswordHash("passwordHash"))
+                .passwordHash(PasswordUtil.makePasswordHash("passwordHash"))
                 .name("지수")
                 .accountRole(accountRole)
                 .phoneNumber("01011112222")

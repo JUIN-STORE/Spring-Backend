@@ -151,10 +151,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().addFilterBefore(tokenRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    public static String makePasswordHash(String password) {
-        return new BCryptPasswordEncoder().encode(password);
-    }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

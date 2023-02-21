@@ -105,12 +105,11 @@ public class AccountCommandService {
         final Account account = accountRepository.findByIdentificationAndEmail(request.getIdentification(), request.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
 
-        final EmailRequest emailRequest
-                = EmailRequest.builder()
-                .toEmail(account.getEmail())
-                .title("[JUIN.STORE] 비밀번호 변경 메일")
-                .content(makeMailContent(account.getName()))
-                .build();
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setToEmail(account.getEmail());
+        emailRequest.setTitle("[JUIN.STORE] 비밀번호 변경 메일");
+        emailRequest.setContent(makeMailContent());
+
         return emailService.send(emailRequest);
     }
 
@@ -123,7 +122,7 @@ public class AccountCommandService {
         return account;
     }
 
-    private String makeMailContent(String toName) {
+    private String makeMailContent() {
         return String.format("<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -133,12 +132,12 @@ public class AccountCommandService {
                 "    <title>Document</title>\n" +
                 "</head>\n" +
                 "<body>\n" +
-                "    안녕하세요, %s님, JUIN.STORE입니다.\n" +
+                "    안녕하세요, JUIN.STORE입니다.\n" +
                 "    <br />\n" +
                 "    아래 링크를 통해 비밀번호를 변경해 주시기 바랍니다.\n" +
                 "    <br />\n" +
                 "    <a href=\"http://juin.store\">비밀번호 변경</a>\n" +
                 "</body>\n" +
-                "</html>", toName);
+                "</html>");
     }
 }
