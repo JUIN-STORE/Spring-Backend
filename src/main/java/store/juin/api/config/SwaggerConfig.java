@@ -24,18 +24,18 @@ public class SwaggerConfig {
     public Docket swaggerApi() {
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(swaggerInfo())
-                .securityContexts(Arrays.asList(securityContext()))
-                .securitySchemes(Arrays.asList(apiKey()))
+                .securityContexts(List.of(securityContext()))
+                .securitySchemes(List.of(apiKey()))
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ecommerce.backend.controller"))
+                .apis(RequestHandlerSelectors.basePackage("store.juin.api.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo swaggerInfo() {
         return new ApiInfoBuilder()
-                .title("JUIN-STORE API Documentation")
-                .description("JUIN-STORE API Documentation")
+                .title("api.juin.store Documentation")
+                .description("api.juin.store Documentation")
                 .version("1")
                 .build();
     }
