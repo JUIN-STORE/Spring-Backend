@@ -212,8 +212,8 @@ public class AccountApiController {
     @ApiOperation(value = "비밀번호 변경 이메일 전송")
     @GetMapping(value = "/mail")
     public JUINResponse<String> sendEmail(@ModelAttribute AccountRequest.SendEmail request) {
-        accountCommandService.sendEmail(request);
-        return new JUINResponse<>(HttpStatus.OK);
+        final String result = accountCommandService.sendEmail(request);
+        return new JUINResponse<>(HttpStatus.OK, result);
     }
 
     @ApiOperation(value = "비밀번호 변경")
