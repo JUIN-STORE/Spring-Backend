@@ -1,6 +1,7 @@
 package store.juin.api.domain.request;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 import store.juin.api.domain.entity.Order;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class OrderRequest {
     @Data @Accessors(chain = true)
     public static class Create {

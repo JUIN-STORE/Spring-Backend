@@ -1,6 +1,7 @@
 package store.juin.api.domain.request;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import store.juin.api.domain.entity.Cart;
 import store.juin.api.domain.entity.CartItem;
@@ -9,6 +10,7 @@ import store.juin.api.domain.entity.Item;
 import java.io.Serializable;
 import java.util.List;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class CartItemRequest {
     @Data @Accessors(chain = true)
     public static class Retrieve implements Serializable{

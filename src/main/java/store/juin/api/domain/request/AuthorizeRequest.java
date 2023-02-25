@@ -1,8 +1,10 @@
 package store.juin.api.domain.request;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class AuthorizeRequest {
     @Data
     @Accessors(chain = true)

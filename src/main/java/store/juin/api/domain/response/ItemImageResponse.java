@@ -1,12 +1,14 @@
 package store.juin.api.domain.response;
 
-import store.juin.api.domain.entity.ItemImage;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import store.juin.api.domain.entity.ItemImage;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ItemImageResponse {
     @Data @Accessors(chain = true)
     public static class Retrieve {

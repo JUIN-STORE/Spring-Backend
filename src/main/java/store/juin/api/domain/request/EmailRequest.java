@@ -1,6 +1,5 @@
 package store.juin.api.domain.request;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
