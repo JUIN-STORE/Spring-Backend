@@ -44,4 +44,5 @@ RestDocs: localhost:13579/index.html
 ```
 
 # 4. ERD
+
 ![erd.png](erd.png)
