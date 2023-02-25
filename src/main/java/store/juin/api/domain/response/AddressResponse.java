@@ -1,9 +1,11 @@
 package store.juin.api.domain.response;
 
-import store.juin.api.domain.entity.Address;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import store.juin.api.domain.entity.Address;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class AddressResponse {
     @Data @Accessors(chain = true)
     public static class Retrieve {

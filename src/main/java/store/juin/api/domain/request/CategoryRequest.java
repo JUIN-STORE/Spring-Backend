@@ -1,9 +1,11 @@
 package store.juin.api.domain.request;
 
-import store.juin.api.domain.entity.Category;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import store.juin.api.domain.entity.Category;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class CategoryRequest {
     @Data @Accessors(chain = true)
     public static class Create {

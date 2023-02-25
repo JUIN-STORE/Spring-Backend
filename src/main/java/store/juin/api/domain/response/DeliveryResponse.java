@@ -1,12 +1,13 @@
 package store.juin.api.domain.response;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import store.juin.api.domain.entity.Delivery;
 import store.juin.api.domain.enums.DeliveryStatus;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class DeliveryResponse {
-
     @Data
     @Accessors(chain = true)
     public static class Read {

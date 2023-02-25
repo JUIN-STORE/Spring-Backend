@@ -1,10 +1,11 @@
 package store.juin.api.domain.response;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import store.juin.api.domain.entity.Item;
 import store.juin.api.domain.entity.ItemImage;
 import store.juin.api.domain.enums.ItemStatus;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ItemResponse {
     @Data
     @Accessors(chain = true)

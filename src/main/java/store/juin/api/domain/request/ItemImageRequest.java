@@ -1,10 +1,12 @@
 package store.juin.api.domain.request;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import store.juin.api.domain.entity.Item;
 import store.juin.api.domain.entity.ItemImage;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ItemImageRequest {
     @Data
     @Accessors(chain = true)
