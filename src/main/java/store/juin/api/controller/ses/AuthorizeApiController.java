@@ -25,8 +25,8 @@ public class AuthorizeApiController {
     public JUINResponse<String> sendEmail(@ModelAttribute AuthorizeRequest.Send request) {
         try {
             log.info("[P9][CTRL][AUTH][SEND]: /api/authorizes request=({})", request);
-            final String result = authorizeService.sendEmail(request);
-            return new JUINResponse<>(HttpStatus.OK, result);
+            var response = authorizeService.sendEmail(request);
+            return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityExistsException e) {
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }

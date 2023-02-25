@@ -11,7 +11,7 @@ import store.juin.api.domain.request.EmailRequest;
 @Profile("production")
 @RequiredArgsConstructor
 public class SesEmailServiceImpl implements EmailService {
-    private static final String fromEmail = "jduck1024@naver.com";
+    private static final String FROM_EMAIL = "jduck1024@naver.com";
 
     private final AmazonSimpleEmailService amazonSimpleEmailService;
 
@@ -20,7 +20,7 @@ public class SesEmailServiceImpl implements EmailService {
                 .withDestination(new Destination().withToAddresses(request.getToEmail()))
                 .withMessage(new Message().withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(request.getContent())))
                         .withSubject(new Content().withCharset("UTF-8").withData(request.getTitle())))
-                .withSource(fromEmail);
+                .withSource(FROM_EMAIL);
 
         final SendEmailResult sendEmailResult = amazonSimpleEmailService.sendEmail(sendEmailRequest);
         return sendEmailResult.getSdkResponseMetadata().getRequestId();

@@ -111,10 +111,9 @@ public class AccountCommandService {
         final String authNumber = AuthNumberUtil.makeAuthNumber();
         authorizeCacheService.putAuthorizeNumber(account.getEmail(), authNumber);
 
-        EmailRequest emailRequest = new EmailRequest();
-        emailRequest.setToEmail(account.getEmail());
-        emailRequest.setTitle("[JUIN.STORE] 비밀번호 변경 메일");
-        emailRequest.setContent(makeMailContent(authNumber));
+        EmailRequest emailRequest = new EmailRequest()
+                .setToEmail(account.getEmail()).setTitle("[JUIN.STORE] 비밀번호 변경 메일")
+                .setContent(makeMailContent(authNumber));
         return emailService.send(emailRequest);
     }
 
