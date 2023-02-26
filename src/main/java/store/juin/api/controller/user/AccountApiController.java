@@ -62,7 +62,7 @@ public class AccountApiController {
 
         if (!confirmed) {
             log.warn("[P5][CTRL][ACNT][SIGN]: 이메일 인증이 되지 않았습니다. request=({})", request);
-            return new JUINResponse<>(HttpStatus.NOT_FOUND);
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
 
         try {

@@ -2,6 +2,7 @@ package store.juin.api.service.ses;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import store.juin.api.domain.request.AuthorizeRequest;
 import store.juin.api.exception.AuthorizeException;
@@ -24,7 +25,7 @@ public class AuthorizeService {
         final String authNumber = AuthNumberUtil.makeAuthNumber();
         authorizeCacheService.putAuthorizeNumber(toEmail, authNumber);
 
-       return emailService.verifyEmailAddress(toEmail) == 200
+       return emailService.verifyEmailAddress(toEmail) == HttpStatus.OK.value()
                ? "인증 이메일을 전송하였습니다. 이메일을 확인해 주세요."
                : "인증 이메일 전송에 실패하였습니다.";
     }

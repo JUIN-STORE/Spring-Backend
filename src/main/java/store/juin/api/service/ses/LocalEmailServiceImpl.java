@@ -1,6 +1,7 @@
 package store.juin.api.service.ses;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import store.juin.api.domain.request.EmailRequest;
 
@@ -19,6 +20,6 @@ public class LocalEmailServiceImpl implements EmailService {
 
     @Override
     public int verifyEmailAddress(String email) {
-        return 200;
+        return HttpStatus.OK.value();
     }
 }
