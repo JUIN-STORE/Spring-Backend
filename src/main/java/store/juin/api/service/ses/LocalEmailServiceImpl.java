@@ -11,4 +11,14 @@ public class LocalEmailServiceImpl implements EmailService {
     public String send(EmailRequest request) {
         return request.getContent();
     }
+
+    @Override
+    public boolean isConfirmed(String email) {
+        return true;
+    }
+
+    @Override
+    public int verifyEmailAddress(String email) {
+        return 200;
+    }
 }
