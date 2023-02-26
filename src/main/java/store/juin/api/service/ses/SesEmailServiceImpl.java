@@ -25,4 +25,21 @@ public class SesEmailServiceImpl implements EmailService {
         final SendEmailResult sendEmailResult = amazonSimpleEmailService.sendEmail(sendEmailRequest);
         return sendEmailResult.getSdkResponseMetadata().getRequestId();
     }
+
+    @Override
+    public boolean isConfirmed(String email) {
+        // get the DKIM attributes for the email address
+        GetIdentityVerificationAttributesResult attributesResult =
+                amazonSimpleEmailService.getIdentityVerificationAttributes(new GetIdentityVerificationAttributesRequest().withIdentities(email));
+        IdentityVerificationAttributes attributes = attributesResult.getVerificationAttributes().get(email);
+
+        return "Success".equals(attributes.getVerificationStatus());
+    }
+
+    @Override
+    public int verifyEmailAddress(String email) {
+        final VerifyEmailAddressResult verifyEmailAddressResult =
+                amazonSimpleEmailService.verifyEmailAddress(new VerifyEmailAddressRequest().withEmailAddress(email));
+        return verifyEmailAddressResult.getSdkHttpMetadata().getHttpStatusCode();
+    }
 }

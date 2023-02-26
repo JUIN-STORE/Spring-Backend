@@ -44,11 +44,11 @@ public class AccountApiController {
     private final AuthenticationManager authenticationManager;
 
     private final TokenQueryService tokenQueryService;
+    private final AccountQueryService accountQueryService;
     private final PrincipalQueryService principalQueryService;
 
     private final TokenCommandService tokenCommandService;
     private final AccountCommandService accountCommandService;
-    private final AccountQueryService accountQueryService;
 
     @Value("${front.cookie.domain}")
     private String cookieDomain;
@@ -57,6 +57,13 @@ public class AccountApiController {
     @PostMapping("/sign-up")
     public JUINResponse<AccountResponse.SignUp> signUp(@RequestBody AccountRequest.SignUp request) {
         log.info("[P9][CTRL][ACNT][SIGN]: POST /api/accounts/sign-up, request = ({})", request);
+
+        final boolean confirmed = accountCommandService.isConfirmed(request.getEmail());
+
+        if (!confirmed) {
+            log.warn("[P5][CTRL][ACNT][SIGN]: 이메일 인증이 되지 않았습니다. request=({})", request);
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
+        }
 
         try {
             final Account account = accountCommandService.add(request);

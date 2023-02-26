@@ -2,9 +2,9 @@ package store.juin.api.service.ses;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import store.juin.api.domain.request.AuthorizeRequest;
-import store.juin.api.domain.request.EmailRequest;
 import store.juin.api.exception.AuthorizeException;
 import store.juin.api.service.query.AccountQueryService;
 import store.juin.api.utils.AuthNumberUtil;
@@ -18,18 +18,16 @@ public class AuthorizeService {
     private final AccountQueryService accountQueryService;
     private final AuthorizeCacheService authorizeCacheService;
 
-    public String sendEmail(AuthorizeRequest.Send request) {
+    public String verifyEmailAddress(AuthorizeRequest.Send request) {
         final String toEmail = request.getToEmail();
         accountQueryService.checkDuplicateEmail(toEmail);
 
         final String authNumber = AuthNumberUtil.makeAuthNumber();
         authorizeCacheService.putAuthorizeNumber(toEmail, authNumber);
 
-        final EmailRequest emailRequest = new EmailRequest()
-                .setToEmail(toEmail)
-                .setTitle("[JUIN.STORE] 회원가입 인증 메일")
-                .setContent(makeMailContent(authNumber));
-        return emailService.send(emailRequest);
+       return emailService.verifyEmailAddress(toEmail) == HttpStatus.OK.value()
+               ? "인증 이메일을 전송하였습니다. 이메일을 확인해 주세요."
+               : "인증 이메일 전송에 실패하였습니다.";
     }
 
 

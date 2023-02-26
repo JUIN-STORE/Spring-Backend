@@ -126,6 +126,10 @@ public class AccountCommandService {
         return account;
     }
 
+    public boolean isConfirmed(String email) {
+        return emailService.isConfirmed(email);
+    }
+
     private String makeMailContent(String authNumber) {
         return String.format("<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +

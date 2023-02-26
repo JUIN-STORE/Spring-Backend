@@ -23,15 +23,17 @@ public class AuthorizeApiController {
 
     @GetMapping("/send")
     public JUINResponse<String> sendEmail(@ModelAttribute AuthorizeRequest.Send request) {
+        log.info("[P9][CTRL][AUTH][SEND]: /api/authorizes request=({})", request);
+
         try {
-            log.info("[P9][CTRL][AUTH][SEND]: /api/authorizes request=({})", request);
-            var response = authorizeService.sendEmail(request);
+            var response = authorizeService.verifyEmailAddress(request);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityExistsException e) {
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
 
+    // FIXME: 샌드박스 이슈로 프론트에서만 삭제
     @GetMapping("/check")
     public JUINResponse<String> check(@ModelAttribute AuthorizeRequest.Check request) {
         log.info("[P9][CTRL][AUTH][CHCK]: /api/authorizes/check request=({})", request);
