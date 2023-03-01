@@ -11,7 +11,7 @@ endif::[]
 :operation-http-response-title: Response
 
 [[introduction]]
-= @PostMapping("/api/seller/items")
+= POST /api/seller/items
 
 [[overview]]
 == REQUEST
