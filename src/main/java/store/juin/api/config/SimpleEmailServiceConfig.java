@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SimpleEmailServiceConfig {
-    @Value("${cloud.aws.credentials.access-key:#{null}}")
+    @Value("${cloud.aws.credentials.access-key:defaultAccessKey}")
     private String accessKey;
 
-    @Value("${cloud.aws.credentials.secret-key:#{null}}")
+    @Value("${cloud.aws.credentials.secret-key:defaultSecretKey}")
     private String secretKey;
 
     @Bean("amazonSimpleEmailService")
