@@ -89,6 +89,7 @@ class AccountApiControllerTest {
             var account = makeAccount("asdq13@#13$");
 
             given(accountCommandService.add(request)).willReturn(account);
+            given(accountCommandService.isConfirmed(request.getEmail())).willReturn(true);
 
             // when
             final ResultActions actual = mockMvc.perform(post("/api/accounts/sign-up")
