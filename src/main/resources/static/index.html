@@ -12,78 +12,214 @@
 <h1>1. Admin</h1>
 
 <h2>1-1. Category</h2>
-<a href="/docs/admin/categories/success/create.html">카테고리 생성</a>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>POST /api/admin/categories</td>
+        <td><a href="/docs/admin/categories/success/create.html">카테고리 생성</a></td>
+    </tr>
+</table>
 
+<br />
+<hr />
 
 <h1>2. Seller</h1>
 <h2>2-1. Item</h2>
-<a href="/docs/seller/items/success/create.html">상품 생성</a>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>POST /api/seller/items</td>
+        <td><a href="/docs/seller/items/success/create.html">상품 생성</a></td>
+    </tr>
+</table>
 
+<br />
+<hr />
 
 <h1>3. User</h1>
 <h2>3-1. Account</h2>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>GET /api/accounts/duplication/{identification}</td>
+        <td><a href="/docs/user/accounts/success/check-identification.html">아이디 중복 체크</a></td>
+    </tr>
+
+    <tr>
+        <td>DELETE /api/accounts/{accountId}</td>
+        <td><a href="/docs/user/accounts/success/delete.html">회원 정보 삭제</a></td>
+    </tr>
+
+    <tr>
+        <td>POST /api/accounts/login</td>
+        <td><a href="/docs/user/accounts/success/login.html">로그인하기</a></td>
+    </tr>
+
+    <tr>
+        <td>GET /api/accounts/logout</td>
+        <td><a href="/docs/user/accounts/success/logout.html">로그아웃하기</a></td>
+    </tr>
+
+    <tr>
+        <td>GET /api/accounts/profile</td>
+        <td><a href="/docs/user/accounts/success/profile.html">내 정보 읽기</a></td>
+    </tr>
+
+    <tr>
+        <td>POST /api/accounts/sign-up</td>
+        <td><a href="/docs/user/accounts/success/sign-up.html">회원가입하기</a></td>
+    </tr>
+
+    <tr>
+        <td>PATCH /api/accounts</td>
+        <td><a href="/docs/user/accounts/success/update.html">회원 정보 수정</a></td>
+    </tr>
+</table>
 
 <h2>3-2. Address</h2>
-<div>
-    <a href="/docs/user/addresses/success/create.html">주소 등록</a>
-</div>
-<div>
-    <a href="/docs/user/addresses/success/delete.html">주소 삭제</a>
-</div>
-<div>
-    <a href="/docs/user/addresses/success/retrieve-all.html">주소 전체 조회</a>
-</div>
-<div>
-    <a href="/docs/user/addresses/success/retrieve-one.html">주소 단건 조회</a>
-</div>
-<div>
-    <a href="/docs/user/addresses/success/update.html">주소 업데이트</a>
-</div>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>POST /api/addresses</td>
+        <td><a href="/docs/user/addresses/success/create.html">주소 등록</a></td>
+    </tr>
+    <tr>
+        <td>DELETE /api/addresses</td>
+        <td><a href="/docs/user/addresses/success/delete.html">주소 삭제</a></td>
+    </tr>
+    <tr>
+        <td>GET /api/addresses</td>
+        <td><a href="/docs/user/addresses/success/retrieve-all.html">주소 전체 조회</a></td>
+    </tr>
+    <tr>
+        <td>GET /api/addresses/{addressId}</td>
+        <td><a href="/docs/user/addresses/success/retrieve-one.html">주소 단건 조회</a></td>
+    </tr>
+    <tr>
+        <td>PUT /api/addresses</td>
+        <td><a href="/docs/user/addresses/success/update.html">주소 업데이트</a></td>
+    </tr>
+</table>
+
 
 <h2>3-3. Cart</h2>
-<div>
-    <a href="/docs/user/carts/success/buy.html">cart에서 buy를 클릭했을 때</a>
-</div>
-<div>
-    <a href="/docs/user/carts/success/create.html">장바구니에 상품 등록</a>
-</div>
-<div>
-    <a href="/docs/user/carts/success/delete.html">장바구니에서 상품 삭제</a>
-</div>≠
-<div>
-    <a href="/docs/user/carts/success/quantity.html">장바구니에서 +,- 눌렀을 때</a>
-</div>
-<div>
-    <a href="/docs/user/carts/success/retrieve-all.html">장바구니 내 상품 전체 조회</a>
-</div>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>GET /api/carts/buy</td>
+        <td><a href="/docs/user/carts/success/buy.html">cart에서 buy를 클릭했을 때</a></td>
+    </tr>
+    <tr>
+        <td>POST /api/carts/add</td>
+        <td><a href="/docs/user/carts/success/create.html">장바구니에 상품 등록</a></td>
+    </tr>
+    <tr>
+        <td>DELETE /api/carts</td>
+        <td><a href="/docs/user/carts/success/delete.html">장바구니에서 상품 삭제</a></td>
+    </tr>
+    <tr>
+        <td>POST /api/carts/quantity</td>
+        <td><a href="/docs/user/carts/success/quantity.html">장바구니에서 +,- 눌렀을 때</a></td>
+    </tr>
+    <tr>
+        <td>GET /api/carts</td>
+        <td><a href="/docs/user/carts/success/retrieve-all.html">장바구니 내 상품 전체 조회</a></td>
+    </tr>
+</table>
+
 
 <h2>3-4. Category</h2>
-<div>
-    <a href="/docs/user/categories/success/retrieve-all.html">카테고리 전체 조회</a>
-</div>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>GET /api/categories</td>
+        <td><a href="/docs/user/categories/success/retrieve-all.html">카테고리 전체 조회</a></td>
+    </tr>
+</table>
 
 <h2>3-5. Delivery</h2>
-<div>
-    <a href="/docs/user/deliveries/success/retrieve-one.html">배송 단건 조회</a>
-</div>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>GET /api/deliveries/{deliveryId}</td>
+        <td><a href="/docs/user/deliveries/success/retrieve-one.html">배송 단건 조회</a></td>
+    </tr>
+</table>
 
 <h2>3-6. Item</h2>
-<div>
-    <a href="/docs/user/items/success/retrieve-all.html">상품 단건 조회</a>
-</div>
-<div>
-    <a href="/docs/user/items/success/retrieve-one.html">상품 전체 조회</a>
-</div>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>GET /api/items/{itemId}</td>
+        <td><a href="/docs/user/items/success/retrieve-one.html">상품 단건 조회</a></td>
+    </tr>
+
+    <tr>
+        <td>GET /api/items?</td>
+        <td><a href="/docs/user/items/success/retrieve-all.html">상품 전체 조회</a></td>
+    </tr>
+</table>
+
 
 <h2>3-7. Order</h2>
-<div>
-    <a href="/docs/user/orders/success/cancel.html">주문 취소</a>
-</div>
-<div>
-    <a href="/docs/user/orders/success/create.html">주문 생성</a>
-</div>
-<div>
-    <a href="/docs/user/orders/success/retrieve-all.html">주문 전체 조회</a>
-</div>
+<table>
+    <tr>
+        <th>End-Point</th>
+        <th>Rest Docs</th>
+    </tr>
+    <tr>
+        <td>POST /user/orders/cancel</td>
+        <td><a href="/docs/user/orders/success/cancel.html">주문 취소</a></td>
+    </tr>
+
+    <tr>
+        <td>POST /api/orders</td>
+        <td><a href="/docs/user/orders/success/create.html">주문 생성</a></td>
+    </tr>
+
+    <tr>
+        <td>GET /api/orders?</td>
+        <td><a href="/docs/user/orders/success/retrieve-all.html">주문 전체 조회</a></td>
+    </tr>
+</table>
+
+<br />
+<hr />
+
 </body>
 </html>
+
+
+<style>
+    table {
+        border-collapse: collapse;
+    }
+    td, th {
+        border: 1px solid black;
+        padding: 8px;
+    }
+</style>
