@@ -48,4 +48,4 @@ RestDocs: localhost:13579/index.html
 ![erd.png](erd.png)
 
 # 5. 배포 아키텍처
-![spring-architecture.png](spring-architecture.png)
+![spring-architecture.png](spring-architecture2.png)
