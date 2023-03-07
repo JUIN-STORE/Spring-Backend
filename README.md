@@ -6,15 +6,17 @@
 JUIN-STORE는 얼굴 사진을 올리면 퍼스널 컬러를 진단하고, 
 그에 맞는 옷을 추천하고 판매하는 웹 서비스다.
 
-프로젝트 구조
-(비공개) Python-Backend => 퍼스널 컬러를 진단하는 백엔드
-(공개)   Spring-Backend => STORE 백엔드  
-(공개)   Vue-Frontend => STORE 프론트엔드
-
-cf) JUIN인 이유는 팀원의 이름을 합쳤다.
+JUIN인 이유는 팀원의 이름을 합쳤다.
 ```
 
-# 1. 개발 환경
+# 1. 프로젝트 구조
+```text
+Python-Backend => 퍼스널 컬러 진단 서버 (비공개) 
+Spring-Backend => JUIN.STORE API 서버 (공개)   
+Vue-Frontend   => JUIN.STORE WEB 서버 (공개)
+```
+
+# 2. 개발 환경
 ```text
 Spring Security 5.5.1
 JAVA corretto-17.0.5
@@ -27,10 +29,10 @@ JUnit 5.7.0
 JPA 2.4.2
 ```
 
-# 2. 코딩 컨벤션
+# 3. 코딩 컨벤션
 [CODING CONVENTION](https://github.com/JUIN-STORE/Spring-Backend/blob/main/CODING-CONVENTION.md)
 
-# 3. API 문서
+# 4. API 문서
 ```text
 # production
 Swagger : api.juin.store/swagger-ui/index.html
@@ -43,9 +45,8 @@ Swagger : localhost:13579/swagger-ui/index.html
 RestDocs: localhost:13579/index.html
 ```
 
-# 4. ERD
-
+# 5. ERD
 ![erd.png](erd.png)
 
-# 5. 배포 아키텍처
+# 6. 아키텍처
 ![spring-architecture.png](spring-architecture2.png)
