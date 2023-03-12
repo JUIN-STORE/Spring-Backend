@@ -71,7 +71,7 @@ class AddressApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@PostMapping(\"/api/addresses\")")
+    @DisplayName("POST /api/addresses")
     class CreateTest {
         @Test
         @DisplayName("(성공) 주소를 추가한다.")
@@ -114,7 +114,7 @@ class AddressApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/addresses/all\")" )
+    @DisplayName("GET /api/addresses/all")
     class RetrieveAllTest {
         @Test
         @DisplayName("(성공) 한 유저의 모든 주소를 불러온다.")
@@ -155,7 +155,7 @@ class AddressApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/addresses/{addressId}\")")
+    @DisplayName("GET /api/addresses/{addressId}")
     class RetrieveOneTest {
         @Test
         @DisplayName("(성공) 한 유저의 특정 주소를 불러온다.")
@@ -201,7 +201,7 @@ class AddressApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@PutMapping(\"/api/address\")")
+    @DisplayName("PUT /api/address")
     class UpdateTest {
         @Test
         @DisplayName("(성공) 한 유저의 주소를 수정한다.")
@@ -238,7 +238,7 @@ class AddressApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@DeleteMapping(\"/api/addresses/{addressId}\")")
+    @DisplayName("DELETE /api/addresses/{addressId}")
     class DeleteTest {
         @Test
         @DisplayName("(성공) 주소 하나를 삭제한다.")
