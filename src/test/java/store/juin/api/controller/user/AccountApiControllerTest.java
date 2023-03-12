@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import store.juin.api.domain.enums.AccountRole;
+import store.juin.api.domain.request.AccountRequest;
 import store.juin.api.service.command.AccountCommandService;
 import store.juin.api.service.command.TokenCommandService;
 import store.juin.api.service.query.AccountQueryService;
@@ -56,14 +57,20 @@ class AccountApiControllerTest {
     @InjectMocks
     private AccountApiController sut;
 
-    @Mock private AuthenticationManager authenticationManager;
+    @Mock
+    private AuthenticationManager authenticationManager;
 
-    @Mock private TokenQueryService tokenQueryService;
-    @Mock private PrincipalQueryService principalQueryService;
+    @Mock
+    private TokenQueryService tokenQueryService;
+    @Mock
+    private PrincipalQueryService principalQueryService;
 
-    @Mock private TokenCommandService tokenCommandService;
-    @Mock private AccountCommandService accountCommandService;
-    @Mock private AccountQueryService accountQueryService;
+    @Mock
+    private TokenCommandService tokenCommandService;
+    @Mock
+    private AccountCommandService accountCommandService;
+    @Mock
+    private AccountQueryService accountQueryService;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -368,6 +375,45 @@ class AccountApiControllerTest {
                     .andDo(document(DOT + "/user/accounts/success/check-identification"
                             , pathParameters(
                                     parameterWithName("identification").description("가입하려는 아이디")
+                            )
+
+                            , responseFields(
+                                    fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
+
+                                    , fieldWithPath("data").type(Void.class).description("데이터")
+
+                                    , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
+                                    , fieldWithPath("region").type(String.class).description("리전 정보"))
+                    ));
+
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT /api/accounts/password/verify")
+    class VerifyPasswordTest {
+        @Test
+        @DisplayName("(정상) 비밀번호를 한 번 더 확인한다.")
+        void checkIdentificationTest01() throws Exception {
+            // given
+            var passwordHash = "passwordHash";
+            var request
+                    = new AccountRequest.VerifyPassword().setPasswordHash(passwordHash);
+            var principal = mock(Principal.class);
+
+            // when
+            final ResultActions actual = mockMvc.perform(post("/api/accounts/password/verify", request)
+                    .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer dXNlcjpzZWNyZXQ=")
+                    .principal(principal)
+                    .content(objectMapper.writeValueAsBytes(request)));
+
+            // then
+            actual
+                    .andExpect(status().isOk())
+                    .andDo(document(DOT + "/user/accounts/success/verify-password"
+                            , requestFields(
+                                    fieldWithPath("passwordHash").type(String.class).description("요청 비밀번호")
                             )
 
                             , responseFields(
