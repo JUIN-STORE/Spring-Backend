@@ -76,7 +76,7 @@ class ItemApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/items/{itemId}\")")
+    @DisplayName("GET /api/items/{itemId}")
     class RetrieveOneTest {
         @Test
         @DisplayName("(성공) 상품 하나를 읽어온다.")
@@ -139,7 +139,7 @@ class ItemApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/items\")")
+    @DisplayName("GET /api/items")
     class RetrieveAllTest {
         @Test
         @DisplayName("(성공) 전체 상품 목록 읽기")

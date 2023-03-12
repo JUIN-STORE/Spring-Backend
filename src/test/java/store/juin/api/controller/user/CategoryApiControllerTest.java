@@ -54,7 +54,7 @@ class CategoryApiControllerTest {
 
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/categories\")")
+    @DisplayName("GET /api/categories")
     class RetrieveAllTest {
         @Test
         @DisplayName("(성공) 모든 카테고리를 읽어온다.")

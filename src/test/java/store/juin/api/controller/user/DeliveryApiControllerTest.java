@@ -15,6 +15,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import store.juin.api.domain.enums.DeliveryStatus;
 import store.juin.api.service.query.DeliveryQueryService;
 import store.juin.api.service.query.PrincipalQueryService;
 
@@ -63,7 +64,7 @@ class DeliveryApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/deliveries/{deliveryId}\")")
+    @DisplayName("GET /api/deliveries/{deliveryId}")
     class RetrieveOneTest {
         @Test
         @DisplayName("(성공) 주문에 대한 배송 상세 내용을 조회한다.")
@@ -97,10 +98,10 @@ class DeliveryApiControllerTest {
                                     fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
 
                                     , fieldWithPath("data.deliveryId").type(Long.class).description("배송 id")
-                                    , fieldWithPath("data.receiverEmail").type(Long.class).description("배송 id")
-                                    , fieldWithPath("data.receiverName").type(Long.class).description("배송 id")
-                                    , fieldWithPath("data.receiverPhoneNumber").type(Long.class).description("배송 id")
-                                    , fieldWithPath("data.deliveryStatus").type(Long.class).description("배송 id")
+                                    , fieldWithPath("data.receiverEmail").type(String.class).description("받는 사람 이메일")
+                                    , fieldWithPath("data.receiverName").type(String.class).description("받는 사람 이름")
+                                    , fieldWithPath("data.receiverPhoneNumber").type(String.class).description("받는 사람 전화번호")
+                                    , fieldWithPath("data.deliveryStatus").type(DeliveryStatus.class).description("배송 상태")
                                     , fieldWithPath("data.addressId").type(Long.class).description("배송지 id")
                                     , fieldWithPath("data.city").type(String.class).description("배송지 도시")
                                     , fieldWithPath("data.street").type(String.class).description("배송지 상세 주소")

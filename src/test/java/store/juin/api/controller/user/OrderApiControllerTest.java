@@ -91,7 +91,7 @@ class OrderApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@PostMapping(\"/api/orders\")")
+    @DisplayName("POST /api/orders")
     class CreateTest {
         @Test
         @DisplayName("(성공) 주문을 한다.")
@@ -144,7 +144,7 @@ class OrderApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/orders\")")
+    @DisplayName("GET /api/orders")
     class RetrieveAllTest {
         @Test
         @DisplayName("(성공) 주문 상세 내역을 조회한다.")
@@ -229,7 +229,7 @@ class OrderApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@PostMapping(\"/api/orders/cancel\")")
+    @DisplayName("POST /api/orders/cancel")
     class CancelTest {
         @Test
         @DisplayName("(성공) 주문을 취소한다")
