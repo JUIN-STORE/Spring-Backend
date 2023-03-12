@@ -1,0 +1,33 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: carts
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Request
+:operation-http-response-title: Response
+
+[[introduction]]
+= GET /api/carts/count
+
+[[overview]]
+== REQUEST
+
+=== curl
+include::{snippets}/user/carts/success/count/curl-request.adoc[]
+
+=== http-request
+include::{snippets}/user/carts/success/count/http-request.adoc[]
+
+=== request headers
+include::{snippets}/user/carts/success/count/request-headers.adoc[]
+
+== RESPONSE
+=== http-response
+include::{snippets}/user/carts/success/count/http-response.adoc[]
+
+=== response fields
+include::{snippets}/user/carts/success/count/response-fields.adoc[]
