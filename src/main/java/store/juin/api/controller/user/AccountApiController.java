@@ -227,6 +227,8 @@ public class AccountApiController {
     @ApiOperation(value = "비밀번호 변경")
     @PutMapping("/password")
     public JUINResponse<Void> changePassword(@RequestBody AccountRequest.ChangePassword request) {
+        log.info("[P9][CTRL][ACNT][PSWD}]: PUT /api/accounts/password, request=({})", request);
+
         try {
             accountCommandService.changePassword(request);
             return new JUINResponse<>(HttpStatus.OK);
@@ -239,10 +241,11 @@ public class AccountApiController {
     @ApiOperation(value = "비밀번호 재확인")
     @PostMapping("/password/verify")
     public JUINResponse<Void> verifyPassword(final Principal principal
-                                           , @RequestBody AccountRequest.CheckPassword request) {
-        final Account account = principalQueryService.readByPrincipal(principal);
+                                           , @RequestBody AccountRequest.VerifyPassword request) {
+        log.info("[P9][CTRL][ACNT][VRFY]: POST /api/accounts/password/verify, request=({})", request);
 
         try {
+        final Account account = principalQueryService.readByPrincipal(principal);
             accountQueryService.verifyPassword(account, request);
             return new JUINResponse<>(HttpStatus.OK);
         } catch (InvalidParameterException e) {

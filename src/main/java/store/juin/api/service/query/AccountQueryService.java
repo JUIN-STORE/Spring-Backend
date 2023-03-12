@@ -50,7 +50,7 @@ public class AccountQueryService {
         return accountRole == AccountRole.ADMIN || accountRole == AccountRole.SELLER;
     }
 
-    public void verifyPassword(Account account, AccountRequest.CheckPassword request) {
+    public void verifyPassword(Account account, AccountRequest.VerifyPassword request) {
         if (account.getPasswordHash().equals(request.makeEncryptedPassword())) {
             throw new InvalidParameterException(Msg.WRONG_PASSWORD);
         }

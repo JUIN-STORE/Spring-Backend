@@ -92,7 +92,7 @@ public class AccountRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class CheckPassword {
+    public static class VerifyPassword {
         private String passwordHash;
 
         public String makeEncryptedPassword() {
