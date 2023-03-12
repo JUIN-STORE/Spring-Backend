@@ -65,6 +65,18 @@ class CartApiController {
         }
     }
 
+    @ApiOperation(value = "카트에 있는 상품 개수 읽기", notes = "카트에 있는 상품 개수를 읽어온다.")
+    @GetMapping("/count")
+    public JUINResponse<Long> count(final Principal principal) {
+        final String identification = principal.getName();
+        log.info("[P9][CTRL][CART][CONT]: GET /api/carts/count 카트 개수, identification=({})", identification);
+
+        final Account account = principalQueryService.readByPrincipal(principal);
+
+        var response = cartQueryService.totalItemsByAccountId(account.getId());
+        return new JUINResponse<>(HttpStatus.OK, response);
+    }
+
     // FIXME: 엔드포인트 변경해야 됨.
     @ApiOperation(value = "카트에서 buy를 클릭했을 때", notes = "주문 정보 데이터를 읽어온다.")
     @GetMapping("/buy")

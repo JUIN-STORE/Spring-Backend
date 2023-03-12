@@ -79,6 +79,42 @@ class CartQueryServiceTest {
     }
 
     @Nested
+    @DisplayName("readByAccountId 테스트")
+    class TotalByAccountIdTest {
+        @Test
+        @DisplayName("(정상) 카트 안에 있는 상품 개수가 1개 이상일 때")
+        void totalByAccountIdTest01() {
+            // given
+            var accountId = 96325L;
+            var expected = 2L;
+
+            given(cartRepository.countItemsByAccountId(accountId)).willReturn(Optional.of(expected));
+
+            // when
+            final Long actual = sut.totalItemsByAccountId(accountId);
+
+            // then
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @DisplayName("(정상) 카트 안에 있는 상품 개수가 0개일 때")
+        void totalByAccountIdTest02() {
+            // given
+            var accountId = 96325L;
+            var expected = 0L;
+
+            given(cartRepository.countItemsByAccountId(accountId)).willReturn(Optional.of(expected));
+
+            // when
+            final Long actual = sut.totalItemsByAccountId(accountId);
+
+            // then
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Nested
     @DisplayName("makeCartItemReadResponse 테스트")
     class MakeCartItemRetrieveResponseTest {
         @Test

@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -35,6 +36,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static store.juin.api.domain.EndPoint.PORT;
 import static store.juin.api.domain.EntityUtil.makeAccount;
@@ -73,7 +75,7 @@ class CartApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@PostMapping(\"/api/carts/add\")")
+    @DisplayName("POST /api/carts/add")
     class CreateTest {
         @Test
         @DisplayName("(정상) 카트에 항목을 추가한다.")
@@ -120,7 +122,7 @@ class CartApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/carts\")")
+    @DisplayName("GET /api/carts")
     class RetrieveOneTest {
         @Test
         @DisplayName("(정상) 카트에 있는 제품 정보를 읽어온다.")
@@ -166,7 +168,48 @@ class CartApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@GetMapping(\"/api/carts/buy\")")
+    @DisplayName("GET /api/carts/count")
+    class CountTest {
+        @Test
+        @DisplayName("(성공) 카트에 있는 상품 개수를 읽어온다.")
+        void countTest01() throws Exception {
+            // given
+            var principal = mock(Principal.class);
+            var account = makeAccount("asdq13@#13$");
+            given(principalQueryService.readByPrincipal(principal)).willReturn(account);
+
+            var expected = 2L;
+            given(cartQueryService.totalItemsByAccountId(account.getId())).willReturn(expected);
+
+            // when
+            final ResultActions actual = mockMvc.perform(get("/api/carts/count")
+                    .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer dXNlcjpzZWNyZXQ=")
+                    .principal(principal));
+
+            // then
+            actual
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.apiStatus").value(HttpStatus.OK.value()))
+                    .andExpect(jsonPath("$.data").value(expected))
+                    .andDo(document(DOT + "/user/carts/success/count"
+                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
+
+                            , responseFields(
+                                    fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
+
+                                    , fieldWithPath("data").type(Long.class).description("카트에 있는 상품의 개수")
+
+                                    , fieldWithPath("timestamp").type(ZonedDateTime.class).description("API 요청 시각")
+                                    , fieldWithPath("region").type(String.class).description("리전 정보")
+                            )
+                    ));
+            ;
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/carts/buy")
     class BuyTest {
         @Test
         @DisplayName("(성공) 카트에서 buy를 클릭하면 주문할 정보 데이터를 읽어온다.")
@@ -220,7 +263,7 @@ class CartApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@PutMapiing(\"/api/carts/quantity\")")
+    @DisplayName("PUT /api/carts/quantity")
     class UpdateQuantityTest {
         @Test
         @DisplayName("(성공) 카트에 담긴 상품 개수 변경한다.")
@@ -259,7 +302,7 @@ class CartApiControllerTest {
     }
 
     @Nested
-    @DisplayName("@DeleteMapping(\"/api/carts\")")
+    @DisplayName("DELETE /api/carts")
     class DeleteTest {
         @Test
         @DisplayName("(성공) 카트에 추가된 상품을 제거한다.")

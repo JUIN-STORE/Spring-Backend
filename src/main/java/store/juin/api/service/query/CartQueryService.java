@@ -31,6 +31,12 @@ public class CartQueryService {
     }
 
     @Transactional(readOnly = true)
+    public Long totalItemsByAccountId(Long accountId) {
+        return cartRepository.countItemsByAccountId(accountId)
+                .orElse(0L);
+    }
+
+    @Transactional(readOnly = true)
     public List<CartItemResponse.Retrieve> makeCartItemRetrieveResponseList(Account account) {
         final Cart cart = readByAccountId(account.getId());
 
