@@ -2,6 +2,7 @@ package store.juin.api.service.query;
 
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.enums.AccountRole;
+import store.juin.api.domain.request.AccountRequest;
 import store.juin.api.exception.Msg;
 import store.juin.api.repository.jpa.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.security.InvalidParameterException;
 import java.util.Optional;
 
 @Slf4j
@@ -46,6 +48,12 @@ public class AccountQueryService {
     public boolean checkNotUser(Account account) {
         final AccountRole accountRole = readByEmail(account.getEmail()).getAccountRole();
         return accountRole == AccountRole.ADMIN || accountRole == AccountRole.SELLER;
+    }
+
+    public void verifyPassword(Account account, AccountRequest.CheckPassword request) {
+        if (account.getPasswordHash().equals(request.makeEncryptedPassword())) {
+            throw new InvalidParameterException(Msg.WRONG_PASSWORD);
+        }
     }
 
     public void checkDuplicatedIdentification(String identification) {

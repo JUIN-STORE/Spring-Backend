@@ -7,6 +7,7 @@ public class Msg {
     // account
     public static final String WRONG_ID_PASSWORD = "ID, PASSWORD 올바르지 않습니다.";
 
+    public static final String WRONG_PASSWORD = "PASSWORD가 올바르지 않습니다.";
     public static final String ACCOUNT_NOT_FOUND = "존재하지 않는 계정입니다.";
     public static final String DUPLICATED_ACCOUNT = "이미 존재하는 계정입니다.";
     public static final String DUPLICATED_IDENTIFICATION = "이미 사용 중인 아이디입니다.";

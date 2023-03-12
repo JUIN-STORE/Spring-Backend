@@ -90,4 +90,13 @@ public class AccountRequest {
             return PasswordUtil.makePasswordHash(this.passwordHash);
         }
     }
+
+    @Data @Accessors(chain = true)
+    public static class CheckPassword {
+        private String passwordHash;
+
+        public String makeEncryptedPassword() {
+            return PasswordUtil.makePasswordHash(this.passwordHash);
+        }
+    }
 }

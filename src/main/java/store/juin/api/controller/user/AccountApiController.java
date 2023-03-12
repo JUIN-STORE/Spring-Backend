@@ -31,6 +31,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.InvalidParameterException;
 import java.security.Principal;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
@@ -231,6 +232,20 @@ public class AccountApiController {
             return new JUINResponse<>(HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CTRL][ACNT][DUPL]: ");
+            return new JUINResponse<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @ApiOperation(value = "비밀번호 재확인")
+    @PostMapping("/password/verify")
+    public JUINResponse<Void> verifyPassword(final Principal principal
+                                           , @RequestBody AccountRequest.CheckPassword request) {
+        final Account account = principalQueryService.readByPrincipal(principal);
+
+        try {
+            accountQueryService.verifyPassword(account, request);
+            return new JUINResponse<>(HttpStatus.OK);
+        } catch (InvalidParameterException e) {
             return new JUINResponse<>(HttpStatus.BAD_REQUEST);
         }
     }
