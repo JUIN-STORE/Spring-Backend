@@ -9,8 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface QuerydslCartItemRepository {
-    Optional<List<CartItem>> findByAccountId(Long accountId);
-
     Optional<List<CartItem>> findByCartId(Long cartId);
 
     long deleteByCartIdAndItemId(Long cartId, List<Long> itemIdList);
@@ -23,4 +21,5 @@ public interface QuerydslCartItemRepository {
                                              boolean thumbnail,
                                              boolean representative);
 
+    long deleteByItemIdList(List<Long> itemIdList);
 }

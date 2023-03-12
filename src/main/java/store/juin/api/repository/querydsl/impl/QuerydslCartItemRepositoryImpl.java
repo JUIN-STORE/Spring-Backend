@@ -20,11 +20,6 @@ public class QuerydslCartItemRepositoryImpl implements QuerydslCartItemRepositor
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<List<CartItem>> findByAccountId(Long accountId) {
-        return null;
-    }
-
-    @Override
     public Optional<List<CartItem>> findByCartId(Long cartId) {
         return Optional.ofNullable(
                 queryFactory
@@ -86,5 +81,13 @@ public class QuerydslCartItemRepositoryImpl implements QuerydslCartItemRepositor
                         .where(itemImage.representative.eq(representative))
                         .fetch()
         );
+    }
+
+    @Override
+    public long deleteByItemIdList(List<Long> itemIdList) {
+        return queryFactory
+                .delete(cartItem)
+                .where(item.id.in(itemIdList))
+                .execute();
     }
 }

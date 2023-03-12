@@ -28,6 +28,7 @@ public class OrderCommandService {
     private final AddressQueryService addressQueryService;
 
     private final AddressCommandService addressCommandService;
+    private final CartItemCommandService cartItemCommandService;
     private final DeliveryCommandService deliveryCommandService;
     private final OrderItemCommandService orderItemCommandService;
 
@@ -68,6 +69,7 @@ public class OrderCommandService {
             order.addOrderItem(orderItem);
             orderItemCommandService.add(orderItem);
         }
+        cartItemCommandService.removeByItemIdList(itemIdList);
 
         return order.getId();
     }

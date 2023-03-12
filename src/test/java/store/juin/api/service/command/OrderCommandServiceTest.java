@@ -51,6 +51,7 @@ class OrderCommandServiceTest {
     @Mock private AddressQueryService addressQueryService;
 
     @Mock private AddressCommandService addressCommandService;
+    @Mock private CartItemCommandService cartItemCommandService;
     @Mock private DeliveryCommandService deliveryCommandService;
     @Mock private OrderItemCommandService orderItemCommandService;
 

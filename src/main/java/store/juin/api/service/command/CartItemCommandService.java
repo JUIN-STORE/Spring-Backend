@@ -74,4 +74,8 @@ public class CartItemCommandService {
     public int removeByAccountId(Long accountId) {
         return cartItemRepository.deleteByAccountId(accountId);
     }
+
+    public long removeByItemIdList(List<Long> itemIdList) {
+        return cartItemRepository.deleteByItemIdList(itemIdList);
+    }
 }
