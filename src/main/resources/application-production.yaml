@@ -1,9 +1,9 @@
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://jz-ecommerce.cwrb7q3p0zpb.ap-northeast-2.rds.amazonaws.com:3306/jz
-        username: jz
-        password: jzecommerce
+        url: jdbc:mysql://juin-store.cwrb7q3p0zpb.ap-northeast-2.rds.amazonaws.com:3306/juin
+        username: juin
+        password: ju!nStore
         initialization-mode: never  # always, embedded, never
 
     jpa:
