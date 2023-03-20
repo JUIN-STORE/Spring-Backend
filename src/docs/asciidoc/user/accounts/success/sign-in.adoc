@@ -16,17 +16,17 @@ endif::[]
 [[overview]]
 == REQUEST
 === curl
-include::{snippets}/user/accounts/success/login/curl-request.adoc[]
+include::{snippets}/user/accounts/success/sign-in/curl-request.adoc[]
 
 === http-request
-include::{snippets}/user/accounts/success/login/http-request.adoc[]
+include::{snippets}/user/accounts/success/sign-in/http-request.adoc[]
 
 === request fields
-include::{snippets}/user/accounts/success/login/request-fields.adoc[]
+include::{snippets}/user/accounts/success/sign-in/request-fields.adoc[]
 
 == RESPONSE
 === http-response
-include::{snippets}/user/accounts/success/login/http-response.adoc[]
+include::{snippets}/user/accounts/success/sign-in/http-response.adoc[]
 
 === response fields
-include::{snippets}/user/accounts/success/login/response-fields.adoc[]
+include::{snippets}/user/accounts/success/sign-in/response-fields.adoc[]

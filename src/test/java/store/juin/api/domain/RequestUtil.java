@@ -104,8 +104,8 @@ public class RequestUtil {
         return request;
     }
 
-    public static AccountRequest.Login makeLoginRequest(String identification, String passwordHash) {
-        return new AccountRequest.Login()
+    public static AccountRequest.SignIn makeSignInRequest(String identification, String passwordHash) {
+        return new AccountRequest.SignIn()
                 .setIdentification(identification)
                 .setPasswordHash(passwordHash);
     }

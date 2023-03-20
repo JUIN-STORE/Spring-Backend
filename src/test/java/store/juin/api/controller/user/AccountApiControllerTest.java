@@ -128,15 +128,15 @@ class AccountApiControllerTest {
     }
 
     @Nested
-    @DisplayName("POST /api/accounts/login")
-    class LoginTest {
+    @DisplayName("POST /api/accounts/sign-in")
+    class SignInTest {
         @Test
         @DisplayName("(성공) 로그인을 한다.")
         void loginTest01() throws Exception {
             // given
             var identification = "z@z.com";
             var password = "z";
-            var request = makeLoginRequest(identification, password);
+            var request = makeSignInRequest(identification, password);
 
             var accessToken = "this_is_a_accessToken";
             var refreshToken = "this_is_a_refreshToken";
@@ -147,14 +147,14 @@ class AccountApiControllerTest {
             given(tokenCommandService.upsertRefreshToken(identification)).willReturn(refreshToken);
 
             // when
-            final ResultActions actual = mockMvc.perform(post("/api/accounts/login")
+            final ResultActions actual = mockMvc.perform(post("/api/accounts/sign-in")
                     .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(request)));
 
             // then
             actual
                     .andExpect(status().isOk())
-                    .andDo(document(DOT + "/user/accounts/success/login"
+                    .andDo(document(DOT + "/user/accounts/success/sign-in"
                                     , requestFields(
                                             fieldWithPath("identification").type(String.class).description("가입 아이디")
                                             , fieldWithPath("passwordHash").type(String.class).description("비밀번호")

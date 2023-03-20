@@ -80,10 +80,10 @@ public class AccountApiController {
     }
 
     @ApiOperation(value = "로그인", notes = "로그인을 한다.")
-    @PostMapping("/login")
-    public JUINResponse<AccountResponse.Login> login(@RequestBody AccountRequest.Login request
+    @PostMapping("/sign-in")
+    public JUINResponse<AccountResponse.SignIn> signIn(@RequestBody AccountRequest.SignIn request
                                                    , HttpServletResponse httpServletResponse) {
-        log.info("[P9][CTRL][ACNT][LOIN]: POST /api/accounts/login, request=({})", request);
+        log.info("[P9][CTRL][ACNT][LOIN]: POST /api/accounts/sign-in, request=({})", request);
 
         try {
             // 이 시점에 １번　쿼리 나감.
@@ -105,7 +105,7 @@ public class AccountApiController {
                     .build();
             httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
 
-            var response = AccountResponse.Login.of(identification, accessToken);
+            var response = AccountResponse.SignIn.of(identification, accessToken);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException | BadCredentialsException e) {
             log.warn("[P5][CTRL][ACNT][LOIN]: 회원 정보가 없습니다. request=({})", request);
