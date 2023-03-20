@@ -101,8 +101,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.httpBasic().disable();
 
         final String[] whitelist = new String[]{
-                "/api/accounts/login",
                 "/api/accounts/refresh",
+                "/api/accounts/sign-in",
                 "/api/accounts/sign-up",
                 "/api/accounts/mail",
                 "/api/accounts/password",

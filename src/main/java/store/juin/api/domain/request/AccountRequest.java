@@ -47,7 +47,7 @@ public class AccountRequest {
     }
 
     @Data @Accessors(chain = true)
-    public static class Login implements Serializable {
+    public static class SignIn implements Serializable {
         private String identification;
         private String passwordHash;
     }
