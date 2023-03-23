@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import store.juin.api.JUINResponse;
 import store.juin.api.domain.entity.Item;
+import store.juin.api.domain.entity.PersonalColor;
 import store.juin.api.domain.response.ItemResponse;
 import store.juin.api.service.query.ItemQueryService;
 
@@ -60,7 +61,7 @@ public class ItemApiController {
     public JUINResponse<Page<ItemResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable
                                                       , @RequestParam(required = false) Long categoryId
                                                       , @RequestParam(value = "name", required = false) String searchTitle
-                                                      , @RequestParam(required = false) String personalColor) {
+                                                      , @RequestParam(required = false) PersonalColor personalColor) {
         log.info("[P9][CTRL][ITEM][SARH]: GET /api/items/search pageable=({}), categoryId=({}), searchTitle=({}), personalColor=({})",
                 pageable, categoryId, searchTitle, personalColor);
 
