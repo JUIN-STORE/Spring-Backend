@@ -1,6 +1,7 @@
 package store.juin.api.repository.jpa;
 
 import store.juin.api.domain.entity.Item;
+import store.juin.api.domain.entity.PersonalColor;
 import store.juin.api.repository.querydsl.QuerydslItemRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +18,5 @@ public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslItemR
 
     Long countByNameContaining(String name);
 
-    Page<Item> findAllByPersonalColor(Pageable pageable, String personalColor);
+    Page<Item> findAllByPersonalColor(Pageable pageable, PersonalColor personalColor);
 }

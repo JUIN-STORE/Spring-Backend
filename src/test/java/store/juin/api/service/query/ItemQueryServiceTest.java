@@ -216,7 +216,7 @@ class ItemQueryServiceTest {
             var page = 0;
             var size = 10;
             var pageable = PageRequest.of(page, size);
-            var personColor = PersonalColor.SPRING.toString();
+            var personColor = PersonalColor.SPRING;
 
             var itemImageList = makeItemImageList(10L);
             var item = makeItem(1L, itemImageList);

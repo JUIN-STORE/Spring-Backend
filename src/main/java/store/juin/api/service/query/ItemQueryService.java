@@ -1,6 +1,7 @@
 package store.juin.api.service.query;
 
 import store.juin.api.domain.entity.Item;
+import store.juin.api.domain.entity.PersonalColor;
 import store.juin.api.domain.response.ItemResponse;
 import store.juin.api.exception.Msg;
 import store.juin.api.repository.jpa.ItemRepository;
@@ -45,7 +46,7 @@ public class ItemQueryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Item> readAllByPersonalColor(Pageable pageable, String personalColor) {
+    public Page<Item> readAllByPersonalColor(Pageable pageable, PersonalColor personalColor) {
         return itemRepository.findAllByPersonalColor(pageable, personalColor);
     }
 
@@ -53,7 +54,7 @@ public class ItemQueryService {
     public Page<ItemResponse.Read> search(Pageable pageable,
                                           String searchTitle,
                                           Long categoryId,
-                                          String personalColor) {
+                                          PersonalColor personalColor) {
         Page<Item> itemList;
 
         if (personalColor != null) {
