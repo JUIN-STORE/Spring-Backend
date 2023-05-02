@@ -48,7 +48,7 @@ class OrderQueryServiceTest {
             orderJoinResponseList.add(new OrderJoinResponse());
             var responsePage = new PageImpl<>(orderJoinResponseList);
 
-            given(mockOrderRepository.findOrderJoinOrderItemJoinItemByAccountId(account.getId(), request, pageRequest))
+            given(mockOrderRepository.findOrderJoinOrderItemJoinItemJoinItemImageByAccountId(account.getId(), request, pageRequest))
                     .willReturn(Optional.of(responsePage));
 
             // when

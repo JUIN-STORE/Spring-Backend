@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static store.juin.api.domain.entity.QItem.item;
+import static store.juin.api.domain.entity.QItemImage.itemImage;
 import static store.juin.api.domain.entity.QOrder.order;
 import static store.juin.api.domain.entity.QOrderItem.orderItem;
 
@@ -36,9 +37,9 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
     }
 
     @Override
-    public Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemByAccountId(Long accountId,
-                                                                                       OrderRequest.Retrieve request,
-                                                                                       Pageable pageable) {
+    public Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemJoinItemImageByAccountId(Long accountId,
+                                                                                                    OrderRequest.Retrieve request,
+                                                                                                    Pageable pageable) {
         // FIXME: 더 좋은 방법 있으면 변경하기
         List<OrderJoinResponse> orderJoinResponseList = queryFactory
                 .select(Projections.fields(OrderJoinResponse.class
@@ -51,6 +52,9 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
                                 , orderItem.item.id.as("orderItemId")
                                 , order.delivery.id.as("deliveryId")
                                 , order.orderStatus
+                                , itemImage.name.as("itemImageName")
+                                , itemImage.originName.as("originImageName")
+                                , itemImage.imageUrl
                         )
                 )
                 .from(order)
@@ -58,12 +62,16 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
                 .on(order.id.eq(orderItem.order.id))
                 .join(item)
                 .on(item.id.eq(orderItem.item.id))
+                .join(itemImage)
+                .on(itemImage.item.id.eq(item.id))
                 .where(order.account.id.eq(accountId),
                         orderDateBetween(
                                 request.getStartDate().atStartOfDay(),
                                 request.getEndDate().atStartOfDay()
                         ),
-                        orderStatusEq(request.getOrderStatus()))
+                        orderStatusEq(request.getOrderStatus()),
+                        itemImage.thumbnail.isTrue(),
+                        itemImage.representative.isTrue())
                 .orderBy(order.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
