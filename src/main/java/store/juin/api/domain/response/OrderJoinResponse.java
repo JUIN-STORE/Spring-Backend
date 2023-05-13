@@ -25,4 +25,10 @@ public class OrderJoinResponse {
     private LocalDateTime orderDate;
 
     private OrderStatus orderStatus;
+
+    private String itemImageName;
+
+    private String originImageName;
+
+    private String imageUrl;
 }
