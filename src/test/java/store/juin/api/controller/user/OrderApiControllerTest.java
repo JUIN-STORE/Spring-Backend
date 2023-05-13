@@ -191,6 +191,9 @@ class OrderApiControllerTest {
                             , responseFields(
                                     fieldWithPath("apiStatus").type(String.class).description("api 요청에 대한 상태")
 
+                                    , fieldWithPath("data.content[].itemImageName").type(Long.class).description("copy-이미지 이름")
+                                    , fieldWithPath("data.content[].originImageName").type(Long.class).description("이미지 이름")
+                                    , fieldWithPath("data.content[].imageUrl").type(Long.class).description("이미지 url")
                                     , fieldWithPath("data.content[].ordersId").type(Long.class).description("주문 id")
                                     , fieldWithPath("data.content[].orderItemId").type(Long.class).description("주문 상품 id")
                                     , fieldWithPath("data.content[].itemId").type(Long.class).description("상품 id")
