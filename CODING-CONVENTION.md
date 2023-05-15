@@ -1,6 +1,88 @@
 # *Coding Convention*
 
 ---
+# *Common*
+## 1. this
+* > this는 메서드에만 붙이며 this가 붙은 메서드는 *@Transactional을 사용하지 않는다*는 의미다. 
+  > 
+  > this를 통해 해당 메서드는 @Transactional 참여할 수 없다는 것을 알려주는 것이다.
+  >
+  > 만약 this가 붙은 메서드에 @Transactional 정상 동작하려면 해당 메서드를 외부로 빼서 사용한다.
+* > 예를 들어 같은 코드가 있다고 가정하자.
+
+```java
+// A-1. this가 없는 코드
+@Sl4j
+public class ExternalService { 
+    private void inner() { 
+    log.info("call inner");
+    } 
+    
+    public void external() {
+        log.info("call external");
+        inner(); // @Transactional 정상 동작 여부를 한 눈에 알 수 없음.
+    }
+}
+```
+
+```java
+// A-2. this가 있는 코드
+@Sl4j
+public class ExternalService { 
+    private void inner() { 
+    log.info("call inner");
+    } 
+    
+    public void external() {
+        log.info("call external");
+        this.inner(); // @Transactional 정상 동작 여부를 한 눈에 알 수 있음.
+    }
+}
+```
+
+
+```JAVA
+// B. 새로운 요구사항이 들어와서 external()에 @Transactional이 필요하다고 가정하자.
+@Sl4j
+public class ExternalService {
+    private void inner() {
+      log.info("call inner");
+    }
+    
+    // 정상 동작 안 함.
+    @Transactional
+    public void external() {
+      log.info("call external");
+      inner();
+      
+      // bizLogic();
+    }
+}
+```````
+
+```JAVA
+// C. 만약 @Transactional 정상 동작하려면 this가 붙은 메서드를 외부로 빼서 사용한다.
+@Sl4j
+@RequiredArgsConstructor
+public class ExternalService { 
+    private final InnerService innerService;
+    
+    @Transactional 
+    public void external() {
+        log.info("call external");
+        innerService.inner();
+
+        // bizLogic();
+    }
+}
+
+@Sl4j
+public class InnerService { 
+    public void inner() {
+        log.info("call inner");
+    }
+}
+```
 
 # *Controller*
 ## 1. Controller Naming 접두사
@@ -54,14 +136,16 @@
   > private final AddressQueryService addressQueryService;
 
 ### 2-1. [EntityName]QueryService Rule - Read 전용
-* > 단순 조회 케이스는 response를 반환하지 않고 반드시 entity를 반환한다. 
+* > 단순 조회 케이스는 response를 반환하지 않고 반드시 entity를 반환한다.
+  > 
+  > entity로 반환하는 케이스는 향후 MapStruct를 통해 변환하여 반환할 예정이다.
 * > 예를 들어 AccountQueryService는 Account, List<Account> 등 Account의 형태로만 리턴해야 된다. 
   > 
   > ref) https://stackoverflow.com/questions/59194082/in-spring-is-it-better-practice-to-return-a-responseentity-directly-from-the-se
 * > 조인 케이스만 return response.
 
 ### 2-2. [EntityName]CommandService Rule -> Create/Update/Delete 전용
-* > 명명 규칙에 맞게 Create / Update / Delete 메서드를 만든다.
+* > 명명 규칙에 맞게 Create/Update/Delete 메서드를 만든다.
 ---
 
 # *REPOSITORY*
