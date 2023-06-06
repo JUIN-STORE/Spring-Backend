@@ -36,6 +36,16 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
                 .execute();
     }
 
+    public Long countOrderJoinOrderItemByAccountIdAndItemId(Long accountId, Long itemId) {
+        return queryFactory
+                .select(order.count())
+                .from(order)
+                .join(orderItem)
+                .on(order.id.eq(orderItem.order.id))
+                .where(order.account.id.eq(accountId), orderItem.item.id.eq(itemId))
+                .fetchFirst();
+    }
+
     @Override
     public Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemJoinItemImageByAccountId(Long accountId,
                                                                                                     OrderRequest.Retrieve request,

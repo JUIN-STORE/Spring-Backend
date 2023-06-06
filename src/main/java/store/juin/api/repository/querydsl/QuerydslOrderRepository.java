@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface QuerydslOrderRepository {
     long deleteByAccountId(Long accountId);
 
+    Long countOrderJoinOrderItemByAccountIdAndItemId(Long accountId, Long itemId);
+
     Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemJoinItemImageByAccountId(Long accountId,
                                                                                              OrderRequest.Retrieve request,
                                                                                              Pageable pageable);

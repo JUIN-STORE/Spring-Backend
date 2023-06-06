@@ -1,9 +1,9 @@
 package store.juin.api.repository.jpa;
 
-import store.juin.api.domain.entity.Order;
-import store.juin.api.repository.querydsl.QuerydslOrderRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import store.juin.api.domain.entity.Order;
+import store.juin.api.repository.querydsl.QuerydslOrderRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +13,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslOrd
     Optional<List<Order>> findAllByAccountId(Long accountId);
 
     Optional<Order> findByIdAndAccountId(Long orderId, Long accountId);
+
+    Long countOrderJoinOrderItemByAccountIdAndItemId(Long accountId, Long itemId);
 
 //    @Query(nativeQuery = true,
 //            value = "SELECT o.order_date AS orderDate, " +

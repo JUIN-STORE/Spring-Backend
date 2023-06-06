@@ -88,6 +88,10 @@ public class OrderCommandService {
         return orderRepository.deleteByAccountId(accountId);
     }
 
+    public long countByAccountIdAndItemId(Long accountId, Long item) {
+        return orderRepository.countOrderJoinOrderItemByAccountIdAndItemId(accountId, item);
+    }
+
     @Transactional
     public OrderResponse.Delete remove(Long accountId) {
         final List<Order> orderList = orderQueryService.readAllByAccountId(accountId);

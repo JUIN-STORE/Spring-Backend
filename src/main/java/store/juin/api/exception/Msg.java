@@ -46,4 +46,5 @@ public class Msg {
     public static final String DELIVERY_NOT_FOUND = "존재하지 않는 배송 정보입니다.";
 
     public static final String DELIVERY_INVALID_REQUEST = "올바르지 않는 배송 정보 조회 요청입니다.";
+    public static final String REVIEW_NOT_FOUND = "존재하지 않는 리뷰입니다.";
 }
