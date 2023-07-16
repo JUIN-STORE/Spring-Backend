@@ -32,8 +32,8 @@ public class ReviewApiController {
 
     @ApiOperation(value = "리뷰 등록", notes = "상품 리뷰를 작성한다.")
     @PostMapping
-    public JUINResponse<Long> add(final Principal principal,
-                                  @RequestBody ReviewRequest.Add request) {
+    public JUINResponse<Long> create(final Principal principal,
+                                     @RequestBody ReviewRequest.Add request) {
         log.info("[P9][CTRL][REV_][CRTE]: GET /api/reviews identification=({}), request=({})", principal.getName(), request);
 
         try {
