@@ -1,9 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Category;
-import store.juin.api.domain.response.CategoryResponse;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.CategoryRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.domain.entity.Category;
+import store.juin.api.domain.response.CategoryResponse;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
+import store.juin.api.repository.jpa.CategoryRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -27,6 +29,9 @@ import static org.mockito.BDDMockito.given;
 class CategoryQueryServiceTest {
     @InjectMocks
     private CategoryQueryService sut;
+
+    @Spy
+    private QueryTransactional queryTransactional;
 
     @Mock
     private CategoryRepository categoryRepository;

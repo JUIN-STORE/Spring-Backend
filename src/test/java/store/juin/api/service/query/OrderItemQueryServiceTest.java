@@ -1,8 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.OrderItem;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.OrderItemRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,7 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.domain.entity.OrderItem;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
+import store.juin.api.repository.jpa.OrderItemRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
@@ -23,6 +25,9 @@ import static org.mockito.BDDMockito.given;
 class OrderItemQueryServiceTest {
     @InjectMocks
     private OrderItemQueryService sut;
+
+    @Spy
+    private QueryTransactional queryTransactional;
 
     @Mock
     private OrderItemRepository mockOrderItemRepository;

@@ -1,14 +1,16 @@
 package store.juin.api.service.command;
 
-import store.juin.api.domain.entity.OrderItem;
-import store.juin.api.repository.jpa.OrderItemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.domain.entity.OrderItem;
+import store.juin.api.handler.CommandTransactional;
+import store.juin.api.repository.jpa.OrderItemRepository;
 
 import java.util.ArrayList;
 
@@ -21,6 +23,9 @@ import static org.mockito.Mockito.verify;
 class OrderItemCommandServiceTest {
     @InjectMocks
     private OrderItemCommandService sut;
+
+    @Spy
+    private CommandTransactional commandTransactional;
 
     @Mock
     private OrderItemRepository orderItemRepository;

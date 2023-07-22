@@ -3,10 +3,10 @@ package store.juin.api.service.query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import store.juin.api.domain.entity.Address;
 import store.juin.api.domain.request.AddressRequest;
 import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
 import store.juin.api.repository.jpa.AddressRepository;
 
 import javax.persistence.EntityNotFoundException;
@@ -16,35 +16,42 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AddressQueryService {
+    private final QueryTransactional queryTransactional;
+
     private final AddressRepository addressRepository;
 
-    @Transactional(readOnly = true)
     public Address readById(Long addressId) {
-        return addressRepository.findById(addressId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND));
+        return queryTransactional.execute(() ->
+                addressRepository.findById(addressId)
+                        .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND))
+        );
     }
 
-    @Transactional(readOnly = true)
     public Address readByIdAndAccountId(Long addressId, Long accountId) {
-        return addressRepository.findByIdAndAccountId(addressId, accountId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND));
+        return queryTransactional.execute(() ->
+                addressRepository.findByIdAndAccountId(addressId, accountId)
+                        .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND))
+        );
     }
 
-    @Transactional(readOnly = true)
     public List<Address> readAllByAccountId(Long accountId) {
-        return addressRepository.findAllByAccountId(accountId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND));
+        return queryTransactional.execute(() ->
+                addressRepository.findAllByAccountId(accountId)
+                        .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND))
+        );
     }
 
-    @Transactional(readOnly = true)
     public Address readByAccountIdAndDefaultAddress(Long accountId) {
-        return addressRepository.findByAccountIdAndDefaultAddress(accountId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND));
+        return queryTransactional.execute(() ->
+                addressRepository.findByAccountIdAndDefaultAddress(accountId)
+                        .orElseThrow(() -> new EntityNotFoundException(Msg.ADDRESS_NOT_FOUND))
+        );
     }
 
-    @Transactional(readOnly = true)
     public Address readByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressRequest.Create addressCreate) {
-        return addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(accountId, addressCreate);
+        return queryTransactional.execute(() ->
+                addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(accountId, addressCreate)
+        );
     }
 }
 

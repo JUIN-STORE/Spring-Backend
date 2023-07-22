@@ -7,9 +7,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Spy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Cart;
+import store.juin.api.handler.CommandTransactional;
 import store.juin.api.repository.jpa.CartRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +24,9 @@ import static store.juin.api.domain.EntityUtil.makeAccount;
 class CartCommandServiceTest {
     @InjectMocks
     private CartCommandService sut;
+
+    @Spy
+    private CommandTransactional commandTransactional;
 
     @Mock
     private CartRepository cartRepository;

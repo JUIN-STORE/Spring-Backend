@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import store.juin.api.domain.entity.Address;
 import store.juin.api.domain.entity.Delivery;
@@ -19,6 +20,7 @@ import store.juin.api.domain.request.OrderRequest;
 import store.juin.api.domain.response.OrderResponse;
 import store.juin.api.exception.Msg;
 import store.juin.api.exception.NotEnoughStockException;
+import store.juin.api.handler.CommandTransactional;
 import store.juin.api.repository.jpa.OrderRepository;
 import store.juin.api.service.query.AddressQueryService;
 import store.juin.api.service.query.ItemQueryService;
@@ -32,11 +34,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static store.juin.api.domain.EntityUtil.makeAccount;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,16 +46,27 @@ class OrderCommandServiceTest {
     @InjectMocks
     private OrderCommandService sut;
 
-    @Mock private OrderRepository orderRepository;
+    @Spy
+    private CommandTransactional commandTransactional;
 
-    @Mock private ItemQueryService itemQueryService;
-    @Mock private OrderQueryService orderQueryService;
-    @Mock private AddressQueryService addressQueryService;
+    @Mock
+    private OrderRepository orderRepository;
 
-    @Mock private AddressCommandService addressCommandService;
-    @Mock private CartItemCommandService cartItemCommandService;
-    @Mock private DeliveryCommandService deliveryCommandService;
-    @Mock private OrderItemCommandService orderItemCommandService;
+    @Mock
+    private ItemQueryService itemQueryService;
+    @Mock
+    private OrderQueryService orderQueryService;
+    @Mock
+    private AddressQueryService addressQueryService;
+
+    @Mock
+    private AddressCommandService addressCommandService;
+    @Mock
+    private CartItemCommandService cartItemCommandService;
+    @Mock
+    private DeliveryCommandService deliveryCommandService;
+    @Mock
+    private OrderItemCommandService orderItemCommandService;
 
     @Nested
     @DisplayName("주문")

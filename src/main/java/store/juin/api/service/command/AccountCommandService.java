@@ -3,13 +3,13 @@ package store.juin.api.service.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Address;
 import store.juin.api.domain.request.AccountRequest;
 import store.juin.api.domain.request.EmailRequest;
 import store.juin.api.domain.response.OrderResponse;
 import store.juin.api.exception.Msg;
+import store.juin.api.handler.CommandTransactional;
 import store.juin.api.repository.jpa.AccountRepository;
 import store.juin.api.service.query.AddressQueryService;
 import store.juin.api.service.ses.AuthorizeCacheService;
@@ -26,19 +26,21 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AccountCommandService {
+    private final CommandTransactional commandTransactional;
+
     private final AccountRepository accountRepository;
 
     private final AddressQueryService addressQueryService;
 
+    private final EmailService emailService;
     private final CartCommandService cartCommandService;
     private final OrderCommandService orderCommandService;
     private final AddressCommandService addressCommandService;
     private final CartItemCommandService cartItemCommandService;
     private final DeliveryCommandService deliveryCommandService;
-    private final AuthorizeCacheService authorizeCacheService;
-    private final EmailService emailService;
 
-    @Transactional
+    private final AuthorizeCacheService authorizeCacheService;
+
     public Account add(AccountRequest.SignUp request) {
         // 이메일 중복 검사
         checkDuplicatedEmail(request);
@@ -46,10 +48,13 @@ public class AccountCommandService {
         final Account account = request.toAccount();
         final Address address = request.getAddress().toAddress(account);
 
-        accountRepository.save(account);
+        commandTransactional.execute(() -> {
+            accountRepository.save(account);
 
-        addressCommandService.add(address);
-        cartCommandService.add(account);
+            addressCommandService.add(address);
+            cartCommandService.add(account);
+
+        });
 
         return account;
     }
@@ -60,16 +65,16 @@ public class AccountCommandService {
         if (validEmail.isPresent()) throw new EntityExistsException(Msg.DUPLICATED_ACCOUNT);
     }
 
-    @Transactional
     public Account modify(Account account, AccountRequest.Update request) {
         Account newAccount = request.toAccount(account.getId(), account.getEmail());
 
-        account.updateAccount(newAccount);
+        commandTransactional.execute(() ->
+                account.updateAccount(newAccount)
+        );
 
         return newAccount;
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public Account remove(Account account, Long accountId) {
         // Address 구하기
         final List<Address> addressList = addressQueryService.readAllByAccountId(account.getId());
@@ -117,13 +122,13 @@ public class AccountCommandService {
         return emailService.send(emailRequest);
     }
 
-    @Transactional
     public Account changePassword(AccountRequest.ChangePassword request) {
-        final Account account = accountRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
-        account.updatePasswordHash(request.makeEncryptedPassword());
+        return commandTransactional.execute(() -> {
+            final Account account = accountRepository.findByEmail(request.getEmail()).orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
+            account.updatePasswordHash(request.makeEncryptedPassword());
+            return account;
+        });
 
-        return account;
     }
 
     public boolean isConfirmed(String email) {

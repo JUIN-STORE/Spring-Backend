@@ -1,13 +1,13 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Delivery;
-import store.juin.api.domain.entity.Order;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Delivery;
+import store.juin.api.domain.entity.Order;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
+import store.juin.api.repository.jpa.DeliveryRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.security.InvalidParameterException;
@@ -17,18 +17,26 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DeliveryQueryService {
+    private final QueryTransactional queryTransactional;
+
     private final DeliveryRepository deliveryRepository;
 
-    @Transactional(readOnly = true)
-    public List<Delivery> readAllByAddressIdList(List<Long> addressIdList) {
-        return deliveryRepository.findAllByAddressIdIn(addressIdList)
-                .orElseThrow(EntityNotFoundException::new);
+    public Delivery readById(Long deliveryId) {
+        return queryTransactional.execute(() ->
+                deliveryRepository.findById(deliveryId)
+                        .orElseThrow(() -> new EntityNotFoundException(Msg.DELIVERY_NOT_FOUND))
+        );
     }
 
-    @Transactional(readOnly = true)
+    public List<Delivery> readAllByAddressIdList(List<Long> addressIdList) {
+        return queryTransactional.execute(() ->
+                deliveryRepository.findAllByAddressIdIn(addressIdList)
+                        .orElseThrow(EntityNotFoundException::new)
+        );
+    }
+
     public Delivery readById(Long deliveryId, Long accountId) {
-        final Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.DELIVERY_NOT_FOUND));
+        final Delivery delivery = readById(deliveryId);
 
         checkValidDelivery(delivery, accountId);
         return delivery;

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import store.juin.api.domain.entity.Order;
 import store.juin.api.domain.request.OrderRequest;
 import store.juin.api.domain.response.OrderJoinResponse;
+import store.juin.api.handler.QueryTransactional;
 import store.juin.api.repository.jpa.OrderRepository;
 
 import java.util.ArrayList;
@@ -27,6 +29,9 @@ import static store.juin.api.domain.EntityUtil.makeAccount;
 class OrderQueryServiceTest {
     @InjectMocks
     private OrderQueryService sut;
+
+    @Spy
+    private QueryTransactional queryTransactional;
 
     @Mock
     private OrderRepository mockOrderRepository;

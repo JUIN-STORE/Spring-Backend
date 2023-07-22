@@ -1,8 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.ItemImage;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.ItemImageRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,7 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import store.juin.api.domain.entity.ItemImage;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
+import store.juin.api.repository.jpa.ItemImageRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -28,7 +30,11 @@ class ItemImageQueryServiceTest {
     @InjectMocks
     private ItemImageQueryService sut;
 
-    @Mock private ItemImageRepository itemImageRepository;
+    @Spy
+    private QueryTransactional queryTransactional;
+
+    @Mock
+    private ItemImageRepository itemImageRepository;
 
     @Nested
     @DisplayName("readAllByThumbnail 테스트")

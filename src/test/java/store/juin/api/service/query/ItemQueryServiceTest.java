@@ -1,13 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Category;
-import store.juin.api.domain.entity.Item;
-import store.juin.api.domain.entity.ItemImage;
-import store.juin.api.domain.entity.PersonalColor;
-import store.juin.api.domain.enums.ItemStatus;
-import store.juin.api.domain.response.ItemResponse;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.ItemRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,10 +7,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import store.juin.api.domain.entity.Category;
+import store.juin.api.domain.entity.Item;
+import store.juin.api.domain.entity.ItemImage;
+import store.juin.api.domain.entity.PersonalColor;
+import store.juin.api.domain.enums.ItemStatus;
+import store.juin.api.domain.response.ItemResponse;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
+import store.juin.api.repository.jpa.ItemRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
@@ -37,6 +39,9 @@ import static org.mockito.BDDMockito.given;
 class ItemQueryServiceTest {
     @InjectMocks
     private ItemQueryService sut;
+
+    @Spy
+    private QueryTransactional queryTransactional;
 
     @Mock
     private ItemRepository itemRepository;
@@ -234,6 +239,7 @@ class ItemQueryServiceTest {
             // then
             assertIterableEquals(expected, actual);
         }
+
         @Test
         @DisplayName("검색어가 있을 때")
         void searchTest02() {
@@ -289,7 +295,7 @@ class ItemQueryServiceTest {
             var expected = makeItemReadResponseList(itemList, itemImageList);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, null,  categoryId, null);
+            final Page<ItemResponse.Read> actual = sut.search(pageable, null, categoryId, null);
 
             // then
             assertIterableEquals(expected, actual);

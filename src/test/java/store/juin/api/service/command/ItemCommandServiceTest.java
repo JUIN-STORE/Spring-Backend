@@ -1,13 +1,5 @@
 package store.juin.api.service.command;
 
-import store.juin.api.domain.entity.Category;
-import store.juin.api.domain.entity.Item;
-import store.juin.api.domain.enums.ItemStatus;
-import store.juin.api.domain.request.ItemRequest;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.ItemRepository;
-import store.juin.api.service.query.CategoryQueryService;
-import store.juin.api.service.query.ItemQueryService;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,15 +8,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import store.juin.api.domain.entity.Category;
+import store.juin.api.domain.entity.Item;
+import store.juin.api.domain.enums.ItemStatus;
+import store.juin.api.domain.request.ItemRequest;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.CommandTransactional;
+import store.juin.api.repository.jpa.ItemRepository;
+import store.juin.api.service.query.CategoryQueryService;
+import store.juin.api.service.query.ItemQueryService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
@@ -34,13 +35,22 @@ class ItemCommandServiceTest {
     @InjectMocks
     private ItemCommandService sut;
 
-    @Mock private ItemRepository itemRepository;
+    @Spy
+    private CommandTransactional commandTransactional;
 
-    @Mock private ItemQueryService itemQueryService;
-    @Mock private CategoryQueryService categoryQueryService;
 
-    @Mock private ItemImageCommandService itemImageCommandService;
-    @Mock private ItemCategoryCommandService itemCategoryCommandService;
+    @Mock
+    private ItemRepository itemRepository;
+
+    @Mock
+    private ItemQueryService itemQueryService;
+    @Mock
+    private CategoryQueryService categoryQueryService;
+
+    @Mock
+    private ItemImageCommandService itemImageCommandService;
+    @Mock
+    private ItemCategoryCommandService itemCategoryCommandService;
 
     @Nested
     @DisplayName("add 테스트")

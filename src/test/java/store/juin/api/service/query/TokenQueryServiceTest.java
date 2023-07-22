@@ -1,7 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.jwt.TokenProvider;
-import store.juin.api.repository.jpa.TokenRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -9,12 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import store.juin.api.handler.QueryTransactional;
+import store.juin.api.jwt.TokenProvider;
+import store.juin.api.repository.jpa.TokenRepository;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,11 +26,18 @@ import static org.mockito.BDDMockito.given;
 class TokenQueryServiceTest {
     @InjectMocks
     private TokenQueryService sut;
-    @Mock private TokenRepository tokenRepository;
 
-    @Mock private TokenProvider tokenProvider;
-    @Mock private UserDetailsService userDetailsService;
-    @Mock private PrincipalQueryService principalQueryService;
+    @Spy
+    private QueryTransactional queryTransactional;
+    @Mock
+    private TokenRepository tokenRepository;
+
+    @Mock
+    private TokenProvider tokenProvider;
+    @Mock
+    private UserDetailsService userDetailsService;
+    @Mock
+    private PrincipalQueryService principalQueryService;
 
     @Nested
     @DisplayName("리프레시 토큰으로 인증 정보 만들기 테스트")

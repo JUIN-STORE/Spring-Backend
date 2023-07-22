@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Cart;
@@ -15,6 +16,7 @@ import store.juin.api.domain.entity.Item;
 import store.juin.api.domain.enums.ItemStatus;
 import store.juin.api.domain.response.CartItemResponse;
 import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
 import store.juin.api.repository.jpa.CartItemRepository;
 
 import javax.persistence.EntityNotFoundException;
@@ -32,6 +34,9 @@ import static store.juin.api.domain.EntityUtil.makeAccount;
 class CartItemQueryServiceTest {
     @InjectMocks
     private CartItemQueryService sut;
+
+    @Spy
+    private QueryTransactional queryTransactional;
 
     @Mock
     CartItemRepository cartItemRepository;

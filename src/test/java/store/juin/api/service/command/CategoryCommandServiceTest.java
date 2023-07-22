@@ -1,16 +1,18 @@
 package store.juin.api.service.command;
 
-import store.juin.api.domain.entity.Category;
-import store.juin.api.domain.request.CategoryRequest;
-import store.juin.api.repository.jpa.CategoryRepository;
-import store.juin.api.service.query.CategoryQueryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.domain.entity.Category;
+import store.juin.api.domain.request.CategoryRequest;
+import store.juin.api.handler.CommandTransactional;
+import store.juin.api.repository.jpa.CategoryRepository;
+import store.juin.api.service.query.CategoryQueryService;
 
 import java.util.List;
 
@@ -23,9 +25,14 @@ class CategoryCommandServiceTest {
     @InjectMocks
     private CategoryCommandService sut;
 
-    @Mock private CategoryRepository categoryRepository;
+    @Spy
+    private CommandTransactional commandTransactional;
 
-    @Mock private CategoryQueryService categoryQueryService;
+    @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private CategoryQueryService categoryQueryService;
 
     @Nested
     @DisplayName("add 테스트")
