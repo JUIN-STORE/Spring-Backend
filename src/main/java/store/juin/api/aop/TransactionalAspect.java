@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import store.juin.api.handler.CommandTransactional;
 
 /**
  * @Around("execution([접근제어자] 반환타입 패키지.패키지.패키지.패키지.클래스.메소드(인자))")
@@ -15,6 +16,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @Aspect
 @Component
 public class TransactionalAspect {
+    private final String packageName = CommandTransactional.class.getPackageName();
 
     /**
      * 트랜잭션은 store.juin.api.handler 패키지에 있는 XXXTransactional만 사용해야 한다.
@@ -43,8 +45,6 @@ public class TransactionalAspect {
         if (currentTransactionName == null) {
             return false;
         }
-
-        final String packageName = "store.juin.api.handler";
 
         return TransactionSynchronizationManager.isActualTransactionActive()
                 && !currentTransactionName.contains(packageName);
