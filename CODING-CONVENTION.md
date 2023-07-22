@@ -2,61 +2,123 @@
 
 ---
 # *Common*
-## 1. this
-* > this는 메서드에만 붙이며 this가 붙은 메서드는 *@Transactional을 사용하지 않는다*는 의미다. 
-  > 
-  > this를 통해 해당 메서드는 @Transactional 참여할 수 없다는 것을 알려주는 것이다.
-  >
-  > 만약 this가 붙은 메서드에 @Transactional 정상 동작하려면 해당 메서드를 외부로 빼서 사용한다.
-* > 예를 들어 같은 코드가 있다고 가정하자.
+## 1. @Transactional
+### 전제
+> @Transactional 어노테이션은 사용하지 않고 handler 패키지에 있는 XXXTransactional Component를 사용한다.
 
-```java
-// A-1. this가 없는 코드
-@Sl4j
-public class ExternalService { 
-    private void inner() { 
-    log.info("call inner");
-    } 
-    
-    public void external() {
-        log.info("call external");
-        inner(); // @Transactional 정상 동작 여부를 한 눈에 알 수 없음.
-    }
-}
-```
+### 이유
+> 많은 메서드를 호출하는 상위에서 @Transactional 사용 시 전파 범위를 예측하는 게 쉽지 않아 성능 이슈가 발생한 적이 있었고, 이를 다음과 같이 해결한 경험이 있다.
 
-```java
-// A-2. this가 있는 코드
-@Sl4j
-public class ExternalService { 
-    private void inner() { 
-    log.info("call inner");
-    } 
-    
-    public void external() {
-        log.info("call external");
-        this.inner(); // @Transactional 정상 동작 여부를 한 눈에 알 수 있음.
-    }
+### 단점
+> 1. @Transactional 옵션을 사용할 수 없다.
+> 2. @Transactional 대신 Component 내부 메서드를 사용해야 하기 때문에 항상 주입을 받아야 한다.
+> 3. @Transactional 어노테이션만 붙이면 됐던 걸 메서드를 사용하여 구현해야 되기 때문에 코드량이 늘어난다. 
+
+ 
+### 장점 
+> 1. Component 내부 메서드만 사용하기 때문에 관리 포인트가 1곳이다.
+> 2. 트랜잭션 전파 범위를 예측하기 쉽고, 성능 이슈 발생 시 빠르게 트러블 슈팅 가능하다.
+> 3. DB와 상관없는 로직은 제외하고 DB와 관련 있는 부분만 트랜잭션을 사용할 수 있다.
+> 4. Lazy Loading을 사용하지 않아도 된다.
+
+### 예시
+```JAVA
+// 변경 전
+@Transactional
+public Account add(AccountRequest.SignUp request) {
+  // 이메일 중복 검사
+  checkDuplicatedEmail(request);
+
+  final Account account = request.toAccount();
+  final Address address = request.getAddress().toAddress(account);
+
+  accountRepository.save(account);
+
+  addressCommandService.add(address);
+  cartCommandService.add(account);
+
+  return account;
 }
 ```
 
 
 ```JAVA
+// 변경 후
+private final CommandTransactional commandTransactional;
+
+public Account add(AccountRequest.SignUp request) {
+  // 이메일 중복 검사
+  checkDuplicatedEmail(request);
+
+  final Account account = request.toAccount();
+  final Address address = request.getAddress().toAddress(account);
+
+  commandTransactional.execute(() -> {
+    accountRepository.save(account);
+    
+    addressCommandService.add(address);
+    cartCommandService.add(account);
+  });
+
+  return account;
+}
+```
+
+## 2. this
+### 전제
+> this는 메서드 위주로 붙이며 this가 붙은 메서드는 *@Transactional을 사용하지 않는다*는 의미다.
+> 
+> this를 붙여 @Transactional 참여할 수 없다는 것을 알려주는 것이다.
+>
+> this가 붙은 메서드에 @Transactional 정상 동작하게 하려면 해당 메서드를 외부로 빼서 사용하자!
+
+### 예시
+```JAVA
+// A-1. this가 없는 코드
+@Sl4j
+public class ExternalService {
+  private void inner() {
+    log.info("call inner");
+  }
+
+  public void external() {
+    log.info("call external");
+    inner(); // @Transactional 정상 동작 여부를 한 눈에 알 수 없음.
+  }
+}
+```
+
+```JAVA
+// A-2. this가 있는 코드
+@Sl4j
+public class ExternalService {
+  private void inner() {
+    log.info("call inner");
+  }
+
+  public void external() {
+    log.info("call external");
+    this.inner(); // @Transactional 정상 동작 여부를 한 눈에 알 수 있음.
+  }
+}
+```
+
+```JAVA
 // B. 새로운 요구사항이 들어와서 external()에 @Transactional이 필요하다고 가정하자.
 @Sl4j
 public class ExternalService {
-    private void inner() {
-      log.info("call inner");
-    }
-    
-    // 정상 동작 안 함.
-    @Transactional
-    public void external() {
-      log.info("call external");
-      inner();
-      
-      // bizLogic();
-    }
+  private void inner() {
+    log.info("call inner");
+  }
+
+  // inner()는 @Transactional 정상 동작 안 함.
+  @Transactional
+  public void external() {
+    log.info("call external");
+    inner();
+
+    businessLogic();
+  }
 }
 ```````
 
@@ -64,23 +126,23 @@ public class ExternalService {
 // C. 만약 @Transactional 정상 동작하려면 this가 붙은 메서드를 외부로 빼서 사용한다.
 @Sl4j
 @RequiredArgsConstructor
-public class ExternalService { 
-    private final InnerService innerService;
-    
-    @Transactional 
-    public void external() {
-        log.info("call external");
-        innerService.inner();
+public class ExternalService {
+  private final InnerService innerService;
 
-        // bizLogic();
-    }
+  @Transactional
+  public void external() {
+    log.info("call external");
+    innerService.inner();
+
+    businessLogic();
+  }
 }
 
 @Sl4j
-public class InnerService { 
-    public void inner() {
-        log.info("call inner");
-    }
+public class InnerService {
+  public void inner() {
+    log.info("call inner");
+  }
 }
 ```
 

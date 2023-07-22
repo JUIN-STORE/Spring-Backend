@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Cart;
@@ -16,6 +17,7 @@ import store.juin.api.domain.enums.ItemStatus;
 import store.juin.api.domain.request.CartItemRequest;
 import store.juin.api.domain.response.CartItemResponse;
 import store.juin.api.exception.Msg;
+import store.juin.api.handler.CommandTransactional;
 import store.juin.api.repository.jpa.CartItemRepository;
 import store.juin.api.service.query.CartItemQueryService;
 import store.juin.api.service.query.CartQueryService;
@@ -36,11 +38,18 @@ class CartItemCommandServiceTest {
     @InjectMocks
     private CartItemCommandService sut;
 
-    @Mock private CartItemRepository cartItemRepository;
+    @Spy
+    private CommandTransactional commandTransactional;
 
-    @Mock private CartQueryService cartQueryService;
-    @Mock private ItemQueryService itemQueryService;
-    @Mock private CartItemQueryService cartItemQueryService;
+    @Mock
+    private CartItemRepository cartItemRepository;
+
+    @Mock
+    private CartQueryService cartQueryService;
+    @Mock
+    private ItemQueryService itemQueryService;
+    @Mock
+    private CartItemQueryService cartItemQueryService;
 
     @Nested
     @DisplayName("add 테스트")
@@ -190,7 +199,7 @@ class CartItemCommandServiceTest {
         void removeByAccountIdTest01() {
             // given
             var expected = 1;
-            var accountId= 9898L;
+            var accountId = 9898L;
 
             given(cartItemRepository.deleteByAccountId(anyLong())).willReturn(expected);
 
@@ -206,7 +215,7 @@ class CartItemCommandServiceTest {
         void removeByAccountIdTest02() {
             // given
             var expected = 0;
-            var accountId= 9898L;
+            var accountId = 9898L;
 
             given(cartItemRepository.deleteByAccountId(anyLong())).willReturn(expected);
 

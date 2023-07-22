@@ -1,10 +1,5 @@
 package store.juin.api.service.query;
 
-import store.juin.api.config.SecurityConfig;
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.enums.AccountRole;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.AccountRepository;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,7 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.enums.AccountRole;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
+import store.juin.api.repository.jpa.AccountRepository;
 import store.juin.api.utils.PasswordUtil;
 
 import javax.persistence.EntityExistsException;
@@ -32,6 +33,9 @@ class AccountQueryServiceTest {
 
     @InjectMocks
     private AccountQueryService sut;
+
+    @Spy
+    private QueryTransactional queryTransactional;
 
     @Mock
     private AccountRepository accountRepository;

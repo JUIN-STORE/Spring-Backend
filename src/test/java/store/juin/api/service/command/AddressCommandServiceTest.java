@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Address;
 import store.juin.api.domain.enums.AccountRole;
 import store.juin.api.domain.request.AddressRequest;
+import store.juin.api.handler.CommandTransactional;
 import store.juin.api.repository.jpa.AddressRepository;
 import store.juin.api.service.query.AddressQueryService;
 import store.juin.api.utils.PasswordUtil;
@@ -27,6 +29,9 @@ class AddressCommandServiceTest {
 
     @InjectMocks
     private AddressCommandService sut;
+
+    @Spy
+    private CommandTransactional commandTransactional;
 
     @Mock
     private AddressRepository addressRepository;

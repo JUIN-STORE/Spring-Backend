@@ -1,17 +1,17 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Item;
-import store.juin.api.domain.entity.PersonalColor;
-import store.juin.api.domain.response.ItemResponse;
-import store.juin.api.exception.Msg;
-import store.juin.api.repository.jpa.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Item;
+import store.juin.api.domain.entity.PersonalColor;
+import store.juin.api.domain.response.ItemResponse;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.QueryTransactional;
+import store.juin.api.repository.jpa.ItemRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
@@ -21,54 +21,58 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemQueryService {
+    private final QueryTransactional queryTransactional;
+
     private final ItemRepository itemRepository;
 
-    @Transactional(readOnly = true)
     public Item readById(Long itemId) {
-        return itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_NOT_FOUND));
+        return queryTransactional.execute(() ->
+                itemRepository.findById(itemId)
+                        .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_NOT_FOUND))
+        );
     }
 
-    @Transactional(readOnly = true)
     public List<Item> readAllByIdList(List<Long> itemIdList) {
-        return itemRepository.findAllByIdIn(itemIdList)
-                .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_NOT_FOUND));
+        return queryTransactional.execute(() ->
+                itemRepository.findAllByIdIn(itemIdList)
+                        .orElseThrow(() -> new EntityNotFoundException(Msg.ITEM_NOT_FOUND))
+        );
     }
 
-    @Transactional(readOnly = true)
     public Page<Item> readAll(Pageable pageable) {
-        return itemRepository.findAll(pageable);
+        return queryTransactional.execute(() ->
+                itemRepository.findAll(pageable)
+        );
     }
 
-    @Transactional(readOnly = true)
     public Page<Item> readAllByCategoryId(Pageable pageable, Long categoryId) {
-        return itemRepository.findAllByCategoryId(pageable, categoryId);
+        return queryTransactional.execute(() ->
+                itemRepository.findAllByCategoryId(pageable, categoryId)
+        );
     }
 
-    @Transactional(readOnly = true)
     public Page<Item> readAllByPersonalColor(Pageable pageable, PersonalColor personalColor) {
-        return itemRepository.findAllByPersonalColor(pageable, personalColor);
+        return queryTransactional.execute(() ->
+                itemRepository.findAllByPersonalColor(pageable, personalColor)
+        );
     }
 
-    @Transactional(readOnly = true)
-    public Page<ItemResponse.Read> search(Pageable pageable,
-                                          String searchTitle,
-                                          Long categoryId,
-                                          PersonalColor personalColor) {
-        Page<Item> itemList;
+    public Page<ItemResponse.Read> search(Pageable pageable, String searchTitle, Long categoryId, PersonalColor personalColor) {
+        return queryTransactional.execute(() -> {
+            Page<Item> itemList;
 
-        if (personalColor != null) {
-            itemList = readAllByPersonalColor(pageable, personalColor);
-        } else {
-            itemList = itemRepository
-                    .findByNameContainingAndCategoryId(pageable, searchTitle, categoryId)
-                    .orElse(new PageImpl<>(Collections.emptyList()));
-        }
+            if (personalColor != null) {
+                itemList = readAllByPersonalColor(pageable, personalColor);
+            } else {
+                itemList = itemRepository
+                        .findByNameContainingAndCategoryId(pageable, searchTitle, categoryId)
+                        .orElse(new PageImpl<>(Collections.emptyList()));
+            }
 
-        return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
+            return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
+        });
     }
 
-    @Transactional(readOnly = true)
     public Page<ItemResponse.Read> display(Pageable pageable) {
         final Page<Item> itemList = readAll(pageable);
 

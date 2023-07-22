@@ -1,16 +1,17 @@
-package store.juin.api.service.query;
+package store.juin.api.service.command;
 
-import store.juin.api.domain.entity.Category;
-import store.juin.api.domain.entity.Item;
-import store.juin.api.repository.jpa.ItemCategoryRepository;
-import store.juin.api.service.command.ItemCategoryCommandService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.juin.api.domain.entity.Category;
+import store.juin.api.domain.entity.Item;
+import store.juin.api.handler.CommandTransactional;
+import store.juin.api.repository.jpa.ItemCategoryRepository;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -18,9 +19,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class ItemCategoryQueryServiceTest {
+class ItemCategoryCommandServiceTest {
     @InjectMocks
     private ItemCategoryCommandService sut;
+
+    @Spy
+    private CommandTransactional commandTransactional;
 
     @Mock
     private ItemCategoryRepository mockItemCategoryRepository;

@@ -1,10 +1,10 @@
 package store.juin.api.service.query;
 
-import store.juin.api.domain.entity.Account;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.handler.QueryTransactional;
 
 import java.security.Principal;
 
@@ -12,12 +12,15 @@ import java.security.Principal;
 @Service
 @RequiredArgsConstructor
 public class PrincipalQueryService {
+    private final QueryTransactional queryTransactional;
+
     private final AccountQueryService accountQueryService;
 
-    @Transactional(readOnly = true)
     public Account readByPrincipal(Principal principal) {
         final String identification = principal.getName();
 
-        return accountQueryService.readByIdentification(identification);
+        return queryTransactional.execute(() ->
+                accountQueryService.readByIdentification(identification)
+        );
     }
 }

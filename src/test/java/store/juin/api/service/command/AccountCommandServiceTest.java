@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import store.juin.api.domain.entity.Account;
 import store.juin.api.domain.entity.Address;
@@ -16,6 +17,7 @@ import store.juin.api.domain.request.AccountRequest;
 import store.juin.api.domain.request.AddressRequest;
 import store.juin.api.domain.response.OrderResponse;
 import store.juin.api.exception.Msg;
+import store.juin.api.handler.CommandTransactional;
 import store.juin.api.repository.jpa.AccountRepository;
 import store.juin.api.service.query.AddressQueryService;
 import store.juin.api.utils.PasswordUtil;
@@ -40,15 +42,25 @@ class AccountCommandServiceTest {
     @InjectMocks
     private AccountCommandService sut;
 
-    @Mock private AccountRepository accountRepository;
+    @Spy
+    private CommandTransactional commandTransactional;
 
-    @Mock private AddressQueryService addressQueryService;
+    @Mock
+    private AccountRepository accountRepository;
 
-    @Mock private CartCommandService cartCommandService;
-    @Mock private OrderCommandService orderCommandService;
-    @Mock private AddressCommandService addressCommandService;
-    @Mock private CartItemCommandService cartItemCommandService;
-    @Mock private DeliveryCommandService deliveryCommandService;
+    @Mock
+    private AddressQueryService addressQueryService;
+
+    @Mock
+    private CartCommandService cartCommandService;
+    @Mock
+    private OrderCommandService orderCommandService;
+    @Mock
+    private AddressCommandService addressCommandService;
+    @Mock
+    private CartItemCommandService cartItemCommandService;
+    @Mock
+    private DeliveryCommandService deliveryCommandService;
 
     @Nested
     @DisplayName("duplicateEmail 테스트")

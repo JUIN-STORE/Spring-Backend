@@ -1,13 +1,5 @@
 package store.juin.api.service.command;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.domain.entity.Token;
-import store.juin.api.exception.InvalidRefreshTokenException;
-import store.juin.api.exception.Msg;
-import store.juin.api.jwt.TokenMessage;
-import store.juin.api.jwt.TokenProvider;
-import store.juin.api.repository.jpa.TokenRepository;
-import store.juin.api.service.query.TokenQueryService;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,7 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.domain.entity.Token;
+import store.juin.api.exception.InvalidRefreshTokenException;
+import store.juin.api.exception.Msg;
+import store.juin.api.handler.CommandTransactional;
+import store.juin.api.jwt.TokenMessage;
+import store.juin.api.jwt.TokenProvider;
+import store.juin.api.repository.jpa.TokenRepository;
+import store.juin.api.service.query.TokenQueryService;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,11 +30,17 @@ class TokenCommandServiceTest {
     @InjectMocks
     private TokenCommandService sut;
 
-    @Mock private TokenRepository tokenRepository;
+    @Spy
+    private CommandTransactional commandTransactional;
 
-    @Mock private TokenQueryService tokenQueryService;
+    @Mock
+    private TokenRepository tokenRepository;
 
-    @Mock private TokenProvider tokenProvider;
+    @Mock
+    private TokenQueryService tokenQueryService;
+
+    @Mock
+    private TokenProvider tokenProvider;
 
     @Nested
     @DisplayName("addAccessToken 테스트")

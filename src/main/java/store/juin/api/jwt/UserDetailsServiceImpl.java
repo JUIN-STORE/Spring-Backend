@@ -1,7 +1,5 @@
 package store.juin.api.jwt;
 
-import store.juin.api.domain.entity.Account;
-import store.juin.api.service.query.AccountQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
@@ -9,7 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Account;
+import store.juin.api.service.query.AccountQueryService;
 
 @Slf4j
 @Service
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final AccountQueryService accountQueryService;
 
-    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String identification) throws UsernameNotFoundException {
         final Account account = accountQueryService.readByIdentification(identification);

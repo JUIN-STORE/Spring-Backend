@@ -1,11 +1,11 @@
 package store.juin.api.service.command;
 
-import store.juin.api.domain.entity.Delivery;
-import store.juin.api.repository.jpa.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import store.juin.api.domain.entity.Delivery;
+import store.juin.api.handler.CommandTransactional;
+import store.juin.api.repository.jpa.DeliveryRepository;
 
 import java.util.List;
 
@@ -13,14 +13,19 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DeliveryCommandService {
+    private final CommandTransactional commandTransactional;
+
     private final DeliveryRepository deliveryRepository;
 
     public void add(Delivery delivery) {
-        deliveryRepository.save(delivery);
+        commandTransactional.execute(() ->
+                deliveryRepository.save(delivery)
+        );
     }
 
-    @Transactional
     public long removeByAddressIdList(List<Long> addressIdList) {
-        return deliveryRepository.deleteByAddressIdIn(addressIdList);
+        return commandTransactional.execute(() ->
+                deliveryRepository.deleteByAddressIdIn(addressIdList)
+        );
     }
 }
