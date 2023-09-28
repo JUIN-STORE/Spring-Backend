@@ -10,7 +10,7 @@ import store.juin.api.account.enumeration.PersonalColor;
 import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.QueryTransactional;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.item.model.response.ItemResponse;
+import store.juin.api.item.model.response.ItemRetrieveResponse;
 import store.juin.api.item.repository.jpa.ItemRepository;
 
 import javax.persistence.EntityNotFoundException;
@@ -57,7 +57,7 @@ public class ItemQueryService {
         );
     }
 
-    public Page<ItemResponse.Read> search(Pageable pageable, String searchTitle, Long categoryId, PersonalColor personalColor) {
+    public Page<ItemRetrieveResponse> search(Pageable pageable, String searchTitle, Long categoryId, PersonalColor personalColor) {
         return queryTransactional.execute(() -> {
             Page<Item> itemList;
 
@@ -69,13 +69,13 @@ public class ItemQueryService {
                         .orElse(new PageImpl<>(Collections.emptyList()));
             }
 
-            return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
+            return itemList.map(item -> ItemRetrieveResponse.of(item, item.getItemImageList()));
         });
     }
 
-    public Page<ItemResponse.Read> display(Pageable pageable) {
+    public Page<ItemRetrieveResponse> display(Pageable pageable) {
         final Page<Item> itemList = readAll(pageable);
 
-        return itemList.map(item -> ItemResponse.Read.of(item, item.getItemImageList()));
+        return itemList.map(item -> ItemRetrieveResponse.of(item, item.getItemImageList()));
     }
 }

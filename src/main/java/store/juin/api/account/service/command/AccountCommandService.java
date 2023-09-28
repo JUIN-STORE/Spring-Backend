@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import store.juin.api.account.model.entity.Account;
-import store.juin.api.account.model.request.AccountRequest;
+import store.juin.api.account.model.request.AccountChangePasswordRequest;
+import store.juin.api.account.model.request.AccountSendEmailRequest;
+import store.juin.api.account.model.request.AccountSignUpRequest;
+import store.juin.api.account.model.request.AccountUpdateRequest;
 import store.juin.api.account.repository.jpa.AccountRepository;
 import store.juin.api.address.model.entity.Address;
 import store.juin.api.address.service.command.AddressCommandService;
@@ -14,7 +17,7 @@ import store.juin.api.cartitem.service.CartItemCommandService;
 import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.CommandTransactional;
 import store.juin.api.delivery.service.DeliveryCommandService;
-import store.juin.api.order.model.response.OrderResponse;
+import store.juin.api.order.model.response.OrderDeleteResponse;
 import store.juin.api.order.service.command.OrderCommandService;
 import store.juin.api.ses.authorize.service.AuthorizeCacheService;
 import store.juin.api.ses.email.model.request.EmailRequest;
@@ -46,7 +49,7 @@ public class AccountCommandService {
 
     private final AuthorizeCacheService authorizeCacheService;
 
-    public Account add(AccountRequest.SignUp request) {
+    public Account add(AccountSignUpRequest request) {
         // 이메일 중복 검사
         checkDuplicatedEmail(request);
 
@@ -64,13 +67,13 @@ public class AccountCommandService {
         return account;
     }
 
-    private void checkDuplicatedEmail(AccountRequest.SignUp request) {
+    private void checkDuplicatedEmail(AccountSignUpRequest request) {
         Optional<Account> validEmail = accountRepository.findByEmail(request.getEmail());
 
         if (validEmail.isPresent()) throw new EntityExistsException(Msg.DUPLICATED_ACCOUNT);
     }
 
-    public Account modify(Account account, AccountRequest.Update request) {
+    public Account modify(Account account, AccountUpdateRequest request) {
         Account newAccount = request.toAccount(account.getId(), account.getEmail());
 
         commandTransactional.execute(() ->
@@ -85,7 +88,7 @@ public class AccountCommandService {
         final List<Address> addressList = addressQueryService.readAllByAccountId(account.getId());
         final List<Long> addressIdList = addressList.stream().map(Address::getId).collect(Collectors.toList());
 
-        OrderResponse.Delete deleteResponse = orderCommandService.remove(accountId);
+        OrderDeleteResponse orderDeleteResponseResponse = orderCommandService.remove(accountId);
 
         final long deliveryDeletedCount = deliveryCommandService.removeByAddressIdList(addressIdList);
         final long addressDeletedCount = addressCommandService.removeByAddressIdList(account.getId(), addressIdList);
@@ -103,8 +106,8 @@ public class AccountCommandService {
                         "cart_item 삭제 개수:({}), " +
                         "cart 삭제 개수:({})"
                 , account.getEmail()
-                , deleteResponse.getOrderItemDeletedCount()
-                , deleteResponse.getOrdersDeletedCount()
+                , orderDeleteResponseResponse.getOrderItemDeletedCount()
+                , orderDeleteResponseResponse.getOrdersDeletedCount()
                 , deliveryDeletedCount
                 , addressDeletedCount
                 , cartItemDeletedCount
@@ -114,7 +117,7 @@ public class AccountCommandService {
         return account;
     }
 
-    public String sendEmail(AccountRequest.SendEmail request) {
+    public String sendEmail(AccountSendEmailRequest request) {
         final Account account = accountRepository.findByIdentificationAndEmail(request.getIdentification(), request.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
 
@@ -127,7 +130,7 @@ public class AccountCommandService {
         return emailService.send(emailRequest);
     }
 
-    public Account changePassword(AccountRequest.ChangePassword request) {
+    public Account changePassword(AccountChangePasswordRequest request) {
         return commandTransactional.execute(() -> {
             final Account account = accountRepository.findByEmail(request.getEmail()).orElseThrow(() -> new EntityNotFoundException(Msg.ACCOUNT_NOT_FOUND));
             account.updatePasswordHash(request.makeEncryptedPassword());

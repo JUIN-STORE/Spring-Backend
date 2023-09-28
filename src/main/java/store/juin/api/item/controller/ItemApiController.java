@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import store.juin.api.account.enumeration.PersonalColor;
 import store.juin.api.common.model.response.JUINResponse;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.item.model.response.ItemResponse;
+import store.juin.api.item.model.response.ItemRetrieveResponse;
 import store.juin.api.item.service.query.ItemQueryService;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,13 +27,13 @@ public class ItemApiController {
 
     @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
     @GetMapping("/{itemId}")
-    public JUINResponse<ItemResponse.Read> retrieveOne(@PathVariable Long itemId) {
+    public JUINResponse<ItemRetrieveResponse> retrieveOne(@PathVariable Long itemId) {
         log.info("[P9][CTRL][ITEM][RONE]: GET /api/items/{}", itemId);
 
         try {
             final Item item = itemQueryService.readById(itemId);
 
-            var response = ItemResponse.Read.from(item);
+            var response = ItemRetrieveResponse.from(item);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P5][CTRL][ITEM][RONE]: ({})", e.getMessage());
@@ -43,7 +43,7 @@ public class ItemApiController {
 
     @ApiOperation(value = "상품 전체 조회", notes = "전체 또는 조건 별로 검색한다.")
     @GetMapping
-    public JUINResponse<Page<ItemResponse.Read>> retrieveAll(@PageableDefault(size = 10) Pageable pageable) {
+    public JUINResponse<Page<ItemRetrieveResponse>> retrieveAll(@PageableDefault(size = 10) Pageable pageable) {
         log.info("[P9][CTRL][ITEM][RALL]: GET /api/items pageable=({})", pageable);
 
         try {
@@ -58,10 +58,10 @@ public class ItemApiController {
 
     @ApiOperation(value = "상품 검색", notes = "전체 또는 조건 별로 검색한다.")
     @GetMapping("/search")
-    public JUINResponse<Page<ItemResponse.Read>> search(@PageableDefault(size = 10) Pageable pageable
-                                                      , @RequestParam(required = false) Long categoryId
-                                                      , @RequestParam(value = "name", required = false) String searchTitle
-                                                      , @RequestParam(required = false) PersonalColor personalColor) {
+    public JUINResponse<Page<ItemRetrieveResponse>> search(@PageableDefault(size = 10) Pageable pageable,
+                                                           @RequestParam(required = false) Long categoryId,
+                                                           @RequestParam(value = "name", required = false) String searchTitle,
+                                                           @RequestParam(required = false) PersonalColor personalColor) {
         log.info("[P9][CTRL][ITEM][SARH]: GET /api/items/search pageable=({}), categoryId=({}), searchTitle=({}), personalColor=({})",
                 pageable, categoryId, searchTitle, personalColor);
 

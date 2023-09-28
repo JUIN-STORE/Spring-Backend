@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import store.juin.api.cart.model.request.CategoryRequest;
+import store.juin.api.cart.model.request.CategoryCreateRequest;
 import store.juin.api.category.model.entity.Category;
 import store.juin.api.category.repository.jpa.CategoryRepository;
 import store.juin.api.category.service.query.CategoryQueryService;
@@ -74,8 +74,8 @@ class CategoryCommandServiceTest {
         }
     }
 
-    private CategoryRequest.Create makeCategoryCreateRequest(String categoryName, Long parentId) {
-        var request = new CategoryRequest.Create();
+    private CategoryCreateRequest makeCategoryCreateRequest(String categoryName, Long parentId) {
+        var request = new CategoryCreateRequest();
 
         return request
                 .setCategoryName(categoryName)

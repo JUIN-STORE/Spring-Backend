@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import store.juin.api.account.service.query.AccountQueryService;
 import store.juin.api.ses.authorize.exception.AuthorizeException;
-import store.juin.api.ses.authorize.model.request.AuthorizeRequest;
+import store.juin.api.ses.authorize.model.request.AuthorizeCheckRequest;
+import store.juin.api.ses.authorize.model.request.AuthorizeSendRequest;
 import store.juin.api.ses.email.service.EmailService;
 import store.juin.api.util.AuthNumberUtil;
 
@@ -19,7 +20,7 @@ public class AuthorizeService {
     private final AccountQueryService accountQueryService;
     private final AuthorizeCacheService authorizeCacheService;
 
-    public String verifyEmailAddress(AuthorizeRequest.Send request) {
+    public String verifyEmailAddress(AuthorizeSendRequest request) {
         final String toEmail = request.getToEmail();
         accountQueryService.checkDuplicateEmail(toEmail);
 
@@ -32,7 +33,7 @@ public class AuthorizeService {
     }
 
 
-    public void authorize(AuthorizeRequest.Check request) {
+    public void authorize(AuthorizeCheckRequest request) {
         final String hashNumber = authorizeCacheService.getAuthorizeNumber(request.getEmail());
 
         if (hashNumber == null) {

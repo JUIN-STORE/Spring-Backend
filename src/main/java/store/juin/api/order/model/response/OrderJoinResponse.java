@@ -6,7 +6,8 @@ import store.juin.api.order.enumeration.OrderStatus;
 
 import java.time.LocalDateTime;
 
-@Data @Accessors(chain = true)
+@Data
+@Accessors(chain = true)
 public class OrderJoinResponse {
     private Long ordersId;
 

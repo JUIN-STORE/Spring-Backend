@@ -13,7 +13,9 @@ import store.juin.api.account.model.entity.Account;
 import store.juin.api.cart.model.entity.Cart;
 import store.juin.api.cart.service.query.CartQueryService;
 import store.juin.api.cartitem.model.entity.CartItem;
-import store.juin.api.cartitem.model.request.CartItemRequest;
+import store.juin.api.cartitem.model.request.CartItemAddRequest;
+import store.juin.api.cartitem.model.request.CartItemClearRequest;
+import store.juin.api.cartitem.model.request.CartItemUpdateRequest;
 import store.juin.api.cartitem.model.response.CartItemResponse;
 import store.juin.api.cartitem.repository.jpa.CartItemRepository;
 import store.juin.api.cartitem.service.CartItemCommandService;
@@ -228,15 +230,15 @@ class CartItemCommandServiceTest {
         }
     }
 
-    private CartItemRequest.Clear makeClearRequest(Long itemId) {
-        var request = new CartItemRequest.Clear();
+    private CartItemClearRequest makeClearRequest(Long itemId) {
+        var request = new CartItemClearRequest();
 
         return request
                 .setItemId(itemId);
     }
 
-    private CartItemRequest.Update makeUpdateRequest(Long itemId, int count) {
-        var request = new CartItemRequest.Update();
+    private CartItemUpdateRequest makeUpdateRequest(Long itemId, int count) {
+        var request = new CartItemUpdateRequest();
 
         return request
                 .setItemId(itemId)
@@ -285,8 +287,8 @@ class CartItemCommandServiceTest {
                 .build();
     }
 
-    private CartItemRequest.Add makeAddRequest() {
-        var request = new CartItemRequest.Add();
+    private CartItemAddRequest makeAddRequest() {
+        var request = new CartItemAddRequest();
         return request
                 .setItemId(1L)
                 .setCount(30);

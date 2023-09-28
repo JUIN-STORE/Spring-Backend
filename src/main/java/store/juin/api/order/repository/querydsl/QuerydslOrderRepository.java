@@ -3,7 +3,7 @@ package store.juin.api.order.repository.querydsl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import store.juin.api.order.model.request.OrderRequest;
+import store.juin.api.order.model.request.OrderRetrieveRequest;
 import store.juin.api.order.model.response.OrderJoinResponse;
 
 import java.util.Optional;
@@ -17,6 +17,6 @@ public interface QuerydslOrderRepository {
     Long countOrderJoinOrderItemByAccountIdAndItemId(Long accountId, Long itemId);
 
     Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemJoinItemImageByAccountId(Long accountId,
-                                                                                             OrderRequest.Retrieve request,
+                                                                                             OrderRetrieveRequest orderRetrieveRequest,
                                                                                              Pageable pageable);
 }

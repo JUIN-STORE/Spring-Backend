@@ -4,7 +4,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import store.juin.api.token.jwt.TokenMessage;
 
-@Data @Accessors(chain = true)
+@Data
+@Accessors(chain = true)
 public class TokenResponse {
     private String accessToken;
 

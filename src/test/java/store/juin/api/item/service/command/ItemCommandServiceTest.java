@@ -18,7 +18,7 @@ import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.CommandTransactional;
 import store.juin.api.item.enumeration.ItemStatus;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.item.model.request.ItemRequest;
+import store.juin.api.item.model.request.ItemCreateRequest;
 import store.juin.api.item.repository.jpa.ItemRepository;
 import store.juin.api.item.service.query.ItemQueryService;
 import store.juin.api.itemcategory.service.command.ItemCategoryCommandService;
@@ -138,8 +138,8 @@ class ItemCommandServiceTest {
         }
     }
 
-    private ItemRequest.Create makeItemRequest(Long categoryId) {
-        var request = new ItemRequest.Create();
+    private ItemCreateRequest makeItemRequest(Long categoryId) {
+        var request = new ItemCreateRequest();
 
         return request
                 .setCategoryId(categoryId)

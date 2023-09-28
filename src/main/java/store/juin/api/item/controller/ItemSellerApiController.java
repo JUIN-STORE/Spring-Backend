@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import store.juin.api.common.exception.JUINIOException;
 import store.juin.api.common.model.response.JUINResponse;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.item.model.request.ItemRequest;
-import store.juin.api.item.model.response.ItemResponse;
+import store.juin.api.item.model.request.ItemCreateRequest;
+import store.juin.api.item.model.response.ItemRetrieveResponse;
 import store.juin.api.item.service.command.ItemCommandService;
 import store.juin.api.item.service.query.ItemQueryService;
 import store.juin.api.principal.service.query.PrincipalQueryService;
@@ -35,14 +35,14 @@ public class ItemSellerApiController {
 
     @ApiOperation(value = "판매자 상품 등록", notes = "관리자가 상품을 등록한다.")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public JUINResponse<Long> create(final Principal principal
-                                    , @RequestPart ItemRequest.Create request
-                                    , @RequestPart MultipartFile representativeFile
-                                    , @RequestPart(required = false) List<MultipartFile> detailFileList) {
+    public JUINResponse<Long> create(final Principal principal,
+                                     @RequestPart ItemCreateRequest request,
+                                     @RequestPart MultipartFile representativeFile,
+                                     @RequestPart(required = false) List<MultipartFile> detailFileList) {
         final String identification = principal.getName();
 
         log.info("[P9][CTRL][SEIT][CRTE]: GET /api/items/seller " +
-                "identification=({}), request=({}), representative=({}), fileList=({})"
+                        "identification=({}), request=({}), representative=({}), fileList=({})"
                 , identification, request, representativeFile, detailFileList);
 
         try {
@@ -67,8 +67,7 @@ public class ItemSellerApiController {
 
     @ApiOperation(value = "판매자 상품 읽기", notes = "관리자 페이지에서 상품을 읽는다.")
     @GetMapping("/{itemId}")
-    public JUINResponse<ItemResponse.Read> readSellerOnly(final Principal principal
-                                                        , @PathVariable Long itemId) {
+    public JUINResponse<ItemRetrieveResponse> readSellerOnly(final Principal principal, @PathVariable Long itemId) {
         final String identification = principal.getName();
 
         log.info("[P9][CTRL][SEIT][READ]: GET /api/items/seller/{} identification=({})", itemId, identification);
@@ -78,7 +77,7 @@ public class ItemSellerApiController {
 
             final Item item = itemQueryService.readById(itemId);
 
-            var response = ItemResponse.Read.from(item);
+            var response = ItemRetrieveResponse.from(item);
             return new JUINResponse<>(HttpStatus.OK, response);
         } catch (EntityNotFoundException e) {
             log.warn("[P2][CTRL][SEIT][READ]: message: ({})", e.getMessage());
@@ -88,8 +87,7 @@ public class ItemSellerApiController {
 
     @ApiOperation(value = "판매자 상품 삭제", notes = "관리자 페이지에서 상품을 삭제.")
     @DeleteMapping("/{itemId}")
-    public JUINResponse<Long> deleteSellerOnly(final Principal principal
-                                             , @PathVariable Long itemId) {
+    public JUINResponse<Long> deleteSellerOnly(final Principal principal, @PathVariable Long itemId) {
         final String identification = principal.getName();
         log.info("[P9][CON][SEIT][DELE]: DELETE /api/items/seller/{} identification=({})", itemId, identification);
 
@@ -104,4 +102,3 @@ public class ItemSellerApiController {
         }
     }
 }
-

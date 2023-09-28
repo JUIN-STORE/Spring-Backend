@@ -20,8 +20,8 @@ import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.QueryTransactional;
 import store.juin.api.item.enumeration.ItemStatus;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.item.model.response.ItemResponse;
-import store.juin.api.itemcategory.model.response.ItemImageResponse;
+import store.juin.api.item.model.response.ItemBuyResponse;
+import store.juin.api.itemcategory.model.response.ItemImageBuyResponse;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ class CartQueryServiceTest {
 
     @Nested
     @DisplayName("readByAccountId 테스트")
-    class RetrieveByAccountIdTest {
+    class AccountAddressCategoryCartItemCartItemItemImageOrderReviewRetrieveResponseByAccountIdTestResponseResponseRequestRequestResponseRequestResponse {
         @Test
         @DisplayName("정상 케이스")
         void readByAccountIdTest01() {
@@ -122,7 +122,7 @@ class CartQueryServiceTest {
 
     @Nested
     @DisplayName("makeCartItemReadResponse 테스트")
-    class MakeCartItemRetrieveResponseTest {
+    class MakeCartItemAccountAddressCategoryCartItemCartItemItemImageOrderReviewRetrieveResponseTestResponseResponseResponseRequestRequestResponseRequestResponse {
         @Test
         @DisplayName("성공적으로 리스폰스를 만듦.")
         void makeCartItemReadResponseTest01() {
@@ -186,7 +186,7 @@ class CartQueryServiceTest {
 
     @Nested
     @DisplayName("makeCartItemBuyResponse 테스트")
-    class MakeCartItemBuyResponseTest {
+    class MakeCartItemCartItemItemItemImageBuyResponseTestRequestResponseResponse {
         @Test
         @DisplayName("성공적으로 리스폰스를 만듦.")
         void makeCartItemBuyResponseTest01() {
@@ -268,12 +268,12 @@ class CartQueryServiceTest {
         }
     }
 
-    private ItemImageResponse.Buy makeItemImageBuyResponse(String name
+    private ItemImageBuyResponse makeItemImageBuyResponse(String name
             , String imageName
             , String imageUrl
             , Boolean thumbnail) {
 
-        var request = new ItemImageResponse.Buy();
+        var request = new ItemImageBuyResponse();
 
         return request
                 .setName(name)
@@ -282,11 +282,11 @@ class CartQueryServiceTest {
                 .setThumbnail(thumbnail);
     }
 
-    private ItemResponse.Buy makeItemBuyResponse(Long itemId
+    private ItemBuyResponse makeItemBuyResponse(Long itemId
             , String name
             , Integer price
             , String description) {
-        var request = new ItemResponse.Buy();
+        var request = new ItemBuyResponse();
 
         return request
                 .setItemId(itemId)
@@ -296,8 +296,8 @@ class CartQueryServiceTest {
     }
 
     private CartItemResponse.Buy makeCartItemBuyResponse(Integer count
-            , ItemResponse.Buy item
-            , ItemImageResponse.Buy itemImage) {
+            , ItemBuyResponse item
+            , ItemImageBuyResponse itemImage) {
 
         var request = new CartItemResponse.Buy();
 

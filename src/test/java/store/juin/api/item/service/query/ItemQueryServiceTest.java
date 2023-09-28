@@ -18,7 +18,7 @@ import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.QueryTransactional;
 import store.juin.api.item.enumeration.ItemStatus;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.item.model.response.ItemResponse;
+import store.juin.api.item.model.response.ItemRetrieveResponse;
 import store.juin.api.item.repository.jpa.ItemRepository;
 import store.juin.api.itemimage.model.entity.ItemImage;
 
@@ -234,7 +234,7 @@ class ItemQueryServiceTest {
             var expected = new PageImpl<>(itemReadResponseList, pageable, 1);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, null, null, personColor);
+            final Page<ItemRetrieveResponse> actual = sut.search(pageable, null, null, personColor);
 
             // then
             assertIterableEquals(expected, actual);
@@ -260,7 +260,7 @@ class ItemQueryServiceTest {
             var expected = new PageImpl<>(itemReadResponseList, pageable, 1);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, null, null);
+            final Page<ItemRetrieveResponse> actual = sut.search(pageable, searchTitle, null, null);
 
             // then
             assertIterableEquals(expected, actual);
@@ -295,7 +295,7 @@ class ItemQueryServiceTest {
             var expected = makeItemReadResponseList(itemList, itemImageList);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, null, categoryId, null);
+            final Page<ItemRetrieveResponse> actual = sut.search(pageable, null, categoryId, null);
 
             // then
             assertIterableEquals(expected, actual);
@@ -332,7 +332,7 @@ class ItemQueryServiceTest {
             var expected = makeItemReadResponseList(itemList, itemImageList);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.search(pageable, searchTitle, categoryId, null);
+            final Page<ItemRetrieveResponse> actual = sut.search(pageable, searchTitle, categoryId, null);
 
             // then
             assertIterableEquals(expected, actual);
@@ -361,7 +361,7 @@ class ItemQueryServiceTest {
             given(itemRepository.findAll(pageRequest)).willReturn(itemPage);
 
             // when
-            final Page<ItemResponse.Read> actual = sut.display(pageRequest);
+            final Page<ItemRetrieveResponse> actual = sut.display(pageRequest);
 
             // then
             assertIterableEquals(expected, actual);
@@ -387,11 +387,10 @@ class ItemQueryServiceTest {
         );
     }
 
-    private List<ItemResponse.Read> makeItemReadResponseList(List<Item> itemList,
-                                                             List<ItemImage> itemImageList) {
+    private List<ItemRetrieveResponse> makeItemReadResponseList(List<Item> itemList, List<ItemImage> itemImageList) {
 
         return itemList.stream()
-                .map(image -> ItemResponse.Read.of(image, itemImageList))
+                .map(image -> ItemRetrieveResponse.of(image, itemImageList))
                 .collect(Collectors.toList());
     }
 

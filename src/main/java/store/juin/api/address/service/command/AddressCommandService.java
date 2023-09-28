@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import store.juin.api.account.model.entity.Account;
 import store.juin.api.address.model.entity.Address;
-import store.juin.api.address.model.request.AddressRequest;
+import store.juin.api.address.model.request.AddressCreateRequest;
+import store.juin.api.address.model.request.AddressUpdateRequest;
 import store.juin.api.address.repository.jpa.AddressRepository;
 import store.juin.api.address.service.query.AddressQueryService;
 import store.juin.api.common.handler.CommandTransactional;
@@ -28,13 +29,13 @@ public class AddressCommandService {
         );
     }
 
-    public Address add(Account account, AddressRequest.Create request) {
+    public Address add(Account account, AddressCreateRequest request) {
         final Address address = request.toAddress(account);
 
         return add(address);
     }
 
-    public Address addIfNull(Account account, AddressRequest.Create request) {
+    public Address addIfNull(Account account, AddressCreateRequest request) {
         final Address address = addressQueryService.readByAccountIdAndZipCodeAndCityAndStreet(account.getId(), request);
 
         if (address == null) {
@@ -44,7 +45,7 @@ public class AddressCommandService {
         }
     }
 
-    public Address modify(Account account, AddressRequest.Update request) {
+    public Address modify(Account account, AddressUpdateRequest request) {
         // address 있는지 확인
         final Address oldAddress = addressQueryService.readByIdAndAccountId(request.getAddressId(), account.getId());
 

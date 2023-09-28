@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import store.juin.api.order.enumeration.OrderStatus;
-import store.juin.api.order.model.request.OrderRequest;
+import store.juin.api.order.model.request.OrderRetrieveRequest;
 import store.juin.api.order.model.response.OrderJoinResponse;
 import store.juin.api.order.repository.querydsl.QuerydslOrderRepository;
 
@@ -48,7 +48,7 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
 
     @Override
     public Optional<Page<OrderJoinResponse>> findOrderJoinOrderItemJoinItemJoinItemImageByAccountId(Long accountId,
-                                                                                                    OrderRequest.Retrieve request,
+                                                                                                    OrderRetrieveRequest orderRetrieveRequest,
                                                                                                     Pageable pageable) {
         // FIXME: 더 좋은 방법 있으면 변경하기
         List<OrderJoinResponse> orderJoinResponseList = queryFactory
@@ -76,10 +76,10 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
                 .on(itemImage.item.id.eq(item.id))
                 .where(order.account.id.eq(accountId),
                         orderDateBetween(
-                                request.getStartDate().atStartOfDay(),
-                                request.getEndDate().atStartOfDay()
+                                orderRetrieveRequest.getStartDate().atStartOfDay(),
+                                orderRetrieveRequest.getEndDate().atStartOfDay()
                         ),
-                        orderStatusEq(request.getOrderStatus()),
+                        orderStatusEq(orderRetrieveRequest.getOrderStatus()),
                         itemImage.thumbnail.isTrue(),
                         itemImage.representative.isTrue())
                 .orderBy(order.id.desc())
@@ -87,10 +87,10 @@ public class QuerydslOrderRepositoryImpl implements QuerydslOrderRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return Optional.of(new PageImpl<>(orderJoinResponseList, pageable, countOrderItem(accountId, request)));
+        return Optional.of(new PageImpl<>(orderJoinResponseList, pageable, countOrderItem(accountId, orderRetrieveRequest)));
     }
 
-    private Long countOrderItem(Long accountId, OrderRequest.Retrieve request) {
+    private Long countOrderItem(Long accountId, OrderRetrieveRequest request) {
         return queryFactory.select(Wildcard.count)
                 .from(order)
                 .join(orderItem)
