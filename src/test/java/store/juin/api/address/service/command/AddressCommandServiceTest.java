@@ -11,7 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import store.juin.api.account.enumeration.AccountRole;
 import store.juin.api.account.model.entity.Account;
 import store.juin.api.address.model.entity.Address;
-import store.juin.api.address.model.request.AddressRequest;
+import store.juin.api.address.model.request.AddressCreateRequest;
+import store.juin.api.address.model.request.AddressUpdateRequest;
 import store.juin.api.address.repository.jpa.AddressRepository;
 import store.juin.api.address.service.query.AddressQueryService;
 import store.juin.api.common.handler.CommandTransactional;
@@ -246,8 +247,8 @@ class AddressCommandServiceTest {
         }
     }
 
-    private AddressRequest.Update makeUpdateRequest(boolean defaultAddress) {
-        final AddressRequest.Update request = new AddressRequest.Update();
+    private AddressUpdateRequest makeUpdateRequest(boolean defaultAddress) {
+        final AddressUpdateRequest request = new AddressUpdateRequest();
 
         return request
                 .setAddressId(3L)
@@ -257,8 +258,8 @@ class AddressCommandServiceTest {
                 .setDefaultAddress(defaultAddress);
     }
 
-    private AddressRequest.Create makeRegisterRequest(boolean defaultAddress) {
-        final AddressRequest.Create request = new AddressRequest.Create();
+    private AddressCreateRequest makeRegisterRequest(boolean defaultAddress) {
+        final AddressCreateRequest request = new AddressCreateRequest();
 
         return request
                 .setCity("서울시")

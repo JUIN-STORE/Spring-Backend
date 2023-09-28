@@ -12,10 +12,11 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import store.juin.api.account.enumeration.AccountRole;
 import store.juin.api.account.model.entity.Account;
-import store.juin.api.account.model.request.AccountRequest;
+import store.juin.api.account.model.request.AccountSignUpRequest;
+import store.juin.api.account.model.request.AccountUpdateRequest;
 import store.juin.api.account.repository.jpa.AccountRepository;
 import store.juin.api.address.model.entity.Address;
-import store.juin.api.address.model.request.AddressRequest;
+import store.juin.api.address.model.request.AddressCreateRequest;
 import store.juin.api.address.service.command.AddressCommandService;
 import store.juin.api.address.service.query.AddressQueryService;
 import store.juin.api.cart.service.command.CartCommandService;
@@ -23,7 +24,7 @@ import store.juin.api.cartitem.service.CartItemCommandService;
 import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.CommandTransactional;
 import store.juin.api.delivery.service.DeliveryCommandService;
-import store.juin.api.order.model.response.OrderResponse;
+import store.juin.api.order.model.response.OrderDeleteResponse;
 import store.juin.api.order.service.command.OrderCommandService;
 import store.juin.api.util.PasswordUtil;
 
@@ -81,7 +82,7 @@ class AccountCommandServiceTest {
 
             // when
             Method method =
-                    AccountCommandService.class.getDeclaredMethod("checkDuplicatedEmail", AccountRequest.SignUp.class);
+                    AccountCommandService.class.getDeclaredMethod("checkDuplicatedEmail", AccountSignUpRequest.class);
             method.setAccessible(true);
             var actual = assertThatThrownBy(() -> {
                         try {
@@ -106,7 +107,7 @@ class AccountCommandServiceTest {
 
             // when, then
             Method method =
-                    AccountCommandService.class.getDeclaredMethod("checkDuplicatedEmail", AccountRequest.SignUp.class);
+                    AccountCommandService.class.getDeclaredMethod("checkDuplicatedEmail", AccountSignUpRequest.class);
             method.setAccessible(true);
             method.invoke(sut, request);
         }
@@ -171,7 +172,7 @@ class AccountCommandServiceTest {
             var addressList =
                     Arrays.asList(makeAddress(1L, true), makeAddress(3L, false));
 
-            var deleteResponse = new OrderResponse.Delete()
+            var deleteResponse = new OrderDeleteResponse()
                     .setOrdersDeletedCount(1)
                     .setOrderItemDeletedCount(1);
             given(addressQueryService.readAllByAccountId(anyLong())).willReturn(addressList);
@@ -185,8 +186,8 @@ class AccountCommandServiceTest {
         }
     }
 
-    private AccountRequest.Update makeUpdateRequest() {
-        final AccountRequest.Update request = new AccountRequest.Update();
+    private AccountUpdateRequest makeUpdateRequest() {
+        final AccountUpdateRequest request = new AccountUpdateRequest();
         request.setAccountRole(AccountRole.ADMIN);
         request.setPasswordHash("updatePasswordHash");
         request.setName("updateName");
@@ -197,15 +198,15 @@ class AccountCommandServiceTest {
     }
 
 
-    private AccountRequest.SignUp makeSignUpRequest() {
-        final var request = new AccountRequest.SignUp();
+    private AccountSignUpRequest makeSignUpRequest() {
+        final var request = new AccountSignUpRequest();
         request.setEmail(EMAIL);
         request.setPasswordHash("passwordHash");
         request.setName("지수");
         request.setAccountRole(AccountRole.USER);
         request.setPhoneNumber("01011112222");
 
-        final var addressRequest = new AddressRequest.Create();
+        final var addressRequest = new AddressCreateRequest();
         addressRequest.setCity("서울시");
         addressRequest.setStreet("강남구");
         addressRequest.setZipCode(12345);

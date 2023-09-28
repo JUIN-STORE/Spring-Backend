@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import store.juin.api.common.handler.CommandTransactional;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.itemcategory.model.request.ItemImageRequest;
+import store.juin.api.itemcategory.model.request.ItemImageCreateRequest;
 import store.juin.api.itemimage.model.entity.ItemImage;
 import store.juin.api.itemimage.repository.jpa.ItemImageRepository;
 import store.juin.api.upload.service.FileUploadService;
@@ -22,7 +22,7 @@ public class ItemImageCommandService {
 
     private final FileUploadService fileUploadService;
 
-    public void add(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
+    public void add(ItemImageCreateRequest request, MultipartFile multipartFile, Item item) {
         commandTransactional.execute(() -> {
             addOriginalImage(request, multipartFile, item);
             addThumbnailImage(request, multipartFile, item);
@@ -30,13 +30,13 @@ public class ItemImageCommandService {
     }
 
     // 원본 파일 저장
-    private void addOriginalImage(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
+    private void addOriginalImage(ItemImageCreateRequest request, MultipartFile multipartFile, Item item) {
         final ItemImage itemImage = fileUploadService.addOriginalImage(request, multipartFile, item);
         itemImageRepository.save(itemImage);
     }
 
     // 썸네일 생성 및 저장
-    private void addThumbnailImage(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
+    private void addThumbnailImage(ItemImageCreateRequest request, MultipartFile multipartFile, Item item) {
         final String extension = StringUtils.getFilenameExtension(request.getOriginImageName());
         final ItemImage itemImage = fileUploadService.addThumbnailImage(request, multipartFile, item, extension);
         itemImageRepository.save(itemImage);

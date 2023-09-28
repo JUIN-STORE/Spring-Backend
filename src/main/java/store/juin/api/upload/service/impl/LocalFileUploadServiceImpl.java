@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import store.juin.api.common.exception.JUINIOException;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.itemcategory.model.request.ItemImageRequest;
+import store.juin.api.itemcategory.model.request.ItemImageCreateRequest;
 import store.juin.api.itemimage.model.entity.ItemImage;
 import store.juin.api.upload.service.FileUploadService;
 import store.juin.api.util.FileUploadUtil;
@@ -35,10 +35,7 @@ public class LocalFileUploadServiceImpl implements FileUploadService {
     private String itemImageThumbnailPath;
 
     @Override
-    public ItemImage addThumbnailImage(ItemImageRequest.Create request
-                                     , MultipartFile multipartFile
-                                     , Item item
-                                     , String extension) {
+    public ItemImage addThumbnailImage(ItemImageCreateRequest request, MultipartFile multipartFile, Item item, String extension) {
         createDirectoryIfNotExists(itemImageThumbnailPath);
 
         final String originalFileName = request.getOriginImageName();
@@ -58,7 +55,7 @@ public class LocalFileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
-    public ItemImage addOriginalImage(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
+    public ItemImage addOriginalImage(ItemImageCreateRequest request, MultipartFile multipartFile, Item item) {
         createDirectoryIfNotExists(itemImageOriginalPath);
 
         final String originalFileName = multipartFile.getOriginalFilename();

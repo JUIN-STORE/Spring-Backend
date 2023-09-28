@@ -10,7 +10,7 @@ import store.juin.api.account.model.entity.Account;
 import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.QueryTransactional;
 import store.juin.api.order.model.entity.Order;
-import store.juin.api.order.model.request.OrderRequest;
+import store.juin.api.order.model.request.OrderRetrieveRequest;
 import store.juin.api.order.model.response.OrderJoinResponse;
 import store.juin.api.order.repository.jpa.OrderRepository;
 
@@ -26,7 +26,7 @@ public class OrderQueryService {
 
     private final OrderRepository orderRepository;
 
-    public Page<OrderJoinResponse> readAll(Account account, OrderRequest.Retrieve request, Pageable pageable) {
+    public Page<OrderJoinResponse> readAll(Account account, OrderRetrieveRequest request, Pageable pageable) {
         return queryTransactional.execute(() ->
                 orderRepository
                         .findOrderJoinOrderItemJoinItemJoinItemImageByAccountId(account.getId(), request, pageable)

@@ -13,10 +13,10 @@ import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.CommandTransactional;
 import store.juin.api.item.enumeration.ItemStatus;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.item.model.request.ItemRequest;
+import store.juin.api.item.model.request.ItemCreateRequest;
 import store.juin.api.item.repository.jpa.ItemRepository;
 import store.juin.api.item.service.query.ItemQueryService;
-import store.juin.api.itemcategory.model.request.ItemImageRequest;
+import store.juin.api.itemcategory.model.request.ItemImageCreateRequest;
 import store.juin.api.itemcategory.service.command.ItemCategoryCommandService;
 import store.juin.api.itemimage.service.ItemImageCommandService;
 
@@ -37,7 +37,7 @@ public class ItemCommandService {
     private final ItemImageCommandService itemImageCommandService;
     private final ItemCategoryCommandService itemCategoryCommandService;
 
-    public Long add(ItemRequest.Create request, MultipartFile representativeFile, List<MultipartFile> itemImageFileList) {
+    public Long add(ItemCreateRequest request, MultipartFile representativeFile, List<MultipartFile> itemImageFileList) {
         if (representativeFile == null) throw new InvalidParameterException(Msg.ITEM_THUMBNAIL_REQUIRED);
 
         // 상품 등록
@@ -51,7 +51,7 @@ public class ItemCommandService {
             // 대표 이미지
             final String originFileName = representativeFile.getOriginalFilename();
             validOriginalFilename(originFileName);
-            itemImageCommandService.add(new ItemImageRequest.Create(originFileName, true), representativeFile, item);
+            itemImageCommandService.add(new ItemImageCreateRequest(originFileName, true), representativeFile, item);
 
             final Long itemId = item.getId();
 
@@ -67,7 +67,7 @@ public class ItemCommandService {
 
                 final String originalFilename = itemImageFile.getOriginalFilename();
                 validOriginalFilename(originalFilename);
-                itemImageCommandService.add(new ItemImageRequest.Create(originalFilename, false), itemImageFile, item);
+                itemImageCommandService.add(new ItemImageCreateRequest(originalFilename, false), itemImageFile, item);
             }
 
             return itemId;

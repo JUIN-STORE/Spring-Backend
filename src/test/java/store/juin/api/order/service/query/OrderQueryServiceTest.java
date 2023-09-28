@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import store.juin.api.common.handler.QueryTransactional;
 import store.juin.api.order.model.entity.Order;
-import store.juin.api.order.model.request.OrderRequest;
+import store.juin.api.order.model.request.OrderRetrieveRequest;
 import store.juin.api.order.model.response.OrderJoinResponse;
 import store.juin.api.order.repository.jpa.OrderRepository;
 
@@ -46,7 +46,7 @@ class OrderQueryServiceTest {
             var page = 0;
             var size = 10;
             var account = makeAccount("asdq13@#13$");
-            var request = new OrderRequest.Retrieve();
+            var request = new OrderRetrieveRequest();
             var pageRequest = PageRequest.of(page, size);
 
             var orderJoinResponseList = new ArrayList<OrderJoinResponse>();

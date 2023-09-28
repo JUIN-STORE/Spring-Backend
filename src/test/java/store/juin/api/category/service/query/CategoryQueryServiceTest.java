@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import store.juin.api.cart.model.response.CategoryResponse;
+import store.juin.api.cart.model.response.CategoryRetrieveResponse;
 import store.juin.api.category.model.entity.Category;
 import store.juin.api.category.repository.jpa.CategoryRepository;
 import store.juin.api.common.exception.Msg;
@@ -100,7 +100,7 @@ class CategoryQueryServiceTest {
             given(categoryRepository.findAllByParentIsNull()).willReturn(Optional.of(categoryList));
 
             // when
-            final List<CategoryResponse.Retrieve> actual = sut.readAll();
+            final List<CategoryRetrieveResponse> actual = sut.readAll();
 
             // then
             assertAll(

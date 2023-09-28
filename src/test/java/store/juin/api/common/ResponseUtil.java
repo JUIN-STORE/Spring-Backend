@@ -1,9 +1,9 @@
 package store.juin.api.common;
 
-import store.juin.api.cart.model.response.CategoryResponse;
+import store.juin.api.cart.model.response.CategoryRetrieveResponse;
 import store.juin.api.cartitem.model.response.CartItemResponse;
-import store.juin.api.item.model.response.ItemResponse;
-import store.juin.api.itemcategory.model.response.ItemImageResponse;
+import store.juin.api.item.model.response.ItemBuyResponse;
+import store.juin.api.itemcategory.model.response.ItemImageBuyResponse;
 import store.juin.api.order.enumeration.OrderStatus;
 import store.juin.api.order.model.response.OrderJoinResponse;
 
@@ -47,15 +47,16 @@ public class ResponseUtil {
         );
     }
 
-    public static ItemResponse.Buy makeItemBuyResponse() {
-        return new ItemResponse.Buy()
+    public static ItemBuyResponse makeItemBuyResponse() {
+        return new ItemBuyResponse()
                 .setItemId(1L)
                 .setItemName("item1")
                 .setPrice(1000)
                 .setDescription("item1 description");
     }
-    public static ItemImageResponse.Buy makeItemImageBuyResponse() {
-        return new ItemImageResponse.Buy()
+
+    public static ItemImageBuyResponse makeItemImageBuyResponse() {
+        return new ItemImageBuyResponse()
                 .setName("상품명")
                 .setImageName("item1.jpg")
                 .setImageUrl("http://localhost:8080/item/1")
@@ -64,23 +65,23 @@ public class ResponseUtil {
 
 
     // categories
-    public static List<CategoryResponse.Retrieve> makeCategoryRetrieveResponseList() {
+    public static List<CategoryRetrieveResponse> makeCategoryRetrieveResponseList() {
         return List.of(
                 makeCategoryRetrieveResponse(1L, "category1"),
                 makeCategoryRetrieveResponse(2L, "category2")
         );
     }
 
-    public static CategoryResponse.Retrieve makeCategoryRetrieveResponse(Long id, String categoryName) {
-        return new CategoryResponse.Retrieve()
+    public static CategoryRetrieveResponse makeCategoryRetrieveResponse(Long id, String categoryName) {
+        return new CategoryRetrieveResponse()
                 .setId(id)
                 .setCategoryName(categoryName)
                 .setDepth(1L)
                 .setChildList(List.of(makeCategoryRetrieveChildListResponse(id+1L, categoryName)));
     }
 
-    public static CategoryResponse.RetrieveChildList makeCategoryRetrieveChildListResponse(Long id, String categoryName) {
-        return new CategoryResponse.RetrieveChildList()
+    public static CategoryRetrieveResponse.RetrieveChildList makeCategoryRetrieveChildListResponse(Long id, String categoryName) {
+        return new CategoryRetrieveResponse.RetrieveChildList()
                 .setId(id)
                 .setCategoryName(categoryName + "_child")
                 .setDepth(2L);

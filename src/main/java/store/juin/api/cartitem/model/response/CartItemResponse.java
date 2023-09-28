@@ -3,8 +3,8 @@ package store.juin.api.cartitem.model.response;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import store.juin.api.cartitem.model.entity.CartItem;
-import store.juin.api.item.model.response.ItemResponse;
-import store.juin.api.itemcategory.model.response.ItemImageResponse;
+import store.juin.api.item.model.response.ItemBuyResponse;
+import store.juin.api.itemcategory.model.response.ItemImageBuyResponse;
 
 public class CartItemResponse {
     @Data
@@ -60,18 +60,18 @@ public class CartItemResponse {
     public static class Buy {
         private Integer count; // 제품의 총 개수
 
-        private ItemResponse.Buy item;
+        private ItemBuyResponse item;
 
-        private ItemImageResponse.Buy itemImage;
+        private ItemImageBuyResponse itemImage;
 
         public static CartItemResponse.Buy from(Retrieve retrieve) {
-            var itemResponse = new ItemResponse.Buy()
+            var itemResponse = new ItemBuyResponse()
                     .setItemId(retrieve.getItemId())
                     .setItemName(retrieve.getItemName())
                     .setPrice(retrieve.getPrice())
                     .setDescription(retrieve.getDescription());
 
-            var itemImageResponse = new ItemImageResponse.Buy()
+            var itemImageResponse = new ItemImageBuyResponse()
                     .setImageUrl(retrieve.getImageUrl())
                     .setName(retrieve.getItemName())
                     .setImageName(retrieve.getItemImageName())

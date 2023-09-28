@@ -22,7 +22,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import store.juin.api.item.enumeration.ItemStatus;
-import store.juin.api.item.model.response.ItemResponse;
+import store.juin.api.item.model.response.ItemRetrieveResponse;
 import store.juin.api.item.service.query.ItemQueryService;
 
 import java.time.ZonedDateTime;
@@ -152,7 +152,7 @@ class ItemApiControllerTest {
             var size = 10;
             final PageRequest pageable = PageRequest.of(page, size);
             var read = itemList.stream()
-                    .map(item -> ItemResponse.Read.of(item, item.getItemImageList()))
+                    .map(item -> ItemRetrieveResponse.of(item, item.getItemImageList()))
                     .collect(Collectors.toList());
 
             var response = new PageImpl<>(read, pageable, read.size());

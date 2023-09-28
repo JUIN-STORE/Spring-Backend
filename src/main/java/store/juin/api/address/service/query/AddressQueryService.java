@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import store.juin.api.address.model.entity.Address;
-import store.juin.api.address.model.request.AddressRequest;
+import store.juin.api.address.model.request.AddressCreateRequest;
 import store.juin.api.address.repository.jpa.AddressRepository;
 import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.QueryTransactional;
@@ -48,9 +48,9 @@ public class AddressQueryService {
         );
     }
 
-    public Address readByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressRequest.Create addressCreate) {
+    public Address readByAccountIdAndZipCodeAndCityAndStreet(Long accountId, AddressCreateRequest addressAddressCreateRequest) {
         return queryTransactional.execute(() ->
-                addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(accountId, addressCreate)
+                addressRepository.findByAccountIdAndZipCodeAndCityAndStreet(accountId, addressAddressCreateRequest)
         );
     }
 }

@@ -7,7 +7,8 @@ import store.juin.api.account.model.entity.Account;
 import store.juin.api.cart.model.entity.Cart;
 import store.juin.api.cart.service.query.CartQueryService;
 import store.juin.api.cartitem.model.entity.CartItem;
-import store.juin.api.cartitem.model.request.CartItemRequest;
+import store.juin.api.cartitem.model.request.CartItemAddRequest;
+import store.juin.api.cartitem.model.request.CartItemUpdateRequest;
 import store.juin.api.cartitem.repository.jpa.CartItemRepository;
 import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.CommandTransactional;
@@ -30,7 +31,7 @@ public class CartItemCommandService {
     private final CartItemQueryService cartItemQueryService;
 
 
-    public int add(Account account, CartItemRequest.Add request) {
+    public int add(Account account, CartItemAddRequest request) {
         final Cart cart = cartQueryService.readByAccountId(account.getId());
 
         final Item item = itemQueryService.readById(request.getItemId());
@@ -49,7 +50,7 @@ public class CartItemCommandService {
         });
     }
 
-    public int modifyQuantity(Account account, CartItemRequest.Update request) {
+    public int modifyQuantity(Account account, CartItemUpdateRequest request) {
         final Long itemId = request.getItemId();
         final int count = request.getCount();
 

@@ -16,8 +16,8 @@ import store.juin.api.delivery.service.DeliveryCommandService;
 import store.juin.api.item.model.entity.Item;
 import store.juin.api.item.service.query.ItemQueryService;
 import store.juin.api.order.model.entity.Order;
-import store.juin.api.order.model.request.OrderRequest;
-import store.juin.api.order.model.response.OrderResponse;
+import store.juin.api.order.model.request.OrderCreateRequest;
+import store.juin.api.order.model.response.OrderDeleteResponse;
 import store.juin.api.order.repository.jpa.OrderRepository;
 import store.juin.api.order.service.query.OrderQueryService;
 import store.juin.api.orderitem.model.entity.OrderItem;
@@ -44,7 +44,7 @@ public class OrderCommandService {
     private final DeliveryCommandService deliveryCommandService;
     private final OrderItemCommandService orderItemCommandService;
 
-    public Long add(Account account, OrderRequest.Create request) {
+    public Long add(Account account, OrderCreateRequest request) {
         if (request.getDeliveryAddress() == null) {
             throw new InvalidParameterException(Msg.ORDER_DELIVERY_ADDRESS_NOT_FOUND);
         }
@@ -105,14 +105,14 @@ public class OrderCommandService {
         return orderRepository.countOrderJoinOrderItemByAccountIdAndItemId(accountId, item);
     }
 
-    public OrderResponse.Delete remove(Long accountId) {
+    public OrderDeleteResponse remove(Long accountId) {
         return commandTransactional.execute(() -> {
             final List<Order> orderList = orderQueryService.readAllByAccountId(accountId);
             final List<Long> orderIdList = orderList.stream().map(Order::getId).collect(Collectors.toList());
             long orderItemDeleteCount = orderItemCommandService.removeByOrderIdList(orderIdList);
             long ordersDeleteCount = removeByAccountId(accountId);
 
-            return OrderResponse.Delete.of(ordersDeleteCount, orderItemDeleteCount);
+            return OrderDeleteResponse.of(ordersDeleteCount, orderItemDeleteCount);
         });
     }
 }

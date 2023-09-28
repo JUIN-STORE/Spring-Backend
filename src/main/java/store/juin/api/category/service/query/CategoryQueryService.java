@@ -3,7 +3,7 @@ package store.juin.api.category.service.query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import store.juin.api.cart.model.response.CategoryResponse;
+import store.juin.api.cart.model.response.CategoryRetrieveResponse;
 import store.juin.api.category.model.entity.Category;
 import store.juin.api.category.repository.jpa.CategoryRepository;
 import store.juin.api.common.exception.Msg;
@@ -28,14 +28,14 @@ public class CategoryQueryService {
         );
     }
 
-    public List<CategoryResponse.Retrieve> readAll() {
+    public List<CategoryRetrieveResponse> readAll() {
         final List<Category> categoryList = readAllByParentIdIsNull();
-        final List<CategoryResponse.Retrieve> response = new ArrayList<>();
+        final List<CategoryRetrieveResponse> response = new ArrayList<>();
 
         for (Category category : categoryList) {
-            final List<CategoryResponse.RetrieveChildList> childListResponse =
-                    CategoryResponse.RetrieveChildList.from(category.getChildList());
-            response.add(CategoryResponse.Retrieve.from(category, childListResponse));
+            final List<CategoryRetrieveResponse.RetrieveChildList> childListResponse =
+                    CategoryRetrieveResponse.RetrieveChildList.from(category.getChildList());
+            response.add(CategoryRetrieveResponse.from(category, childListResponse));
         }
 
         return response;

@@ -10,22 +10,22 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import store.juin.api.address.model.entity.Address;
-import store.juin.api.address.model.request.AddressRequest;
+import store.juin.api.address.model.request.AddressCreateRequest;
 import store.juin.api.address.service.command.AddressCommandService;
 import store.juin.api.address.service.query.AddressQueryService;
 import store.juin.api.cartitem.service.CartItemCommandService;
 import store.juin.api.common.exception.Msg;
 import store.juin.api.common.handler.CommandTransactional;
 import store.juin.api.delivery.model.entity.Delivery;
-import store.juin.api.delivery.model.request.DeliveryRequest;
+import store.juin.api.delivery.model.request.DeliveryReceiverRequest;
 import store.juin.api.delivery.service.DeliveryCommandService;
 import store.juin.api.item.enumeration.NotEnoughStockException;
 import store.juin.api.item.model.entity.Item;
 import store.juin.api.item.service.query.ItemQueryService;
 import store.juin.api.order.enumeration.OrderStatus;
 import store.juin.api.order.model.entity.Order;
-import store.juin.api.order.model.request.OrderRequest;
-import store.juin.api.order.model.response.OrderResponse;
+import store.juin.api.order.model.request.OrderCreateRequest;
+import store.juin.api.order.model.response.OrderDeleteResponse;
 import store.juin.api.order.repository.jpa.OrderRepository;
 import store.juin.api.order.service.query.OrderQueryService;
 import store.juin.api.orderitem.service.command.OrderItemCommandService;
@@ -93,10 +93,10 @@ class OrderCommandServiceTest {
                     .build();
             itemList.add(item);
 
-            var request = new OrderRequest.Create()
+            var request = new OrderCreateRequest()
                     .setCount(1)
-                    .setDeliveryAddress(new AddressRequest.Create().setDefaultAddress(true))
-                    .setDeliveryReceiver(new DeliveryRequest.Receiver())
+                    .setDeliveryAddress(new AddressCreateRequest().setDefaultAddress(true))
+                    .setDeliveryReceiver(new DeliveryReceiverRequest())
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
 
@@ -137,10 +137,10 @@ class OrderCommandServiceTest {
                     .build();
             itemList.add(item);
 
-            var request = new OrderRequest.Create()
+            var request = new OrderCreateRequest()
                     .setCount(1)
-                    .setDeliveryAddress(new AddressRequest.Create().setDefaultAddress(false))
-                    .setDeliveryReceiver(new DeliveryRequest.Receiver())
+                    .setDeliveryAddress(new AddressCreateRequest().setDefaultAddress(false))
+                    .setDeliveryReceiver(new DeliveryReceiverRequest())
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
 
@@ -171,10 +171,10 @@ class OrderCommandServiceTest {
             var itemIdList = new ArrayList<Long>();
             itemIdList.add(1L);
 
-            var request = new OrderRequest.Create()
+            var request = new OrderCreateRequest()
                     .setCount(1)
                     .setDeliveryAddress(null)
-                    .setDeliveryReceiver(new DeliveryRequest.Receiver())
+                    .setDeliveryReceiver(new DeliveryReceiverRequest())
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
 
@@ -193,9 +193,9 @@ class OrderCommandServiceTest {
             var itemIdList = new ArrayList<Long>();
             itemIdList.add(1L);
 
-            var request = new OrderRequest.Create()
+            var request = new OrderCreateRequest()
                     .setCount(1)
-                    .setDeliveryAddress(new AddressRequest.Create())
+                    .setDeliveryAddress(new AddressCreateRequest())
                     .setDeliveryReceiver(null)
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
@@ -226,10 +226,10 @@ class OrderCommandServiceTest {
             itemList.add(item);
 
 
-            var request = new OrderRequest.Create()
+            var request = new OrderCreateRequest()
                     .setCount(1)
-                    .setDeliveryAddress(new AddressRequest.Create().setDefaultAddress(true))
-                    .setDeliveryReceiver(new DeliveryRequest.Receiver())
+                    .setDeliveryAddress(new AddressCreateRequest().setDefaultAddress(true))
+                    .setDeliveryReceiver(new DeliveryReceiverRequest())
                     .setOrderStatus(OrderStatus.ORDER)
                     .setItemIdList(itemIdList);
 
@@ -324,7 +324,7 @@ class OrderCommandServiceTest {
             given(orderRepository.deleteByAccountId(anyLong())).willReturn(expected);
 
             // when
-            final OrderResponse.Delete actual = sut.remove(22L);
+            final OrderDeleteResponse actual = sut.remove(22L);
 
             // then
             assertAll(

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import store.juin.api.common.exception.JUINIOException;
 import store.juin.api.item.model.entity.Item;
-import store.juin.api.itemcategory.model.request.ItemImageRequest;
+import store.juin.api.itemcategory.model.request.ItemImageCreateRequest;
 import store.juin.api.itemimage.model.entity.ItemImage;
 import store.juin.api.upload.service.FileUploadService;
 import store.juin.api.util.CharterUtil;
@@ -28,7 +28,8 @@ import static store.juin.api.util.FileUploadUtil.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "item-image.local-path-active", havingValue = "false", matchIfMissing = false) // ${item-image.local-path-active} == false일 때 빈 등록.
+@ConditionalOnProperty(value = "item-image.local-path-active", havingValue = "false", matchIfMissing = false)
+// ${item-image.local-path-active} == false일 때 빈 등록.
 public class S3FileUploadServiceImpl implements FileUploadService {
     private final AmazonS3Client s3Client;
 
@@ -42,10 +43,7 @@ public class S3FileUploadServiceImpl implements FileUploadService {
     private String resizePath;
 
     @Override
-    public ItemImage addThumbnailImage(ItemImageRequest.Create request
-                                     , MultipartFile multipartFile
-                                     , Item item
-                                     , String extension) {
+    public ItemImage addThumbnailImage(ItemImageCreateRequest request, MultipartFile multipartFile, Item item, String extension) {
         try {
             // 썸네일 생성하기
             final BufferedImage resize = ThumbnailUtil.resize(multipartFile, THUMB_400, THUMB_400);
@@ -67,7 +65,7 @@ public class S3FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
-    public ItemImage addOriginalImage(ItemImageRequest.Create request, MultipartFile multipartFile, Item item) {
+    public ItemImage addOriginalImage(ItemImageCreateRequest request, MultipartFile multipartFile, Item item) {
         final File file = FileUploadUtil.convertMultipartFileToFile(multipartFile, resizePath);
 
         final String uploadFileUrl = uploadFile("original", file);
