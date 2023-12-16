@@ -11,9 +11,9 @@ import store.juin.api.cartitem.repository.querydsl.QuerydslCartItemRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static store.juin.api.common.entity.QCartItem.cartItem;
-import static store.juin.api.common.entity.QItem.item;
-import static store.juin.api.common.entity.QItemImage.itemImage;
+import static store.juin.api.cartitem.model.entity.QCartItem.cartItem;
+import static store.juin.api.item.model.entity.QItem.item;
+import static store.juin.api.itemimage.model.entity.QItemImage.itemImage;
 
 @RequiredArgsConstructor
 public class QuerydslCartItemRepositoryImpl implements QuerydslCartItemRepository {

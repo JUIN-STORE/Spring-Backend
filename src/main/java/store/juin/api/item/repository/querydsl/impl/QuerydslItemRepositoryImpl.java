@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.querydsl.core.types.dsl.Wildcard.count;
-import static store.juin.api.common.entity.QItem.item;
+import static store.juin.api.item.model.entity.QItem.item;
 
 
 @RequiredArgsConstructor

@@ -9,7 +9,7 @@ import store.juin.api.delivery.repository.querydsl.QuerydslDeliveryRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static store.juin.api.common.entity.QDelivery.delivery;
+import static store.juin.api.delivery.model.entity.QDelivery.delivery;
 
 
 @RequiredArgsConstructor

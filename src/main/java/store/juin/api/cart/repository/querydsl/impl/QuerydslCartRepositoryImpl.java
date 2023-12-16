@@ -7,8 +7,8 @@ import store.juin.api.cart.repository.querydsl.QuerydslCartRepository;
 
 import java.util.Optional;
 
-import static store.juin.api.common.entity.QCart.cart;
-import static store.juin.api.common.entity.QCartItem.cartItem;
+import static store.juin.api.cart.model.entity.QCart.cart;
+import static store.juin.api.cartitem.model.entity.QCartItem.cartItem;
 
 
 @RequiredArgsConstructor

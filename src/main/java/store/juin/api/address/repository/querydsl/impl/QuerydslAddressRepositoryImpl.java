@@ -10,7 +10,7 @@ import store.juin.api.address.repository.querydsl.QuerydslAddressRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static store.juin.api.common.entity.QAddress.address;
+import static store.juin.api.address.model.entity.QAddress.address;
 
 
 @RequiredArgsConstructor
