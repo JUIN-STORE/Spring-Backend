@@ -7,7 +7,7 @@ import store.juin.api.itemimage.model.entity.ItemImage;
 import java.util.List;
 import java.util.Optional;
 
-import static store.juin.api.common.entity.QItemImage.itemImage;
+import static store.juin.api.itemimage.model.entity.QItemImage.itemImage;
 
 @RequiredArgsConstructor
 public class QuerydslItemImageRepositoryImpl implements QuerydslItemImageRepository {

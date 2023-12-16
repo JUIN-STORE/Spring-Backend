@@ -6,7 +6,7 @@ import store.juin.api.orderitem.repository.querydsl.QuerydslOrderItemRepository;
 
 import java.util.List;
 
-import static store.juin.api.common.entity.QOrderItem.orderItem;
+import static store.juin.api.orderitem.model.entity.QOrderItem.orderItem;
 
 
 @RequiredArgsConstructor
