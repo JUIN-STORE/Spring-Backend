@@ -243,9 +243,9 @@ public class InnerService {
 * > 모두 대문자로 표기
 
 ## 2. 형식
-* > **[긴급도][LAYER][CLASS_NAME][METHOD_NAME]**
+* > **[긴급도][LAYER][DOMAIN][METHOD_NAME]**
   > 
-  > **ex) [P1][CTRL][ACNT][LGIN]**
+  > **ex) [P1][CTRL][ACCOUNT][LOGIN]**
 
 * > *긴급도 (낮을수록 중요하다)* \
   > *P1* -> Priority-1
@@ -266,9 +266,3 @@ public class InnerService {
     > COMP -> Component
     > 
     > UTIL -> Utility
-
-* > *CLASS NAME (임의의 4글자 만들기)* 
-  * > AccountController -> ACNT 
-    
-* > *METHOD NAME(임의의 4글자 만들기)*
-  * > login -> LGIN 
