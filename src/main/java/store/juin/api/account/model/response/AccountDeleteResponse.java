@@ -25,6 +25,7 @@ public class AccountDeleteResponse {
     public static AccountDeleteResponse from(Account account) {
         return new AccountDeleteResponse()
                 .setId(account.getId())
+                .setIdentification(account.getIdentification())
                 .setEmail(account.getEmail())
                 .setName(account.getName())
                 .setAccountRole(account.getAccountRole());

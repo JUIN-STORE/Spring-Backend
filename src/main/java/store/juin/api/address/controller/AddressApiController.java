@@ -1,7 +1,5 @@
 package store.juin.api.address.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +19,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = {"02. Address"})
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +29,6 @@ public class AddressApiController {
 
     private final AddressCommandService addressCommandService;
 
-    @ApiOperation(value = "주소 추가", notes="주소를 추가한다.")
     @PostMapping
     public JUINResponse<Void> create(final Principal principal,
                                      @RequestBody AddressCreateRequest request) {
@@ -50,7 +46,6 @@ public class AddressApiController {
         }
     }
 
-    @ApiOperation(value = "한 유저의 모든 주소 읽기", notes="한 유저의 모든 주소를 불러온다.")
     @GetMapping("/all")
     public JUINResponse<List<AddressRetrieveResponse>> retrieveAll(final Principal principal) {
         final String identification = principal.getName();
@@ -69,7 +64,6 @@ public class AddressApiController {
         }
     }
 
-    @ApiOperation(value = "단건 주소 읽기", notes="주소를 불러온다.")
     @GetMapping("/{addressId}")
     public JUINResponse<AddressRetrieveResponse> retrieveOne(final Principal principal,
                                                                              @PathVariable Long addressId) {
@@ -90,7 +84,6 @@ public class AddressApiController {
         }
     }
 
-    @ApiOperation(value = "주소 수정", notes="주소를 수정한다.")
     @PutMapping
     public JUINResponse<Void> update(final Principal principal,
                                      @RequestBody AddressUpdateRequest request) {
@@ -107,7 +100,6 @@ public class AddressApiController {
         }
     }
 
-    @ApiOperation(value = "주소 삭제", notes = "주소 정보를 삭제한다.")
     @DeleteMapping("/{addressId}")
     public JUINResponse<Long> delete(final Principal principal,
                                      @PathVariable Long addressId) {

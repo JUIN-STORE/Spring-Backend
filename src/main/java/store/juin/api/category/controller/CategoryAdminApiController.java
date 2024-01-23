@@ -1,7 +1,5 @@
 package store.juin.api.category.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,7 +14,6 @@ import store.juin.api.principal.service.query.PrincipalQueryService;
 
 import java.security.Principal;
 
-@Api(tags = {"06. Admin Category"})
 @Slf4j
 @RestController
 @RequestMapping("/api/admin/categories")
@@ -26,7 +23,6 @@ public class CategoryAdminApiController {
 
     private final CategoryCommandService categoryCommandService;
 
-    @ApiOperation(value = "카테고리 추가", notes = "카테고리를 추가한다.")
     @PostMapping
     public JUINResponse<Long> create(final Principal principal,
                                      @RequestBody CategoryCreateRequest request) {

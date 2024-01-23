@@ -1,7 +1,5 @@
 package store.juin.api.account.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +33,6 @@ import java.security.Principal;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
-@Api(tags = {"Account"})
 @Slf4j
 @RestController
 @RequestMapping("/api/accounts")
@@ -53,7 +50,6 @@ public class AccountApiController {
     @Value("${front.cookie.domain}")
     private String cookieDomain;
 
-    @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/sign-up")
     public JUINResponse<AccountSignUpResponse> signUp(@RequestBody AccountSignUpRequest request) {
         log.info("[P9][CTRL][ACNT][SIGN]: POST /api/accounts/sign-up, request = ({})", request);
@@ -79,7 +75,6 @@ public class AccountApiController {
         }
     }
 
-    @ApiOperation(value = "로그인", notes = "로그인을 한다.")
     @PostMapping("/sign-in")
     public JUINResponse<AccountSignInResponse> signIn(@RequestBody AccountSignInRequest request
                                                    , HttpServletResponse httpServletResponse) {
@@ -113,7 +108,6 @@ public class AccountApiController {
         }
     }
 
-    @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
     @GetMapping("/logout")
     public JUINResponse<String> logout(final Principal principal
                                      , HttpServletRequest httpServletRequest
@@ -146,7 +140,6 @@ public class AccountApiController {
         return new JUINResponse<>(HttpStatus.OK, "로그아웃 되었습니다.");
     }
 
-    @ApiOperation(value = "내 정보 읽기", notes = "내 정보를 읽어온다.")
     @GetMapping("/profile")
     public JUINResponse<AccountRetrieveResponse> profile(final Principal principal) {
         final String identification = principal.getName();
@@ -163,7 +156,6 @@ public class AccountApiController {
         }
     }
 
-    @ApiOperation(value = "회원 정보 수정", notes = "회원 정보를 수정한다.")
     @PatchMapping
     public JUINResponse<AccountUpdateResponse> update(final Principal principal
                                                      , @RequestBody AccountUpdateRequest request) {
@@ -182,7 +174,6 @@ public class AccountApiController {
         }
     }
 
-    @ApiOperation(value = "회원 정보 삭제", notes = "회원 정보를 삭제한다.")
     @DeleteMapping("/{accountId}")
     public JUINResponse<AccountDeleteResponse> delete(final Principal principal
                                                      , @PathVariable Long accountId) {
@@ -201,7 +192,6 @@ public class AccountApiController {
         }
     }
 
-    @ApiOperation(value = "아이디 중복 체크")
     @GetMapping("/duplication/{identification}")
     public JUINResponse<Void> checkIdentification(@PathVariable String identification) {
         log.info("[P9][CTRL][ACNT][DUPL]: GET /api/accounts/{accountId}, identification=({})", identification);
@@ -216,14 +206,12 @@ public class AccountApiController {
         }
     }
 
-    @ApiOperation(value = "비밀번호 변경 이메일 전송")
     @GetMapping(value = "/mail")
     public JUINResponse<String> sendEmail(@ModelAttribute AccountSendEmailRequest request) {
         var response = accountCommandService.sendEmail(request);
         return new JUINResponse<>(HttpStatus.OK, response);
     }
 
-    @ApiOperation(value = "비밀번호 변경")
     @PutMapping("/password")
     public JUINResponse<Void> changePassword(@RequestBody AccountChangePasswordRequest request) {
         try {

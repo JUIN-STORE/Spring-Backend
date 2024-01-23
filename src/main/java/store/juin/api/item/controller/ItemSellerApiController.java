@@ -1,7 +1,5 @@
 package store.juin.api.item.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +20,6 @@ import java.security.InvalidParameterException;
 import java.security.Principal;
 import java.util.List;
 
-@Api(tags = {"07. Seller Item"})
 @Slf4j
 @RestController
 @RequestMapping("/api/seller/items")
@@ -33,7 +30,6 @@ public class ItemSellerApiController {
 
     private final ItemCommandService itemCommandService;
 
-    @ApiOperation(value = "판매자 상품 등록", notes = "관리자가 상품을 등록한다.")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public JUINResponse<Long> create(final Principal principal,
                                      @RequestPart ItemCreateRequest request,
@@ -65,7 +61,6 @@ public class ItemSellerApiController {
         }
     }
 
-    @ApiOperation(value = "판매자 상품 읽기", notes = "관리자 페이지에서 상품을 읽는다.")
     @GetMapping("/{itemId}")
     public JUINResponse<ItemRetrieveResponse> readSellerOnly(final Principal principal, @PathVariable Long itemId) {
         final String identification = principal.getName();
@@ -85,7 +80,6 @@ public class ItemSellerApiController {
         }
     }
 
-    @ApiOperation(value = "판매자 상품 삭제", notes = "관리자 페이지에서 상품을 삭제.")
     @DeleteMapping("/{itemId}")
     public JUINResponse<Long> deleteSellerOnly(final Principal principal, @PathVariable Long itemId) {
         final String identification = principal.getName();

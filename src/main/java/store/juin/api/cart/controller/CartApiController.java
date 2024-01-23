@@ -1,7 +1,5 @@
 package store.juin.api.cart.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +17,6 @@ import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.util.List;
 
-@Api(tags = {"03. Cart"})
 @Slf4j
 @RestController
 @RequestMapping("/api/carts")
@@ -30,8 +27,6 @@ public class CartApiController {
 
     private final CartItemCommandService cartItemCommandService;
 
-    // FIXME: 이것도 엔드포인트 애매함
-    @ApiOperation(value = "카트에 항목을 추가", notes = "카트에 항목을 추가한다.")
     @PostMapping("/add")
     public JUINResponse<Integer> addItemInCart(final Principal principal,
                                                @RequestBody CartItemAddRequest request) {
@@ -49,7 +44,6 @@ public class CartApiController {
         }
     }
 
-    @ApiOperation(value = "카트에 있는 제품 정보 읽기", notes = "카트에 있는 제품 정보를 읽어온다.")
     @GetMapping
     public JUINResponse<List<CartItemResponse.Retrieve>> retrieveOne(final Principal principal) {
         final String identification = principal.getName();
@@ -66,7 +60,6 @@ public class CartApiController {
         }
     }
 
-    @ApiOperation(value = "카트에 있는 상품 개수 읽기", notes = "카트에 있는 상품 개수를 읽어온다.")
     @GetMapping("/count")
     public JUINResponse<Long> count(final Principal principal) {
         final String identification = principal.getName();
@@ -78,8 +71,6 @@ public class CartApiController {
         return new JUINResponse<>(HttpStatus.OK, response);
     }
 
-    // FIXME: 엔드포인트 변경해야 됨.
-    @ApiOperation(value = "카트에서 buy를 클릭했을 때", notes = "주문 정보 데이터를 읽어온다.")
     @GetMapping("/buy")
     public JUINResponse<List<CartItemResponse.Buy>> buy(final Principal principal,
                                                         @RequestParam List<Long> itemIdList) {
@@ -97,8 +88,6 @@ public class CartApiController {
         }
     }
 
-    // FIXME: 프론트에서 state으로 관리해야 됨.
-    @ApiOperation(value = "카트에 담긴 상품 개수 변경.", notes = "카트에 개수를 변경한다.")
     @PutMapping("/quantity")
     public JUINResponse<Integer> updateQuantity(final Principal principal,
                                                 @RequestBody CartItemUpdateRequest request) {
@@ -117,7 +106,6 @@ public class CartApiController {
         }
     }
 
-    @ApiOperation(value = "카트에 추가된 상품을 제거", notes = "카트에 추가된 상품을 제거한다.")
     @DeleteMapping
     public JUINResponse<Long> deleteItemInCart(final Principal principal,
                                                @RequestParam List<Long> itemIdList) {

@@ -1,7 +1,5 @@
 package store.juin.api.order.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +19,6 @@ import store.juin.api.principal.service.query.PrincipalQueryService;
 
 import java.security.Principal;
 
-@Api(tags = {"04. Order"})
 @Slf4j
 @RestController
 @RequestMapping("/api/orders")
@@ -32,7 +29,6 @@ public class OrderApiController {
 
     private final OrderCommandService orderCommandService;
 
-    @ApiOperation(value = "주문하기", notes = "주문을 한다.")
     @PostMapping
     public JUINResponse<Long> create(final Principal principal, @RequestBody OrderCreateRequest request) {
         final String identification = principal.getName();
@@ -50,7 +46,6 @@ public class OrderApiController {
     }
 
     // FIXME: 검색으로 봐야 될까?
-    @ApiOperation(value = "주문 상세보기", notes = "주문 상세 내역을 조회한다.")
     @GetMapping
     public JUINResponse<Page<OrderJoinResponse>> retrieveAll(final Principal principal,
                                                              @ModelAttribute OrderRetrieveRequest request,
@@ -69,7 +64,6 @@ public class OrderApiController {
         }
     }
 
-    @ApiOperation(value = "주문 취소하기", notes = "주문 취소를 한다.")
     @PostMapping("/cancel")
     public JUINResponse<Long> cancel(final Principal principal, @RequestBody OrderCancelRequest request) {
         final String identification = principal.getName();

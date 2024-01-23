@@ -1,6 +1,5 @@
 package store.juin.api.token.controller;
 
-import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import store.juin.api.token.exception.InvalidRefreshTokenException;
 import store.juin.api.token.model.response.TokenResponse;
 import store.juin.api.token.service.TokenCommandService;
 
-@Api(tags = {"10. Token"})
 @Slf4j
 @RestController
 @AllArgsConstructor
