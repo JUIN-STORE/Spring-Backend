@@ -1,7 +1,5 @@
 package store.juin.api.review.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +19,6 @@ import store.juin.api.review.service.query.ReviewQueryService;
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 
-@Api(tags = {"Review"})
 @Slf4j
 @RestController
 @RequestMapping("/api/reviews")
@@ -31,7 +28,6 @@ public class ReviewApiController {
     private final ReviewQueryService reviewQueryService;
     private final PrincipalQueryService principalQueryService;
 
-    @ApiOperation(value = "리뷰 등록", notes = "상품 리뷰를 작성한다.")
     @PostMapping
     public JUINResponse<Long> create(final Principal principal, @RequestBody ReviewAddRequest request) {
         log.info("[P9][CTRL][REV_][CRTE]: GET /api/reviews identification=({}), request=({})", principal.getName(), request);
@@ -46,7 +42,6 @@ public class ReviewApiController {
         }
     }
 
-    @ApiOperation(value = "리뷰 수정", notes = "본인이 작성한 리뷰를 수정한다.")
     @PutMapping("/{reviewId}")
     public JUINResponse<Long> update(final Principal principal,
                                      @PathVariable long reviewId,
@@ -63,7 +58,6 @@ public class ReviewApiController {
         }
     }
 
-    @ApiOperation(value = "리뷰 삭제", notes = "본인이 작성한 리뷰를 삭제한다.")
     @DeleteMapping("/{reviewId}")
     public JUINResponse<Long> delete(final Principal principal, @PathVariable long reviewId) {
         log.info("[P9][CTRL][REV_][DELE]: GET /api/reviews identification=({}), reviewId=({})", principal.getName(), reviewId);
@@ -78,7 +72,6 @@ public class ReviewApiController {
         }
     }
 
-    @ApiOperation(value = "리뷰 조회", notes = "특정 상품에 해당하는 리뷰 목록을 조회한다.")
     @GetMapping
     public JUINResponse<Page<ReviewRetrieveResponse>> retrieveAll(@RequestParam long itemId,
                                                                   @PageableDefault(size = 10) Pageable pageable) {

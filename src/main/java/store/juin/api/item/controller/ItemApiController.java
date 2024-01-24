@@ -1,7 +1,5 @@
 package store.juin.api.item.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,7 +15,6 @@ import store.juin.api.item.service.query.ItemQueryService;
 
 import javax.persistence.EntityNotFoundException;
 
-@Api(tags = {"05. Item"})
 @Slf4j
 @RestController
 @RequestMapping("/api/items")
@@ -25,7 +22,6 @@ import javax.persistence.EntityNotFoundException;
 public class ItemApiController {
     private final ItemQueryService itemQueryService;
 
-    @ApiOperation(value = "상품 읽기", notes = "상품을 읽는다.")
     @GetMapping("/{itemId}")
     public JUINResponse<ItemRetrieveResponse> retrieveOne(@PathVariable Long itemId) {
         log.info("[P9][CTRL][ITEM][RONE]: GET /api/items/{}", itemId);
@@ -41,7 +37,6 @@ public class ItemApiController {
         }
     }
 
-    @ApiOperation(value = "상품 전체 조회", notes = "전체 또는 조건 별로 검색한다.")
     @GetMapping
     public JUINResponse<Page<ItemRetrieveResponse>> retrieveAll(@PageableDefault(size = 10) Pageable pageable) {
         log.info("[P9][CTRL][ITEM][RALL]: GET /api/items pageable=({})", pageable);
@@ -56,7 +51,6 @@ public class ItemApiController {
         }
     }
 
-    @ApiOperation(value = "상품 검색", notes = "전체 또는 조건 별로 검색한다.")
     @GetMapping("/search")
     public JUINResponse<Page<ItemRetrieveResponse>> search(@PageableDefault(size = 10) Pageable pageable,
                                                            @RequestParam(required = false) Long categoryId,

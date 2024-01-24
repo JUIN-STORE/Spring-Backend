@@ -100,6 +100,7 @@ public class RequestUtil {
 
     public static AccountSignUpRequest makeSignUpRequest() {
         var request = new AccountSignUpRequest();
+        request.setIdentification("junsu0325");
         request.setEmail("js@gmail.com");
         request.setPasswordHash("asdq13@#13$");
         request.setName("준수");

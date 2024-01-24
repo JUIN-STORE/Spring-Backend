@@ -1,7 +1,5 @@
 package store.juin.api.delivery.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +18,6 @@ import javax.persistence.EntityNotFoundException;
 import java.security.InvalidParameterException;
 import java.security.Principal;
 
-@Api(tags = {"07. Delivery"})
 @Slf4j
 @RestController
 @RequestMapping("/api/deliveries")
@@ -29,7 +26,6 @@ public class DeliveryApiController {
     private final DeliveryQueryService deliveryQueryService;
     private final PrincipalQueryService principalQueryService;
 
-    @ApiOperation(value = "배송 상세 조회", notes = "주문에 대한 배송 상세 내용을 조회한다.")
     @GetMapping("/{deliveryId}")
     public JUINResponse<DeliveryRetrieveResponse> retrieveOne(final Principal principal, @PathVariable Long deliveryId) {
         final String identification = principal.getName();
