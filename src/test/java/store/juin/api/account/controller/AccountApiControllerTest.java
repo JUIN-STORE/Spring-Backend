@@ -1,6 +1,8 @@
 package store.juin.api.account.controller;
 
-import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
+import com.epages.restdocs.apispec.ResourceDocumentation;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,14 +33,13 @@ import store.juin.api.token.service.TokenQueryService;
 
 import java.security.Principal;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static store.juin.api.common.EndPoint.PORT;
 import static store.juin.api.common.EntityUtil.makeAccount;
@@ -101,34 +102,37 @@ class AccountApiControllerTest {
 
             // then
             actual.andExpect(status().isOk())
-                    .andDo(MockMvcRestDocumentationWrapper
-                        .document("회원 가입", "회원 가입을 한다.", "회원 가입"
-                            , PayloadDocumentation.requestFields(
-                                  PayloadDocumentation.fieldWithPath("identification").type(JsonFieldType.STRING).description("아이디")
-                                , PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
-                                , PayloadDocumentation.fieldWithPath("passwordHash").type(JsonFieldType.STRING).description("비밀번호")
-                                , PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름")
-                                , PayloadDocumentation.fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("전화번호")
-                                , PayloadDocumentation.fieldWithPath("accountRole").type(JsonFieldType.STRING).description("권한")
-                                , PayloadDocumentation.fieldWithPath("address.city").type(JsonFieldType.STRING).description("도시")
-                                , PayloadDocumentation.fieldWithPath("address.street").type(JsonFieldType.STRING).description("상세 주소")
-                                , PayloadDocumentation.fieldWithPath("address.zipCode").type(JsonFieldType.NUMBER).description("우편번호")
-                                , PayloadDocumentation.fieldWithPath("address.defaultAddress").type(JsonFieldType.BOOLEAN).description("기본 주소 여부")
-                            ),
+                    .andDo(document("회원 가입",
+                            ResourceDocumentation.resource(ResourceSnippetParameters.builder()
+                                    .description("회원 가입")
+                                    .summary("회원가입을 한다.")
 
-                            PayloadDocumentation.responseFields(
-                                  PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태")
+                                    .requestFields(
+                                            PayloadDocumentation.fieldWithPath("identification").type(JsonFieldType.STRING).description("아이디"),
+                                            PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                            PayloadDocumentation.fieldWithPath("passwordHash").type(JsonFieldType.STRING).description("비밀번호"),
+                                            PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
+                                            PayloadDocumentation.fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("전화번호"),
+                                            PayloadDocumentation.fieldWithPath("accountRole").type(JsonFieldType.STRING).description("권한"),
+                                            PayloadDocumentation.fieldWithPath("address.city").type(JsonFieldType.STRING).description("도시"),
+                                            PayloadDocumentation.fieldWithPath("address.street").type(JsonFieldType.STRING).description("상세 주소"),
+                                            PayloadDocumentation.fieldWithPath("address.zipCode").type(JsonFieldType.NUMBER).description("우편번호"),
+                                            PayloadDocumentation.fieldWithPath("address.defaultAddress").type(JsonFieldType.BOOLEAN).description("기본 주소 여부")
+                                    ).requestSchema(Schema.schema("회원 가입 Request"))
 
-                                , PayloadDocumentation.fieldWithPath("data.identification").type(JsonFieldType.STRING).description("아이디")
-                                , PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일")
-                                , PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름")
-                                , PayloadDocumentation.fieldWithPath("data.accountRole").type(JsonFieldType.STRING).description("권한")
+                                    .responseFields(
+                                            PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태"),
 
-                                , PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각")
-                                , PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
-                            )
-                        )
-                    );
+                                            PayloadDocumentation.fieldWithPath("data.identification").type(JsonFieldType.STRING).description("아이디"),
+                                            PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                                            PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+                                            PayloadDocumentation.fieldWithPath("data.accountRole").type(JsonFieldType.STRING).description("권한"),
+
+                                            PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각"),
+                                            PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
+                                    ).responseSchema(Schema.schema("회원 가입 Response"))
+                                    .build()
+                            )));
         }
     }
 
@@ -159,24 +163,24 @@ class AccountApiControllerTest {
 
             // then
             actual.andExpect(status().isOk())
-                    .andDo(MockMvcRestDocumentationWrapper
-                        .document("로그인", "로그인하기", "유저 로그인"
-                            , PayloadDocumentation.requestFields(
-                                  PayloadDocumentation.fieldWithPath("identification").type(JsonFieldType.STRING).description("가입 아이디")
-                                , PayloadDocumentation.fieldWithPath("passwordHash").type(JsonFieldType.STRING).description("비밀번호")
-                            ),
+                    .andDo(document("로그인",
+                            ResourceDocumentation.resource(ResourceSnippetParameters.builder()
+                                    .requestFields(
+                                            PayloadDocumentation.fieldWithPath("identification").type(JsonFieldType.STRING).description("가입 아이디"),
+                                            PayloadDocumentation.fieldWithPath("passwordHash").type(JsonFieldType.STRING).description("비밀번호")
+                                    ).requestSchema(Schema.schema("로그인 Request"))
 
-                            PayloadDocumentation.responseFields(
-                                      PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태")
+                                    .responseFields(
+                                            PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태"),
 
-                                    , PayloadDocumentation.fieldWithPath("data.identification").type(JsonFieldType.STRING).description("아이디")
-                                    , PayloadDocumentation.fieldWithPath("data.token.accessToken").type(JsonFieldType.STRING).description("엑세스 토큰")
+                                            PayloadDocumentation.fieldWithPath("data.identification").type(JsonFieldType.STRING).description("아이디"),
+                                            PayloadDocumentation.fieldWithPath("data.token.accessToken").type(JsonFieldType.STRING).description("엑세스 토큰"),
 
-                                    , PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각")
-                                    , PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
-                            )
-                        )
-                    );
+                                            PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각"),
+                                            PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
+                                    ).responseSchema(Schema.schema("로그인 Response"))
+                                    .build()
+                            )));
         }
     }
 
@@ -201,20 +205,23 @@ class AccountApiControllerTest {
 
             // then
             actual.andExpect(status().isOk())
-                    .andDo(MockMvcRestDocumentationWrapper
-                        .document("로그아웃", "로그아웃하기", "유저 로그아웃"
-                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
+                    .andDo(document("로그아웃",
+                            ResourceDocumentation.resource(ResourceSnippetParameters.builder()
+                                    .description("로그아웃")
+                                    .summary("로그아웃을 한다.")
 
-                            , PayloadDocumentation.responseFields(
-                                PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태")
+                                    .requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
-                                , PayloadDocumentation.fieldWithPath("data").type(JsonFieldType.STRING).description("로그아웃 성공 여부")
+                                    .responseFields(
+                                            PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태"),
 
-                                , PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각")
-                                , PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
-                            )
-                        )
-                    );
+                                            PayloadDocumentation.fieldWithPath("data").type(JsonFieldType.STRING).description("로그아웃 성공 여부"),
+
+                                            PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각"),
+                                            PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
+                                    ).responseSchema(Schema.schema("로그아웃 Response"))
+                                    .build()
+                            )));
         }
     }
 
@@ -238,30 +245,33 @@ class AccountApiControllerTest {
 
             // then
             actual.andExpect(status().isOk())
-                    .andDo(MockMvcRestDocumentationWrapper
-                        .document("내 정보 읽기", "내 정보를 읽어온다.", "내 정보 읽기"
-                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
+                    .andDo(document("내 정보 읽기",
+                            ResourceDocumentation.resource(ResourceSnippetParameters.builder()
+                                    .description("내 정보 읽기")
+                                    .summary("내 정보를 읽어온다.")
 
-                            , PayloadDocumentation.responseFields(
-                                PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태")
+                                    .requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
-                                , PayloadDocumentation.fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("id")
-                                , PayloadDocumentation.fieldWithPath("data.identification").type(JsonFieldType.STRING).description("아이디")
-                                , PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일")
-                                , PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름")
-                                , PayloadDocumentation.fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING).description("전화번호")
-                                , PayloadDocumentation.fieldWithPath("data.accountRole").type(JsonFieldType.STRING).description("권한")
-                                , PayloadDocumentation.fieldWithPath("data.address.id").type(JsonFieldType.NUMBER).description("주소 id")
-                                , PayloadDocumentation.fieldWithPath("data.address.city").type(JsonFieldType.STRING).description("도시")
-                                , PayloadDocumentation.fieldWithPath("data.address.street").type(JsonFieldType.STRING).description("도로명")
-                                , PayloadDocumentation.fieldWithPath("data.address.zipCode").type(JsonFieldType.NUMBER).description("우편번호")
-                                , PayloadDocumentation.fieldWithPath("data.address.defaultAddress").type(JsonFieldType.BOOLEAN).description("기본 주소 여부")
+                                    .responseFields(
+                                            PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태"),
 
-                                , PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각")
-                                , PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
-                            )
-                        )
-                    );
+                                            PayloadDocumentation.fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("id"),
+                                            PayloadDocumentation.fieldWithPath("data.identification").type(JsonFieldType.STRING).description("아이디"),
+                                            PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                                            PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+                                            PayloadDocumentation.fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING).description("전화번호"),
+                                            PayloadDocumentation.fieldWithPath("data.accountRole").type(JsonFieldType.STRING).description("권한"),
+                                            PayloadDocumentation.fieldWithPath("data.address.id").type(JsonFieldType.NUMBER).description("주소 id"),
+                                            PayloadDocumentation.fieldWithPath("data.address.city").type(JsonFieldType.STRING).description("도시"),
+                                            PayloadDocumentation.fieldWithPath("data.address.street").type(JsonFieldType.STRING).description("도로명"),
+                                            PayloadDocumentation.fieldWithPath("data.address.zipCode").type(JsonFieldType.NUMBER).description("우편번호"),
+                                            PayloadDocumentation.fieldWithPath("data.address.defaultAddress").type(JsonFieldType.BOOLEAN).description("기본 주소 여부"),
+
+                                            PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각"),
+                                            PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
+                                    ).responseSchema(Schema.schema("내 정보 읽기 Response"))
+                                    .build()
+                            )));
         }
     }
 
@@ -291,31 +301,32 @@ class AccountApiControllerTest {
 
             // then
             actual.andExpect(status().isOk())
-                    .andDo(MockMvcRestDocumentationWrapper
-                        .document("회원 정보 수정", "회원 정보를 수정한다.", "회원 정보 수정"
-                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
+                    .andDo(document("회원 정보 수정",
+                            ResourceDocumentation.resource(ResourceSnippetParameters.builder()
+                                    .description("회원 정보 수정")
+                                    .summary("회원 정보를 수정한다.")
+                                    .requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
 
-                            , PayloadDocumentation.requestFields(
-                                  PayloadDocumentation.fieldWithPath("passwordHash").type(JsonFieldType.STRING).description("새로운 비밀번호")
-                                , PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("새로운 이름")
-                                , PayloadDocumentation.fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("새로운 전화번호")
-                                , PayloadDocumentation.fieldWithPath("accountRole").type(JsonFieldType.STRING).description("새로운 권한")
-                            )
+                                    .requestFields(PayloadDocumentation.fieldWithPath("passwordHash").type(JsonFieldType.STRING).description("새로운 비밀번호"),
+                                            PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("새로운 이름"),
+                                            PayloadDocumentation.fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("새로운 전화번호"),
+                                            PayloadDocumentation.fieldWithPath("accountRole").type(JsonFieldType.STRING).description("새로운 권한")
+                                    ).requestSchema(Schema.schema("회원 정보 수정 Request"))
 
-                            , PayloadDocumentation.responseFields(
-                                  PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태")
+                                    .responseFields(
+                                            PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태"),
 
-                                , PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일")
-                                , PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름")
-                                , PayloadDocumentation.fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING).description("전화번호")
-                                , PayloadDocumentation.fieldWithPath("data.accountRole").type(JsonFieldType.STRING).description("권한")
-                                , PayloadDocumentation.fieldWithPath("data.updatedAt").type(JsonFieldType.ARRAY).description("수정 시각")
+                                            PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                                            PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+                                            PayloadDocumentation.fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING).description("전화번호"),
+                                            PayloadDocumentation.fieldWithPath("data.accountRole").type(JsonFieldType.STRING).description("권한"),
+                                            PayloadDocumentation.fieldWithPath("data.updatedAt").type(JsonFieldType.ARRAY).description("수정 시각"),
 
-                                , PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각")
-                                , PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
-                            )
-                        )
-                    );
+                                            PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각"),
+                                            PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
+                                    ).responseSchema(Schema.schema("회원 정보 수정 Response"))
+                                    .build()
+                            )));
         }
     }
 
@@ -341,25 +352,29 @@ class AccountApiControllerTest {
 
             // then
             actual.andExpect(status().isOk())
-                    .andDo(MockMvcRestDocumentationWrapper
-                        .document("회원 정보 삭제", "회원 정보를 삭제한다.", "회원 정보 삭제"
-                            , requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
-                            , pathParameters(parameterWithName("accountId").description("계정 id"))
+                    .andDo(document("회원 정보 삭제",
+                            ResourceDocumentation.resource(ResourceSnippetParameters.builder()
+                                    .description("회원 정보 삭제")
+                                    .summary("회원 정보를 삭제한다.")
 
-                            , PayloadDocumentation.responseFields(
-                                  PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태")
+                                    .requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("JWT TOKEN"))
+                                    .pathParameters(parameterWithName("accountId").description("계정 id"))
+                                    .requestSchema(Schema.schema("회원 정보 삭제 Request"))
 
-                                , PayloadDocumentation.fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("계정 id")
-                                , PayloadDocumentation.fieldWithPath("data.identification").type(JsonFieldType.STRING).description("계정 아이디")
-                                , PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일")
-                                , PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름")
-                                , PayloadDocumentation.fieldWithPath("data.accountRole").type(JsonFieldType.STRING).description("권한")
+                                    .responseFields(
+                                            PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태"),
+                                            PayloadDocumentation.fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("계정 id"),
 
-                                , PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각")
-                                , PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
-                            )
-                        )
-                    );
+                                            PayloadDocumentation.fieldWithPath("data.identification").type(JsonFieldType.STRING).description("계정 아이디"),
+                                            PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                                            PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+                                            PayloadDocumentation.fieldWithPath("data.accountRole").type(JsonFieldType.STRING).description("권한"),
+
+                                            PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각"),
+                                            PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
+                                    ).responseSchema(Schema.schema("회원 정보 삭제 Response"))
+                                    .build()
+                            )));
         }
     }
 
@@ -378,20 +393,24 @@ class AccountApiControllerTest {
 
             // then
             actual.andExpect(status().isOk())
-                    .andDo(MockMvcRestDocumentationWrapper
-                        .document("아이디 중복 체크", "아이디 중복을 체크한다.", "아이디 중복 체크"
-                            , pathParameters(parameterWithName("identification").description("가입하려는 아이디"))
+                    .andDo(document("아이디 중복 체크",
+                            ResourceDocumentation.resource(
+                                    ResourceSnippetParameters.builder()
+                                            .description("아이디 중복 체크")
+                                            .summary("아이디 중복을 체크한다.")
+                                            .pathParameters(parameterWithName("identification").description("가입하려는 아이디"))
+                                            .requestSchema(Schema.schema("아이디 중복 체크 Request"))
 
-                            , PayloadDocumentation.responseFields(
-                                  PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태")
+                                            .responseFields(
+                                                    PayloadDocumentation.fieldWithPath("apiStatus").type(JsonFieldType.NUMBER).description("api 요청에 대한 상태"),
 
-                                , PayloadDocumentation.fieldWithPath("data").type(JsonFieldType.NULL).description("데이터")
+                                                    PayloadDocumentation.fieldWithPath("data").type(JsonFieldType.NULL).description("데이터"),
 
-                                , PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각")
-                                , PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
-                            )
-                        )
-                    );
+                                                    PayloadDocumentation.fieldWithPath("timestamp").type(JsonFieldType.NUMBER).description("API 요청 시각"),
+                                                    PayloadDocumentation.fieldWithPath("region").type(JsonFieldType.STRING).description("리전 정보")
+                                            ).responseSchema(Schema.schema("아이디 중복 체크 Response"))
+                                            .build()
+                            )));
         }
     }
 }
